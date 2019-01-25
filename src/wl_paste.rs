@@ -7,6 +7,7 @@ use std::{
     rc::Rc,
 };
 
+use log::info;
 use os_pipe::pipe;
 use structopt::{clap::AppSettings, StructOpt};
 use wayland_client::{
@@ -82,6 +83,8 @@ fn main() {
     // Parse command-line options.
     let options = Options::from_args();
 
+    env_logger::init();
+
     // Connect to the Wayland compositor.
     let (display, mut queue) = Display::connect_to_env().expect("Error connecting to a display");
 
@@ -120,6 +123,8 @@ fn main() {
                             .expect("zwlr_data_control_manager_v1 was not found")
                             .into()
     };
+
+    info!("Using the {} interface.", manager.name());
 
     // If there are no seats, print an error message and exit.
     if seats.borrow().is_empty() {

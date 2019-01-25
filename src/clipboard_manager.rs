@@ -51,4 +51,12 @@ impl ClipboardManager {
             ClipboardManager::WpPrimary(_) => true,
         }
     }
+
+    pub fn name(&self) -> &'static str {
+        match self {
+            ClipboardManager::DataControl(_) => ZwlrDataControlManagerV1::NAME,
+            ClipboardManager::GtkPrimary(_) => GtkPrimarySelectionDeviceManager::NAME,
+            ClipboardManager::WpPrimary(_) => ZwpPrimarySelectionDeviceManagerV1::NAME,
+        }
+    }
 }
