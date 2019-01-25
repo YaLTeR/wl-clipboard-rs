@@ -13,9 +13,12 @@ use wayland_client::{
     protocol::{wl_compositor::WlCompositor, wl_seat::WlSeat},
     Display, NewProxy,
 };
-use wayland_protocols::wlr::unstable::{
-    data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
-    layer_shell::v1::client::zwlr_layer_shell_v1::{Layer, ZwlrLayerShellV1},
+use wayland_protocols::{
+    unstable::primary_selection::v1::client::zwp_primary_selection_device_manager_v1::ZwpPrimarySelectionDeviceManagerV1,
+    wlr::unstable::{
+        data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
+        layer_shell::v1::client::zwlr_layer_shell_v1::{Layer, ZwlrLayerShellV1},
+    },
 };
 
 mod protocol;
@@ -84,6 +87,7 @@ fn main() {
 
     let data_control_manager = Rc::new(RefCell::new(None::<ZwlrDataControlManagerV1>));
     let gtk_manager = Rc::new(RefCell::new(None::<GtkPrimarySelectionDeviceManager>));
+    let wp_manager = Rc::new(RefCell::new(None::<ZwpPrimarySelectionDeviceManagerV1>));
     let layer_shell = Rc::new(RefCell::new(None::<ZwlrLayerShellV1>));
     let compositor = Rc::new(RefCell::new(None::<WlCompositor>));
     let seats = Rc::new(RefCell::new(Vec::<WlSeat>::new()));
@@ -91,6 +95,7 @@ fn main() {
     display.get_registry(|registry| {
                registry.implement(WlRegistryHandler::new(data_control_manager.clone(),
                                                          gtk_manager.clone(),
+                                                         wp_manager.clone(),
                                                          layer_shell.clone(),
                                                          compositor.clone(),
                                                          seats.clone()),
@@ -103,10 +108,12 @@ fn main() {
 
     // Check that we have our interfaces.
     let manager: ClipboardManager = if options.primary {
-        gtk_manager.borrow_mut()
-                   .take()
-                   .expect("gtk_primary_selection_device_manager was not found")
-                   .into()
+        if let Some(manager) = gtk_manager.borrow_mut().take().map(Into::into) {
+            Some(manager)
+        } else {
+            wp_manager.borrow_mut().take().map(Into::into)
+        }.expect("Neither gtk_primary_selection_device_manager \
+                  nor zwp_primary_selection_device_manager_v1 was found")
     } else {
         data_control_manager.borrow_mut()
                             .take()

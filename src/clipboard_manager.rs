@@ -1,7 +1,12 @@
 use derive_more::From;
 use wayland_client::protocol::wl_seat::WlSeat;
-use wayland_protocols::wlr::unstable::data_control::v1::client::{
-    zwlr_data_control_manager_v1::ZwlrDataControlManagerV1, *,
+use wayland_protocols::{
+    unstable::primary_selection::v1::client::{
+        zwp_primary_selection_device_manager_v1::ZwpPrimarySelectionDeviceManagerV1, *,
+    },
+    wlr::unstable::data_control::v1::client::{
+        zwlr_data_control_manager_v1::ZwlrDataControlManagerV1, *,
+    },
 };
 
 use crate::data_device::DataDevice;
@@ -13,12 +18,14 @@ use crate::protocol::gtk_primary_selection::client::{
 pub enum ClipboardManager {
     DataControl(ZwlrDataControlManagerV1),
     GtkPrimary(GtkPrimarySelectionDeviceManager),
+    WpPrimary(ZwpPrimarySelectionDeviceManagerV1),
 }
 
 impl ClipboardManager {
     pub fn get_device<T>(&self, seat: &WlSeat, handler: T) -> Result<DataDevice, ()>
         where T: zwlr_data_control_device_v1::EventHandler
                   + gtk_primary_selection_device::EventHandler
+                  + zwp_primary_selection_device_v1::EventHandler
                   + 'static
     {
         match self {
@@ -30,6 +37,10 @@ impl ClipboardManager {
                 manager.get_device(seat, move |device| device.implement(handler, ()))
                        .map(Into::into)
             }
+            ClipboardManager::WpPrimary(manager) => {
+                manager.get_device(seat, move |device| device.implement(handler, ()))
+                       .map(Into::into)
+            }
         }
     }
 
@@ -37,6 +48,7 @@ impl ClipboardManager {
         match self {
             ClipboardManager::DataControl(_) => false,
             ClipboardManager::GtkPrimary(_) => true,
+            ClipboardManager::WpPrimary(_) => true,
         }
     }
 }
