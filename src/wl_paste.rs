@@ -4,15 +4,16 @@ use std::{
     io::{stdout, Read, Write},
     os::unix::io::AsRawFd,
     process,
-    rc::Rc,
+    sync::{Arc, Mutex},
 };
 
 use log::info;
 use os_pipe::pipe;
 use structopt::{clap::AppSettings, StructOpt};
 use wayland_client::{
+    global_filter,
     protocol::{wl_compositor::WlCompositor, wl_seat::WlSeat},
-    Display, NewProxy,
+    Display, GlobalError, GlobalManager, Interface, NewProxy, Proxy,
 };
 use wayland_protocols::{
     unstable::primary_selection::v1::client::zwp_primary_selection_device_manager_v1::ZwpPrimarySelectionDeviceManagerV1,
@@ -35,7 +36,22 @@ mod seat_data;
 use seat_data::SeatData;
 
 mod handlers;
-use handlers::{DataDeviceHandler, LayerSurfaceHandler, WlRegistryHandler};
+use handlers::{DataDeviceHandler, LayerSurfaceHandler, WlSeatHandler};
+
+trait GlobalManagerExt {
+    fn instantiate_supported<I, F>(&self, implementor: F) -> Result<I, GlobalError>
+        where I: Interface + From<Proxy<I>>,
+              F: FnOnce(NewProxy<I>) -> I;
+}
+
+impl GlobalManagerExt for GlobalManager {
+    fn instantiate_supported<I, F>(&self, implementor: F) -> Result<I, GlobalError>
+        where I: Interface + From<Proxy<I>>,
+              F: FnOnce(NewProxy<I>) -> I
+    {
+        self.instantiate_exact(I::VERSION, implementor)
+    }
+}
 
 #[derive(StructOpt)]
 #[structopt(name = "wl-paste",
@@ -88,61 +104,64 @@ fn main() {
     // Connect to the Wayland compositor.
     let (display, mut queue) = Display::connect_to_env().expect("Error connecting to a display");
 
-    let data_control_manager = Rc::new(RefCell::new(None::<ZwlrDataControlManagerV1>));
-    let gtk_manager = Rc::new(RefCell::new(None::<GtkPrimarySelectionDeviceManager>));
-    let wp_manager = Rc::new(RefCell::new(None::<ZwpPrimarySelectionDeviceManagerV1>));
-    let layer_shell = Rc::new(RefCell::new(None::<ZwlrLayerShellV1>));
-    let compositor = Rc::new(RefCell::new(None::<WlCompositor>));
-    let seats = Rc::new(RefCell::new(Vec::<WlSeat>::new()));
+    let seats = Arc::new(Mutex::new(Vec::<WlSeat>::new()));
 
-    display.get_registry(|registry| {
-               registry.implement(WlRegistryHandler::new(data_control_manager.clone(),
-                                                         gtk_manager.clone(),
-                                                         wp_manager.clone(),
-                                                         layer_shell.clone(),
-                                                         compositor.clone(),
-                                                         seats.clone()),
-                                  ())
-           })
-           .unwrap();
+    let seats_2 = seats.clone();
+    let global_manager =
+        GlobalManager::new_with_cb(&display,
+                                   global_filter!([WlSeat,
+                                                   WlSeat::VERSION,
+                                                   move |seat: NewProxy<WlSeat>| {
+                                                       let seat_data =
+                                                           RefCell::new(SeatData::default());
+                                                       let seat =
+                                                           seat.implement(WlSeatHandler, seat_data);
+                                                       seats_2.lock().unwrap().push(seat.clone());
+                                                       seat
+                                                   }]));
 
     // Retrieve the global interfaces.
     queue.sync_roundtrip().expect("Error doing a roundtrip");
 
     // Check that we have our interfaces.
     let manager: ClipboardManager = if options.primary {
-        if let Some(manager) = gtk_manager.borrow_mut().take().map(Into::into) {
+        if let Some(manager) =
+            global_manager.instantiate_supported::<GtkPrimarySelectionDeviceManager, _>(NewProxy::implement_dummy)
+                          .ok()
+                          .map(Into::into)
+        {
             Some(manager)
         } else {
-            wp_manager.borrow_mut().take().map(Into::into)
+            global_manager.instantiate_supported::<ZwpPrimarySelectionDeviceManagerV1, _>(NewProxy::implement_dummy)
+                          .ok()
+                          .map(Into::into)
         }.expect("Neither gtk_primary_selection_device_manager \
                   nor zwp_primary_selection_device_manager_v1 was found")
     } else {
-        data_control_manager.borrow_mut()
-                            .take()
-                            .expect("zwlr_data_control_manager_v1 was not found")
-                            .into()
+        global_manager.instantiate_supported::<ZwlrDataControlManagerV1, _>(NewProxy::implement_dummy)
+                      .expect("zwlr_data_control_manager_v1 was not found")
+                      .into()
     };
 
     info!("Using the {} interface.", manager.name());
 
     // If there are no seats, print an error message and exit.
-    if seats.borrow().is_empty() {
+    if seats.lock().unwrap().is_empty() {
         eprintln!("There are no seats; nowhere to paste from.");
         process::exit(1);
     }
 
     // If using a protocol that requires keyboard focus, make a surface.
     if manager.requires_keyboard_focus() {
-        let compositor = compositor.borrow_mut()
-                                   .take()
-                                   .expect("wl_compositor was not found");
+        let compositor =
+            global_manager.instantiate_supported::<WlCompositor, _>(NewProxy::implement_dummy)
+                          .expect("wl_compositor was not found");
         let surface = compositor.create_surface(NewProxy::implement_dummy)
                                 .unwrap();
 
-        let layer_shell = layer_shell.borrow_mut()
-                                     .take()
-                                     .expect("zwlr_layer_shell_v1 was not found");
+        let layer_shell =
+            global_manager.instantiate_supported::<ZwlrLayerShellV1, _>(NewProxy::implement_dummy)
+                          .expect("zwlr_layer_shell_v1 was not found");
         let layer_surface =
             layer_shell.get_layer_surface(&surface,
                                           None,
@@ -158,7 +177,7 @@ fn main() {
     }
 
     // Go through the seats and get their data devices.
-    for seat in &*seats.borrow() {
+    for seat in &*seats.lock().unwrap() {
         manager.get_device(seat, DataDeviceHandler::new(seat.clone()))
                .unwrap();
     }
@@ -167,7 +186,8 @@ fn main() {
     queue.sync_roundtrip().expect("Error doing a roundtrip");
 
     // Figure out which offer we're interested in.
-    let offer = seats.borrow()
+    let offer = seats.lock()
+                     .unwrap()
                      .iter()
                      .map(|seat| {
                          seat.as_ref()

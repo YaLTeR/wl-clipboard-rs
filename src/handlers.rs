@@ -1,99 +1,29 @@
-use std::{cell::RefCell, collections::HashSet, rc::Rc};
+use std::{cell::RefCell, collections::HashSet};
 
-use derive_new::new;
 use wayland_client::{
-    protocol::{wl_compositor::WlCompositor, wl_registry::WlRegistry, wl_seat::WlSeat, *},
-    Interface, NewProxy,
+    protocol::{wl_seat::WlSeat, *},
+    NewProxy,
 };
 use wayland_protocols::{
     unstable::primary_selection::v1::client::{
-        zwp_primary_selection_device_manager_v1::ZwpPrimarySelectionDeviceManagerV1,
         zwp_primary_selection_device_v1::ZwpPrimarySelectionDeviceV1,
         zwp_primary_selection_offer_v1::ZwpPrimarySelectionOfferV1, *,
     },
     wlr::unstable::{
         data_control::v1::client::{
             zwlr_data_control_device_v1::ZwlrDataControlDeviceV1,
-            zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
             zwlr_data_control_offer_v1::ZwlrDataControlOfferV1, *,
         },
-        layer_shell::v1::client::{
-            zwlr_layer_shell_v1::ZwlrLayerShellV1, zwlr_layer_surface_v1::ZwlrLayerSurfaceV1, *,
-        },
+        layer_shell::v1::client::{zwlr_layer_surface_v1::ZwlrLayerSurfaceV1, *},
     },
 };
 
 use crate::offer::{NewOffer, Offer};
 use crate::protocol::gtk_primary_selection::client::{
     gtk_primary_selection_device::GtkPrimarySelectionDevice,
-    gtk_primary_selection_device_manager::GtkPrimarySelectionDeviceManager,
     gtk_primary_selection_offer::GtkPrimarySelectionOffer, *,
 };
 use crate::seat_data::SeatData;
-
-#[derive(new)]
-pub struct WlRegistryHandler {
-    data_control_manager: Rc<RefCell<Option<ZwlrDataControlManagerV1>>>,
-    gtk_manager: Rc<RefCell<Option<GtkPrimarySelectionDeviceManager>>>,
-    wp_manager: Rc<RefCell<Option<ZwpPrimarySelectionDeviceManagerV1>>>,
-    layer_shell: Rc<RefCell<Option<ZwlrLayerShellV1>>>,
-    compositor: Rc<RefCell<Option<WlCompositor>>>,
-    seats: Rc<RefCell<Vec<WlSeat>>>,
-}
-
-impl wl_registry::EventHandler for WlRegistryHandler {
-    fn global(&mut self, registry: WlRegistry, name: u32, interface: String, version: u32) {
-        match interface.as_ref() {
-            ZwlrDataControlManagerV1::NAME if version >= ZwlrDataControlManagerV1::VERSION => {
-                let data_control_manager = registry.bind(ZwlrDataControlManagerV1::VERSION,
-                                                         name,
-                                                         NewProxy::implement_dummy)
-                                                   .unwrap();
-                *self.data_control_manager.borrow_mut() = Some(data_control_manager);
-            }
-            GtkPrimarySelectionDeviceManager::NAME
-                if version >= GtkPrimarySelectionDeviceManager::VERSION =>
-            {
-                let gtk_manager = registry.bind(GtkPrimarySelectionDeviceManager::VERSION,
-                                                name,
-                                                NewProxy::implement_dummy)
-                                          .unwrap();
-                *self.gtk_manager.borrow_mut() = Some(gtk_manager);
-            }
-            ZwpPrimarySelectionDeviceManagerV1::NAME
-                if version >= ZwpPrimarySelectionDeviceManagerV1::VERSION =>
-            {
-                let wp_manager = registry.bind(ZwpPrimarySelectionDeviceManagerV1::VERSION,
-                                               name,
-                                               NewProxy::implement_dummy)
-                                         .unwrap();
-                *self.wp_manager.borrow_mut() = Some(wp_manager);
-            }
-            ZwlrLayerShellV1::NAME if version >= ZwlrLayerShellV1::VERSION => {
-                let layer_shell =
-                    registry.bind(ZwlrLayerShellV1::VERSION, name, NewProxy::implement_dummy)
-                            .unwrap();
-                *self.layer_shell.borrow_mut() = Some(layer_shell);
-            }
-            WlCompositor::NAME if version >= WlCompositor::VERSION => {
-                let compositor =
-                    registry.bind(WlCompositor::VERSION, name, NewProxy::implement_dummy)
-                            .unwrap();
-                *self.compositor.borrow_mut() = Some(compositor);
-            }
-            WlSeat::NAME if version >= WlSeat::VERSION => {
-                let seat_data = RefCell::new(SeatData::default());
-                let seat = registry.bind(WlSeat::VERSION, name, |seat| {
-                                       seat.implement(WlSeatHandler, seat_data)
-                                   })
-                                   .unwrap();
-
-                self.seats.borrow_mut().push(seat);
-            }
-            _ => {}
-        }
-    }
-}
 
 pub struct WlSeatHandler;
 
