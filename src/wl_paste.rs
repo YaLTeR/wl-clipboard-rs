@@ -4,54 +4,32 @@ use std::{
     io::{stdout, Read, Write},
     os::unix::io::AsRawFd,
     process,
-    sync::{Arc, Mutex},
 };
 
-use log::info;
 use os_pipe::pipe;
 use structopt::{clap::AppSettings, StructOpt};
-use wayland_client::{
-    global_filter,
-    protocol::{wl_compositor::WlCompositor, wl_seat::WlSeat},
-    Display, GlobalError, GlobalManager, Interface, NewProxy, Proxy,
-};
-use wayland_protocols::{
-    unstable::primary_selection::v1::client::zwp_primary_selection_device_manager_v1::ZwpPrimarySelectionDeviceManagerV1,
-    wlr::unstable::{
-        data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
-        layer_shell::v1::client::zwlr_layer_shell_v1::{Layer, ZwlrLayerShellV1},
-    },
+use wayland_client::{protocol::wl_compositor::WlCompositor, NewProxy};
+use wayland_protocols::wlr::unstable::layer_shell::v1::client::zwlr_layer_shell_v1::{
+    Layer, ZwlrLayerShellV1,
 };
 
+mod common;
 mod protocol;
-use protocol::gtk_primary_selection::client::gtk_primary_selection_device_manager::GtkPrimarySelectionDeviceManager;
+use common::{initialize, CommonData};
 
 mod clipboard_manager;
-use clipboard_manager::ClipboardManager;
-
 mod data_device;
+mod data_source;
 mod offer;
 
 mod seat_data;
 use seat_data::SeatData;
 
 mod handlers;
-use handlers::{DataDeviceHandler, LayerSurfaceHandler, WlSeatHandler};
+use handlers::{DataDeviceHandler, LayerSurfaceHandler};
 
-trait GlobalManagerExt {
-    fn instantiate_supported<I, F>(&self, implementor: F) -> Result<I, GlobalError>
-        where I: Interface + From<Proxy<I>>,
-              F: FnOnce(NewProxy<I>) -> I;
-}
-
-impl GlobalManagerExt for GlobalManager {
-    fn instantiate_supported<I, F>(&self, implementor: F) -> Result<I, GlobalError>
-        where I: Interface + From<Proxy<I>>,
-              F: FnOnce(NewProxy<I>) -> I
-    {
-        self.instantiate_exact(I::VERSION, implementor)
-    }
-}
+mod utils;
+use utils::{is_text, GlobalManagerExt};
 
 #[derive(StructOpt)]
 #[structopt(name = "wl-paste",
@@ -87,63 +65,17 @@ struct Options {
     mime_type: Option<String>,
 }
 
-fn is_text(mime_type: &str) -> bool {
-    match mime_type {
-        "TEXT" | "STRING" | "UTF8_STRING" => true,
-        x if x.starts_with("text/") => true,
-        _ => false,
-    }
-}
-
 fn main() {
     // Parse command-line options.
     let options = Options::from_args();
 
     env_logger::init();
 
-    // Connect to the Wayland compositor.
-    let (display, mut queue) = Display::connect_to_env().expect("Error connecting to a display");
-
-    let seats = Arc::new(Mutex::new(Vec::<WlSeat>::new()));
-
-    let seats_2 = seats.clone();
-    let global_manager =
-        GlobalManager::new_with_cb(&display,
-                                   global_filter!([WlSeat,
-                                                   WlSeat::VERSION,
-                                                   move |seat: NewProxy<WlSeat>| {
-                                                       let seat_data =
-                                                           RefCell::new(SeatData::default());
-                                                       let seat =
-                                                           seat.implement(WlSeatHandler, seat_data);
-                                                       seats_2.lock().unwrap().push(seat.clone());
-                                                       seat
-                                                   }]));
-
-    // Retrieve the global interfaces.
-    queue.sync_roundtrip().expect("Error doing a roundtrip");
-
-    // Check that we have our interfaces.
-    let manager: ClipboardManager = if options.primary {
-        if let Some(manager) =
-            global_manager.instantiate_supported::<GtkPrimarySelectionDeviceManager, _>(NewProxy::implement_dummy)
-                          .ok()
-                          .map(Into::into)
-        {
-            Some(manager)
-        } else {
-            global_manager.instantiate_supported::<ZwpPrimarySelectionDeviceManagerV1, _>(NewProxy::implement_dummy)
-                          .ok()
-                          .map(Into::into)
-        }.expect("Neither gtk_primary_selection_device_manager \
-                  nor zwp_primary_selection_device_manager_v1 was found")
-    } else {
-        global_manager.instantiate_supported::<ZwlrDataControlManagerV1, _>(NewProxy::implement_dummy)
-                      .expect("zwlr_data_control_manager_v1 was not found")
-                      .into()
-    };
-
-    info!("Using the {} interface.", manager.name());
+    let CommonData { mut queue,
+                     global_manager,
+                     clipboard_manager,
+                     seats,
+                     .. } = initialize(options.primary);
 
     // If there are no seats, print an error message and exit.
     if seats.lock().unwrap().is_empty() {
@@ -152,7 +84,7 @@ fn main() {
     }
 
     // If using a protocol that requires keyboard focus, make a surface.
-    if manager.requires_keyboard_focus() {
+    if clipboard_manager.requires_keyboard_focus() {
         let compositor =
             global_manager.instantiate_supported::<WlCompositor, _>(NewProxy::implement_dummy)
                           .expect("wl_compositor was not found");
@@ -178,8 +110,8 @@ fn main() {
 
     // Go through the seats and get their data devices.
     for seat in &*seats.lock().unwrap() {
-        manager.get_device(seat, DataDeviceHandler::new(seat.clone()))
-               .unwrap();
+        clipboard_manager.get_device(seat, DataDeviceHandler::new(seat.clone()))
+                         .unwrap();
     }
 
     // Retrieve all seat names and offers.
@@ -196,7 +128,7 @@ fn main() {
                              .borrow()
                      })
                      .find_map(|data| {
-                         let SeatData { name, offer } = &*data;
+                         let SeatData { name, offer, .. } = &*data;
                          if options.seat.is_none() {
                              return Some(offer.clone());
                          }

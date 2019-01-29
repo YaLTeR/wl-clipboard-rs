@@ -1,9 +1,12 @@
-use crate::offer::Offer;
+use crate::{data_device::DataDevice, offer::Offer};
 
 #[derive(Default)]
 pub struct SeatData {
     /// The name of this seat, if any.
     pub name: Option<String>,
+
+    /// The data device of this seat, if any.
+    pub device: Option<DataDevice>,
 
     /// The data offer of this seat, if any.
     ///
@@ -15,6 +18,18 @@ impl SeatData {
     /// Sets this seat's name.
     pub fn set_name(&mut self, name: String) {
         self.name = Some(name)
+    }
+
+    /// Sets this seat's device.
+    ///
+    /// Destroys the old one, if any.
+    pub fn set_device(&mut self, device: Option<DataDevice>) {
+        let old_device = self.device.take();
+        self.device = device;
+
+        if let Some(device) = old_device {
+            device.destroy();
+        }
     }
 
     /// Sets this seat's data offer.

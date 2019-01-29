@@ -11,22 +11,26 @@ mod generated {
     }
     #[cfg(feature = "native_lib")]
     pub mod client {
-        pub(crate) use wayland_client::protocol::wl_seat;
         pub(crate) use wayland_client::{
-            sys, AnonymousObject, HandledBy, NewProxy, Proxy, ProxyMap,
+            protocol::wl_seat, sys, AnonymousObject, HandledBy, NewProxy, Proxy, ProxyMap,
         };
-        pub(crate) use wayland_commons::map::{Object, ObjectMetadata};
-        pub(crate) use wayland_commons::wire::{Argument, ArgumentType, Message, MessageDesc};
-        pub(crate) use wayland_commons::{Interface, MessageGroup};
+        pub(crate) use wayland_commons::{
+            map::{Object, ObjectMetadata},
+            wire::{Argument, ArgumentType, Message, MessageDesc},
+            Interface, MessageGroup,
+        };
         include!(concat!(env!("OUT_DIR"), "/gtk_primary_selection_api.rs"));
     }
     #[cfg(not(feature = "native_lib"))]
     pub mod client {
-        pub(crate) use wayland_client::protocol::wl_seat;
-        pub(crate) use wayland_client::{AnonymousObject, HandledBy, NewProxy, Proxy, ProxyMap};
-        pub(crate) use wayland_commons::map::{Object, ObjectMetadata};
-        pub(crate) use wayland_commons::wire::{Argument, ArgumentType, Message, MessageDesc};
-        pub(crate) use wayland_commons::{Interface, MessageGroup};
+        pub(crate) use wayland_client::{
+            protocol::wl_seat, AnonymousObject, HandledBy, NewProxy, Proxy, ProxyMap,
+        };
+        pub(crate) use wayland_commons::{
+            map::{Object, ObjectMetadata},
+            wire::{Argument, ArgumentType, Message, MessageDesc},
+            Interface, MessageGroup,
+        };
         include!(concat!(env!("OUT_DIR"), "/gtk_primary_selection_api.rs"));
     }
 }

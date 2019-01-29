@@ -1,5 +1,12 @@
-use std::{cell::RefCell, collections::HashSet};
+use std::{
+    cell::{Cell, RefCell},
+    collections::HashSet,
+    fs::File,
+    os::unix::io::{IntoRawFd, RawFd},
+    path::PathBuf,
+};
 
+use derive_new::new;
 use wayland_client::{
     protocol::{wl_seat::WlSeat, *},
     NewProxy,
@@ -7,23 +14,30 @@ use wayland_client::{
 use wayland_protocols::{
     unstable::primary_selection::v1::client::{
         zwp_primary_selection_device_v1::ZwpPrimarySelectionDeviceV1,
-        zwp_primary_selection_offer_v1::ZwpPrimarySelectionOfferV1, *,
+        zwp_primary_selection_offer_v1::ZwpPrimarySelectionOfferV1,
+        zwp_primary_selection_source_v1::ZwpPrimarySelectionSourceV1, *,
     },
     wlr::unstable::{
         data_control::v1::client::{
             zwlr_data_control_device_v1::ZwlrDataControlDeviceV1,
-            zwlr_data_control_offer_v1::ZwlrDataControlOfferV1, *,
+            zwlr_data_control_offer_v1::ZwlrDataControlOfferV1,
+            zwlr_data_control_source_v1::ZwlrDataControlSourceV1, *,
         },
         layer_shell::v1::client::{zwlr_layer_surface_v1::ZwlrLayerSurfaceV1, *},
     },
 };
 
-use crate::offer::{NewOffer, Offer};
-use crate::protocol::gtk_primary_selection::client::{
-    gtk_primary_selection_device::GtkPrimarySelectionDevice,
-    gtk_primary_selection_offer::GtkPrimarySelectionOffer, *,
+use crate::{
+    data_source::DataSource,
+    offer::{NewOffer, Offer},
+    protocol::gtk_primary_selection::client::{
+        gtk_primary_selection_device::GtkPrimarySelectionDevice,
+        gtk_primary_selection_offer::GtkPrimarySelectionOffer,
+        gtk_primary_selection_source::GtkPrimarySelectionSource, *,
+    },
+    seat_data::SeatData,
+    utils::copy_data,
 };
-use crate::seat_data::SeatData;
 
 pub struct WlSeatHandler;
 
@@ -82,6 +96,12 @@ impl DataDeviceHandler {
             }
         }
     }
+
+    fn finished(&mut self) {
+        // Destroy the device stored in the seat as it's no longer valid.
+        let seat_data = self.seat.as_ref().user_data::<RefCell<SeatData>>().unwrap();
+        seat_data.borrow_mut().set_device(None);
+    }
 }
 
 impl zwlr_data_control_device_v1::EventHandler for DataDeviceHandler {
@@ -92,9 +112,13 @@ impl zwlr_data_control_device_v1::EventHandler for DataDeviceHandler {
     }
 
     fn selection(&mut self,
-                 __device: ZwlrDataControlDeviceV1,
+                 _device: ZwlrDataControlDeviceV1,
                  offer: Option<ZwlrDataControlOfferV1>) {
         self.selection(offer.map(Into::into))
+    }
+
+    fn finished(&mut self, _device: ZwlrDataControlDeviceV1) {
+        self.finished()
     }
 }
 
@@ -150,6 +174,81 @@ impl gtk_primary_selection_offer::EventHandler for DataControlOfferHandler {
 impl zwp_primary_selection_offer_v1::EventHandler for DataControlOfferHandler {
     fn offer(&mut self, offer: ZwpPrimarySelectionOfferV1, mime_type: String) {
         self.offer(offer.into(), mime_type)
+    }
+}
+
+#[derive(new)]
+pub struct DataSourceHandler {
+    paste_once: bool,
+
+    #[new(value = "false")]
+    destroyed: bool,
+}
+
+impl DataSourceHandler {
+    fn send(&mut self, source: DataSource, target_fd: RawFd) {
+        if self.destroyed {
+            unreachable!();
+        }
+
+        let (should_quit, data_path) = source.user_data::<(Cell<bool>, RefCell<PathBuf>)>()
+                                             .unwrap();
+
+        let data_file = File::open(&*data_path.borrow()).expect("Error opening the data file");
+        let data_fd = data_file.into_raw_fd();
+
+        copy_data(Some(data_fd), target_fd, false);
+
+        if self.paste_once {
+            should_quit.set(true);
+
+            // TODO: call destroy? Technically there could still be pending send() requests in this
+            // batch, I'm afraid this can mess with them. And if we're quitting anyway does it even
+            // matter that much?
+        }
+    }
+
+    fn cancelled(&mut self, source: DataSource) {
+        if self.destroyed {
+            unreachable!();
+        }
+
+        let (should_quit, _) = source.user_data::<(Cell<bool>, RefCell<PathBuf>)>()
+                                     .unwrap();
+        source.destroy();
+
+        self.destroyed = true;
+        should_quit.set(true);
+    }
+}
+
+impl zwlr_data_control_source_v1::EventHandler for DataSourceHandler {
+    fn send(&mut self, source: ZwlrDataControlSourceV1, _mime_type: String, fd: RawFd) {
+        self.send(source.into(), fd)
+    }
+
+    fn cancelled(&mut self, source: ZwlrDataControlSourceV1) {
+        self.cancelled(source.into())
+    }
+}
+
+impl gtk_primary_selection_source::EventHandler for DataSourceHandler {
+    fn send(&mut self, source: GtkPrimarySelectionSource, _mime_type: String, fd: RawFd) {
+        self.send(source.into(), fd)
+    }
+
+    fn cancelled(&mut self, source: GtkPrimarySelectionSource) {
+        self.cancelled(source.into())
+    }
+}
+
+impl zwp_primary_selection_source_v1::EventHandler for DataSourceHandler {
+    fn send(&mut self, source: ZwpPrimarySelectionSourceV1, _mime_type: String, fd: RawFd) {
+        self.send(source.into(), fd)
+    }
+
+    fn cancelled(&mut self, source: ZwpPrimarySelectionSourceV1) {
+        self.cancelled(source.into())
     }
 }
 

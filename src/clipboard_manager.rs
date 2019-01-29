@@ -9,9 +9,12 @@ use wayland_protocols::{
     },
 };
 
-use crate::data_device::DataDevice;
-use crate::protocol::gtk_primary_selection::client::{
-    gtk_primary_selection_device_manager::GtkPrimarySelectionDeviceManager, *,
+use crate::{
+    data_device::DataDevice,
+    data_source::DataSource,
+    protocol::gtk_primary_selection::client::{
+        gtk_primary_selection_device_manager::GtkPrimarySelectionDeviceManager, *,
+    },
 };
 
 #[derive(From)]
@@ -44,12 +47,40 @@ impl ClipboardManager {
         }
     }
 
+    pub fn create_source<T, UD>(&self, handler: T, user_data: UD) -> Result<DataSource, ()>
+        where T: zwlr_data_control_source_v1::EventHandler
+                  + gtk_primary_selection_source::EventHandler
+                  + zwp_primary_selection_source_v1::EventHandler
+                  + 'static,
+              UD: 'static
+    {
+        match self {
+            ClipboardManager::DataControl(manager) => {
+                manager.create_data_source(move |source| source.implement(handler, user_data))
+                       .map(Into::into)
+            }
+            ClipboardManager::GtkPrimary(manager) => {
+                manager.create_source(move |source| source.implement(handler, user_data))
+                       .map(Into::into)
+            }
+            ClipboardManager::WpPrimary(manager) => {
+                manager.create_source(move |source| source.implement(handler, user_data))
+                       .map(Into::into)
+            }
+        }
+    }
+
     pub fn requires_keyboard_focus(&self) -> bool {
         match self {
             ClipboardManager::DataControl(_) => false,
             ClipboardManager::GtkPrimary(_) => true,
             ClipboardManager::WpPrimary(_) => true,
         }
+    }
+
+    pub fn requires_serial(&self) -> bool {
+        // Happens to coincide.
+        self.requires_keyboard_focus()
     }
 
     pub fn name(&self) -> &'static str {
