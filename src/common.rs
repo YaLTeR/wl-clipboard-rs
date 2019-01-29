@@ -1,21 +1,18 @@
-use std::{
-    cell::RefCell,
-    sync::{Arc, Mutex},
-};
+use std::{cell::RefCell, rc::Rc};
 
 use log::info;
 use wayland_client::{
     global_filter, protocol::wl_seat::WlSeat, Display, EventQueue, GlobalManager, NewProxy,
 };
 use wayland_protocols::{
+    misc::gtk_primary_selection::client::gtk_primary_selection_device_manager::GtkPrimarySelectionDeviceManager,
     unstable::primary_selection::v1::client::zwp_primary_selection_device_manager_v1::ZwpPrimarySelectionDeviceManagerV1,
     wlr::unstable::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
 };
 
 use crate::{
-    clipboard_manager::ClipboardManager, handlers::WlSeatHandler,
-    protocol::gtk_primary_selection::client::gtk_primary_selection_device_manager::GtkPrimarySelectionDeviceManager,
-    seat_data::SeatData, utils::GlobalManagerExt,
+    clipboard_manager::ClipboardManager, handlers::WlSeatHandler, seat_data::SeatData,
+    utils::GlobalManagerExt,
 };
 
 pub struct CommonData {
@@ -23,14 +20,14 @@ pub struct CommonData {
     pub queue: EventQueue,
     pub global_manager: GlobalManager,
     pub clipboard_manager: ClipboardManager,
-    pub seats: Arc<Mutex<Vec<WlSeat>>>,
+    pub seats: Rc<RefCell<Vec<WlSeat>>>,
 }
 
 pub fn initialize(primary: bool) -> CommonData {
     // Connect to the Wayland compositor.
     let (display, mut queue) = Display::connect_to_env().expect("Error connecting to a display");
 
-    let seats = Arc::new(Mutex::new(Vec::<WlSeat>::new()));
+    let seats = Rc::new(RefCell::new(Vec::<WlSeat>::new()));
 
     let seats_2 = seats.clone();
     let global_manager = GlobalManager::new_with_cb(&display,
@@ -41,7 +38,7 @@ pub fn initialize(primary: bool) -> CommonData {
                                                            RefCell::new(SeatData::default());
                                                        let seat =
                                                            seat.implement(WlSeatHandler, seat_data);
-                                                       seats_2.lock().unwrap().push(seat.clone());
+                                                       seats_2.borrow_mut().push(seat.clone());
                                                        seat
                                                    }]));
 

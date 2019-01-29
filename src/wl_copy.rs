@@ -12,8 +12,6 @@ use log::info;
 use nix::unistd::{fork, ForkResult};
 use structopt::{clap::AppSettings, StructOpt};
 
-mod protocol;
-
 mod common;
 use common::{initialize, CommonData};
 
@@ -146,7 +144,7 @@ fn main() {
                      .. } = initialize(options.primary);
 
     // If there are no seats, print an error message and exit.
-    if seats.lock().unwrap().is_empty() {
+    if seats.borrow_mut().is_empty() {
         eprintln!("There are no seats; nowhere to copy to.");
         process::exit(1);
     }
@@ -185,7 +183,7 @@ fn main() {
     };
 
     // Go through the seats and get their data devices.
-    for seat in &*seats.lock().unwrap() {
+    for seat in &*seats.borrow_mut() {
         // TODO: fast path here if all seats and clear.
         let device = clipboard_manager.get_device(seat, DataDeviceHandler::new(seat.clone()))
                                       .unwrap();
@@ -198,8 +196,7 @@ fn main() {
     queue.sync_roundtrip().expect("Error doing a roundtrip");
 
     // Figure out which devices we're interested in.
-    let devices = seats.lock()
-                       .unwrap()
+    let devices = seats.borrow_mut()
                        .iter()
                        .map(|seat| {
                            seat.as_ref()

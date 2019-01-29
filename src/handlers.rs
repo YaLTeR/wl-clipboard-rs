@@ -12,6 +12,11 @@ use wayland_client::{
     NewProxy,
 };
 use wayland_protocols::{
+    misc::gtk_primary_selection::client::{
+        gtk_primary_selection_device::GtkPrimarySelectionDevice,
+        gtk_primary_selection_offer::GtkPrimarySelectionOffer,
+        gtk_primary_selection_source::GtkPrimarySelectionSource, *,
+    },
     unstable::primary_selection::v1::client::{
         zwp_primary_selection_device_v1::ZwpPrimarySelectionDeviceV1,
         zwp_primary_selection_offer_v1::ZwpPrimarySelectionOfferV1,
@@ -30,11 +35,6 @@ use wayland_protocols::{
 use crate::{
     data_source::DataSource,
     offer::{NewOffer, Offer},
-    protocol::gtk_primary_selection::client::{
-        gtk_primary_selection_device::GtkPrimarySelectionDevice,
-        gtk_primary_selection_offer::GtkPrimarySelectionOffer,
-        gtk_primary_selection_source::GtkPrimarySelectionSource, *,
-    },
     seat_data::SeatData,
     utils::copy_data,
 };

@@ -3,16 +3,15 @@ use std::os::unix::io::RawFd;
 use derive_more::From;
 use wayland_client::NewProxy;
 use wayland_protocols::{
+    misc::gtk_primary_selection::client::{
+        gtk_primary_selection_offer::GtkPrimarySelectionOffer, *,
+    },
     unstable::primary_selection::v1::client::{
         zwp_primary_selection_offer_v1::ZwpPrimarySelectionOfferV1, *,
     },
     wlr::unstable::data_control::v1::client::{
         zwlr_data_control_offer_v1::ZwlrDataControlOfferV1, *,
     },
-};
-
-use crate::protocol::gtk_primary_selection::client::{
-    gtk_primary_selection_offer::GtkPrimarySelectionOffer, *,
 };
 
 #[derive(From, Clone)]

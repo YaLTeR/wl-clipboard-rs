@@ -1,13 +1,11 @@
 use derive_more::From;
 use wayland_protocols::{
+    misc::gtk_primary_selection::client::gtk_primary_selection_device::GtkPrimarySelectionDevice,
     unstable::primary_selection::v1::client::zwp_primary_selection_device_v1::ZwpPrimarySelectionDeviceV1,
     wlr::unstable::data_control::v1::client::zwlr_data_control_device_v1::ZwlrDataControlDeviceV1,
 };
 
-use crate::{
-    data_source::DataSource,
-    protocol::gtk_primary_selection::client::gtk_primary_selection_device::GtkPrimarySelectionDevice,
-};
+use crate::data_source::DataSource;
 
 #[derive(From, Clone)]
 pub enum DataDevice {

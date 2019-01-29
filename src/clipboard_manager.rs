@@ -1,6 +1,9 @@
 use derive_more::From;
-use wayland_client::protocol::wl_seat::WlSeat;
+use wayland_client::{protocol::wl_seat::WlSeat, Interface};
 use wayland_protocols::{
+    misc::gtk_primary_selection::client::{
+        gtk_primary_selection_device_manager::GtkPrimarySelectionDeviceManager, *,
+    },
     unstable::primary_selection::v1::client::{
         zwp_primary_selection_device_manager_v1::ZwpPrimarySelectionDeviceManagerV1, *,
     },
@@ -9,13 +12,7 @@ use wayland_protocols::{
     },
 };
 
-use crate::{
-    data_device::DataDevice,
-    data_source::DataSource,
-    protocol::gtk_primary_selection::client::{
-        gtk_primary_selection_device_manager::GtkPrimarySelectionDeviceManager, *,
-    },
-};
+use crate::{data_device::DataDevice, data_source::DataSource};
 
 #[derive(From)]
 pub enum ClipboardManager {

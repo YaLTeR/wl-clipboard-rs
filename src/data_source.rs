@@ -1,10 +1,9 @@
 use derive_more::From;
 use wayland_protocols::{
+    misc::gtk_primary_selection::client::gtk_primary_selection_source::GtkPrimarySelectionSource,
     unstable::primary_selection::v1::client::zwp_primary_selection_source_v1::ZwpPrimarySelectionSourceV1,
     wlr::unstable::data_control::v1::client::zwlr_data_control_source_v1::ZwlrDataControlSourceV1,
 };
-
-use crate::protocol::gtk_primary_selection::client::gtk_primary_selection_source::GtkPrimarySelectionSource;
 
 #[derive(From, Clone)]
 pub enum DataSource {

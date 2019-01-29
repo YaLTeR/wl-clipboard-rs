@@ -14,7 +14,6 @@ use wayland_protocols::wlr::unstable::layer_shell::v1::client::zwlr_layer_shell_
 };
 
 mod common;
-mod protocol;
 use common::{initialize, CommonData};
 
 mod clipboard_manager;
@@ -78,7 +77,7 @@ fn main() {
                      .. } = initialize(options.primary);
 
     // If there are no seats, print an error message and exit.
-    if seats.lock().unwrap().is_empty() {
+    if seats.borrow_mut().is_empty() {
         eprintln!("There are no seats; nowhere to paste from.");
         process::exit(1);
     }
@@ -109,7 +108,7 @@ fn main() {
     }
 
     // Go through the seats and get their data devices.
-    for seat in &*seats.lock().unwrap() {
+    for seat in &*seats.borrow_mut() {
         clipboard_manager.get_device(seat, DataDeviceHandler::new(seat.clone()))
                          .unwrap();
     }
@@ -118,8 +117,7 @@ fn main() {
     queue.sync_roundtrip().expect("Error doing a roundtrip");
 
     // Figure out which offer we're interested in.
-    let offer = seats.lock()
-                     .unwrap()
+    let offer = seats.borrow_mut()
                      .iter()
                      .map(|seat| {
                          seat.as_ref()
