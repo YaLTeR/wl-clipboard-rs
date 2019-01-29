@@ -48,17 +48,15 @@ impl wl_seat::EventHandler for WlSeatHandler {
     }
 }
 
+#[derive(new)]
 pub struct DataDeviceHandler {
     seat: WlSeat,
+
+    #[new(value = "None")]
     incoming_offer: Option<Offer>,
 }
 
 impl DataDeviceHandler {
-    pub fn new(seat: WlSeat) -> Self {
-        Self { seat,
-               incoming_offer: None }
-    }
-
     fn data_offer(&mut self, offer: NewOffer) {
         // We've got a new data offer. First, destroy the previous one, if any.
         if let Some(offer) = self.incoming_offer.take() {
