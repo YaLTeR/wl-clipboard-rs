@@ -5,9 +5,7 @@ A Rust remake of [wl-clipboard](https://github.com/bugaevc/wl-clipboard). Work i
 Points of interest:
 - The crate code itself is 100% safe Rust (this doesn't include the dependencies).
 - Pure Rust implementation by default; use the `native_lib` feature to link to `libwayland-client.so` for communication instead.
-- Protocols used:
-  - `data-control` from `wlroots` for regular clipboard,
-  - `gtk-primary-selection` or `primary-selection-v1` (plus spawning a surface with the `layer-shell` protocol) for the "primary" clipboard.
+- Uses the `data-control` protocol from wlroots for clipboard management.
 
 ### Status
 
@@ -19,8 +17,7 @@ Points of interest:
 - TODO: tests.
 
 `wl-copy`:
-- Mostly done for the regular clipboard.
-- TODO: primary selection. Either figure out and implement spawning a surface and using the primary selection protocols, or just wait for `data-control` to add primary selection support and implement that.
+- Mostly done.
 - TODO: MIME type inference.
 - TODO: proper error handling (right now it just panics on any error).
 - TODO: tests.

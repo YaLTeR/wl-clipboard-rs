@@ -25,15 +25,26 @@ nix = "*"
 os_pipe = "*"
 tempfile = "*"
 structopt = {version = "*", features = ["wrap_help"]}
-wayland-client = {git = "https://github.com/Smithay/wayland-rs.git"}
+wayland-client = "*"
+wayland-commons = "*"
 
 [dependencies.wayland-protocols]
-git = "https://github.com/Smithay/wayland-rs.git"
+version = "*"
 features = ["client", "unstable_protocols"]
+
+[dependencies.wayland-sys]
+version = "*"
+features = ["client"]
+optional = true
+
+[build-dependencies]
+wayland-scanner = "*"
 
 [features]
 # Link to libwayland-client.so instead of using the Rust implementation.
 native_lib = [
     "wayland-client/native_lib",
-    "wayland-protocols/native_lib",
+    "wayland-commons/native_lib",
+    "wayland-protocols/native_client",
+    "wayland-sys",
 ]

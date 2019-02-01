@@ -1,5 +1,5 @@
 use std::{
-    cell::RefCell,
+    cell::{Cell, RefCell},
     collections::HashSet,
     io::{stdout, Read, Write},
     os::unix::io::AsRawFd,
@@ -8,27 +8,20 @@ use std::{
 
 use os_pipe::pipe;
 use structopt::{clap::AppSettings, StructOpt};
-use wayland_client::{protocol::wl_compositor::WlCompositor, NewProxy};
-use wayland_protocols::wlr::unstable::layer_shell::v1::client::zwlr_layer_shell_v1::{
-    Layer, ZwlrLayerShellV1,
-};
 
 mod common;
 use common::{initialize, CommonData};
 
-mod clipboard_manager;
-mod data_device;
-mod data_source;
-mod offer;
+mod handlers;
+use handlers::DataDeviceHandler;
+
+mod protocol;
 
 mod seat_data;
 use seat_data::SeatData;
 
-mod handlers;
-use handlers::{DataDeviceHandler, LayerSurfaceHandler};
-
 mod utils;
-use utils::{is_text, GlobalManagerExt};
+use utils::is_text;
 
 #[derive(StructOpt)]
 #[structopt(name = "wl-paste",
@@ -71,7 +64,6 @@ fn main() {
     env_logger::init();
 
     let CommonData { mut queue,
-                     global_manager,
                      clipboard_manager,
                      seats,
                      .. } = initialize(options.primary);
@@ -82,39 +74,29 @@ fn main() {
         process::exit(1);
     }
 
-    // If using a protocol that requires keyboard focus, make a surface.
-    if clipboard_manager.requires_keyboard_focus() {
-        let compositor =
-            global_manager.instantiate_supported::<WlCompositor, _>(NewProxy::implement_dummy)
-                          .expect("wl_compositor was not found");
-        let surface = compositor.create_surface(NewProxy::implement_dummy)
-                                .unwrap();
-
-        let layer_shell =
-            global_manager.instantiate_supported::<ZwlrLayerShellV1, _>(NewProxy::implement_dummy)
-                          .expect("zwlr_layer_shell_v1 was not found");
-        let layer_surface =
-            layer_shell.get_layer_surface(&surface,
-                                          None,
-                                          Layer::Overlay,
-                                          "wl-clipboard-rs".to_string(),
-                                          |surface| surface.implement(LayerSurfaceHandler, ()))
-                       .unwrap();
-
-        layer_surface.set_keyboard_interactivity(1);
-        surface.commit();
-
-        queue.sync_roundtrip().expect("Error doing a roundtrip");
-    }
-
     // Go through the seats and get their data devices.
     for seat in &*seats.borrow_mut() {
-        clipboard_manager.get_device(seat, DataDeviceHandler::new(seat.clone()))
+        clipboard_manager.get_data_device(seat, |device| {
+                             device.implement(DataDeviceHandler::new(seat.clone(), options.primary),
+                                              ())
+                         })
                          .unwrap();
     }
 
     // Retrieve all seat names and offers.
     queue.sync_roundtrip().expect("Error doing a roundtrip");
+
+    // Check if the compositor supports primary selection.
+    if options.primary {
+        let supports_primary = clipboard_manager.as_ref()
+                                                .user_data::<Cell<bool>>()
+                                                .unwrap()
+                                                .get();
+        if !supports_primary {
+            eprintln!("The compositor does not support primary selection.");
+            process::exit(1);
+        }
+    }
 
     // Figure out which offer we're interested in.
     let offer = seats.borrow_mut()
@@ -156,7 +138,8 @@ fn main() {
     }
 
     let offer = offer.unwrap();
-    let mut mime_types = offer.user_data::<RefCell<HashSet<String>>>()
+    let mut mime_types = offer.as_ref()
+                              .user_data::<RefCell<HashSet<String>>>()
                               .unwrap()
                               .borrow_mut();
 

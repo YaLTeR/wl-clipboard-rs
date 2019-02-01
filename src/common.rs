@@ -1,25 +1,23 @@
-use std::{cell::RefCell, rc::Rc};
+use std::{
+    cell::{Cell, RefCell},
+    rc::Rc,
+};
 
-use log::info;
 use wayland_client::{
     global_filter, protocol::wl_seat::WlSeat, Display, EventQueue, GlobalManager, NewProxy,
 };
-use wayland_protocols::{
-    misc::gtk_primary_selection::client::gtk_primary_selection_device_manager::GtkPrimarySelectionDeviceManager,
-    unstable::primary_selection::v1::client::zwp_primary_selection_device_manager_v1::ZwpPrimarySelectionDeviceManagerV1,
-    wlr::unstable::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
-};
 
 use crate::{
-    clipboard_manager::ClipboardManager, handlers::WlSeatHandler, seat_data::SeatData,
-    utils::GlobalManagerExt,
+    handlers::{DataControlManagerHandler, WlSeatHandler},
+    protocol::wlr_data_control::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
+    seat_data::SeatData,
 };
 
 pub struct CommonData {
     pub display: Display,
     pub queue: EventQueue,
     pub global_manager: GlobalManager,
-    pub clipboard_manager: ClipboardManager,
+    pub clipboard_manager: ZwlrDataControlManagerV1,
     pub seats: Rc<RefCell<Vec<WlSeat>>>,
 }
 
@@ -30,42 +28,30 @@ pub fn initialize(primary: bool) -> CommonData {
     let seats = Rc::new(RefCell::new(Vec::<WlSeat>::new()));
 
     let seats_2 = seats.clone();
-    let global_manager = GlobalManager::new_with_cb(&display,
-                                                    global_filter!([WlSeat,
-                                                   WlSeat::VERSION,
-                                                   move |seat: NewProxy<WlSeat>| {
-                                                       let seat_data =
-                                                           RefCell::new(SeatData::default());
-                                                       let seat =
-                                                           seat.implement(WlSeatHandler, seat_data);
-                                                       seats_2.borrow_mut().push(seat.clone());
-                                                       seat
-                                                   }]));
+    let global_manager =
+        GlobalManager::new_with_cb(&display,
+                                   global_filter!([WlSeat, 6, move |seat: NewProxy<WlSeat>| {
+                                                      let seat_data =
+                                                          RefCell::new(SeatData::default());
+                                                      let seat =
+                                                          seat.implement(WlSeatHandler, seat_data);
+                                                      seats_2.borrow_mut().push(seat.clone());
+                                                      seat
+                                                  }]));
 
     // Retrieve the global interfaces.
     queue.sync_roundtrip().expect("Error doing a roundtrip");
 
     // Check that we have our interfaces.
-    let clipboard_manager: ClipboardManager = if primary {
-        if let Some(manager) =
-            global_manager.instantiate_supported::<GtkPrimarySelectionDeviceManager, _>(NewProxy::implement_dummy)
-                          .ok()
-                          .map(Into::into)
-        {
-            Some(manager)
-        } else {
-            global_manager.instantiate_supported::<ZwpPrimarySelectionDeviceManagerV1, _>(NewProxy::implement_dummy)
-                          .ok()
-                          .map(Into::into)
-        }.expect("Neither gtk_primary_selection_device_manager \
-                  nor zwp_primary_selection_device_manager_v1 was found")
-    } else {
-        global_manager.instantiate_supported::<ZwlrDataControlManagerV1, _>(NewProxy::implement_dummy)
-                      .expect("zwlr_data_control_manager_v1 was not found")
-                      .into()
-    };
+    let data_control_version = if primary { 2 } else { 1 };
 
-    info!("Using the {} interface.", clipboard_manager.name());
+    // TODO: print a different error if data-control 1 was found but 2 is required.
+    let impl_manager =
+        |manager: NewProxy<_>| manager.implement(DataControlManagerHandler, Cell::new(false));
+    let clipboard_manager =
+        global_manager.instantiate_exact::<ZwlrDataControlManagerV1, _>(data_control_version,
+                                                                        impl_manager)
+                      .expect("zwlr_data_control_manager_v1 of the required version was not found");
 
     CommonData { display,
                  queue,

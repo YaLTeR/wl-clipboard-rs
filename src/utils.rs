@@ -5,7 +5,6 @@ use nix::{
     sys::wait::{waitpid, WaitStatus},
     unistd::{close, dup2, execvp, fork, ForkResult},
 };
-use wayland_client::{GlobalError, GlobalManager, Interface, NewProxy, Proxy};
 
 /// Returns `true` if `mime_type` represents text.
 pub fn is_text(mime_type: &str) -> bool {
@@ -86,21 +85,5 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) {
                 }
             }
         }
-    }
-}
-
-pub trait GlobalManagerExt {
-    /// Instantiates the supported version of the interface.
-    fn instantiate_supported<I, F>(&self, implementor: F) -> Result<I, GlobalError>
-        where I: Interface + From<Proxy<I>>,
-              F: FnOnce(NewProxy<I>) -> I;
-}
-
-impl GlobalManagerExt for GlobalManager {
-    fn instantiate_supported<I, F>(&self, implementor: F) -> Result<I, GlobalError>
-        where I: Interface + From<Proxy<I>>,
-              F: FnOnce(NewProxy<I>) -> I
-    {
-        self.instantiate_exact(I::VERSION, implementor)
     }
 }

@@ -6,6 +6,7 @@ use std::{
     os::unix::{ffi::OsStringExt, io::IntoRawFd},
     path::PathBuf,
     process,
+    rc::Rc,
 };
 
 use log::info;
@@ -15,16 +16,14 @@ use structopt::{clap::AppSettings, StructOpt};
 mod common;
 use common::{initialize, CommonData};
 
-mod clipboard_manager;
-mod data_device;
-mod data_source;
-mod offer;
+mod handlers;
+use handlers::{DataDeviceHandler, DataSourceHandler};
+
+mod protocol;
+use protocol::wlr_data_control::client::zwlr_data_control_source_v1::ZwlrDataControlSourceV1;
 
 mod seat_data;
 use seat_data::SeatData;
-
-mod handlers;
-use handlers::{DataDeviceHandler, DataSourceHandler};
 
 mod utils;
 use utils::{copy_data, is_text};
@@ -149,43 +148,49 @@ fn main() {
         process::exit(1);
     }
 
-    // Protocols that require a serial are not supported yet.
-    // Basically this means primary selection isn't supported.
-    if clipboard_manager.requires_serial() {
-        eprintln!("Protocols which require a serial are not supported yet.");
-        process::exit(1);
-    }
-
-    // Create the data source.
     let data_source = if !options.clear {
         // Collect the source data to copy.
         let (mime_type, data_path) = make_source(&mut options);
-
-        let user_data = (Cell::new(false), RefCell::new(data_path));
-        let data_source =
-            clipboard_manager.create_source(DataSourceHandler::new(options.paste_once), user_data)
-                             .unwrap();
-
-        // If the MIME type is text, offer it in some other common formats.
-        if is_text(&mime_type) {
-            data_source.offer("text/plain;charset=utf-8".to_string());
-            data_source.offer("text/plain".to_string());
-            data_source.offer("STRING".to_string());
-            data_source.offer("UTF8_STRING".to_string());
-            data_source.offer("TEXT".to_string());
-        }
-
-        data_source.offer(mime_type);
-
-        Some(data_source)
+        Some((mime_type, Rc::new(RefCell::new(data_path))))
     } else {
         None
     };
 
+    let should_quit = Rc::new(Cell::new(false));
+
     // Go through the seats and get their data devices.
     for seat in &*seats.borrow_mut() {
-        // TODO: fast path here if all seats and clear.
-        let device = clipboard_manager.get_device(seat, DataDeviceHandler::new(seat.clone()))
+        // TODO: fast path here if all seats.
+        // TODO: if not all seats, we don't need to create the data sources yet.
+        let data_source = if let Some((mime_type, data_path)) = data_source.as_ref() {
+            let data_source = clipboard_manager.create_data_source(|source| {
+                                  source.implement(DataSourceHandler::new(data_path.clone(),
+                                                                          should_quit.clone(),
+                                                                          options.paste_once),
+                                                   ())
+                              })
+                              .unwrap();
+
+            // If the MIME type is text, offer it in some other common formats.
+            if is_text(&mime_type) {
+                data_source.offer("text/plain;charset=utf-8".to_string());
+                data_source.offer("text/plain".to_string());
+                data_source.offer("STRING".to_string());
+                data_source.offer("UTF8_STRING".to_string());
+                data_source.offer("TEXT".to_string());
+            }
+
+            data_source.offer(mime_type.clone());
+            Some(data_source)
+        } else {
+            None
+        };
+
+        let device = clipboard_manager.get_data_device(seat, |device| {
+                                          device.implement(DataDeviceHandler::new(seat.clone(),
+                                                                                  options.primary),
+                                                           data_source)
+                                      })
                                       .unwrap();
 
         let seat_data = seat.as_ref().user_data::<RefCell<SeatData>>().unwrap();
@@ -194,6 +199,18 @@ fn main() {
 
     // Retrieve all seat names.
     queue.sync_roundtrip().expect("Error doing a roundtrip");
+
+    // Check if the compositor supports primary selection.
+    if options.primary {
+        let supports_primary = clipboard_manager.as_ref()
+                                                .user_data::<Cell<bool>>()
+                                                .unwrap()
+                                                .get();
+        if !supports_primary {
+            eprintln!("The compositor does not support primary selection.");
+            process::exit(1);
+        }
+    }
 
     // Figure out which devices we're interested in.
     let devices = seats.borrow_mut()
@@ -236,15 +253,18 @@ fn main() {
         process::exit(1);
     }
 
-    // If the protocol does not require a serial, set the selection right away. Otherwise it will
-    // be set in a handler.
-    if !clipboard_manager.requires_serial() {
+    if options.clear {
         for device in devices {
-            device.set_selection(data_source.as_ref(), None);
+            if options.primary {
+                device.set_primary_selection(None);
+            } else {
+                device.set_selection(None);
+            }
         }
-    }
 
-    if let Some(source) = data_source {
+        // We're clearing the clipboard so just do one roundtrip and quit.
+        queue.sync_roundtrip().expect("Error doing a roundtrip");
+    } else {
         if !options.foreground {
             // Fork an exit the parent.
             if let ForkResult::Parent { .. } = fork().expect("Error forking") {
@@ -252,22 +272,47 @@ fn main() {
             }
         }
 
-        let (should_quit, data_path) = source.user_data::<(Cell<bool>, RefCell<PathBuf>)>()
-                                             .unwrap();
+        for device in &devices {
+            let source = device.as_ref()
+                               .user_data::<Option<ZwlrDataControlSourceV1>>()
+                               .unwrap()
+                               .as_ref()
+                               .unwrap();
+
+            if options.primary {
+                device.set_primary_selection(Some(&source));
+            } else {
+                device.set_selection(Some(&source));
+            }
+        }
 
         // Loop until we're done.
         while !should_quit.get() {
             display.flush().expect("Error flushing display");
             queue.dispatch().expect("Error dispatching queue");
+
+            // Check if all sources have been destroyed.
+            let all_destroyed = devices.iter()
+                                       .map(|device| {
+                                           device.as_ref()
+                                                 .user_data::<Option<ZwlrDataControlSourceV1>>()
+                                                 .unwrap()
+                                                 .as_ref()
+                                                 .unwrap()
+                                                 .as_ref()
+                                                 .is_alive()
+                                       })
+                                       .all(|x| !x);
+            if all_destroyed {
+                should_quit.set(true);
+            }
         }
 
         // Clean up the temp file and directory.
+        let (_, data_path) = data_source.unwrap();
         let mut data_path = data_path.borrow_mut();
         remove_file(&*data_path).expect("Error removing the temp file");
         data_path.pop();
         remove_dir(&*data_path).expect("Error removing the temp directory");
-    } else {
-        // We're clearing the clipboard so just do one roundtrip and quit.
-        queue.sync_roundtrip().expect("Error doing a roundtrip");
     }
 }
