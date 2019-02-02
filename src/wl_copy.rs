@@ -12,6 +12,7 @@ use std::{
 use log::info;
 use nix::unistd::{fork, ForkResult};
 use structopt::{clap::AppSettings, StructOpt};
+use wayland_client::Proxy;
 
 mod common;
 use common::{initialize, CommonData};
@@ -20,7 +21,6 @@ mod handlers;
 use handlers::{DataDeviceHandler, DataSourceHandler};
 
 mod protocol;
-use protocol::wlr_data_control::client::zwlr_data_control_source_v1::ZwlrDataControlSourceV1;
 
 mod seat_data;
 use seat_data::SeatData;
@@ -148,48 +148,15 @@ fn main() {
         process::exit(1);
     }
 
-    let data_source = if !options.clear {
-        // Collect the source data to copy.
-        let (mime_type, data_path) = make_source(&mut options);
-        Some((mime_type, Rc::new(RefCell::new(data_path))))
-    } else {
-        None
-    };
-
     let should_quit = Rc::new(Cell::new(false));
 
     // Go through the seats and get their data devices.
     for seat in &*seats.borrow_mut() {
         // TODO: fast path here if all seats.
-        // TODO: if not all seats, we don't need to create the data sources yet.
-        let data_source = if let Some((mime_type, data_path)) = data_source.as_ref() {
-            let data_source = clipboard_manager.create_data_source(|source| {
-                                  source.implement(DataSourceHandler::new(data_path.clone(),
-                                                                          should_quit.clone(),
-                                                                          options.paste_once),
-                                                   ())
-                              })
-                              .unwrap();
-
-            // If the MIME type is text, offer it in some other common formats.
-            if is_text(&mime_type) {
-                data_source.offer("text/plain;charset=utf-8".to_string());
-                data_source.offer("text/plain".to_string());
-                data_source.offer("STRING".to_string());
-                data_source.offer("UTF8_STRING".to_string());
-                data_source.offer("TEXT".to_string());
-            }
-
-            data_source.offer(mime_type.clone());
-            Some(data_source)
-        } else {
-            None
-        };
-
         let device = clipboard_manager.get_data_device(seat, |device| {
                                           device.implement(DataDeviceHandler::new(seat.clone(),
                                                                                   options.primary),
-                                                           data_source)
+                                                           ())
                                       })
                                       .unwrap();
 
@@ -265,6 +232,10 @@ fn main() {
         // We're clearing the clipboard so just do one roundtrip and quit.
         queue.sync_roundtrip().expect("Error doing a roundtrip");
     } else {
+        // Collect the source data to copy.
+        let (mime_type, data_path) = make_source(&mut options);
+        let data_path = Rc::new(RefCell::new(data_path));
+
         if !options.foreground {
             // Fork an exit the parent.
             if let ForkResult::Parent { .. } = fork().expect("Error forking") {
@@ -272,19 +243,38 @@ fn main() {
             }
         }
 
-        for device in &devices {
-            let source = device.as_ref()
-                               .user_data::<Option<ZwlrDataControlSourceV1>>()
-                               .unwrap()
-                               .as_ref()
-                               .unwrap();
+        // Create the data sources and set them as selections.
+        let sources = devices.iter()
+                             .map(|device| {
+                                 let data_source =
+                                     clipboard_manager.create_data_source(|source| {
+                                         source.implement(DataSourceHandler::new(data_path.clone(),
+                                                                          should_quit.clone(),
+                                                                          options.paste_once),
+                                                   ())
+                                     })
+                                     .unwrap();
 
-            if options.primary {
-                device.set_primary_selection(Some(&source));
-            } else {
-                device.set_selection(Some(&source));
-            }
-        }
+                                 // If the MIME type is text, offer it in some other common formats.
+                                 if is_text(&mime_type) {
+                                     data_source.offer("text/plain;charset=utf-8".to_string());
+                                     data_source.offer("text/plain".to_string());
+                                     data_source.offer("STRING".to_string());
+                                     data_source.offer("UTF8_STRING".to_string());
+                                     data_source.offer("TEXT".to_string());
+                                 }
+
+                                 data_source.offer(mime_type.clone());
+
+                                 if options.primary {
+                                     device.set_primary_selection(Some(&data_source));
+                                 } else {
+                                     device.set_selection(Some(&data_source));
+                                 }
+
+                                 data_source.into()
+                             })
+                             .collect::<Vec<Proxy<_>>>();
 
         // Loop until we're done.
         while !should_quit.get() {
@@ -292,24 +282,13 @@ fn main() {
             queue.dispatch().expect("Error dispatching queue");
 
             // Check if all sources have been destroyed.
-            let all_destroyed = devices.iter()
-                                       .map(|device| {
-                                           device.as_ref()
-                                                 .user_data::<Option<ZwlrDataControlSourceV1>>()
-                                                 .unwrap()
-                                                 .as_ref()
-                                                 .unwrap()
-                                                 .as_ref()
-                                                 .is_alive()
-                                       })
-                                       .all(|x| !x);
+            let all_destroyed = sources.iter().all(|x| !x.is_alive());
             if all_destroyed {
                 should_quit.set(true);
             }
         }
 
         // Clean up the temp file and directory.
-        let (_, data_path) = data_source.unwrap();
         let mut data_path = data_path.borrow_mut();
         remove_file(&*data_path).expect("Error removing the temp file");
         data_path.pop();
