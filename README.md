@@ -1,5 +1,7 @@
 # wl-clipboard-rs
 
+[Documentation](https://yalter.github.io/wl-clipboard-rs/wl_clipboard_rs/)
+
 A safe Rust crate for working with the Wayland clipboard.
 
 This crate is intended to be used by terminal applications, clipboard managers and other
