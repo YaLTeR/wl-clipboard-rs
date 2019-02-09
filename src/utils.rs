@@ -1,18 +1,45 @@
+//! Helper functions.
+
 use std::{ffi::CString, os::unix::io::RawFd, process::abort};
 
+use failure::Fail;
 use libc::{STDIN_FILENO, STDOUT_FILENO};
 use nix::{
     sys::wait::{waitpid, WaitStatus},
     unistd::{close, dup2, execvp, fork, ForkResult},
 };
 
-/// Returns `true` if `mime_type` represents text.
+/// Checks if the given MIME type represents plain text.
 pub fn is_text(mime_type: &str) -> bool {
     match mime_type {
         "TEXT" | "STRING" | "UTF8_STRING" => true,
         x if x.starts_with("text/") => true,
         _ => false,
     }
+}
+
+/// Errors that can occur in `copy_data()`.
+#[derive(Fail, Debug)]
+pub enum Error {
+    #[fail(display = "Couldn't fork")]
+    Fork(#[cause] nix::Error),
+
+    #[fail(display = "Couldn't close the source file descriptor")]
+    CloseSourceFd(#[cause] nix::Error),
+
+    #[fail(display = "Couldn't close the target file descriptor")]
+    CloseTargetFd(#[cause] nix::Error),
+
+    #[fail(display = "Couldn't wait for the child process")]
+    Wait(#[cause] nix::Error),
+
+    #[fail(display = "Received an unexpected status when waiting for the child process: {:?}",
+           _0)]
+    WaitUnexpected(WaitStatus),
+
+    #[fail(display = "The child process exited with a non-zero error code: {}",
+           _0)]
+    ChildError(i32),
 }
 
 /// Copies data from one file to another.
@@ -24,7 +51,7 @@ pub fn is_text(mime_type: &str) -> bool {
 ///
 /// If `wait` is `true`, this function returns after all data has been copied, otherwise it may
 /// return before all data has been copied.
-pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) {
+pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(), Error> {
     // We use the cat utility for data copying. It's easier (no need to implement any comlpex
     // buffering logic), surprisingly safer (a Rust implementation would likely require usage of
     // `from_raw_fd()` which is unsafe) and ideally faster (cat's been around for a while and is
@@ -34,7 +61,7 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) {
     let cat = CString::new("cat").unwrap();
     let also_cat = cat.clone();
 
-    let fork_result = fork().expect("Error forking");
+    let fork_result = fork().map_err(Error::Fork)?;
     match fork_result {
         ForkResult::Child => {
             if let Some(fd) = from_fd {
@@ -68,22 +95,24 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) {
         ForkResult::Parent { child } => {
             // Close the fds in the parent process.
             if let Some(fd) = from_fd {
-                close(fd).expect("Error closing the data file descriptor");
+                close(fd).map_err(Error::CloseSourceFd)?;
             }
 
-            close(to_fd).expect("Error closing the target file descriptor");
+            close(to_fd).map_err(Error::CloseTargetFd)?;
 
             if wait {
                 // Wait for the child process to exit.
-                match waitpid(child, None).expect("Error in waitpid()") {
+                match waitpid(child, None).map_err(Error::Wait)? {
                     WaitStatus::Exited(_, status) => {
                         if status != 0 {
-                            panic!("The child process didn't exit successfully");
+                            return Err(Error::ChildError(status));
                         }
                     }
-                    _ => panic!("waitpid() returned an unexpected status"),
+                    x => return Err(Error::WaitUnexpected(x)),
                 }
             }
         }
     }
+
+    Ok(())
 }

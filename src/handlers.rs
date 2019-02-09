@@ -2,12 +2,14 @@ use std::{
     cell::{Cell, RefCell},
     collections::HashSet,
     fs::File,
+    io,
     os::unix::io::{IntoRawFd, RawFd},
     path::PathBuf,
     rc::Rc,
 };
 
 use derive_new::new;
+use failure::Fail;
 use wayland_client::{
     protocol::{wl_seat::WlSeat, *},
     NewProxy,
@@ -21,7 +23,7 @@ use crate::{
         zwlr_data_control_source_v1::ZwlrDataControlSourceV1, *,
     },
     seat_data::SeatData,
-    utils::copy_data,
+    utils::{self, copy_data},
 };
 
 pub struct WlSeatHandler;
@@ -101,6 +103,15 @@ impl zwlr_data_control_offer_v1::EventHandler for DataControlOfferHandler {
     }
 }
 
+#[derive(Fail, Debug)]
+pub enum DataSourceError {
+    #[fail(display = "Couldn't open the data file")]
+    FileOpen(#[cause] io::Error),
+
+    #[fail(display = "Couldn't copy the data to the target file descriptor")]
+    Copy(#[cause] utils::Error),
+}
+
 #[derive(new)]
 pub struct DataSourceHandler {
     data_path: Rc<RefCell<PathBuf>>,
@@ -117,12 +128,21 @@ impl zwlr_data_control_source_v1::EventHandler for DataSourceHandler {
             return;
         }
 
-        let data_file = File::open(&*self.data_path.borrow()).expect("Error opening the data file");
-        let data_fd = data_file.into_raw_fd();
+        let file = File::open(&*self.data_path.borrow()).map_err(DataSourceError::FileOpen);
+        let result = file.and_then(|data_file| {
+                         let data_fd = data_file.into_raw_fd();
+                         copy_data(Some(data_fd), target_fd, false).map_err(DataSourceError::Copy)
+                     });
 
-        copy_data(Some(data_fd), target_fd, false);
+        let mut error = source.as_ref()
+                              .user_data::<Rc<RefCell<Option<DataSourceError>>>>()
+                              .unwrap()
+                              .borrow_mut();
+        if let Err(err) = result {
+            *error = Some(err);
+        }
 
-        if self.paste_once {
+        if self.paste_once || error.is_some() {
             self.should_quit.set(true);
             source.destroy();
         }

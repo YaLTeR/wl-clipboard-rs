@@ -1,10 +1,13 @@
 use std::{
     cell::{Cell, RefCell},
+    io,
     rc::Rc,
 };
 
+use failure::Fail;
 use wayland_client::{
-    global_filter, protocol::wl_seat::WlSeat, Display, EventQueue, GlobalManager, NewProxy,
+    global_filter, protocol::wl_seat::WlSeat, ConnectError, Display, EventQueue, GlobalManager,
+    Interface, NewProxy,
 };
 
 use crate::{
@@ -14,16 +17,27 @@ use crate::{
 };
 
 pub struct CommonData {
-    pub display: Display,
     pub queue: EventQueue,
-    pub global_manager: GlobalManager,
     pub clipboard_manager: ZwlrDataControlManagerV1,
     pub seats: Rc<RefCell<Vec<WlSeat>>>,
 }
 
-pub fn initialize(primary: bool) -> CommonData {
+#[derive(Fail, Debug)]
+pub enum Error {
+    #[fail(display = "Couldn't connect to the Wayland compositor")]
+    WaylandConnection(#[cause] ConnectError),
+
+    #[fail(display = "Wayland compositor communication error")]
+    WaylandCommunication(#[cause] io::Error),
+
+    #[fail(display = "A required Wayland protocol ({} version {}) is not supported by the compositor",
+           name, version)]
+    MissingProtocol { name: &'static str, version: u32 },
+}
+
+pub fn initialize(primary: bool) -> Result<CommonData, Error> {
     // Connect to the Wayland compositor.
-    let (display, mut queue) = Display::connect_to_env().expect("Error connecting to a display");
+    let (display, mut queue) = Display::connect_to_env().map_err(Error::WaylandConnection)?;
 
     let seats = Rc::new(RefCell::new(Vec::<WlSeat>::new()));
 
@@ -40,22 +54,22 @@ pub fn initialize(primary: bool) -> CommonData {
                                                   }]));
 
     // Retrieve the global interfaces.
-    queue.sync_roundtrip().expect("Error doing a roundtrip");
+    queue.sync_roundtrip()
+         .map_err(Error::WaylandCommunication)?;
 
     // Check that we have our interfaces.
     let data_control_version = if primary { 2 } else { 1 };
 
-    // TODO: print a different error if data-control 1 was found but 2 is required.
     let impl_manager =
         |manager: NewProxy<_>| manager.implement(DataControlManagerHandler, Cell::new(false));
     let clipboard_manager =
         global_manager.instantiate_exact::<ZwlrDataControlManagerV1, _>(data_control_version,
                                                                         impl_manager)
-                      .expect("zwlr_data_control_manager_v1 of the required version was not found");
+                      .map_err(|_| Error::MissingProtocol { name:
+                                                                ZwlrDataControlManagerV1::NAME,
+                                                            version: data_control_version })?;
 
-    CommonData { display,
-                 queue,
-                 global_manager,
-                 clipboard_manager,
-                 seats }
+    Ok(CommonData { queue,
+                    clipboard_manager,
+                    seats })
 }
