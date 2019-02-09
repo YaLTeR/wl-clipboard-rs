@@ -23,6 +23,13 @@ script:
   - cargo doc
   - cp .travis/index.html target/doc;
 
+after_success:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+      export DEPLOY=1;
+    else
+      export DEPLOY=0;
+    fi
+
 deploy:
   provider: pages
   skip_cleanup: true
@@ -31,3 +38,4 @@ deploy:
   on:
     branch: master
     rust: stable
+    condition: "$DEPLOY = 1"
