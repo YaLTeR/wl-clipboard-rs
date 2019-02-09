@@ -221,6 +221,20 @@ impl Options {
     }
 
     /// Invokes the copy operation. See `copy()`.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # extern crate wl_clipboard_rs;
+    /// # use wl_clipboard_rs::copy::Error;
+    /// # fn foo() -> Result<(), Error> {
+    /// use wl_clipboard_rs::copy::{MimeType, Options, Source};
+    ///
+    /// let opts = Options::new();
+    /// opts.copy(Source::Bytes(&[1, 2, 3]), MimeType::Autodetect)?;
+    /// # Ok(())
+    /// # }
+    /// ```
     #[inline]
     pub fn copy(self, source: Source, mime_type: MimeType) -> Result<(), Error> {
         copy(self, source, mime_type)
@@ -367,6 +381,19 @@ fn get_devices(
 /// the compositor to support the data-control protocol of version 2 or above.
 ///
 /// If `seat` is `None`, clears clipboards of all existing seats.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # use wl_clipboard_rs::copy::Error;
+/// # fn foo() -> Result<(), Error> {
+/// use wl_clipboard_rs::copy::clear;
+///
+/// clear(false, None)?; // Clears the clipboard of all seats.
+/// # Ok(())
+/// # }
+/// ```
 pub fn clear(primary: bool, seat: Option<String>) -> Result<(), Error> {
     let (mut queue, _, devices) = get_devices(primary, seat)?;
 
@@ -459,6 +486,20 @@ fn copy_past_fork(primary: bool,
 ///
 /// The data is copied from `source` and offered in the `mime_type` MIME type. See `Options` for
 /// customizing the behavior of this operation.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # use wl_clipboard_rs::copy::Error;
+/// # fn foo() -> Result<(), Error> {
+/// use wl_clipboard_rs::copy::{copy, MimeType, Options, Source};
+///
+/// let opts = Options::new();
+/// copy(opts, Source::Bytes(&[1, 2, 3]), MimeType::Autodetect)?;
+/// # Ok(())
+/// # }
+/// ```
 pub fn copy(options: Options, source: Source, mime_type: MimeType) -> Result<(), Error> {
     let Options { primary,
                   seat,

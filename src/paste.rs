@@ -162,6 +162,22 @@ fn get_offer(primary: bool,
 /// If `seat` is `None`, uses an unspecified seat (it depends on the order returned by the
 /// compositor). This is perfectly fine when only a single seat is present, so for most
 /// configurations.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # use wl_clipboard_rs::paste::Error;
+/// # fn foo() -> Result<(), Error> {
+/// use wl_clipboard_rs::paste::get_mime_types;
+///
+/// let mime_types = get_mime_types(false, None)?;
+/// for mime_type in mime_types {
+///     println!("{}", mime_type);
+/// }
+/// # Ok(())
+/// # }
+/// ```
 pub fn get_mime_types(primary: bool, seat: Option<String>) -> Result<HashSet<String>, Error> {
     let (_, offer) = get_offer(primary, seat)?;
 
@@ -185,6 +201,36 @@ pub fn get_mime_types(primary: bool, seat: Option<String>) -> Result<HashSet<Str
 /// If `seat` is `None`, uses an unspecified seat (it depends on the order returned by the
 /// compositor). This is perfectly fine when only a single seat is present, so for most
 /// configurations.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # extern crate failure;
+/// # use failure::Error;
+/// # fn foo() -> Result<(), Error> {
+/// use std::io::Read;
+/// use wl_clipboard_rs::paste::{get_contents, Error, MimeType};
+///
+/// let result = get_contents(false, None, MimeType::Any);
+/// match result {
+///     Ok((mut pipe, mime_type)) => {
+///         println!("Got data of the {} MIME type", &mime_type);
+///
+///         let mut contents = vec![];
+///         pipe.read_to_end(&mut contents)?;
+///         println!("Read {} bytes of data", contents.len());
+///     }
+///
+///     Err(Error::NoSeats) | Err(Error::ClipboardEmpty) | Err(Error::NoMimeType) => {
+///         // The clipboard is empty, nothing to worry about.
+///     }
+///
+///     Err(err) => Err(err)?
+/// }
+/// # Ok(())
+/// # }
+/// ```
 pub fn get_contents(primary: bool,
                     seat: Option<String>,
                     mime_type: MimeType)
