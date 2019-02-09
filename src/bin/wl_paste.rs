@@ -3,7 +3,7 @@ use std::io::{stdout, Read, Write};
 use exitfailure::ExitFailure;
 use failure::ResultExt;
 use structopt::{clap::AppSettings, StructOpt};
-use wl_clipboard_rs::{paste::*, utils::is_text};
+use wl_clipboard_rs::{paste::*, utils::is_text, ClipboardType};
 
 #[derive(StructOpt)]
 #[structopt(name = "wl-paste",
@@ -47,12 +47,17 @@ struct Options {
 fn main() -> Result<(), ExitFailure> {
     // Parse command-line options.
     let options = Options::from_args();
+    let primary = if options.primary {
+        ClipboardType::Primary
+    } else {
+        ClipboardType::Regular
+    };
 
     env_logger::init();
 
     // If listing types is requested, do just that.
     if options.list_types {
-        let mime_types = get_mime_types(options.primary, options.seat)?;
+        let mime_types = get_mime_types(primary, options.seat)?;
 
         for mime_type in mime_types.iter() {
             println!("{}", mime_type);
@@ -65,7 +70,7 @@ fn main() -> Result<(), ExitFailure> {
     let mime_type = options.mime_type
                            .map(MimeType::Specific)
                            .unwrap_or(MimeType::Any);
-    let (mut read, mime_type) = get_contents(options.primary, options.seat, mime_type)?;
+    let (mut read, mime_type) = get_contents(primary, options.seat, mime_type)?;
 
     // Read the contents.
     let mut contents = vec![];

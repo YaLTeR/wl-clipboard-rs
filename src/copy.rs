@@ -24,6 +24,7 @@ use crate::{
     },
     seat_data::SeatData,
     utils::{self, copy_data, is_text},
+    ClipboardType,
 };
 
 /// MIME type to offer the copied data under.
@@ -51,11 +52,8 @@ pub enum Source<'a> {
 /// Options and flags that are used to customize the copying.
 #[derive(Clone, Eq, PartialEq, Debug, Default, Hash, PartialOrd, Ord)]
 pub struct Options {
-    /// Use the "primary" clipboard
-    ///
-    /// Copying to the "primary" clipboard requires the compositor to support the data-control
-    /// protocol of version 2 or above.
-    primary: bool,
+    /// The clipboard to work with.
+    clipboard: ClipboardType,
 
     /// The seat to work with.
     ///
@@ -170,13 +168,10 @@ impl Options {
         Self::default()
     }
 
-    /// Sets the flag for using the "primary" clipboard.
-    ///
-    /// Copying to the "primary" clipboard requires the compositor to support the data-control
-    /// protocol of version 2 or above.
+    /// Sets the clipboard to work with.
     #[inline]
-    pub fn primary(&mut self, primary: bool) -> &mut Self {
-        self.primary = primary;
+    pub fn clipboard(&mut self, clipboard: ClipboardType) -> &mut Self {
+        self.clipboard = clipboard;
         self
     }
 
@@ -377,9 +372,6 @@ fn get_devices(
 
 /// Clears the clipboard for the given seat.
 ///
-/// If `primary` is set, uses the "primary" clipboard. Clearing the "primary" clipboard requires
-/// the compositor to support the data-control protocol of version 2 or above.
-///
 /// If `seat` is `None`, clears clipboards of all existing seats.
 ///
 /// # Examples
@@ -388,13 +380,14 @@ fn get_devices(
 /// # extern crate wl_clipboard_rs;
 /// # use wl_clipboard_rs::copy::Error;
 /// # fn foo() -> Result<(), Error> {
-/// use wl_clipboard_rs::copy::clear;
+/// use wl_clipboard_rs::{copy::clear, ClipboardType};
 ///
-/// clear(false, None)?; // Clears the clipboard of all seats.
+/// clear(ClipboardType::Regular, None)?; // Clears the clipboard of all seats.
 /// # Ok(())
 /// # }
 /// ```
-pub fn clear(primary: bool, seat: Option<String>) -> Result<(), Error> {
+pub fn clear(clipboard: ClipboardType, seat: Option<String>) -> Result<(), Error> {
+    let primary = clipboard == ClipboardType::Primary;
     let (mut queue, _, devices) = get_devices(primary, seat)?;
 
     for device in devices {
@@ -501,12 +494,13 @@ fn copy_past_fork(primary: bool,
 /// # }
 /// ```
 pub fn copy(options: Options, source: Source, mime_type: MimeType) -> Result<(), Error> {
-    let Options { primary,
+    let Options { clipboard,
                   seat,
                   trim_newline,
                   foreground,
                   paste_once, } = options;
 
+    let primary = clipboard == ClipboardType::Primary;
     let (queue, clipboard_manager, devices) = get_devices(primary, seat)?;
 
     // Collect the source data to copy.

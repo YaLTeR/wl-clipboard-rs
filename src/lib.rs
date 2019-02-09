@@ -29,3 +29,22 @@ mod seat_data;
 pub mod copy;
 pub mod paste;
 pub mod utils;
+
+/// The clipboard to operate on.
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+pub enum ClipboardType {
+    /// The regular clipboard.
+    Regular,
+    /// The "primary" clipboard.
+    ///
+    /// Working with the "primary" clipboard requires the compositor to support the data-control
+    /// protocol of version 2 or above.
+    Primary,
+}
+
+impl Default for ClipboardType {
+    #[inline]
+    fn default() -> Self {
+        ClipboardType::Regular
+    }
+}

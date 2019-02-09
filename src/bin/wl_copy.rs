@@ -3,7 +3,10 @@ use std::{ffi::OsString, os::unix::ffi::OsStrExt};
 use exitfailure::ExitFailure;
 use structopt::{clap::AppSettings, StructOpt};
 
-use wl_clipboard_rs::copy::{self, clear, MimeType, Source};
+use wl_clipboard_rs::{
+    copy::{self, clear, MimeType, Source},
+    ClipboardType,
+};
 
 #[derive(StructOpt)]
 #[structopt(name = "wl-copy",
@@ -66,7 +69,11 @@ impl From<Options> for copy::Options {
         let mut opts = copy::Options::new();
         opts.paste_once(x.paste_once)
             .foreground(x.foreground)
-            .primary(x.primary)
+            .clipboard(if x.primary {
+                           ClipboardType::Primary
+                       } else {
+                           ClipboardType::Regular
+                       })
             .trim_newline(x.trim_newline)
             .seat(x.seat);
         opts
@@ -80,7 +87,12 @@ fn main() -> Result<(), ExitFailure> {
     env_logger::init();
 
     if options.clear {
-        clear(options.primary, options.seat)?;
+        let clipboard = if options.primary {
+            ClipboardType::Primary
+        } else {
+            ClipboardType::Regular
+        };
+        clear(clipboard, options.seat)?;
         return Ok(());
     }
 

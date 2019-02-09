@@ -16,6 +16,7 @@ use crate::{
     handlers::DataDeviceHandler,
     protocol::wlr_data_control::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1,
     seat_data::SeatData,
+    ClipboardType,
 };
 
 /// MIME types that can be requested from the clipboard.
@@ -156,9 +157,6 @@ fn get_offer(primary: bool,
 
 /// Retrieves the offered MIME types.
 ///
-/// If `primary` is set, uses the "primary" clipboard. Using the "primary" clipboard requires the
-/// compositor to support the data-control protocol of version 2 or above.
-///
 /// If `seat` is `None`, uses an unspecified seat (it depends on the order returned by the
 /// compositor). This is perfectly fine when only a single seat is present, so for most
 /// configurations.
@@ -169,16 +167,19 @@ fn get_offer(primary: bool,
 /// # extern crate wl_clipboard_rs;
 /// # use wl_clipboard_rs::paste::Error;
 /// # fn foo() -> Result<(), Error> {
-/// use wl_clipboard_rs::paste::get_mime_types;
+/// use wl_clipboard_rs::{paste::get_mime_types, ClipboardType};
 ///
-/// let mime_types = get_mime_types(false, None)?;
+/// let mime_types = get_mime_types(ClipboardType::Regular, None)?;
 /// for mime_type in mime_types {
 ///     println!("{}", mime_type);
 /// }
 /// # Ok(())
 /// # }
 /// ```
-pub fn get_mime_types(primary: bool, seat: Option<String>) -> Result<HashSet<String>, Error> {
+pub fn get_mime_types(clipboard: ClipboardType,
+                      seat: Option<String>)
+                      -> Result<HashSet<String>, Error> {
+    let primary = clipboard == ClipboardType::Primary;
     let (_, offer) = get_offer(primary, seat)?;
 
     let mut mime_types = offer.as_ref()
@@ -195,9 +196,6 @@ pub fn get_mime_types(primary: bool, seat: Option<String>) -> Result<HashSet<Str
 /// This function returns a tuple of the reading end of a pipe containing the clipboard contents
 /// and the actual MIME type of the contents.
 ///
-/// If `primary` is set, uses the "primary" clipboard. Using the "primary" clipboard requires the
-/// compositor to support the data-control protocol of version 2 or above.
-///
 /// If `seat` is `None`, uses an unspecified seat (it depends on the order returned by the
 /// compositor). This is perfectly fine when only a single seat is present, so for most
 /// configurations.
@@ -210,9 +208,9 @@ pub fn get_mime_types(primary: bool, seat: Option<String>) -> Result<HashSet<Str
 /// # use failure::Error;
 /// # fn foo() -> Result<(), Error> {
 /// use std::io::Read;
-/// use wl_clipboard_rs::paste::{get_contents, Error, MimeType};
+/// use wl_clipboard_rs::{paste::{get_contents, Error, MimeType}, ClipboardType};
 ///
-/// let result = get_contents(false, None, MimeType::Any);
+/// let result = get_contents(ClipboardType::Regular, None, MimeType::Any);
 /// match result {
 ///     Ok((mut pipe, mime_type)) => {
 ///         println!("Got data of the {} MIME type", &mime_type);
@@ -231,10 +229,11 @@ pub fn get_mime_types(primary: bool, seat: Option<String>) -> Result<HashSet<Str
 /// # Ok(())
 /// # }
 /// ```
-pub fn get_contents(primary: bool,
+pub fn get_contents(clipboard: ClipboardType,
                     seat: Option<String>,
                     mime_type: MimeType)
                     -> Result<(PipeReader, String), Error> {
+    let primary = clipboard == ClipboardType::Primary;
     let (mut queue, offer) = get_offer(primary, seat)?;
 
     let mut mime_types = offer.as_ref()
