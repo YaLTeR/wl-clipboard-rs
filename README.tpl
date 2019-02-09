@@ -1,5 +1,7 @@
 # {{crate}}
 
+{{badges}}
+
 [Documentation](https://yalter.github.io/wl-clipboard-rs/wl_clipboard_rs/)
 
 {{readme}}

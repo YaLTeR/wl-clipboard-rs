@@ -1,5 +1,7 @@
 # wl-clipboard-rs
 
+[![Build Status](https://travis-ci.org/YaLTeR/wl-clipboard-rs.svg?branch=master)](https://travis-ci.org/YaLTeR/wl-clipboard-rs)
+
 [Documentation](https://yalter.github.io/wl-clipboard-rs/wl_clipboard_rs/)
 
 A safe Rust crate for working with the Wayland clipboard.
