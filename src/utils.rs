@@ -10,6 +10,15 @@ use nix::{
 };
 
 /// Checks if the given MIME type represents plain text.
+///
+/// # Examples
+///
+/// ```
+/// use wl_clipboard_rs::utils::is_text;
+///
+/// assert!(is_text("text/plain"));
+/// assert!(!is_text("application/octet-stream"));
+/// ```
 pub fn is_text(mime_type: &str) -> bool {
     match mime_type {
         "TEXT" | "STRING" | "UTF8_STRING" => true,
@@ -51,6 +60,24 @@ pub enum Error {
 ///
 /// If `wait` is `true`, this function returns after all data has been copied, otherwise it may
 /// return before all data has been copied.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # extern crate failure;
+/// # use failure::Error;
+/// # fn foo() -> Result<(), Error> {
+/// use std::{fs::File, os::unix::io::IntoRawFd};
+/// use wl_clipboard_rs::utils::copy_data;
+///
+/// let file = File::create("stdin-contents")?;
+///
+/// // Copy the standard input into the file.
+/// copy_data(None, file.into_raw_fd(), true)?;
+/// # Ok(())
+/// # }
+/// ```
 pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(), Error> {
     // We use the cat utility for data copying. It's easier (no need to implement any comlpex
     // buffering logic), surprisingly safer (a Rust implementation would likely require usage of
