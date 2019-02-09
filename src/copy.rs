@@ -49,6 +49,22 @@ pub enum Source<'a> {
     Bytes(&'a [u8]),
 }
 
+/// Seat to operate on.
+#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+pub enum Seat {
+    /// Operate on all existing seats at once.
+    All,
+    /// Operate on a seat with the given name.
+    Specific(String),
+}
+
+impl Default for Seat {
+    #[inline]
+    fn default() -> Self {
+        Seat::All
+    }
+}
+
 /// Options and flags that are used to customize the copying.
 #[derive(Clone, Eq, PartialEq, Debug, Default, Hash, PartialOrd, Ord)]
 pub struct Options {
@@ -56,9 +72,7 @@ pub struct Options {
     clipboard: ClipboardType,
 
     /// The seat to work with.
-    ///
-    /// If `None`, copy to all existing seats.
-    seat: Option<String>,
+    seat: Seat,
 
     /// Trim the trailing newline character before copying.
     ///
@@ -176,10 +190,8 @@ impl Options {
     }
 
     /// Sets the seat to use for copying.
-    ///
-    /// If `None`, copy to all existing seats.
     #[inline]
-    pub fn seat(&mut self, seat: Option<String>) -> &mut Self {
+    pub fn seat(&mut self, seat: Seat) -> &mut Self {
         self.seat = seat;
         self
     }
@@ -288,7 +300,7 @@ fn make_source(source: Source,
 
 fn get_devices(
     primary: bool,
-    seat: Option<String>)
+    seat: Seat)
     -> Result<(EventQueue, ZwlrDataControlManagerV1, Vec<ZwlrDataControlDeviceV1>), Error> {
     let CommonData { mut queue,
                      clipboard_manager,
@@ -346,15 +358,17 @@ fn get_devices(
 
                            let device = device.as_ref().cloned().unwrap();
 
-                           if seat.is_none() {
-                               // If no seat was specified, handle all of them.
-                               return Some(device);
-                           }
-
-                           let desired_name = seat.as_ref().unwrap();
-                           if let Some(name) = name {
-                               if name == desired_name {
+                           match seat {
+                               Seat::All => {
+                                   // If no seat was specified, handle all of them.
                                    return Some(device);
+                               }
+                               Seat::Specific(ref desired_name) => {
+                                   if let Some(name) = name {
+                                       if name == desired_name {
+                                           return Some(device);
+                                       }
+                                   }
                                }
                            }
 
@@ -380,13 +394,13 @@ fn get_devices(
 /// # extern crate wl_clipboard_rs;
 /// # use wl_clipboard_rs::copy::Error;
 /// # fn foo() -> Result<(), Error> {
-/// use wl_clipboard_rs::{copy::clear, ClipboardType};
+/// use wl_clipboard_rs::{copy::{clear, Seat}, ClipboardType};
 ///
-/// clear(ClipboardType::Regular, None)?; // Clears the clipboard of all seats.
+/// clear(ClipboardType::Regular, Seat::All)?;
 /// # Ok(())
 /// # }
 /// ```
-pub fn clear(clipboard: ClipboardType, seat: Option<String>) -> Result<(), Error> {
+pub fn clear(clipboard: ClipboardType, seat: Seat) -> Result<(), Error> {
     let primary = clipboard == ClipboardType::Primary;
     let (mut queue, _, devices) = get_devices(primary, seat)?;
 

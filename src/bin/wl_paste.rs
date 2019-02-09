@@ -52,12 +52,13 @@ fn main() -> Result<(), ExitFailure> {
     } else {
         ClipboardType::Regular
     };
+    let seat = options.seat.map(Seat::Specific).unwrap_or_default();
 
     env_logger::init();
 
     // If listing types is requested, do just that.
     if options.list_types {
-        let mime_types = get_mime_types(primary, options.seat)?;
+        let mime_types = get_mime_types(primary, seat)?;
 
         for mime_type in mime_types.iter() {
             println!("{}", mime_type);
@@ -70,7 +71,7 @@ fn main() -> Result<(), ExitFailure> {
     let mime_type = options.mime_type
                            .map(MimeType::Specific)
                            .unwrap_or(MimeType::Any);
-    let (mut read, mime_type) = get_contents(primary, options.seat, mime_type)?;
+    let (mut read, mime_type) = get_contents(primary, seat, mime_type)?;
 
     // Read the contents.
     let mut contents = vec![];

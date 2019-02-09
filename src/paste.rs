@@ -37,6 +37,24 @@ pub enum MimeType {
     Specific(String),
 }
 
+/// Seat to operate on.
+#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+pub enum Seat {
+    /// Operate on one of the existing seats depending on the order returned by the compositor.
+    ///
+    /// This is perfectly fine when only a single seat is present, so for most configurations.
+    Unspecified,
+    /// Operate on a seat with the given name.
+    Specific(String),
+}
+
+impl Default for Seat {
+    #[inline]
+    fn default() -> Self {
+        Seat::Unspecified
+    }
+}
+
 /// Errors that can occur for pasting and listing MIME types.
 ///
 /// You may want to ignore some of these errors (rather than show an error message), like
@@ -85,9 +103,7 @@ impl From<common::Error> for Error {
     }
 }
 
-fn get_offer(primary: bool,
-             seat: Option<String>)
-             -> Result<(EventQueue, ZwlrDataControlOfferV1), Error> {
+fn get_offer(primary: bool, seat: Seat) -> Result<(EventQueue, ZwlrDataControlOfferV1), Error> {
     let CommonData { mut queue,
                      clipboard_manager,
                      seats, } = initialize(primary)?;
@@ -131,14 +147,14 @@ fn get_offer(primary: bool,
                      })
                      .find_map(|data| {
                          let SeatData { name, offer, .. } = &*data;
-                         if seat.is_none() {
-                             return Some(offer.clone());
-                         }
-
-                         let desired_name = seat.as_ref().unwrap();
-                         if let Some(name) = name {
-                             if name == desired_name {
-                                 return Some(offer.clone());
+                         match seat {
+                             Seat::Unspecified => return Some(offer.clone()),
+                             Seat::Specific(ref desired_name) => {
+                                 if let Some(name) = name {
+                                     if name == desired_name {
+                                         return Some(offer.clone());
+                                     }
+                                 }
                              }
                          }
 
@@ -167,18 +183,16 @@ fn get_offer(primary: bool,
 /// # extern crate wl_clipboard_rs;
 /// # use wl_clipboard_rs::paste::Error;
 /// # fn foo() -> Result<(), Error> {
-/// use wl_clipboard_rs::{paste::get_mime_types, ClipboardType};
+/// use wl_clipboard_rs::{paste::{get_mime_types, Seat}, ClipboardType};
 ///
-/// let mime_types = get_mime_types(ClipboardType::Regular, None)?;
+/// let mime_types = get_mime_types(ClipboardType::Regular, Seat::Unspecified)?;
 /// for mime_type in mime_types {
 ///     println!("{}", mime_type);
 /// }
 /// # Ok(())
 /// # }
 /// ```
-pub fn get_mime_types(clipboard: ClipboardType,
-                      seat: Option<String>)
-                      -> Result<HashSet<String>, Error> {
+pub fn get_mime_types(clipboard: ClipboardType, seat: Seat) -> Result<HashSet<String>, Error> {
     let primary = clipboard == ClipboardType::Primary;
     let (_, offer) = get_offer(primary, seat)?;
 
@@ -208,9 +222,9 @@ pub fn get_mime_types(clipboard: ClipboardType,
 /// # use failure::Error;
 /// # fn foo() -> Result<(), Error> {
 /// use std::io::Read;
-/// use wl_clipboard_rs::{paste::{get_contents, Error, MimeType}, ClipboardType};
+/// use wl_clipboard_rs::{paste::{get_contents, Error, MimeType, Seat}, ClipboardType};
 ///
-/// let result = get_contents(ClipboardType::Regular, None, MimeType::Any);
+/// let result = get_contents(ClipboardType::Regular, Seat::Unspecified, MimeType::Any);
 /// match result {
 ///     Ok((mut pipe, mime_type)) => {
 ///         println!("Got data of the {} MIME type", &mime_type);
@@ -230,7 +244,7 @@ pub fn get_mime_types(clipboard: ClipboardType,
 /// # }
 /// ```
 pub fn get_contents(clipboard: ClipboardType,
-                    seat: Option<String>,
+                    seat: Seat,
                     mime_type: MimeType)
                     -> Result<(PipeReader, String), Error> {
     let primary = clipboard == ClipboardType::Primary;

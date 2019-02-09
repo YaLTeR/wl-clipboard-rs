@@ -4,7 +4,7 @@ use exitfailure::ExitFailure;
 use structopt::{clap::AppSettings, StructOpt};
 
 use wl_clipboard_rs::{
-    copy::{self, clear, MimeType, Source},
+    copy::{self, clear, MimeType, Seat, Source},
     ClipboardType,
 };
 
@@ -75,7 +75,7 @@ impl From<Options> for copy::Options {
                            ClipboardType::Regular
                        })
             .trim_newline(x.trim_newline)
-            .seat(x.seat);
+            .seat(x.seat.map(Seat::Specific).unwrap_or_default());
         opts
     }
 }
@@ -92,7 +92,8 @@ fn main() -> Result<(), ExitFailure> {
         } else {
             ClipboardType::Regular
         };
-        clear(clipboard, options.seat)?;
+        clear(clipboard,
+              options.seat.map(Seat::Specific).unwrap_or_default())?;
         return Ok(());
     }
 
