@@ -13,8 +13,16 @@ matrix:
   allow_failures:
     - rust: nightly
 
+# Only cache cargo subcommand binaries and built Wayland libs.
+# We need to cache the whole .cargo directory to keep the .crates.toml file.
 cache:
-  cargo: true
+  directories:
+    - "$HOME/install"
+    - "$HOME/.cargo"
+
+# Don't cache the cargo registry.
+before_cache:
+  - rm -rf "$HOME/.cargo/registry"
 
 install:
   - if [ -n "$FEATURES" ]; then
