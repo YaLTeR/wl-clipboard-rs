@@ -4,6 +4,7 @@ use wayland_server as ways;
 
 mod paste;
 
+// Taken from wayland-rs: https://github.com/Smithay/wayland-rs
 pub(crate) struct TestServer {
     pub display: self::ways::Display,
     pub event_loop: self::ways::calloop::EventLoop<()>,
