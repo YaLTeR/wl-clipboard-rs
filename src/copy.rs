@@ -304,7 +304,7 @@ fn get_devices(
     -> Result<(EventQueue, ZwlrDataControlManagerV1, Vec<ZwlrDataControlDeviceV1>), Error> {
     let CommonData { mut queue,
                      clipboard_manager,
-                     seats, } = initialize(primary)?;
+                     seats, } = initialize(primary, None)?;
 
     // Check if there are no seats.
     if seats.borrow_mut().is_empty() {

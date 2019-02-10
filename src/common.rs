@@ -1,5 +1,6 @@
 use std::{
     cell::{Cell, RefCell},
+    ffi::OsString,
     io,
     rc::Rc,
 };
@@ -35,9 +36,12 @@ pub enum Error {
     MissingProtocol { name: &'static str, version: u32 },
 }
 
-pub fn initialize(primary: bool) -> Result<CommonData, Error> {
+pub fn initialize(primary: bool, socket_name: Option<OsString>) -> Result<CommonData, Error> {
     // Connect to the Wayland compositor.
-    let (display, mut queue) = Display::connect_to_env().map_err(Error::WaylandConnection)?;
+    let (display, mut queue) = match socket_name {
+                                   Some(name) => Display::connect_to_name(name),
+                                   None => Display::connect_to_env(),
+                               }.map_err(Error::WaylandConnection)?;
 
     let seats = Rc::new(RefCell::new(Vec::<WlSeat>::new()));
 

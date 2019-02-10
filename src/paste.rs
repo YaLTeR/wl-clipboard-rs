@@ -3,6 +3,7 @@
 use std::{
     cell::{Cell, RefCell},
     collections::HashSet,
+    ffi::OsString,
     io, mem,
     os::unix::io::AsRawFd,
 };
@@ -103,10 +104,13 @@ impl From<common::Error> for Error {
     }
 }
 
-fn get_offer(primary: bool, seat: Seat) -> Result<(EventQueue, ZwlrDataControlOfferV1), Error> {
+fn get_offer(primary: bool,
+             seat: Seat,
+             socket_name: Option<OsString>)
+             -> Result<(EventQueue, ZwlrDataControlOfferV1), Error> {
     let CommonData { mut queue,
                      clipboard_manager,
-                     seats, } = initialize(primary)?;
+                     seats, } = initialize(primary, socket_name)?;
 
     // Check if there are no seats.
     if seats.borrow_mut().is_empty() {
@@ -192,9 +196,18 @@ fn get_offer(primary: bool, seat: Seat) -> Result<(EventQueue, ZwlrDataControlOf
 /// # Ok(())
 /// # }
 /// ```
+#[inline]
 pub fn get_mime_types(clipboard: ClipboardType, seat: Seat) -> Result<HashSet<String>, Error> {
+    get_mime_types_internal(clipboard, seat, None)
+}
+
+// The internal function accepts the socket name, used for tests.
+fn get_mime_types_internal(clipboard: ClipboardType,
+                           seat: Seat,
+                           socket_name: Option<OsString>)
+                           -> Result<HashSet<String>, Error> {
     let primary = clipboard == ClipboardType::Primary;
-    let (_, offer) = get_offer(primary, seat)?;
+    let (_, offer) = get_offer(primary, seat, socket_name)?;
 
     let mut mime_types = offer.as_ref()
                               .user_data::<RefCell<HashSet<String>>>()
@@ -243,12 +256,22 @@ pub fn get_mime_types(clipboard: ClipboardType, seat: Seat) -> Result<HashSet<St
 /// # Ok(())
 /// # }
 /// ```
+#[inline]
 pub fn get_contents(clipboard: ClipboardType,
                     seat: Seat,
                     mime_type: MimeType)
                     -> Result<(PipeReader, String), Error> {
+    get_contents_internal(clipboard, seat, mime_type, None)
+}
+
+// The internal function accepts the socket name, used for tests.
+pub fn get_contents_internal(clipboard: ClipboardType,
+                             seat: Seat,
+                             mime_type: MimeType,
+                             socket_name: Option<OsString>)
+                             -> Result<(PipeReader, String), Error> {
     let primary = clipboard == ClipboardType::Primary;
-    let (mut queue, offer) = get_offer(primary, seat)?;
+    let (mut queue, offer) = get_offer(primary, seat, socket_name)?;
 
     let mut mime_types = offer.as_ref()
                               .user_data::<RefCell<HashSet<String>>>()
