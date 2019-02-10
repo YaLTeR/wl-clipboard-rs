@@ -1,9 +1,5 @@
 language: rust
 
-os:
-  - linux
-  - osx
-
 rust:
   - stable
   - beta
@@ -27,13 +23,6 @@ script:
   - cargo doc --verbose
   - cp .travis/index.html target/doc;
 
-after_success:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ -z "$FEATURES" ]; then
-      export DEPLOY=1;
-    else
-      export DEPLOY=0;
-    fi
-
 deploy:
   provider: pages
   skip_cleanup: true
@@ -42,4 +31,4 @@ deploy:
   on:
     branch: master
     rust: stable
-    condition: "$DEPLOY = 1"
+    condition: "-z $FEATURES"
