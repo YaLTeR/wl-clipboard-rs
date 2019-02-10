@@ -202,10 +202,10 @@ pub fn get_mime_types(clipboard: ClipboardType, seat: Seat) -> Result<HashSet<St
 }
 
 // The internal function accepts the socket name, used for tests.
-fn get_mime_types_internal(clipboard: ClipboardType,
-                           seat: Seat,
-                           socket_name: Option<OsString>)
-                           -> Result<HashSet<String>, Error> {
+pub(crate) fn get_mime_types_internal(clipboard: ClipboardType,
+                                      seat: Seat,
+                                      socket_name: Option<OsString>)
+                                      -> Result<HashSet<String>, Error> {
     let primary = clipboard == ClipboardType::Primary;
     let (_, offer) = get_offer(primary, seat, socket_name)?;
 
@@ -265,11 +265,11 @@ pub fn get_contents(clipboard: ClipboardType,
 }
 
 // The internal function accepts the socket name, used for tests.
-pub fn get_contents_internal(clipboard: ClipboardType,
-                             seat: Seat,
-                             mime_type: MimeType,
-                             socket_name: Option<OsString>)
-                             -> Result<(PipeReader, String), Error> {
+pub(crate) fn get_contents_internal(clipboard: ClipboardType,
+                                    seat: Seat,
+                                    mime_type: MimeType,
+                                    socket_name: Option<OsString>)
+                                    -> Result<(PipeReader, String), Error> {
     let primary = clipboard == ClipboardType::Primary;
     let (mut queue, offer) = get_offer(primary, seat, socket_name)?;
 

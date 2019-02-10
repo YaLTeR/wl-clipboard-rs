@@ -26,6 +26,9 @@ mod handlers;
 mod protocol;
 mod seat_data;
 
+#[cfg(test)]
+mod tests;
+
 pub mod copy;
 pub mod paste;
 pub mod utils;
