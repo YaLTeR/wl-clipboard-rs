@@ -26,8 +26,10 @@ script:
   - cargo build --features "$FEATURES" --verbose
   - cargo test --features "$FEATURES" --verbose
 
-  - cargo doc --verbose
-  - cp .travis/index.html target/doc;
+  - if [ -z "$FEATURES" ]; then
+      cargo doc --verbose;
+      cp .travis/index.html target/doc;
+    fi
 
 deploy:
   provider: pages
