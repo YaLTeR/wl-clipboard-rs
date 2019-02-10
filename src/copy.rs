@@ -543,7 +543,7 @@ pub fn copy(options: Options, source: Source, mime_type: MimeType) -> Result<(),
 
     if let Err(err) = result {
         // TODO: print causes.
-        println!("Error: {}", err);
+        eprintln!("Error: {}", err);
         process::exit(1);
     } else {
         process::exit(0);
