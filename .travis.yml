@@ -9,6 +9,10 @@ rust:
   - beta
   - nightly
 
+env:
+  - FEATURES=""
+  - FEATURES=native_lib
+
 matrix:
   allow_failures:
     - rust: nightly
@@ -17,14 +21,14 @@ cache:
   cargo: true
 
 script:
-  - cargo build --verbose
-  - cargo test --verbose
+  - cargo build --features "$FEATURES" --verbose
+  - cargo test --features "$FEATURES" --verbose
 
-  - cargo doc
+  - cargo doc --verbose
   - cp .travis/index.html target/doc;
 
 after_success:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ -z "$FEATURES" ]; then
       export DEPLOY=1;
     else
       export DEPLOY=0;
