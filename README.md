@@ -30,6 +30,7 @@ doesn't include the dependencies.
 ### Status
 
 `wl-paste`: done.
+
 `wl-copy`: done.
 
 Stuff that would be neat to add:
