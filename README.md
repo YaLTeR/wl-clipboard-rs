@@ -32,7 +32,6 @@ doesn't include the dependencies.
 `wl-paste`:
 - Mostly done.
 - TODO: output MIME type detection.
-- TODO: smart MIME type selection (use `text/plain;charset=utf-8` if it's available and the MIME type is unspecified, etc.).
 
 `wl-copy`:
 - Mostly done.
