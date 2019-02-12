@@ -2,6 +2,7 @@
 
 use std::{
     cell::{Cell, RefCell},
+    ffi::OsString,
     fs::{remove_dir, remove_file, File, OpenOptions},
     io::{self, Read, Seek, SeekFrom, Write},
     os::unix::io::IntoRawFd,
@@ -300,11 +301,12 @@ fn make_source(source: Source,
 
 fn get_devices(
     primary: bool,
-    seat: Seat)
+    seat: Seat,
+    socket_name: Option<OsString>)
     -> Result<(EventQueue, ZwlrDataControlManagerV1, Vec<ZwlrDataControlDeviceV1>), Error> {
     let CommonData { mut queue,
                      clipboard_manager,
-                     seats, } = initialize(primary, None)?;
+                     seats, } = initialize(primary, socket_name)?;
 
     // Check if there are no seats.
     if seats.borrow_mut().is_empty() {
@@ -400,9 +402,17 @@ fn get_devices(
 /// # Ok(())
 /// # }
 /// ```
+#[inline]
 pub fn clear(clipboard: ClipboardType, seat: Seat) -> Result<(), Error> {
+    clear_internal(clipboard, seat, None)
+}
+
+pub(crate) fn clear_internal(clipboard: ClipboardType,
+                             seat: Seat,
+                             socket_name: Option<OsString>)
+                             -> Result<(), Error> {
     let primary = clipboard == ClipboardType::Primary;
-    let (mut queue, _, devices) = get_devices(primary, seat)?;
+    let (mut queue, _, devices) = get_devices(primary, seat, socket_name)?;
 
     for device in devices {
         if primary {
@@ -507,7 +517,16 @@ fn copy_past_fork(primary: bool,
 /// # Ok(())
 /// # }
 /// ```
+#[inline]
 pub fn copy(options: Options, source: Source, mime_type: MimeType) -> Result<(), Error> {
+    copy_internal(options, source, mime_type, None)
+}
+
+pub(crate) fn copy_internal(options: Options,
+                            source: Source,
+                            mime_type: MimeType,
+                            socket_name: Option<OsString>)
+                            -> Result<(), Error> {
     let Options { clipboard,
                   seat,
                   trim_newline,
@@ -515,7 +534,7 @@ pub fn copy(options: Options, source: Source, mime_type: MimeType) -> Result<(),
                   paste_once, } = options;
 
     let primary = clipboard == ClipboardType::Primary;
-    let (queue, clipboard_manager, devices) = get_devices(primary, seat)?;
+    let (queue, clipboard_manager, devices) = get_devices(primary, seat, socket_name)?;
 
     // Collect the source data to copy.
     let (mime_type, data_path) =

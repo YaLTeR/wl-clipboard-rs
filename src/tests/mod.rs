@@ -2,6 +2,7 @@ use std::{ffi::OsString, time::Duration};
 
 use wayland_server as ways;
 
+mod copy;
 mod paste;
 
 // Taken from wayland-rs: https://github.com/Smithay/wayland-rs
