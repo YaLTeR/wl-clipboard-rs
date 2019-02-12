@@ -111,7 +111,7 @@ impl From<common::Error> for Error {
 }
 
 fn get_offer(primary: bool,
-             seat: Seat,
+             seat: Seat<'_>,
              socket_name: Option<OsString>)
              -> Result<(EventQueue, ZwlrDataControlOfferV1), Error> {
     let CommonData { mut queue,
@@ -203,13 +203,13 @@ fn get_offer(primary: bool,
 /// # }
 /// ```
 #[inline]
-pub fn get_mime_types(clipboard: ClipboardType, seat: Seat) -> Result<HashSet<String>, Error> {
+pub fn get_mime_types(clipboard: ClipboardType, seat: Seat<'_>) -> Result<HashSet<String>, Error> {
     get_mime_types_internal(clipboard, seat, None)
 }
 
 // The internal function accepts the socket name, used for tests.
 pub(crate) fn get_mime_types_internal(clipboard: ClipboardType,
-                                      seat: Seat,
+                                      seat: Seat<'_>,
                                       socket_name: Option<OsString>)
                                       -> Result<HashSet<String>, Error> {
     let primary = clipboard == ClipboardType::Primary;
@@ -264,16 +264,16 @@ pub(crate) fn get_mime_types_internal(clipboard: ClipboardType,
 /// ```
 #[inline]
 pub fn get_contents(clipboard: ClipboardType,
-                    seat: Seat,
-                    mime_type: MimeType)
+                    seat: Seat<'_>,
+                    mime_type: MimeType<'_>)
                     -> Result<(PipeReader, String), Error> {
     get_contents_internal(clipboard, seat, mime_type, None)
 }
 
 // The internal function accepts the socket name, used for tests.
 pub(crate) fn get_contents_internal(clipboard: ClipboardType,
-                                    seat: Seat,
-                                    mime_type: MimeType,
+                                    seat: Seat<'_>,
+                                    mime_type: MimeType<'_>,
                                     socket_name: Option<OsString>)
                                     -> Result<(PipeReader, String), Error> {
     let primary = clipboard == ClipboardType::Primary;

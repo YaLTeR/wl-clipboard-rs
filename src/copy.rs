@@ -242,12 +242,12 @@ impl<'a> Options<'a> {
     /// # }
     /// ```
     #[inline]
-    pub fn copy(self, source: Source, mime_type: MimeType) -> Result<(), Error> {
+    pub fn copy(self, source: Source<'_>, mime_type: MimeType) -> Result<(), Error> {
         copy(self, source, mime_type)
     }
 }
 
-fn make_source(source: Source,
+fn make_source(source: Source<'_>,
                mime_type: MimeType,
                trim_newline: bool)
                -> Result<(String, PathBuf), SourceCreationError> {
@@ -301,7 +301,7 @@ fn make_source(source: Source,
 
 fn get_devices(
     primary: bool,
-    seat: Seat,
+    seat: Seat<'_>,
     socket_name: Option<OsString>)
     -> Result<(EventQueue, ZwlrDataControlManagerV1, Vec<ZwlrDataControlDeviceV1>), Error> {
     let CommonData { mut queue,
@@ -403,12 +403,12 @@ fn get_devices(
 /// # }
 /// ```
 #[inline]
-pub fn clear(clipboard: ClipboardType, seat: Seat) -> Result<(), Error> {
+pub fn clear(clipboard: ClipboardType, seat: Seat<'_>) -> Result<(), Error> {
     clear_internal(clipboard, seat, None)
 }
 
 pub(crate) fn clear_internal(clipboard: ClipboardType,
-                             seat: Seat,
+                             seat: Seat<'_>,
                              socket_name: Option<OsString>)
                              -> Result<(), Error> {
     let primary = clipboard == ClipboardType::Primary;
@@ -518,12 +518,12 @@ fn copy_past_fork(primary: bool,
 /// # }
 /// ```
 #[inline]
-pub fn copy(options: Options, source: Source, mime_type: MimeType) -> Result<(), Error> {
+pub fn copy(options: Options<'_>, source: Source<'_>, mime_type: MimeType) -> Result<(), Error> {
     copy_internal(options, source, mime_type, None)
 }
 
-pub(crate) fn copy_internal(options: Options,
-                            source: Source,
+pub(crate) fn copy_internal(options: Options<'_>,
+                            source: Source<'_>,
                             mime_type: MimeType,
                             socket_name: Option<OsString>)
                             -> Result<(), Error> {
