@@ -33,9 +33,7 @@ doesn't include the dependencies.
 - Mostly done.
 - TODO: output MIME type detection.
 
-`wl-copy`:
-- Mostly done.
-- TODO: MIME type inference.
+`wl-copy`: done.
 
 Stuff that would be neat to add:
 - Utilities that mimic `xclip` and `xsel` commandline flags.

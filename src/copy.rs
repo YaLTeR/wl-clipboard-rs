@@ -32,8 +32,6 @@ use crate::{
 #[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
 pub enum MimeType {
     /// Detect the MIME type automatically from the data.
-    ///
-    /// Not implemented yet, always uses `application/octet-stream`.
     Autodetect,
     /// Offer a number of common plain text MIME types.
     Text,
@@ -268,10 +266,12 @@ fn make_source(source: Source,
     }
 
     let mime_type = match mime_type {
-        MimeType::Autodetect => "application/octet-stream".to_string(), // TODO
+        MimeType::Autodetect => tree_magic::from_filepath(&temp_filename),
         MimeType::Text => "text/plain".to_string(),
         MimeType::Specific(mime_type) => mime_type,
     };
+
+    info!("Base MIME type: {}", mime_type);
 
     // Trim the trailing newline if needed.
     if trim_newline && is_text(&mime_type) {
