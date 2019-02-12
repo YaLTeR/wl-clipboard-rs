@@ -27,7 +27,8 @@ pub enum MimeType {
     /// Request any available MIME type.
     ///
     /// If multiple MIME types are offered, the requested MIME type is unspecified and depends on
-    /// the order they are received from the Wayland compositor.
+    /// the order they are received from the Wayland compositor. However, plain text formats are
+    /// prioritized, so if a plain text format is available among others then it will be requested.
     Any,
     /// Request a plain text MIME type.
     ///
@@ -280,7 +281,10 @@ pub(crate) fn get_contents_internal(clipboard: ClipboardType,
 
     // Find the desired MIME type.
     let mime_type = match mime_type {
-        MimeType::Any => mime_types.drain().next(),
+        MimeType::Any => mime_types.take("text/plain;charset=utf-8")
+                                    .or_else(|| mime_types.take("UTF8_STRING"))
+                                    .or_else(|| mime_types.iter().find(|x| is_text(x)).cloned())
+                                    .or_else(|| mime_types.drain().next()),
         MimeType::Text => mime_types.take("text/plain;charset=utf-8")
                                     .or_else(|| mime_types.take("UTF8_STRING"))
                                     .or_else(|| mime_types.drain().find(|x| is_text(x))),
