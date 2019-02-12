@@ -5,6 +5,7 @@ use std::{ffi::CString, os::unix::io::RawFd, process::abort};
 use failure::Fail;
 use libc::{STDIN_FILENO, STDOUT_FILENO};
 use nix::{
+    fcntl::{fcntl, FcntlArg, OFlag},
     sys::wait::{waitpid, WaitStatus},
     unistd::{close, dup2, execvp, fork, ForkResult},
 };
@@ -30,6 +31,12 @@ pub fn is_text(mime_type: &str) -> bool {
 /// Errors that can occur in `copy_data()`.
 #[derive(Fail, Debug)]
 pub enum Error {
+    #[fail(display = "Couldn't set the source file descriptor flags")]
+    SetSourceFdFlags(#[cause] nix::Error),
+
+    #[fail(display = "Couldn't set the target file descriptor flags")]
+    SetTargetFdFlags(#[cause] nix::Error),
+
     #[fail(display = "Couldn't fork")]
     Fork(#[cause] nix::Error),
 
@@ -84,10 +91,17 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(),
     // `from_raw_fd()` which is unsafe) and ideally faster (cat's been around for a while and is
     // probably pretty optimized).
 
+    // Clear O_NONBLOCK because cat doesn't know how to deal with it.
+    if let Some(from_fd) = from_fd {
+        fcntl(from_fd, FcntlArg::F_SETFL(OFlag::empty())).map_err(Error::SetSourceFdFlags)?;
+    }
+    fcntl(to_fd, FcntlArg::F_SETFL(OFlag::empty())).map_err(Error::SetTargetFdFlags)?;
+
     // Don't allocate memory in the child process, it's not async-signal-safe.
     let cat = CString::new("cat").unwrap();
     let also_cat = cat.clone();
 
+    // Fork and exec cat.
     let fork_result = fork().map_err(Error::Fork)?;
     match fork_result {
         ForkResult::Child => {

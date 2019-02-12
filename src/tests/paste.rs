@@ -19,11 +19,7 @@ use wayland_protocols::wlr::unstable::data_control::v1::server::{
 };
 use wayland_server::protocol::wl_seat::WlSeat as ServerSeat;
 
-use crate::{
-    paste::*,
-    tests::TestServer,
-    ClipboardType,
-};
+use crate::{paste::*, tests::TestServer, ClipboardType};
 
 #[test]
 fn get_mime_types_test() {

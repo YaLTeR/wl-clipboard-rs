@@ -9,6 +9,7 @@ use std::{
     time::Duration,
 };
 
+use nix::fcntl::{fcntl, FcntlArg, OFlag};
 use os_pipe::pipe;
 use wayland_protocols::wlr::unstable::data_control::v1::server::{
     zwlr_data_control_device_v1::{
@@ -182,4 +183,111 @@ fn copy_test() {
 
     assert_eq!(mime_types, Some(vec!["test".to_string()]));
     assert_eq!(contents, [1, 3, 3, 7]);
+}
+
+// The idea here is to exceed the pipe capacity. This fails unless O_NONBLOCK is cleared when
+// sending data over the pipe using cat.
+#[test]
+fn copy_large() {
+    // Assuming the default pipe capacity is 65536.
+    let mut bytes_to_copy = vec![];
+    for i in 0..70000 {
+        bytes_to_copy.push((i % 256) as u8);
+    }
+
+    struct ServerManagerHandler {
+        selection: Rc<RefCell<Option<ServerSource>>>,
+    }
+
+    impl ServerManagerRequestHandler for ServerManagerHandler {
+        fn create_data_source(&mut self, _manager: ServerManager, id: NewResource<ServerSource>) {
+            id.implement_closure(|request, source| {
+                                     if let ServerSourceRequest::Offer { mime_type } = request {
+                                         source.as_ref()
+                                               .user_data::<RefCell<Vec<_>>>()
+                                               .unwrap()
+                                               .borrow_mut()
+                                               .push(mime_type);
+                                     }
+                                 },
+                                 None::<fn(_)>,
+                                 RefCell::new(Vec::<String>::new()));
+        }
+
+        fn get_data_device(&mut self,
+                           _manager: ServerManager,
+                           id: NewResource<ServerDevice>,
+                           _seat: ServerSeat) {
+            let selection = self.selection.clone();
+            id.implement_closure(move |request, _| {
+                                     if let ServerDeviceRequest::SetSelection { source } = request {
+                                         *selection.borrow_mut() = source;
+                                     }
+                                 },
+                                 None::<fn(_)>,
+                                 ());
+        }
+    }
+
+    let mut server = TestServer::new();
+    server.display
+          .create_global::<ServerSeat, _>(6, |new_res, _| {
+              new_res.implement_dummy();
+          });
+
+    let selection = Rc::new(RefCell::new(None));
+    {
+        let selection = selection.clone();
+        server.display
+              .create_global::<ServerManager, _>(1, move |new_res, _| {
+                  new_res.implement(ServerManagerHandler { selection: selection.clone() },
+                                    None::<fn(_)>,
+                                    ());
+              });
+    }
+
+    let child = {
+        let socket_name = mem::replace(&mut server.socket_name, OsString::new());
+        let bytes_to_copy = bytes_to_copy.clone();
+        thread::spawn(move || {
+            let mut opts = Options::new();
+            opts.foreground(true);
+            copy_internal(opts,
+                          Source::Bytes(&bytes_to_copy),
+                          MimeType::Specific("test".to_string()),
+                          Some(socket_name))
+        })
+    };
+
+    thread::sleep(Duration::from_millis(100));
+    server.answer();
+
+    thread::sleep(Duration::from_millis(100));
+    server.answer();
+
+    thread::sleep(Duration::from_millis(100));
+    server.answer();
+
+    let (mut read, write) = pipe().unwrap();
+
+    if let Some(source) = selection.borrow().as_ref() {
+        // Emulate what XWayland does and set O_NONBLOCK.
+        let fd = write.as_raw_fd();
+        fcntl(fd, FcntlArg::F_SETFL(OFlag::O_NONBLOCK)).unwrap();
+
+        source.send("test".to_string(), fd);
+        drop(write);
+        source.cancelled();
+    }
+
+    thread::sleep(Duration::from_millis(100));
+    server.answer();
+
+    let mut contents = vec![];
+    read.read_to_end(&mut contents).unwrap();
+
+    child.join().unwrap().unwrap();
+
+    assert_eq!(contents.len(), bytes_to_copy.len());
+    assert_eq!(contents, bytes_to_copy);
 }
