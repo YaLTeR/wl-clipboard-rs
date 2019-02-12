@@ -50,14 +50,14 @@ pub enum Source<'a> {
 
 /// Seat to operate on.
 #[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
-pub enum Seat {
+pub enum Seat<'a> {
     /// Operate on all existing seats at once.
     All,
     /// Operate on a seat with the given name.
-    Specific(String),
+    Specific(&'a str),
 }
 
-impl Default for Seat {
+impl Default for Seat<'_> {
     #[inline]
     fn default() -> Self {
         Seat::All
@@ -66,12 +66,12 @@ impl Default for Seat {
 
 /// Options and flags that are used to customize the copying.
 #[derive(Clone, Eq, PartialEq, Debug, Default, Hash, PartialOrd, Ord)]
-pub struct Options {
+pub struct Options<'a> {
     /// The clipboard to work with.
     clipboard: ClipboardType,
 
     /// The seat to work with.
-    seat: Seat,
+    seat: Seat<'a>,
 
     /// Trim the trailing newline character before copying.
     ///
@@ -174,7 +174,7 @@ impl From<common::Error> for Error {
     }
 }
 
-impl Options {
+impl<'a> Options<'a> {
     /// Creates a blank new set of options ready for configuration.
     #[inline]
     pub fn new() -> Self {
@@ -190,7 +190,7 @@ impl Options {
 
     /// Sets the seat to use for copying.
     #[inline]
-    pub fn seat(&mut self, seat: Seat) -> &mut Self {
+    pub fn seat(&mut self, seat: Seat<'a>) -> &mut Self {
         self.seat = seat;
         self
     }

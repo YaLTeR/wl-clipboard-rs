@@ -64,8 +64,8 @@ struct Options {
     text: Vec<OsString>,
 }
 
-impl From<Options> for copy::Options {
-    fn from(x: Options) -> Self {
+impl<'a> From<&'a Options> for copy::Options<'a> {
+    fn from(x: &'a Options) -> Self {
         let mut opts = copy::Options::new();
         opts.paste_once(x.paste_once)
             .foreground(x.foreground)
@@ -75,7 +75,10 @@ impl From<Options> for copy::Options {
                            ClipboardType::Regular
                        })
             .trim_newline(x.trim_newline)
-            .seat(x.seat.map(Seat::Specific).unwrap_or_default());
+            .seat(x.seat
+                   .as_ref()
+                   .map(|x| Seat::Specific(x))
+                   .unwrap_or_default());
         opts
     }
 }
@@ -93,7 +96,10 @@ fn main() -> Result<(), ExitFailure> {
             ClipboardType::Regular
         };
         clear(clipboard,
-              options.seat.map(Seat::Specific).unwrap_or_default())?;
+              options.seat
+                     .as_ref()
+                     .map(|x| Seat::Specific(x))
+                     .unwrap_or_default())?;
         return Ok(());
     }
 
@@ -125,7 +131,7 @@ fn main() -> Result<(), ExitFailure> {
         MimeType::Autodetect
     };
 
-    copy::Options::from(options).copy(source, mime_type)?;
+    copy::Options::from(&options).copy(source, mime_type)?;
 
     Ok(())
 }
