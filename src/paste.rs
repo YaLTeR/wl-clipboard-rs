@@ -17,6 +17,7 @@ use crate::{
     handlers::DataDeviceHandler,
     protocol::wlr_data_control::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1,
     seat_data::SeatData,
+    utils::is_text,
     ClipboardType,
 };
 
@@ -30,9 +31,8 @@ pub enum MimeType {
     Any,
     /// Request a plain text MIME type.
     ///
-    /// This will request one of the multiple common plain text MIME types.
-    ///
-    /// Not implemented yet, only requests `text/plain` on use.
+    /// This will request one of the multiple common plain text MIME types. It will prioritize MIME
+    /// types known to return UTF-8 text.
     Text,
     /// Request a specific MIME type.
     Specific(String),
@@ -281,7 +281,9 @@ pub(crate) fn get_contents_internal(clipboard: ClipboardType,
     // Find the desired MIME type.
     let mime_type = match mime_type {
         MimeType::Any => mime_types.drain().next(),
-        MimeType::Text => mime_types.take("text/plain"), // TODO
+        MimeType::Text => mime_types.take("text/plain;charset=utf-8")
+                                    .or_else(|| mime_types.take("UTF8_STRING"))
+                                    .or_else(|| mime_types.drain().find(|x| is_text(x))),
         MimeType::Specific(mime_type) => mime_types.take(&mime_type),
     };
 
