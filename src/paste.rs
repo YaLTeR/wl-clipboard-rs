@@ -35,6 +35,11 @@ pub enum MimeType {
     /// This will request one of the multiple common plain text MIME types. It will prioritize MIME
     /// types known to return UTF-8 text.
     Text,
+    /// Request the given MIME type, and if it's not available fall back to `MimeType::Text`.
+    ///
+    /// Example use-case: pasting `text/html` should try `text/html` first, but if it's not
+    /// available, any other plain text format will do fine too.
+    TextWithPriority(String),
     /// Request a specific MIME type.
     Specific(String),
 }
@@ -282,9 +287,15 @@ pub(crate) fn get_contents_internal(clipboard: ClipboardType,
     // Find the desired MIME type.
     let mime_type = match mime_type {
         MimeType::Any => mime_types.take("text/plain;charset=utf-8")
-                                    .or_else(|| mime_types.take("UTF8_STRING"))
-                                    .or_else(|| mime_types.iter().find(|x| is_text(x)).cloned())
-                                    .or_else(|| mime_types.drain().next()),
+                                   .or_else(|| mime_types.take("UTF8_STRING"))
+                                   .or_else(|| mime_types.iter().find(|x| is_text(x)).cloned())
+                                   .or_else(|| mime_types.drain().next()),
+        MimeType::TextWithPriority(priority) => {
+            mime_types.take(&priority)
+                      .or_else(|| mime_types.take("text/plain;charset=utf-8"))
+                      .or_else(|| mime_types.take("UTF8_STRING"))
+                      .or_else(|| mime_types.drain().find(|x| is_text(x)))
+        }
         MimeType::Text => mime_types.take("text/plain;charset=utf-8")
                                     .or_else(|| mime_types.take("UTF8_STRING"))
                                     .or_else(|| mime_types.drain().find(|x| is_text(x))),
