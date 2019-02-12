@@ -36,7 +36,10 @@ struct Options {
     #[structopt(long, short)]
     seat: Option<String>,
 
-    /// Override the inferred MIME type for the content
+    /// Request the given MIME type instead of inferring the MIME type
+    ///
+    /// As a special case, specifying "text" will look for a number of plain text types,
+    /// prioritizing ones that are known to give UTF-8 text.
     #[structopt(name = "mime-type",
                 long = "type",
                 short = "t",
@@ -68,9 +71,14 @@ fn main() -> Result<(), ExitFailure> {
     }
 
     // Otherwise, get the clipboard contents.
-    let mime_type = options.mime_type
-                           .map(MimeType::Specific)
-                           .unwrap_or(MimeType::Any);
+
+    // Do some smart MIME type selection. TODO: infer MIME type from output filename.
+    let mime_type = match options.mime_type {
+        Some(ref mime_type) if mime_type == "text" => MimeType::Text,
+        Some(mime_type) => MimeType::Specific(mime_type),
+        None => MimeType::Any,
+    };
+
     let (mut read, mime_type) = get_contents(primary, seat, mime_type)?;
 
     // Read the contents.
