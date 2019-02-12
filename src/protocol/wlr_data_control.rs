@@ -1,7 +1,11 @@
 pub use generated::client;
 
 mod generated {
-    #![allow(dead_code, non_camel_case_types, unused_unsafe, unused_variables)]
+    #![allow(dead_code,
+             non_camel_case_types,
+             unused_unsafe,
+             unused_variables,
+             unsafe_code)]
     #![allow(non_upper_case_globals, non_snake_case, unused_imports)]
     #![cfg_attr(feature = "cargo-clippy", allow(clippy::all))]
 

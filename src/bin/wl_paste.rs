@@ -1,3 +1,5 @@
+#![deny(unsafe_code)]
+
 use std::{
     fs::read_link,
     io::{stdout, Read, Write},

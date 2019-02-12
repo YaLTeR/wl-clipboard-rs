@@ -1,3 +1,5 @@
+#![deny(unsafe_code)]
+
 use std::{ffi::OsString, os::unix::ffi::OsStrExt};
 
 use exitfailure::ExitFailure;
