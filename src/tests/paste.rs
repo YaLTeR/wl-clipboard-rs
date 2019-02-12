@@ -294,7 +294,7 @@ fn get_contents_wrong_mime_type() {
     let child = thread::spawn(move || {
         get_contents_internal(ClipboardType::Regular,
                               Seat::Unspecified,
-                              MimeType::Specific("wrong".to_string()),
+                              MimeType::Specific("wrong"),
                               Some(socket_name))
     });
 

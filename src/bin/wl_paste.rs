@@ -69,7 +69,10 @@ fn main() -> Result<(), ExitFailure> {
     } else {
         ClipboardType::Regular
     };
-    let seat = options.seat.map(Seat::Specific).unwrap_or_default();
+    let seat = options.seat
+                      .as_ref()
+                      .map(|x| Seat::Specific(x))
+                      .unwrap_or_default();
 
     env_logger::init();
 
@@ -86,26 +89,29 @@ fn main() -> Result<(), ExitFailure> {
 
     // Otherwise, get the clipboard contents.
 
+    // No MIME type specified—try inferring one from the output file extension (if any).
+    let inferred = if options.mime_type.is_none() {
+        Some(infer_mime_type())
+    } else {
+        None
+    };
+
     // Do some smart MIME type selection.
     let mime_type = match options.mime_type {
         Some(ref mime_type) if mime_type == "text" => MimeType::Text,
-        Some(mime_type) => MimeType::Specific(mime_type),
+        Some(ref mime_type) => MimeType::Specific(mime_type),
         None => {
-            // No MIME type specified—try inferring one from the output file extension (if any).
-            let inferred = infer_mime_type();
+            let inferred = inferred.as_ref().unwrap().as_ref();
             info!("Inferred MIME type: {}", inferred);
 
             if inferred == "application/octet-stream" {
                 MimeType::Any
+            } else if is_text(inferred) {
+                // If the inferred MIME type is text, make sure we'll fall back to requesting
+                // other plain text types if this particular one is unavailable.
+                MimeType::TextWithPriority(inferred)
             } else {
-                let mime_type = format!("{}", inferred);
-                if is_text(&mime_type) {
-                    // If the inferred MIME type is text, make sure we'll fall back to requesting
-                    // other plain text types if this particular one is unavailable.
-                    MimeType::TextWithPriority(mime_type)
-                } else {
-                    MimeType::Specific(mime_type)
-                }
+                MimeType::Specific(inferred)
             }
         }
     };

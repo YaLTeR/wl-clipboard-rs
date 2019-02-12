@@ -22,8 +22,8 @@ use crate::{
 };
 
 /// MIME types that can be requested from the clipboard.
-#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
-pub enum MimeType {
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+pub enum MimeType<'a> {
     /// Request any available MIME type.
     ///
     /// If multiple MIME types are offered, the requested MIME type is unspecified and depends on
@@ -39,23 +39,23 @@ pub enum MimeType {
     ///
     /// Example use-case: pasting `text/html` should try `text/html` first, but if it's not
     /// available, any other plain text format will do fine too.
-    TextWithPriority(String),
+    TextWithPriority(&'a str),
     /// Request a specific MIME type.
-    Specific(String),
+    Specific(&'a str),
 }
 
 /// Seat to operate on.
-#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
-pub enum Seat {
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+pub enum Seat<'a> {
     /// Operate on one of the existing seats depending on the order returned by the compositor.
     ///
     /// This is perfectly fine when only a single seat is present, so for most configurations.
     Unspecified,
     /// Operate on a seat with the given name.
-    Specific(String),
+    Specific(&'a str),
 }
 
-impl Default for Seat {
+impl Default for Seat<'_> {
     #[inline]
     fn default() -> Self {
         Seat::Unspecified
@@ -159,7 +159,7 @@ fn get_offer(primary: bool,
                          let SeatData { name, offer, .. } = &*data;
                          match seat {
                              Seat::Unspecified => return Some(offer.clone()),
-                             Seat::Specific(ref desired_name) => {
+                             Seat::Specific(desired_name) => {
                                  if let Some(name) = name {
                                      if name == desired_name {
                                          return Some(offer.clone());
@@ -290,16 +290,16 @@ pub(crate) fn get_contents_internal(clipboard: ClipboardType,
                                    .or_else(|| mime_types.take("UTF8_STRING"))
                                    .or_else(|| mime_types.iter().find(|x| is_text(x)).cloned())
                                    .or_else(|| mime_types.drain().next()),
+        MimeType::Text => mime_types.take("text/plain;charset=utf-8")
+                                    .or_else(|| mime_types.take("UTF8_STRING"))
+                                    .or_else(|| mime_types.drain().find(|x| is_text(x))),
         MimeType::TextWithPriority(priority) => {
-            mime_types.take(&priority)
+            mime_types.take(priority)
                       .or_else(|| mime_types.take("text/plain;charset=utf-8"))
                       .or_else(|| mime_types.take("UTF8_STRING"))
                       .or_else(|| mime_types.drain().find(|x| is_text(x)))
         }
-        MimeType::Text => mime_types.take("text/plain;charset=utf-8")
-                                    .or_else(|| mime_types.take("UTF8_STRING"))
-                                    .or_else(|| mime_types.drain().find(|x| is_text(x))),
-        MimeType::Specific(mime_type) => mime_types.take(&mime_type),
+        MimeType::Specific(mime_type) => mime_types.take(mime_type),
     };
 
     // Check if a suitable MIME type is copied.
