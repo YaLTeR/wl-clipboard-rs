@@ -53,6 +53,10 @@ struct Options {
                 short = "t",
                 conflicts_with = "list-types")]
     mime_type: Option<String>,
+
+    /// Enable verbose logging
+    #[structopt(long, short, parse(from_occurrences))]
+    verbose: usize,
 }
 
 fn infer_mime_type() -> Mime {
@@ -76,7 +80,9 @@ fn main() -> Result<(), ExitFailure> {
                       .map(|x| Seat::Specific(x))
                       .unwrap_or_default();
 
-    env_logger::init();
+    stderrlog::new().verbosity(options.verbose.saturating_add(1))
+                    .init()
+                    .unwrap();
 
     // If listing types is requested, do just that.
     if options.list_types {

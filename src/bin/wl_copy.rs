@@ -64,6 +64,10 @@ struct Options {
     /// If not specified, wl-copy will use data from the standard input.
     #[structopt(name = "text to copy", conflicts_with = "clear", parse(from_os_str))]
     text: Vec<OsString>,
+
+    /// Enable verbose logging
+    #[structopt(long, short, parse(from_occurrences))]
+    verbose: usize,
 }
 
 impl<'a> From<&'a Options> for copy::Options<'a> {
@@ -89,7 +93,9 @@ fn main() -> Result<(), ExitFailure> {
     // Parse command-line options.
     let mut options = Options::from_args();
 
-    env_logger::init();
+    stderrlog::new().verbosity(options.verbose.saturating_add(1))
+                    .init()
+                    .unwrap();
 
     if options.clear {
         let clipboard = if options.primary {
