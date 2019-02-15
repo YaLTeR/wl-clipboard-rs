@@ -1,9 +1,4 @@
-use std::{
-    cell::{Cell, RefCell},
-    ffi::OsString,
-    io,
-    rc::Rc,
-};
+use std::{cell::RefCell, ffi::OsString, io, rc::Rc};
 
 use failure::Fail;
 use wayland_client::{
@@ -12,7 +7,7 @@ use wayland_client::{
 };
 
 use crate::{
-    handlers::{DataControlManagerHandler, WlSeatHandler},
+    handlers::WlSeatHandler,
     protocol::wlr_data_control::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
     seat_data::SeatData,
 };
@@ -64,8 +59,7 @@ pub fn initialize(primary: bool, socket_name: Option<OsString>) -> Result<Common
     // Check that we have our interfaces.
     let data_control_version = if primary { 2 } else { 1 };
 
-    let impl_manager =
-        |manager: NewProxy<_>| manager.implement(DataControlManagerHandler, Cell::new(false));
+    let impl_manager = |manager: NewProxy<_>| manager.implement_dummy();
     let clipboard_manager =
         global_manager.instantiate_exact::<ZwlrDataControlManagerV1, _>(data_control_version,
                                                                         impl_manager)

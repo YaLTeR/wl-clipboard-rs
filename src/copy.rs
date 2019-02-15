@@ -313,13 +313,14 @@ fn get_devices(
         return Err(Error::NoSeats);
     }
 
+    let supports_primary = Rc::new(Cell::new(false));
+
     // Go through the seats and get their data devices.
     for seat in &*seats.borrow_mut() {
         // TODO: fast path here if all seats.
+        let handler = DataDeviceHandler::new(seat.clone(), primary, supports_primary.clone());
         let device =
-            clipboard_manager.get_data_device(seat, |device| {
-                                 device.implement(DataDeviceHandler::new(seat.clone(), primary), ())
-                             })
+            clipboard_manager.get_data_device(seat, |device| device.implement(handler, ()))
                              .unwrap();
 
         let seat_data = seat.as_ref().user_data::<RefCell<SeatData>>().unwrap();
@@ -331,14 +332,8 @@ fn get_devices(
          .map_err(Error::WaylandCommunication)?;
 
     // Check if the compositor supports primary selection.
-    if primary {
-        let supports_primary = clipboard_manager.as_ref()
-                                                .user_data::<Cell<bool>>()
-                                                .unwrap()
-                                                .get();
-        if !supports_primary {
-            return Err(Error::PrimarySelectionUnsupported);
-        }
+    if primary && !supports_primary.get() {
+        return Err(Error::PrimarySelectionUnsupported);
     }
 
     // Figure out which devices we're interested in.

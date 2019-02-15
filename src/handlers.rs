@@ -18,7 +18,6 @@ use wayland_client::{
 use crate::{
     protocol::wlr_data_control::client::{
         zwlr_data_control_device_v1::ZwlrDataControlDeviceV1,
-        zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
         zwlr_data_control_offer_v1::ZwlrDataControlOfferV1,
         zwlr_data_control_source_v1::ZwlrDataControlSourceV1, *,
     },
@@ -35,21 +34,11 @@ impl wl_seat::EventHandler for WlSeatHandler {
     }
 }
 
-pub struct DataControlManagerHandler;
-
-impl zwlr_data_control_manager_v1::EventHandler for DataControlManagerHandler {
-    fn primary_selection(&mut self, manager: ZwlrDataControlManagerV1) {
-        manager.as_ref()
-               .user_data::<Cell<bool>>()
-               .unwrap()
-               .set(true);
-    }
-}
-
 #[derive(new)]
 pub struct DataDeviceHandler {
     seat: WlSeat,
     primary: bool,
+    got_primary_selection: Rc<Cell<bool>>,
 }
 
 impl DataDeviceHandler {
@@ -82,6 +71,8 @@ impl zwlr_data_control_device_v1::EventHandler for DataDeviceHandler {
     fn primary_selection(&mut self,
                          _device: ZwlrDataControlDeviceV1,
                          offer: Option<ZwlrDataControlOfferV1>) {
+        self.got_primary_selection.set(true);
+
         if self.primary {
             self.selection(offer);
         }
