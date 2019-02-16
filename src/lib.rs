@@ -70,7 +70,6 @@
 
 mod common;
 mod handlers;
-mod protocol; // TODO: remove once data-contol v2 is added to wayland-protocols
 mod seat_data;
 
 #[cfg(test)]

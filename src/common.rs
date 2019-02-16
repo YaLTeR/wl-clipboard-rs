@@ -5,12 +5,9 @@ use wayland_client::{
     global_filter, protocol::wl_seat::WlSeat, ConnectError, Display, EventQueue, GlobalManager,
     Interface, NewProxy,
 };
+use wayland_protocols::wlr::unstable::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
 
-use crate::{
-    handlers::WlSeatHandler,
-    protocol::wlr_data_control::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
-    seat_data::SeatData,
-};
+use crate::{handlers::WlSeatHandler, seat_data::SeatData};
 
 pub struct CommonData {
     pub queue: EventQueue,

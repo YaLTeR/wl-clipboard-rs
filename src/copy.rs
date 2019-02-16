@@ -15,14 +15,14 @@ use failure::Fail;
 use log::info;
 use nix::unistd::{fork, ForkResult};
 use wayland_client::{ConnectError, EventQueue, Proxy};
+use wayland_protocols::wlr::unstable::data_control::v1::client::{
+    zwlr_data_control_device_v1::ZwlrDataControlDeviceV1,
+    zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
+};
 
 use crate::{
     common::{self, initialize, CommonData},
     handlers::{DataDeviceHandler, DataSourceError, DataSourceHandler},
-    protocol::wlr_data_control::client::{
-        zwlr_data_control_device_v1::ZwlrDataControlDeviceV1,
-        zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
-    },
     seat_data::SeatData,
     utils::{self, copy_data, is_text},
     ClipboardType,

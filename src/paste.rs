@@ -12,11 +12,11 @@ use std::{
 use failure::Fail;
 use os_pipe::{pipe, PipeReader};
 use wayland_client::{ConnectError, EventQueue};
+use wayland_protocols::wlr::unstable::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1;
 
 use crate::{
     common::{self, initialize, CommonData},
     handlers::DataDeviceHandler,
-    protocol::wlr_data_control::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1,
     seat_data::SeatData,
     utils::is_text,
     ClipboardType,

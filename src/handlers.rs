@@ -14,13 +14,13 @@ use wayland_client::{
     protocol::{wl_seat::WlSeat, *},
     NewProxy,
 };
+use wayland_protocols::wlr::unstable::data_control::v1::client::{
+    zwlr_data_control_device_v1::ZwlrDataControlDeviceV1,
+    zwlr_data_control_offer_v1::ZwlrDataControlOfferV1,
+    zwlr_data_control_source_v1::ZwlrDataControlSourceV1, *,
+};
 
 use crate::{
-    protocol::wlr_data_control::client::{
-        zwlr_data_control_device_v1::ZwlrDataControlDeviceV1,
-        zwlr_data_control_offer_v1::ZwlrDataControlOfferV1,
-        zwlr_data_control_source_v1::ZwlrDataControlSourceV1, *,
-    },
     seat_data::SeatData,
     utils::{self, copy_data},
 };
