@@ -21,6 +21,7 @@ use wayland_protocols::wlr::unstable::data_control::v1::client::{
 };
 
 use crate::{
+    copy::ServeRequests,
     seat_data::SeatData,
     utils::{self, copy_data},
 };
@@ -107,7 +108,7 @@ pub enum DataSourceError {
 pub struct DataSourceHandler {
     data_path: Rc<RefCell<PathBuf>>,
     should_quit: Rc<Cell<bool>>,
-    paste_once: bool,
+    serve_requests: Rc<Cell<ServeRequests>>,
 }
 
 impl zwlr_data_control_source_v1::EventHandler for DataSourceHandler {
@@ -133,7 +134,15 @@ impl zwlr_data_control_source_v1::EventHandler for DataSourceHandler {
             *error = Some(err);
         }
 
-        if self.paste_once || error.is_some() {
+        let done = if let ServeRequests::Only(left) = self.serve_requests.get() {
+            let left = left.checked_sub(1).unwrap();
+            self.serve_requests.set(ServeRequests::Only(left));
+            left == 0
+        } else {
+            false
+        };
+
+        if done || error.is_some() {
             self.should_quit.set(true);
             source.destroy();
         }

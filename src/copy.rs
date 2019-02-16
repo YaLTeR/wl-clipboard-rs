@@ -64,6 +64,22 @@ impl Default for Seat<'_> {
     }
 }
 
+/// Number of paste requests to serve.
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+pub enum ServeRequests {
+    /// Serve requests indefinitely.
+    Unlimited,
+    /// Serve only the given number of requests.
+    Only(usize),
+}
+
+impl Default for ServeRequests {
+    #[inline]
+    fn default() -> Self {
+        ServeRequests::Unlimited
+    }
+}
+
 /// Options and flags that are used to customize the copying.
 #[derive(Clone, Eq, PartialEq, Debug, Default, Hash, PartialOrd, Ord)]
 pub struct Options<'a> {
@@ -84,13 +100,13 @@ pub struct Options<'a> {
     /// it creates are destroyed, e.g. until someone else copies something into the clipboard.
     foreground: bool,
 
-    /// Serve only a single paste request.
+    /// Number of paste requests to serve.
     ///
-    /// This option effectively clears the clipboard after the first paste. It can be used when
-    /// copying e.g. sensitive data, like passwords. Note however that certain apps may have issues
-    /// pasting when this option is used, in particular XWayland clients are known to suffer from
-    /// this.
-    paste_once: bool,
+    /// Limiting the number of paste requests to one effectively clears the clipboard after the
+    /// first paste. It can be used when copying e.g. sensitive data, like passwords. Note however
+    /// that certain apps may have issues pasting when this option is used, in particular XWayland
+    /// clients are known to suffer from this.
+    serve_requests: ServeRequests,
 }
 
 /// Errors that can occur for copying the source data to a temporary file.
@@ -214,15 +230,15 @@ impl<'a> Options<'a> {
         self
     }
 
-    /// Sets the flag for serving only a single paste request.
+    /// Sets the number of requests to serve.
     ///
-    /// This option effectively clears the clipboard after the first paste. It can be used when
-    /// copying e.g. sensitive data, like passwords. Note however that certain apps may have issues
-    /// pasting when this option is used, in particular XWayland clients are known to suffer from
-    /// this.
+    /// Limiting the number of requests to one effectively clears the clipboard after the first
+    /// paste. It can be used when copying e.g. sensitive data, like passwords. Note however that
+    /// certain apps may have issues pasting when this option is used, in particular XWayland
+    /// clients are known to suffer from this.
     #[inline]
-    pub fn paste_once(&mut self, paste_once: bool) -> &mut Self {
-        self.paste_once = paste_once;
+    pub fn serve_requests(&mut self, serve_requests: ServeRequests) -> &mut Self {
+        self.serve_requests = serve_requests;
         self
     }
 
@@ -425,7 +441,7 @@ pub(crate) fn clear_internal(clipboard: ClipboardType,
 }
 
 fn copy_past_fork(primary: bool,
-                  paste_once: bool,
+                  serve_requests: ServeRequests,
                   mut queue: EventQueue,
                   clipboard_manager: ZwlrDataControlManagerV1,
                   devices: Vec<ZwlrDataControlDeviceV1>,
@@ -435,18 +451,19 @@ fn copy_past_fork(primary: bool,
     let data_path = Rc::new(RefCell::new(data_path));
     let should_quit = Rc::new(Cell::new(false));
     let error = Rc::new(RefCell::new(None::<DataSourceError>));
+    let serve_requests = Rc::new(Cell::new(serve_requests));
 
     // Create the data sources and set them as selections.
     let sources = devices.iter()
                          .map(|device| {
-                             let data_source =
-                                 clipboard_manager.create_data_source(|source| {
-                                     source.implement(DataSourceHandler::new(data_path.clone(),
-                                                                             should_quit.clone(),
-                                                                             paste_once),
-                                                      error.clone())
-                                 })
-                                 .unwrap();
+                             let handler = DataSourceHandler::new(data_path.clone(),
+                                                                  should_quit.clone(),
+                                                                  serve_requests.clone());
+                             let data_source = clipboard_manager.create_data_source(|source| {
+                                                                    source.implement(handler,
+                                                                                     error.clone())
+                                                                })
+                                                                .unwrap();
 
                              // If the MIME type is text, offer it in some other common formats.
                              if is_text(&mime_type) {
@@ -463,6 +480,11 @@ fn copy_past_fork(primary: bool,
                                  device.set_primary_selection(Some(&data_source));
                              } else {
                                  device.set_selection(Some(&data_source));
+                             }
+
+                             // If we need to serve 0 requests, kill the data source right away.
+                             if let ServeRequests::Only(0) = serve_requests.get() {
+                                 data_source.destroy();
                              }
 
                              data_source.into()
@@ -526,7 +548,7 @@ pub(crate) fn copy_internal(options: Options<'_>,
                   seat,
                   trim_newline,
                   foreground,
-                  paste_once, } = options;
+                  serve_requests, } = options;
 
     let primary = clipboard == ClipboardType::Primary;
     let (queue, clipboard_manager, devices) = get_devices(primary, seat, socket_name)?;
@@ -544,7 +566,7 @@ pub(crate) fn copy_internal(options: Options<'_>,
     // If we forked, we must not return back past this point, just exit the process.
 
     let result = copy_past_fork(primary,
-                                paste_once,
+                                serve_requests,
                                 queue,
                                 clipboard_manager,
                                 devices,

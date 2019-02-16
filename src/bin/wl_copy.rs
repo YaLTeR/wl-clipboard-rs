@@ -6,7 +6,7 @@ use exitfailure::ExitFailure;
 use structopt::{clap::AppSettings, StructOpt};
 
 use wl_clipboard_rs::{
-    copy::{self, clear, MimeType, Seat, Source},
+    copy::{self, clear, MimeType, Seat, ServeRequests, Source},
     ClipboardType,
 };
 
@@ -73,7 +73,11 @@ struct Options {
 impl<'a> From<&'a Options> for copy::Options<'a> {
     fn from(x: &'a Options) -> Self {
         let mut opts = copy::Options::new();
-        opts.paste_once(x.paste_once)
+        opts.serve_requests(if x.paste_once {
+                                ServeRequests::Only(1)
+                            } else {
+                                ServeRequests::Unlimited
+                            })
             .foreground(x.foreground)
             .clipboard(if x.primary {
                            ClipboardType::Primary
