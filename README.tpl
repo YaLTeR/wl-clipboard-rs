@@ -7,13 +7,13 @@
 
 {{readme}}
 
-### Status
+### Terminal applications
 
-`wl-paste`: done.
-
-`wl-copy`: done.
+- `wl-paste`: implements `wl-paste` from [wl-clipboard](https://github.com/bugaevc/wl-clipboard).
+- `wl-copy`: implements `wl-copy` from [wl-clipboard](https://github.com/bugaevc/wl-clipboard).
+- `wl-clip`: a Wayland version of `xclip`.
 
 Stuff that would be neat to add:
-- Utilities that mimic `xclip` and `xsel` commandline flags.
+- Utility that mimics `xsel` commandline flags.
 
 License: {{license}}

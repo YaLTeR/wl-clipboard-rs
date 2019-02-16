@@ -21,7 +21,8 @@ the compositor must support the second version of the protocol (or higher).
 
 For example applications using these features, see `src/bin/wl_copy.rs` and
 `src/bin/wl_paste.rs` which implement terminal apps similar to
-[wl-clipboard](https://github.com/bugaevc/wl-clipboard).
+[wl-clipboard](https://github.com/bugaevc/wl-clipboard) or `src/bin/wl_clip.rs` which
+implements a Wayland version of `xclip`.
 
 The Rust implementation of the Wayland client is used by default; use the `native_lib` feature
 to link to `libwayland-client.so` for communication instead. A `dlopen` feature is also
@@ -61,13 +62,13 @@ match result {
 }
 ```
 
-### Status
+### Terminal applications
 
-`wl-paste`: done.
-
-`wl-copy`: done.
+- `wl-paste`: implements `wl-paste` from [wl-clipboard](https://github.com/bugaevc/wl-clipboard).
+- `wl-copy`: implements `wl-copy` from [wl-clipboard](https://github.com/bugaevc/wl-clipboard).
+- `wl-clip`: a Wayland version of `xclip`.
 
 Stuff that would be neat to add:
-- Utilities that mimic `xclip` and `xsel` commandline flags.
+- Utility that mimics `xsel` commandline flags.
 
 License: MIT/Apache-2.0
