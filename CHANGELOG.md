@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.2.0 (17th Feb 2019)
+
 - **Breaking** Changed `copy::Options::paste_once` to `serve_requests` which
   allows to specify the number of paste requests to serve.
 - Marked `copy::Seat` and `copy::Options` as `Copy`.
