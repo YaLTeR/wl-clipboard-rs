@@ -5,7 +5,7 @@
 //! please use the appropriate Wayland protocols for interacting with the Wayland clipboard
 //! (`wl_data_device` from the core Wayland protocol, the `primary_selection` protocol for the
 //! primary selection), for example via the
-//! [smithay-clipboard](https://github.com/Smithay/smithay-clipboard) crate.
+//! [smithay-clipboard](https://crates.io/crates/smithay-clipboard) crate.
 //!
 //! The protocol used for clipboard interaction is `data-control` from
 //! [wlroots](https://github.com/swaywm/wlr-protocols). When using the regular clipboard, the
@@ -65,6 +65,13 @@
 //! # Ok(())
 //! # }
 //! ```
+//!
+//! # Included terminal utilities
+//!
+//! - `wl-paste`: implements `wl-paste` from
+//!   [wl-clipboard](https://github.com/bugaevc/wl-clipboard).
+//! - `wl-copy`: implements `wl-copy` from [wl-clipboard](https://github.com/bugaevc/wl-clipboard).
+//! - `wl-clip`: a Wayland version of `xclip`.
 
 #![doc(html_root_url = "https://docs.rs/wl-clipboard-rs/0.1.0")]
 #![deny(unsafe_code)]

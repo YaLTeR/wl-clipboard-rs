@@ -2,8 +2,9 @@
 
 [![crates.io](https://img.shields.io/crates/v/wl-clipboard-rs.svg)](https://crates.io/crates/wl-clipboard-rs)
 [![Build Status](https://travis-ci.com/YaLTeR/wl-clipboard-rs.svg?branch=master)](https://travis-ci.com/YaLTeR/wl-clipboard-rs)
+[![Documentation](https://docs.rs/wl-clipboard-rs/badge.svg)](https://docs.rs/wl-clipboard-rs)
 
-[Documentation](https://yalter.github.io/wl-clipboard-rs/wl_clipboard_rs/)
+[Documentation (master)](https://yalter.github.io/wl-clipboard-rs/wl_clipboard_rs/)
 
 A safe Rust crate for working with the Wayland clipboard.
 
@@ -12,7 +13,7 @@ utilities which don't spawn Wayland surfaces (windows). If your application has 
 please use the appropriate Wayland protocols for interacting with the Wayland clipboard
 (`wl_data_device` from the core Wayland protocol, the `primary_selection` protocol for the
 primary selection), for example via the
-[smithay-clipboard](https://github.com/Smithay/smithay-clipboard) crate.
+[smithay-clipboard](https://crates.io/crates/smithay-clipboard) crate.
 
 The protocol used for clipboard interaction is `data-control` from
 [wlroots](https://github.com/swaywm/wlr-protocols). When using the regular clipboard, the
@@ -62,9 +63,10 @@ match result {
 }
 ```
 
-### Terminal applications
+## Included terminal utilities
 
-- `wl-paste`: implements `wl-paste` from [wl-clipboard](https://github.com/bugaevc/wl-clipboard).
+- `wl-paste`: implements `wl-paste` from
+  [wl-clipboard](https://github.com/bugaevc/wl-clipboard).
 - `wl-copy`: implements `wl-copy` from [wl-clipboard](https://github.com/bugaevc/wl-clipboard).
 - `wl-clip`: a Wayland version of `xclip`.
 
