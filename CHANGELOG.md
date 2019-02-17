@@ -1,0 +1,16 @@
+# Changelog
+
+## Unreleased
+
+- **Breaking** Changed `copy::Options::paste_once` to `serve_requests` which
+  allows to specify the number of paste requests to serve.
+- Marked `copy::Seat` and `copy::Options` as `Copy`.
+- Updated `data-control`, it's now merged into `wlr-protocols` so no further
+  changes without a version bump.
+- [wl-copy, wl-paste]: replaced `env_logger` with `stderrlog` which made the
+  binaries much smaller.
+- Implemented `wl-clip`, a Wayland version of `xclip`.
+
+## v0.1.0 (12th Feb 2019)
+
+- Initial release.
