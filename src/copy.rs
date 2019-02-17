@@ -49,7 +49,7 @@ pub enum Source<'a> {
 }
 
 /// Seat to operate on.
-#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
 pub enum Seat<'a> {
     /// Operate on all existing seats at once.
     All,
@@ -81,7 +81,7 @@ impl Default for ServeRequests {
 }
 
 /// Options and flags that are used to customize the copying.
-#[derive(Clone, Eq, PartialEq, Debug, Default, Hash, PartialOrd, Ord)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Hash, PartialOrd, Ord)]
 pub struct Options<'a> {
     /// The clipboard to work with.
     clipboard: ClipboardType,
