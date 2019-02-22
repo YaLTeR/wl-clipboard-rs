@@ -45,7 +45,7 @@ opts.copy(Source::Bytes("Hello world!".as_bytes()), MimeType::Autodetect)?;
 Pasting plain text from the regular clipboard:
 ```rust
 use std::io::Read;
-use wl_clipboard_rs::{paste::{get_contents, Error, MimeType, Seat}, ClipboardType};
+use wl_clipboard_rs::{paste::{get_contents, ClipboardType, Error, MimeType, Seat}};
 
 let result = get_contents(ClipboardType::Regular, Seat::Unspecified, MimeType::Text);
 match result {

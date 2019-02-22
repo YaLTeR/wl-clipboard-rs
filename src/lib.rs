@@ -46,7 +46,7 @@
 //! # use failure::Error;
 //! # fn foo() -> Result<(), Error> {
 //! use std::io::Read;
-//! use wl_clipboard_rs::{paste::{get_contents, Error, MimeType, Seat}, ClipboardType};
+//! use wl_clipboard_rs::{paste::{get_contents, ClipboardType, Error, MimeType, Seat}};
 //!
 //! let result = get_contents(ClipboardType::Regular, Seat::Unspecified, MimeType::Text);
 //! match result {
@@ -87,22 +87,3 @@ mod tests;
 pub mod copy;
 pub mod paste;
 pub mod utils;
-
-/// The clipboard to operate on.
-#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
-pub enum ClipboardType {
-    /// The regular clipboard.
-    Regular,
-    /// The "primary" clipboard.
-    ///
-    /// Working with the "primary" clipboard requires the compositor to support the data-control
-    /// protocol of version 2 or above.
-    Primary,
-}
-
-impl Default for ClipboardType {
-    #[inline]
-    fn default() -> Self {
-        ClipboardType::Regular
-    }
-}

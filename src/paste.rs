@@ -19,8 +19,26 @@ use crate::{
     handlers::DataDeviceHandler,
     seat_data::SeatData,
     utils::is_text,
-    ClipboardType,
 };
+
+/// The clipboard to operate on.
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+pub enum ClipboardType {
+    /// The regular clipboard.
+    Regular,
+    /// The "primary" clipboard.
+    ///
+    /// Working with the "primary" clipboard requires the compositor to support the data-control
+    /// protocol of version 2 or above.
+    Primary,
+}
+
+impl Default for ClipboardType {
+    #[inline]
+    fn default() -> Self {
+        ClipboardType::Regular
+    }
+}
 
 /// MIME types that can be requested from the clipboard.
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
@@ -189,7 +207,7 @@ fn get_offer(primary: bool,
 /// # extern crate wl_clipboard_rs;
 /// # use wl_clipboard_rs::paste::Error;
 /// # fn foo() -> Result<(), Error> {
-/// use wl_clipboard_rs::{paste::{get_mime_types, Seat}, ClipboardType};
+/// use wl_clipboard_rs::{paste::{get_mime_types, ClipboardType, Seat}};
 ///
 /// let mime_types = get_mime_types(ClipboardType::Regular, Seat::Unspecified)?;
 /// for mime_type in mime_types {
@@ -237,7 +255,7 @@ pub(crate) fn get_mime_types_internal(clipboard: ClipboardType,
 /// # use failure::Error;
 /// # fn foo() -> Result<(), Error> {
 /// use std::io::Read;
-/// use wl_clipboard_rs::{paste::{get_contents, Error, MimeType, Seat}, ClipboardType};
+/// use wl_clipboard_rs::{paste::{get_contents, ClipboardType, Error, MimeType, Seat}};
 ///
 /// let result = get_contents(ClipboardType::Regular, Seat::Unspecified, MimeType::Any);
 /// match result {

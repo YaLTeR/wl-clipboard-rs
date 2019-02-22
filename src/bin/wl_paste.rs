@@ -11,7 +11,7 @@ use libc::STDOUT_FILENO;
 use log::info;
 use mime_guess::{guess_mime_type, Mime};
 use structopt::{clap::AppSettings, StructOpt};
-use wl_clipboard_rs::{paste::*, utils::is_text, ClipboardType};
+use wl_clipboard_rs::{paste::*, utils::is_text};
 
 #[derive(StructOpt)]
 #[structopt(name = "wl-paste",

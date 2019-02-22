@@ -25,8 +25,26 @@ use crate::{
     handlers::{DataDeviceHandler, DataSourceError, DataSourceHandler},
     seat_data::SeatData,
     utils::{self, copy_data, is_text},
-    ClipboardType,
 };
+
+/// The clipboard to operate on.
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+pub enum ClipboardType {
+    /// The regular clipboard.
+    Regular,
+    /// The "primary" clipboard.
+    ///
+    /// Working with the "primary" clipboard requires the compositor to support the data-control
+    /// protocol of version 2 or above.
+    Primary,
+}
+
+impl Default for ClipboardType {
+    #[inline]
+    fn default() -> Self {
+        ClipboardType::Regular
+    }
+}
 
 /// MIME type to offer the copied data under.
 #[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
@@ -407,7 +425,7 @@ fn get_devices(
 /// # extern crate wl_clipboard_rs;
 /// # use wl_clipboard_rs::copy::Error;
 /// # fn foo() -> Result<(), Error> {
-/// use wl_clipboard_rs::{copy::{clear, Seat}, ClipboardType};
+/// use wl_clipboard_rs::{copy::{clear, ClipboardType, Seat}};
 ///
 /// clear(ClipboardType::Regular, Seat::All)?;
 /// # Ok(())

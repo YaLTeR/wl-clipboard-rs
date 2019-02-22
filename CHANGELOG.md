@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Breaking** Moved `ClipboardType` into `copy::` and `paste::`.
+
 ## v0.2.0 (17th Feb 2019)
 
 - **Breaking** Changed `copy::Options::paste_once` to `serve_requests` which

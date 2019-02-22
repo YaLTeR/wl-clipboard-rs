@@ -24,7 +24,7 @@ use wayland_protocols::wlr::unstable::data_control::v1::server::{
 };
 use wayland_server::{protocol::wl_seat::WlSeat as ServerSeat, NewResource};
 
-use crate::{copy::*, tests::TestServer, ClipboardType};
+use crate::{copy::*, tests::TestServer};
 
 #[test]
 fn clear_test() {

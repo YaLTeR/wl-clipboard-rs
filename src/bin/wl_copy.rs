@@ -5,10 +5,7 @@ use std::{ffi::OsString, os::unix::ffi::OsStrExt};
 use exitfailure::ExitFailure;
 use structopt::{clap::AppSettings, StructOpt};
 
-use wl_clipboard_rs::{
-    copy::{self, clear, MimeType, Seat, ServeRequests, Source},
-    ClipboardType,
-};
+use wl_clipboard_rs::copy::{self, clear, ClipboardType, MimeType, Seat, ServeRequests, Source};
 
 #[derive(StructOpt)]
 #[structopt(name = "wl-copy",

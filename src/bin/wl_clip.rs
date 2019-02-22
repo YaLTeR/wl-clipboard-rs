@@ -15,7 +15,6 @@ use wl_clipboard_rs::{
     copy::{self, ServeRequests, Source},
     paste::{self, get_contents},
     utils::is_text,
-    ClipboardType,
 };
 
 #[derive(Clone, Copy, Eq, PartialEq)]
@@ -204,9 +203,9 @@ impl<'a> From<&'a Options> for copy::Options<'a> {
                             })
             .foreground(x.verbosity != Verbosity::Silent)
             .clipboard(if x.primary {
-                           ClipboardType::Primary
+                           copy::ClipboardType::Primary
                        } else {
-                           ClipboardType::Regular
+                           copy::ClipboardType::Regular
                        })
             .trim_newline(x.rmlastnl);
         opts
@@ -233,9 +232,9 @@ fn main() -> Result<(), ExitFailure> {
         };
 
         let clipboard_type = if options.primary {
-            ClipboardType::Primary
+            paste::ClipboardType::Primary
         } else {
-            ClipboardType::Regular
+            paste::ClipboardType::Regular
         };
 
         let (mut read, mime_type) =
