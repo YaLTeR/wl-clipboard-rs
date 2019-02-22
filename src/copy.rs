@@ -5,6 +5,7 @@ use std::{
     ffi::OsString,
     fs::{remove_dir, remove_file, File, OpenOptions},
     io::{self, Read, Seek, SeekFrom, Write},
+    iter,
     os::unix::io::IntoRawFd,
     path::PathBuf,
     process,
@@ -37,6 +38,8 @@ pub enum ClipboardType {
     /// Working with the "primary" clipboard requires the compositor to support the data-control
     /// protocol of version 2 or above.
     Primary,
+    /// Operate on both clipboards at once.
+    Both,
 }
 
 impl Default for ClipboardType {
@@ -440,13 +443,14 @@ pub(crate) fn clear_internal(clipboard: ClipboardType,
                              seat: Seat<'_>,
                              socket_name: Option<OsString>)
                              -> Result<(), Error> {
-    let primary = clipboard == ClipboardType::Primary;
+    let primary = clipboard != ClipboardType::Regular;
     let (mut queue, _, devices) = get_devices(primary, seat, socket_name)?;
 
     for device in devices {
-        if primary {
+        if clipboard == ClipboardType::Primary || clipboard == ClipboardType::Both {
             device.set_primary_selection(None);
-        } else {
+        }
+        if clipboard == ClipboardType::Regular || clipboard == ClipboardType::Both {
             device.set_selection(None);
         }
     }
@@ -458,7 +462,7 @@ pub(crate) fn clear_internal(clipboard: ClipboardType,
     Ok(())
 }
 
-fn copy_past_fork(primary: bool,
+fn copy_past_fork(clipboard: ClipboardType,
                   serve_requests: ServeRequests,
                   mut queue: EventQueue,
                   clipboard_manager: ZwlrDataControlManagerV1,
@@ -471,43 +475,62 @@ fn copy_past_fork(primary: bool,
     let error = Rc::new(RefCell::new(None::<DataSourceError>));
     let serve_requests = Rc::new(Cell::new(serve_requests));
 
+    // Create an iterator over (device, primary) for source creation later.
+    //
+    // This is needed because for ClipboardType::Both each device needs to appear twice because
+    // separate data sources need to be made for the regular and the primary clipboards (data
+    // sources cannot be reused).
+    let devices_iter = devices.iter().flat_map(|device| {
+                                         let first = match clipboard {
+                                             ClipboardType::Regular => iter::once((device, false)),
+                                             ClipboardType::Primary => iter::once((device, true)),
+                                             ClipboardType::Both => iter::once((device, false)),
+                                         };
+
+                                         let second = if clipboard == ClipboardType::Both {
+                                             iter::once(Some((device, true)))
+                                         } else {
+                                             iter::once(None)
+                                         };
+
+                                         first.chain(second.filter_map(|x| x))
+                                     });
+
     // Create the data sources and set them as selections.
-    let sources = devices.iter()
-                         .map(|device| {
-                             let handler = DataSourceHandler::new(data_path.clone(),
-                                                                  should_quit.clone(),
-                                                                  serve_requests.clone());
-                             let data_source = clipboard_manager.create_data_source(|source| {
-                                                                    source.implement(handler,
-                                                                                     error.clone())
-                                                                })
-                                                                .unwrap();
+    let sources = devices_iter.map(|(device, primary)| {
+                                  let handler = DataSourceHandler::new(data_path.clone(),
+                                                                       should_quit.clone(),
+                                                                       serve_requests.clone());
+                                  let data_source = clipboard_manager.create_data_source(|source| {
+                                                        source.implement(handler, error.clone())
+                                                    })
+                                                    .unwrap();
 
-                             // If the MIME type is text, offer it in some other common formats.
-                             if is_text(&mime_type) {
-                                 data_source.offer("text/plain;charset=utf-8".to_string());
-                                 data_source.offer("text/plain".to_string());
-                                 data_source.offer("STRING".to_string());
-                                 data_source.offer("UTF8_STRING".to_string());
-                                 data_source.offer("TEXT".to_string());
-                             }
+                                  // If the MIME type is text, offer it in some other common formats.
+                                  if is_text(&mime_type) {
+                                      data_source.offer("text/plain;charset=utf-8".to_string());
+                                      data_source.offer("text/plain".to_string());
+                                      data_source.offer("STRING".to_string());
+                                      data_source.offer("UTF8_STRING".to_string());
+                                      data_source.offer("TEXT".to_string());
+                                  }
 
-                             data_source.offer(mime_type.clone());
+                                  data_source.offer(mime_type.clone());
 
-                             if primary {
-                                 device.set_primary_selection(Some(&data_source));
-                             } else {
-                                 device.set_selection(Some(&data_source));
-                             }
+                                  if primary {
+                                      device.set_primary_selection(Some(&data_source));
+                                  } else {
+                                      device.set_selection(Some(&data_source));
+                                  }
 
-                             // If we need to serve 0 requests, kill the data source right away.
-                             if let ServeRequests::Only(0) = serve_requests.get() {
-                                 data_source.destroy();
-                             }
+                                  // If we need to serve 0 requests, kill the data source right away.
+                                  if let ServeRequests::Only(0) = serve_requests.get() {
+                                      data_source.destroy();
+                                  }
 
-                             data_source.into()
-                         })
-                         .collect::<Vec<Proxy<_>>>();
+                                  data_source.into()
+                              })
+                              .collect::<Vec<Proxy<_>>>();
 
     // Loop until we're done.
     while !should_quit.get() {
@@ -568,7 +591,7 @@ pub(crate) fn copy_internal(options: Options<'_>,
                   foreground,
                   serve_requests, } = options;
 
-    let primary = clipboard == ClipboardType::Primary;
+    let primary = clipboard != ClipboardType::Regular;
     let (queue, clipboard_manager, devices) = get_devices(primary, seat, socket_name)?;
 
     // Collect the source data to copy.
@@ -583,7 +606,7 @@ pub(crate) fn copy_internal(options: Options<'_>,
     }
     // If we forked, we must not return back past this point, just exit the process.
 
-    let result = copy_past_fork(primary,
+    let result = copy_past_fork(clipboard,
                                 serve_requests,
                                 queue,
                                 clipboard_manager,
