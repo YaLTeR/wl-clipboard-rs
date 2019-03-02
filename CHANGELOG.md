@@ -4,6 +4,8 @@
 
 - **Breaking** Moved `ClipboardType` into `copy::` and `paste::`.
 - Added `copy::ClipboardType::Both` for operating both clipboards at once.
+- [wl-copy]: added `--regular`, which, when set together with `--primary`,
+  makes `wl-copy` operate on both clipboards at once.
 
 ## v0.2.0 (17th Feb 2019)
 

@@ -37,6 +37,13 @@ struct Options {
     #[structopt(long, short)]
     primary: bool,
 
+    /// Use the regular clipboard
+    ///
+    /// Set this flag together with --primary to operate on both clipboards at once. Has no effect
+    /// otherwise (since the regular clipboard is the default clipboard).
+    #[structopt(long, short)]
+    regular: bool,
+
     /// Trim the trailing newline character before copying
     ///
     /// This flag is only applied for text MIME types.
@@ -77,7 +84,11 @@ impl<'a> From<&'a Options> for copy::Options<'a> {
                             })
             .foreground(x.foreground)
             .clipboard(if x.primary {
-                           ClipboardType::Primary
+                           if x.regular {
+                               ClipboardType::Both
+                           } else {
+                               ClipboardType::Primary
+                           }
                        } else {
                            ClipboardType::Regular
                        })
