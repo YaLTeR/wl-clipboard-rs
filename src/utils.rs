@@ -30,7 +30,7 @@ pub fn is_text(mime_type: &str) -> bool {
 
 /// Errors that can occur in `copy_data()`.
 #[derive(Fail, Debug)]
-pub enum Error {
+pub enum CopyDataError {
     #[fail(display = "Couldn't set the source file descriptor flags")]
     SetSourceFdFlags(#[cause] nix::Error),
 
@@ -85,7 +85,7 @@ pub enum Error {
 /// # Ok(())
 /// # }
 /// ```
-pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(), Error> {
+pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(), CopyDataError> {
     // We use the cat utility for data copying. It's easier (no need to implement any comlpex
     // buffering logic), surprisingly safer (a Rust implementation would likely require usage of
     // `from_raw_fd()` which is unsafe) and ideally faster (cat's been around for a while and is
@@ -93,16 +93,16 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(),
 
     // Clear O_NONBLOCK because cat doesn't know how to deal with it.
     if let Some(from_fd) = from_fd {
-        fcntl(from_fd, FcntlArg::F_SETFL(OFlag::empty())).map_err(Error::SetSourceFdFlags)?;
+        fcntl(from_fd, FcntlArg::F_SETFL(OFlag::empty())).map_err(CopyDataError::SetSourceFdFlags)?;
     }
-    fcntl(to_fd, FcntlArg::F_SETFL(OFlag::empty())).map_err(Error::SetTargetFdFlags)?;
+    fcntl(to_fd, FcntlArg::F_SETFL(OFlag::empty())).map_err(CopyDataError::SetTargetFdFlags)?;
 
     // Don't allocate memory in the child process, it's not async-signal-safe.
     let cat = CString::new("cat").unwrap();
     let also_cat = cat.clone();
 
     // Fork and exec cat.
-    let fork_result = fork().map_err(Error::Fork)?;
+    let fork_result = fork().map_err(CopyDataError::Fork)?;
     match fork_result {
         ForkResult::Child => {
             if let Some(fd) = from_fd {
@@ -136,20 +136,20 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(),
         ForkResult::Parent { child } => {
             // Close the fds in the parent process.
             if let Some(fd) = from_fd {
-                close(fd).map_err(Error::CloseSourceFd)?;
+                close(fd).map_err(CopyDataError::CloseSourceFd)?;
             }
 
-            close(to_fd).map_err(Error::CloseTargetFd)?;
+            close(to_fd).map_err(CopyDataError::CloseTargetFd)?;
 
             if wait {
                 // Wait for the child process to exit.
-                match waitpid(child, None).map_err(Error::Wait)? {
+                match waitpid(child, None).map_err(CopyDataError::Wait)? {
                     WaitStatus::Exited(_, status) => {
                         if status != 0 {
-                            return Err(Error::ChildError(status));
+                            return Err(CopyDataError::ChildError(status));
                         }
                     }
-                    x => return Err(Error::WaitUnexpected(x)),
+                    x => return Err(CopyDataError::WaitUnexpected(x)),
                 }
             }
         }

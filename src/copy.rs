@@ -140,7 +140,7 @@ pub enum SourceCreationError {
     TempFileCreate(#[cause] io::Error),
 
     #[fail(display = "Couldn't copy data to the temporary file")]
-    DataCopy(#[cause] utils::Error),
+    DataCopy(#[cause] utils::CopyDataError),
 
     #[fail(display = "Couldn't write to the temporary file")]
     TempFileWrite(#[cause] io::Error),

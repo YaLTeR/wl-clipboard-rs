@@ -101,7 +101,7 @@ pub enum DataSourceError {
     FileOpen(#[cause] io::Error),
 
     #[fail(display = "Couldn't copy the data to the target file descriptor")]
-    Copy(#[cause] utils::Error),
+    Copy(#[cause] utils::CopyDataError),
 }
 
 #[derive(new)]
