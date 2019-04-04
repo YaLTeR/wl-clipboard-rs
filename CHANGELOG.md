@@ -3,7 +3,9 @@
 ## Unreleased
 
 - **Breaking** Moved `ClipboardType` into `copy::` and `paste::`.
+- **Breaking** Renamed `utils::Error` into `utils::CopyDataError`.
 - Added `copy::ClipboardType::Both` for operating both clipboards at once.
+- Added `utils::is_primary_selection_supported()`.
 - [wl-copy]: added `--regular`, which, when set together with `--primary`,
   makes `wl-copy` operate on both clipboards at once.
 
