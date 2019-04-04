@@ -79,8 +79,8 @@
 //!
 //! match is_primary_selection_supported() {
 //!     Ok(supported) => {
-//!         // We have our definitive result. This means that either data-control version 1 is
-//!         // present (which does not support the primary selection), or that data-control
+//!         // We have our definitive result. False means that either data-control version 1
+//!         // is present (which does not support the primary selection), or that data-control
 //!         // version 2 is present and it did not signal the primary selection support.
 //!     },
 //!     Err(PrimarySelectionCheckError::NoSeats) => {
