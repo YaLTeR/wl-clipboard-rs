@@ -4,6 +4,7 @@ use wayland_server as ways;
 
 mod copy;
 mod paste;
+mod utils;
 
 // Taken from wayland-rs: https://github.com/Smithay/wayland-rs
 pub(crate) struct TestServer {
