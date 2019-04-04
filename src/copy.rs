@@ -39,6 +39,9 @@ pub enum ClipboardType {
     /// protocol of version 2 or above.
     Primary,
     /// Operate on both clipboards at once.
+    ///
+    /// Useful for atomically setting both clipboards at once. This option requires the "primary"
+    /// clipboard to be supported.
     Both,
 }
 
