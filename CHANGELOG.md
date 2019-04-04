@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.3.0 (4th Apr 2019)
+
 - **Breaking** Moved `ClipboardType` into `copy::` and `paste::`.
 - **Breaking** Renamed `utils::Error` into `utils::CopyDataError`.
 - Added `copy::ClipboardType::Both` for operating both clipboards at once.
