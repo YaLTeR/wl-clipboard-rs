@@ -247,7 +247,7 @@ pub(crate) fn is_primary_selection_supported_internal(
     let seats_2 = seats.clone();
     let global_manager =
         GlobalManager::new_with_cb(&display,
-                                   global_filter!([WlSeat, 6, move |seat: NewProxy<WlSeat>| {
+                                   global_filter!([WlSeat, 2, move |seat: NewProxy<WlSeat>| {
                                                       let seat_data =
                                                           RefCell::new(SeatData::default());
                                                       let seat =

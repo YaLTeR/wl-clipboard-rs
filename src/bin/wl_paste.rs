@@ -9,7 +9,7 @@ use exitfailure::ExitFailure;
 use failure::ResultExt;
 use libc::STDOUT_FILENO;
 use log::info;
-use mime_guess::{guess_mime_type, Mime};
+use mime_guess::Mime;
 use structopt::{clap::AppSettings, StructOpt};
 use wl_clipboard_rs::{paste::*, utils::is_text};
 
@@ -59,11 +59,11 @@ struct Options {
     verbose: usize,
 }
 
-fn infer_mime_type() -> Mime {
+fn infer_mime_type() -> Option<Mime> {
     if let Ok(stdout_path) = read_link(&format!("/dev/fd/{}", STDOUT_FILENO)) {
-        guess_mime_type(stdout_path)
+        mime_guess::from_path(stdout_path).first()
     } else {
-        "application/octet-stream".parse().unwrap()
+        None
     }
 }
 
@@ -99,7 +99,7 @@ fn main() -> Result<(), ExitFailure> {
 
     // No MIME type specified—try inferring one from the output file extension (if any).
     let inferred = if options.mime_type.is_none() {
-        Some(infer_mime_type())
+        infer_mime_type()
     } else {
         None
     };
@@ -109,19 +109,16 @@ fn main() -> Result<(), ExitFailure> {
         Some(ref mime_type) if mime_type == "text" => MimeType::Text,
         Some(ref mime_type) => MimeType::Specific(mime_type),
         None => {
-            let inferred = inferred.as_ref().unwrap().as_ref();
-            info!("Inferred MIME type: {}", inferred);
-
-            if inferred == "application/octet-stream" {
-                MimeType::Any
-            } else if is_text(inferred) {
+            let inferred: Option<&str> = inferred.as_ref().map(Mime::as_ref);
+            info!("Inferred MIME type: {:?}", inferred);
+            match inferred {
+                None | Some("application/octet-stream") => MimeType::Any,
                 // If the inferred MIME type is text, make sure we'll fall back to requesting
                 // other plain text types if this particular one is unavailable.
-                MimeType::TextWithPriority(inferred)
-            } else {
-                MimeType::Specific(inferred)
+                Some(t) if is_text(t) => MimeType::TextWithPriority(t),
+                Some(t) => MimeType::Specific(t),
             }
-        }
+        },
     };
 
     let (mut read, mime_type) = get_contents(primary, seat, mime_type)?;
