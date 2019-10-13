@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reduced the `wl_seat` version requirement from 6 to 2.
+
 ## v0.3.0 (4th Apr 2019)
 
 - **Breaking** Moved `ClipboardType` into `copy::` and `paste::`.

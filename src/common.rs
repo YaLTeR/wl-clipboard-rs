@@ -40,7 +40,7 @@ pub fn initialize(primary: bool, socket_name: Option<OsString>) -> Result<Common
     let seats_2 = seats.clone();
     let global_manager =
         GlobalManager::new_with_cb(&display,
-                                   global_filter!([WlSeat, 6, move |seat: NewProxy<WlSeat>| {
+                                   global_filter!([WlSeat, 2, move |seat: NewProxy<WlSeat>| {
                                                       let seat_data =
                                                           RefCell::new(SeatData::default());
                                                       let seat =
