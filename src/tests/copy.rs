@@ -266,11 +266,13 @@ fn copy_multi_test() {
                                                 });
 
     let (mut read, write) = pipe().unwrap();
+    let (mut read2, write2) = pipe().unwrap();
 
     if let Some(source) = selection.borrow().as_ref() {
         source.send("test".to_string(), write.as_raw_fd());
-        source.send("test2".to_string(), write.as_raw_fd());
         drop(write);
+        source.send("test2".to_string(), write2.as_raw_fd());
+        drop(write2);
         source.cancelled();
     }
 
@@ -280,13 +282,17 @@ fn copy_multi_test() {
     let mut contents = vec![];
     read.read_to_end(&mut contents).unwrap();
 
+    let mut contents2 = vec![];
+    read2.read_to_end(&mut contents2).unwrap();
+
     child.join().unwrap().unwrap();
 
     assert!(mime_types.is_some());
     let mut mimes = mime_types.unwrap();
     mimes.sort();
     assert_eq!(mimes, vec!["test".to_string(), "test2".to_string()]);
-    assert_eq!(contents, [1, 3, 3, 7, 2, 4, 4]);
+    assert_eq!(contents, [1, 3, 3, 7]);
+    assert_eq!(contents2, [2, 4, 4]);
 }
 
 // The idea here is to exceed the pipe capacity. This fails unless O_NONBLOCK is cleared when
