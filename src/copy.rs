@@ -2,6 +2,7 @@
 
 use std::{
     cell::{Cell, RefCell},
+    collections::HashMap,
     ffi::OsString,
     fs::{remove_dir, remove_file, File, OpenOptions},
     io::{self, Read, Seek, SeekFrom, Write},
@@ -285,6 +286,12 @@ impl<'a> Options<'a> {
     pub fn copy(self, source: Source<'_>, mime_type: MimeType) -> Result<(), Error> {
         copy(self, source, mime_type)
     }
+
+    /// Invokes the copy_multi operation. See `copy_multi()`.
+    #[inline]
+    pub fn copy_multi(self, sources: Vec<(Source<'_>, MimeType)>) -> Result<(), Error> {
+        copy_multi(self, sources)
+    }
 }
 
 fn make_source(source: Source<'_>,
@@ -470,10 +477,8 @@ fn copy_past_fork(clipboard: ClipboardType,
                   mut queue: EventQueue,
                   clipboard_manager: ZwlrDataControlManagerV1,
                   devices: Vec<ZwlrDataControlDeviceV1>,
-                  mime_type: String,
-                  data_path: PathBuf)
+                  data_paths: HashMap<String, Rc<RefCell<PathBuf>>>)
                   -> Result<(), Error> {
-    let data_path = Rc::new(RefCell::new(data_path));
     let should_quit = Rc::new(Cell::new(false));
     let error = Rc::new(RefCell::new(None::<DataSourceError>));
     let serve_requests = Rc::new(Cell::new(serve_requests));
@@ -500,40 +505,43 @@ fn copy_past_fork(clipboard: ClipboardType,
                                      });
 
     // Create the data sources and set them as selections.
-    let sources = devices_iter.map(|(device, primary)| {
-                                  let handler = DataSourceHandler::new(data_path.clone(),
-                                                                       should_quit.clone(),
-                                                                       serve_requests.clone());
-                                  let data_source = clipboard_manager.create_data_source(|source| {
-                                                        source.implement(handler, error.clone())
-                                                    })
-                                                    .unwrap();
+    let mut sources: Vec<Proxy<_>> = Vec::new();
+    for (device, primary) in devices_iter {
+        for (mime_type, data_path) in data_paths.iter() {
+            let handler = DataSourceHandler::new(data_path.clone(),
+                                                should_quit.clone(),
+                                                serve_requests.clone());
+            let data_source = clipboard_manager.create_data_source(|source| {
+                                source.implement(handler, error.clone())
+                            })
+                            .unwrap();
 
-                                  // If the MIME type is text, offer it in some other common formats.
-                                  if is_text(&mime_type) {
-                                      data_source.offer("text/plain;charset=utf-8".to_string());
-                                      data_source.offer("text/plain".to_string());
-                                      data_source.offer("STRING".to_string());
-                                      data_source.offer("UTF8_STRING".to_string());
-                                      data_source.offer("TEXT".to_string());
-                                  }
+            // If the MIME type is text, offer it in some other common formats.
+            // if is_text(&mime_type) {
+            //     data_source.offer("text/plain;charset=utf-8".to_string());
+            //     data_source.offer("text/plain".to_string());
+            //     data_source.offer("STRING".to_string());
+            //     data_source.offer("UTF8_STRING".to_string());
+            //     data_source.offer("TEXT".to_string());
+            // }
 
-                                  data_source.offer(mime_type.clone());
+            data_source.offer(mime_type.clone());
 
-                                  if primary {
-                                      device.set_primary_selection(Some(&data_source));
-                                  } else {
-                                      device.set_selection(Some(&data_source));
-                                  }
+            if primary {
+                device.set_primary_selection(Some(&data_source));
+            } else {
+                device.set_selection(Some(&data_source));
+            }
 
-                                  // If we need to serve 0 requests, kill the data source right away.
-                                  if let ServeRequests::Only(0) = serve_requests.get() {
-                                      data_source.destroy();
-                                  }
+            // If we need to serve 0 requests, kill the data source right away.
+            if let ServeRequests::Only(0) = serve_requests.get() {
+                data_source.destroy();
+            }
 
-                                  data_source.into()
-                              })
-                              .collect::<Vec<Proxy<_>>>();
+            sources.push(data_source.into());
+        };
+    };
+    let sources = sources;
 
     // Loop until we're done.
     while !should_quit.get() {
@@ -547,10 +555,12 @@ fn copy_past_fork(clipboard: ClipboardType,
     }
 
     // Clean up the temp file and directory.
-    let mut data_path = data_path.borrow_mut();
-    remove_file(&*data_path).map_err(Error::TempFileRemove)?;
-    data_path.pop();
-    remove_dir(&*data_path).map_err(Error::TempDirRemove)?;
+    for (_, data_path) in data_paths.iter() {
+        let mut data_path = data_path.borrow_mut();
+        remove_file(&*data_path).map_err(Error::TempFileRemove)?;
+        data_path.pop();
+        remove_dir(&*data_path).map_err(Error::TempDirRemove)?;
+    };
 
     // Check if an error occurred during data transfer.
     if let Some(err) = error.borrow_mut().take() {
@@ -580,12 +590,22 @@ fn copy_past_fork(clipboard: ClipboardType,
 /// ```
 #[inline]
 pub fn copy(options: Options<'_>, source: Source<'_>, mime_type: MimeType) -> Result<(), Error> {
-    copy_internal(options, source, mime_type, None)
+    let sources = {
+        let mut sources = Vec::new();
+        sources.push((source, mime_type));
+        sources
+    };
+    copy_internal(options, sources, None)
+}
+
+/// Copies multiple data to the clipboard.
+#[inline]
+pub fn copy_multi(options: Options<'_>, sources: Vec<(Source<'_>, MimeType)>) -> Result<(), Error> {
+    copy_internal(options, sources, None)
 }
 
 pub(crate) fn copy_internal(options: Options<'_>,
-                            source: Source<'_>,
-                            mime_type: MimeType,
+                            sources: Vec<(Source<'_>, MimeType)>,
                             socket_name: Option<OsString>)
                             -> Result<(), Error> {
     let Options { clipboard,
@@ -598,8 +618,12 @@ pub(crate) fn copy_internal(options: Options<'_>,
     let (queue, clipboard_manager, devices) = get_devices(primary, seat, socket_name)?;
 
     // Collect the source data to copy.
-    let (mime_type, data_path) =
-        make_source(source, mime_type, trim_newline).map_err(Error::TempCopy)?;
+    let mut data_paths = HashMap::new();
+    for (source, mime_type) in sources {
+        let (mime_type, data_path) =
+            make_source(source, mime_type, trim_newline).map_err(Error::TempCopy)?;
+        data_paths.insert(mime_type, Rc::new(RefCell::new(data_path)));
+    };
 
     if !foreground {
         // Fork an exit the parent.
@@ -614,8 +638,7 @@ pub(crate) fn copy_internal(options: Options<'_>,
                                 queue,
                                 clipboard_manager,
                                 devices,
-                                mime_type,
-                                data_path);
+                                data_paths);
 
     if foreground {
         return result;
