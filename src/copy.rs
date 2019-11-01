@@ -597,13 +597,13 @@ fn copy_past_fork(clipboard: ClipboardType,
 #[inline]
 pub fn copy(options: Options<'_>, source: Source<'_>, mime_type: MimeType) -> Result<(), Error> {
     let sources = vec![MimeSource { source: source, mime: mime_type}];
-    copy_internal(options, sources, None, true)
+    copy_internal(options, sources, None)
 }
 
 /// Copies multiple data to the clipboard.
 #[inline]
 pub fn copy_multi(options: Options<'_>, sources: Vec<MimeSource>) -> Result<(), Error> {
-    copy_internal(options, sources, None, false)
+    copy_internal(options, sources, None)
 }
 
 pub(crate) fn copy_internal(options: Options<'_>,
