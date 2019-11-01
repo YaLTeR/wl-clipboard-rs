@@ -598,11 +598,7 @@ fn copy_past_fork(clipboard: ClipboardType,
 /// ```
 #[inline]
 pub fn copy(options: Options<'_>, source: Source<'_>, mime_type: MimeType) -> Result<(), Error> {
-    let sources = {
-        let mut sources = Vec::new();
-        sources.push(MimeSource { source: source, mime: mime_type});
-        sources
-    };
+    let sources = vec![MimeSource { source: source, mime: mime_type}];
     copy_internal(options, sources, None, true)
 }
 
