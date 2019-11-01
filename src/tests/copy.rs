@@ -145,7 +145,8 @@ fn copy_test() {
         let sources = vec![(Source::Bytes(&[1, 3, 3, 7]), MimeType::Specific("test".to_string()))];
         copy_internal(opts,
                       sources,
-                      Some(socket_name))
+                      Some(socket_name),
+                      true)
     });
 
     thread::sleep(Duration::from_millis(100));
@@ -255,7 +256,8 @@ fn copy_large() {
             let sources = vec![(Source::Bytes(&bytes_to_copy), MimeType::Specific("test".to_string()))];
             copy_internal(opts,
                           sources,
-                          Some(socket_name))
+                          Some(socket_name),
+                          true)
         })
     };
 
