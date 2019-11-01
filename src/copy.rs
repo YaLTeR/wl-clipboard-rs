@@ -73,6 +73,13 @@ pub enum Source<'a> {
     Bytes(&'a [u8]),
 }
 
+/// Source for copying, with its MIME type included
+#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+pub struct MimeSource<'a> {
+    pub source: Source<'a>,
+    pub mime: MimeType,
+}
+
 /// Seat to operate on.
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
 pub enum Seat<'a> {
@@ -289,7 +296,7 @@ impl<'a> Options<'a> {
 
     /// Invokes the copy_multi operation. See `copy_multi()`.
     #[inline]
-    pub fn copy_multi(self, sources: Vec<(Source<'_>, MimeType)>) -> Result<(), Error> {
+    pub fn copy_multi(self, sources: Vec<MimeSource>) -> Result<(), Error> {
         copy_multi(self, sources)
     }
 }
@@ -593,7 +600,7 @@ fn copy_past_fork(clipboard: ClipboardType,
 pub fn copy(options: Options<'_>, source: Source<'_>, mime_type: MimeType) -> Result<(), Error> {
     let sources = {
         let mut sources = Vec::new();
-        sources.push((source, mime_type));
+        sources.push(MimeSource { source: source, mime: mime_type});
         sources
     };
     copy_internal(options, sources, None, true)
@@ -601,12 +608,12 @@ pub fn copy(options: Options<'_>, source: Source<'_>, mime_type: MimeType) -> Re
 
 /// Copies multiple data to the clipboard.
 #[inline]
-pub fn copy_multi(options: Options<'_>, sources: Vec<(Source<'_>, MimeType)>) -> Result<(), Error> {
+pub fn copy_multi(options: Options<'_>, sources: Vec<MimeSource>) -> Result<(), Error> {
     copy_internal(options, sources, None, false)
 }
 
 pub(crate) fn copy_internal(options: Options<'_>,
-                            sources: Vec<(Source<'_>, MimeType)>,
+                            sources: Vec<MimeSource>,
                             socket_name: Option<OsString>,
                             create_multi_text: bool)
                             -> Result<(), Error> {
@@ -621,9 +628,9 @@ pub(crate) fn copy_internal(options: Options<'_>,
 
     // Collect the source data to copy.
     let mut data_paths = HashMap::new();
-    for (source, mime_type) in sources {
+    for mimesource in sources {
         let (mime_type, data_path) =
-            make_source(source, mime_type, trim_newline).map_err(Error::TempCopy)?;
+            make_source(mimesource.source, mimesource.mime, trim_newline).map_err(Error::TempCopy)?;
         data_paths.insert(mime_type, Rc::new(RefCell::new(data_path)));
     };
 

@@ -142,7 +142,7 @@ fn copy_test() {
     let child = thread::spawn(move || {
         let mut opts = Options::new();
         opts.foreground(true);
-        let sources = vec![(Source::Bytes(&[1, 3, 3, 7]), MimeType::Specific("test".to_string()))];
+        let sources = vec![MimeSource { source: Source::Bytes(&[1, 3, 3, 7]), mime: MimeType::Specific("test".to_string()) }];
         copy_internal(opts,
                       sources,
                       Some(socket_name),
@@ -253,7 +253,7 @@ fn copy_large() {
         thread::spawn(move || {
             let mut opts = Options::new();
             opts.foreground(true);
-            let sources = vec![(Source::Bytes(&bytes_to_copy), MimeType::Specific("test".to_string()))];
+            let sources = vec![MimeSource { source: Source::Bytes(&bytes_to_copy), mime: MimeType::Specific("test".to_string()) }];
             copy_internal(opts,
                           sources,
                           Some(socket_name),
