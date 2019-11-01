@@ -484,8 +484,7 @@ fn copy_past_fork(clipboard: ClipboardType,
                   mut queue: EventQueue,
                   clipboard_manager: ZwlrDataControlManagerV1,
                   devices: Vec<ZwlrDataControlDeviceV1>,
-                  data_paths: HashMap<String, Rc<RefCell<PathBuf>>>,
-                  create_multi_text: bool)
+                  data_paths: HashMap<String, Rc<RefCell<PathBuf>>>)
                   -> Result<(), Error> {
     let should_quit = Rc::new(Cell::new(false));
     let error = Rc::new(RefCell::new(None::<DataSourceError>));
@@ -524,16 +523,14 @@ fn copy_past_fork(clipboard: ClipboardType,
                         .unwrap();
 
         for (mime_type, _) in &data_paths {
-            dbg!(&mime_type);
             // If the MIME type is text, offer it in some other common formats.
-            if create_multi_text && is_text(&mime_type) {
+            if is_text(&mime_type) {
                 data_source.offer("text/plain;charset=utf-8".to_string());
                 data_source.offer("text/plain".to_string());
                 data_source.offer("STRING".to_string());
                 data_source.offer("UTF8_STRING".to_string());
                 data_source.offer("TEXT".to_string());
             }
-
             data_source.offer(mime_type.clone());
         };
 
@@ -611,8 +608,7 @@ pub fn copy_multi(options: Options<'_>, sources: Vec<MimeSource>) -> Result<(), 
 
 pub(crate) fn copy_internal(options: Options<'_>,
                             sources: Vec<MimeSource>,
-                            socket_name: Option<OsString>,
-                            create_multi_text: bool)
+                            socket_name: Option<OsString>)
                             -> Result<(), Error> {
     let Options { clipboard,
                   seat,
@@ -644,8 +640,7 @@ pub(crate) fn copy_internal(options: Options<'_>,
                                 queue,
                                 clipboard_manager,
                                 devices,
-                                data_paths,
-                                create_multi_text);
+                                data_paths);
 
     if foreground {
         return result;
