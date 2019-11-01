@@ -120,6 +120,11 @@ impl zwlr_data_control_source_v1::EventHandler for DataSourceHandler {
             return;
         }
 
+        if !&self.data_paths.contains_key(&mime_type) {
+            dbg!(&self.data_paths, &mime_type);
+            source.destroy();
+            return;
+        }
         let data_path = &self.data_paths[&mime_type];
 
         let file = File::open(&*data_path.borrow()).map_err(DataSourceError::FileOpen);
