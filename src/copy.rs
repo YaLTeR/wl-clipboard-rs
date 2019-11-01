@@ -524,6 +524,7 @@ fn copy_past_fork(clipboard: ClipboardType,
                         .unwrap();
 
         for (mime_type, _) in &data_paths {
+            dbg!(&mime_type);
             // If the MIME type is text, offer it in some other common formats.
             if create_multi_text && is_text(&mime_type) {
                 data_source.offer("text/plain;charset=utf-8".to_string());
