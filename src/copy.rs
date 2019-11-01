@@ -515,15 +515,15 @@ fn copy_past_fork(clipboard: ClipboardType,
     // Create the data sources and set them as selections.
     let mut sources: Vec<Proxy<_>> = Vec::new();
     for (device, primary) in devices_iter {
-        for (mime_type, data_path) in data_paths.iter() {
-            let handler = DataSourceHandler::new(data_path.clone(),
-                                                should_quit.clone(),
-                                                serve_requests.clone());
-            let data_source = clipboard_manager.create_data_source(|source| {
-                                source.implement(handler, error.clone())
-                            })
-                            .unwrap();
+        let handler = DataSourceHandler::new(data_paths.clone(),
+                                            should_quit.clone(),
+                                            serve_requests.clone());
+        let data_source = clipboard_manager.create_data_source(|source| {
+                            source.implement(handler, error.clone())
+                        })
+                        .unwrap();
 
+        for (mime_type, _) in &data_paths {
             // If the MIME type is text, offer it in some other common formats.
             if create_multi_text && is_text(&mime_type) {
                 data_source.offer("text/plain;charset=utf-8".to_string());
@@ -534,20 +534,20 @@ fn copy_past_fork(clipboard: ClipboardType,
             }
 
             data_source.offer(mime_type.clone());
-
-            if primary {
-                device.set_primary_selection(Some(&data_source));
-            } else {
-                device.set_selection(Some(&data_source));
-            }
-
-            // If we need to serve 0 requests, kill the data source right away.
-            if let ServeRequests::Only(0) = serve_requests.get() {
-                data_source.destroy();
-            }
-
-            sources.push(data_source.into());
         };
+
+        if primary {
+            device.set_primary_selection(Some(&data_source));
+        } else {
+            device.set_selection(Some(&data_source));
+        }
+
+        // If we need to serve 0 requests, kill the data source right away.
+        if let ServeRequests::Only(0) = serve_requests.get() {
+            data_source.destroy();
+        }
+
+        sources.push(data_source.into());
     };
     let sources = sources;
 
