@@ -77,7 +77,7 @@ pub enum Source<'a> {
 #[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
 pub struct MimeSource<'a> {
     pub source: Source<'a>,
-    pub mime: MimeType,
+    pub mime_type: MimeType,
 }
 
 /// Seat to operate on.
@@ -295,6 +295,20 @@ impl<'a> Options<'a> {
     }
 
     /// Invokes the copy_multi operation. See `copy_multi()`.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # extern crate wl_clipboard_rs;
+    /// # use wl_clipboard_rs::copy::Error;
+    /// # fn foo() -> Result<(), Error> {
+    /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
+    ///
+    /// let opts = Options::new();
+    /// opts.copy_multi(vec![MimeSource { source: Source::Bytes(&[1, 2, 3]), mime_type: MimeType::Autodetect }, MimeSource { source: Source::Bytes(&[41, 42, 43, 44]), mime_type: MimeType::Text }])?;
+    /// # Ok(())
+    /// # }
+    /// ```
     #[inline]
     pub fn copy_multi(self, sources: Vec<MimeSource>) -> Result<(), Error> {
         copy_multi(self, sources)
@@ -596,11 +610,28 @@ fn copy_past_fork(clipboard: ClipboardType,
 /// ```
 #[inline]
 pub fn copy(options: Options<'_>, source: Source<'_>, mime_type: MimeType) -> Result<(), Error> {
-    let sources = vec![MimeSource { source: source, mime: mime_type}];
+    let sources = vec![MimeSource { source: source, mime_type: mime_type}];
     copy_internal(options, sources, None)
 }
 
 /// Copies multiple data to the clipboard.
+///
+/// Each data item is copied from `source` and offered in the `mime_type` MIME type. See `Options` for
+/// customizing the behavior of this operation.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # use wl_clipboard_rs::copy::Error;
+/// # fn foo() -> Result<(), Error> {
+/// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
+///
+/// let opts = Options::new();
+/// opts.copy_multi(vec![MimeSource { source: Source::Bytes(&[1, 2, 3]), mime_type: MimeType::Autodetect }, MimeSource { source: Source::Bytes(&[41, 42, 43, 44]), mime_type: MimeType::Text }])?;
+/// # Ok(())
+/// # }
+/// ```
 #[inline]
 pub fn copy_multi(options: Options<'_>, sources: Vec<MimeSource>) -> Result<(), Error> {
     copy_internal(options, sources, None)
@@ -624,7 +655,7 @@ pub(crate) fn copy_internal(options: Options<'_>,
         let mut explicit_data_paths = HashMap::new();
         for mimesource in sources {
             let (mime_type, data_path) =
-                make_source(mimesource.source, mimesource.mime, trim_newline).map_err(Error::TempCopy)?;
+                make_source(mimesource.source, mimesource.mime_type, trim_newline).map_err(Error::TempCopy)?;
             explicit_data_paths.insert(mime_type, data_path);
         };
         // If the MIME type is text, offer it in some other common formats.

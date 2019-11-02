@@ -142,7 +142,7 @@ fn copy_test() {
     let child = thread::spawn(move || {
         let mut opts = Options::new();
         opts.foreground(true);
-        let sources = vec![MimeSource { source: Source::Bytes(&[1, 3, 3, 7]), mime: MimeType::Specific("test".to_string()) }];
+        let sources = vec![MimeSource { source: Source::Bytes(&[1, 3, 3, 7]), mime_type: MimeType::Specific("test".to_string()) }];
         copy_internal(opts,
                       sources,
                       Some(socket_name))
@@ -242,7 +242,7 @@ fn copy_multi_test() {
     let child = thread::spawn(move || {
         let mut opts = Options::new();
         opts.foreground(true);
-        let sources = vec![MimeSource { source: Source::Bytes(&[1, 3, 3, 7]), mime: MimeType::Specific("test".to_string()) }, MimeSource { source: Source::Bytes(&[2, 4, 4]), mime: MimeType::Specific("test2".to_string()) }];
+        let sources = vec![MimeSource { source: Source::Bytes(&[1, 3, 3, 7]), mime_type: MimeType::Specific("test".to_string()) }, MimeSource { source: Source::Bytes(&[2, 4, 4]), mime_type: MimeType::Specific("test2".to_string()) }];
         copy_internal(opts,
                       sources,
                       Some(socket_name))
@@ -362,7 +362,7 @@ fn copy_large() {
         thread::spawn(move || {
             let mut opts = Options::new();
             opts.foreground(true);
-            let sources = vec![MimeSource { source: Source::Bytes(&bytes_to_copy), mime: MimeType::Specific("test".to_string()) }];
+            let sources = vec![MimeSource { source: Source::Bytes(&bytes_to_copy), mime_type: MimeType::Specific("test".to_string()) }];
             copy_internal(opts,
                           sources,
                           Some(socket_name))
