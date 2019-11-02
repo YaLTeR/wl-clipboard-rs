@@ -316,8 +316,6 @@ pub(crate) fn get_contents_internal(clipboard: ClipboardType,
         MimeType::Specific(mime_type) =>  {
             if is_text(&mime_type) {
                 mime_types.take(mime_type)
-                        .or_else(|| mime_types.take("text/plain;charset=utf-8"))
-                        .or_else(|| mime_types.take("UTF8_STRING"))
                         .or_else(|| mime_types.drain().find(|x| is_text(x)))
             } else {
                 mime_types.take(mime_type)
