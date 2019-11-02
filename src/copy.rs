@@ -553,7 +553,7 @@ fn copy_past_fork(clipboard: ClipboardType,
 
     let mut dropped = HashSet::new();
     // Clean up the temp file and directory.
-    for (_, data_path) in data_paths {
+    for data_path in data_paths.values() {
         let buf = data_path.as_ptr();
         // data_paths can contain duplicate data_path items,
         // we want to free them only one time
