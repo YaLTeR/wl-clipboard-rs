@@ -2,7 +2,7 @@
 
 use std::{
     cell::{Cell, RefCell},
-    collections::HashMap,
+    collections::{HashMap, HashSet},
     ffi::OsString,
     fs::{remove_dir, remove_file, File, OpenOptions},
     io::{self, Read, Seek, SeekFrom, Write},
@@ -552,8 +552,17 @@ fn copy_past_fork(clipboard: ClipboardType,
         }
     }
 
+    let mut dropped = HashSet::new();
     // Clean up the temp file and directory.
-    for (_, data_path) in data_paths.iter() {
+    for (_, data_path) in data_paths {
+        let buf = data_path.as_ptr();
+        // data_paths can contain duplicate data_path items,
+        // we want to free them only one time
+        if dropped.contains(&buf) {
+            continue
+        };
+        dropped.insert(buf);
+
         let mut data_path = data_path.borrow_mut();
         remove_file(&*data_path).map_err(Error::TempFileRemove)?;
         data_path.pop();
