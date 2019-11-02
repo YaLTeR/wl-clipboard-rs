@@ -59,7 +59,7 @@ pub enum MimeType<'a> {
     /// Example use-case: pasting `text/html` should try `text/html` first, but if it's not
     /// available, any other plain text format will do fine too.
     TextWithPriority(&'a str),
-    /// Request a specific MIME type.
+    /// Request a specific MIME type. If it's not available, and it's plain text, fallback to other plain text formats, in the order they are received from the Wayland compositor.
     Specific(&'a str),
 }
 
@@ -313,7 +313,14 @@ pub(crate) fn get_contents_internal(clipboard: ClipboardType,
                       .or_else(|| mime_types.take("UTF8_STRING"))
                       .or_else(|| mime_types.drain().find(|x| is_text(x)))
         }
-        MimeType::Specific(mime_type) => mime_types.take(mime_type),
+        MimeType::Specific(mime_type) =>  {
+            if is_text(&mime_type) {
+                mime_types.take(mime_type)
+                        .or_else(|| mime_types.drain().find(|x| is_text(x)))
+            } else {
+                mime_types.take(mime_type)
+            }
+        }
     };
 
     // Check if a suitable MIME type is copied.
