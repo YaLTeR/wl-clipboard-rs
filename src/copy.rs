@@ -512,8 +512,7 @@ fn copy_past_fork(clipboard: ClipboardType,
                                      });
 
     // Create the data sources and set them as selections.
-    let mut sources: Vec<Proxy<_>> = Vec::new();
-    for (device, primary) in devices_iter {
+    let sources = devices_iter.map(|(device, primary)| {
         let handler = DataSourceHandler::new(data_paths.clone(),
                                             should_quit.clone(),
                                             serve_requests.clone());
@@ -537,9 +536,8 @@ fn copy_past_fork(clipboard: ClipboardType,
             data_source.destroy();
         }
 
-        sources.push(data_source.into());
-    };
-    let sources = sources;
+        data_source.into()
+    }).collect::<Vec<Proxy<_>>>();
 
     // Loop until we're done.
     while !should_quit.get() {
