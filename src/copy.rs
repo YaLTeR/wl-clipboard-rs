@@ -521,7 +521,7 @@ fn copy_past_fork(clipboard: ClipboardType,
                         })
                         .unwrap();
 
-        for (mime_type, _) in &data_paths {
+        for mime_type in data_paths.keys() {
             data_source.offer(mime_type.clone());
         };
 
@@ -537,7 +537,8 @@ fn copy_past_fork(clipboard: ClipboardType,
         }
 
         data_source.into()
-    }).collect::<Vec<Proxy<_>>>();
+    })
+    .collect::<Vec<Proxy<_>>>();
 
     // Loop until we're done.
     while !should_quit.get() {
@@ -557,7 +558,7 @@ fn copy_past_fork(clipboard: ClipboardType,
         // data_paths can contain duplicate data_path items,
         // we want to free them only one time
         if dropped.contains(&buf) {
-            continue
+            continue;
         };
         dropped.insert(buf);
 
