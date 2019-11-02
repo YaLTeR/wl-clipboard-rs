@@ -121,7 +121,6 @@ impl zwlr_data_control_source_v1::EventHandler for DataSourceHandler {
         }
 
         if !&self.data_paths.contains_key(&mime_type) {
-            dbg!(&self.data_paths, &mime_type);
             source.destroy();
             return;
         }
