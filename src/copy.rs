@@ -523,14 +523,6 @@ fn copy_past_fork(clipboard: ClipboardType,
                         .unwrap();
 
         for (mime_type, _) in &data_paths {
-            // If the MIME type is text, offer it in some other common formats.
-            if is_text(&mime_type) {
-                data_source.offer("text/plain;charset=utf-8".to_string());
-                data_source.offer("text/plain".to_string());
-                data_source.offer("STRING".to_string());
-                data_source.offer("UTF8_STRING".to_string());
-                data_source.offer("TEXT".to_string());
-            }
             data_source.offer(mime_type.clone());
         };
 
@@ -620,11 +612,30 @@ pub(crate) fn copy_internal(options: Options<'_>,
     let (queue, clipboard_manager, devices) = get_devices(primary, seat, socket_name)?;
 
     // Collect the source data to copy.
-    let mut data_paths = HashMap::new();
-    for mimesource in sources {
-        let (mime_type, data_path) =
-            make_source(mimesource.source, mimesource.mime, trim_newline).map_err(Error::TempCopy)?;
-        data_paths.insert(mime_type, Rc::new(RefCell::new(data_path)));
+    let data_paths = {
+        let mut explicit_data_paths = HashMap::new();
+        for mimesource in sources {
+            let (mime_type, data_path) =
+                make_source(mimesource.source, mimesource.mime, trim_newline).map_err(Error::TempCopy)?;
+            explicit_data_paths.insert(mime_type, data_path);
+        };
+        // If the MIME type is text, offer it in some other common formats.
+        let text_mimes = vec!["text/plain;charset=utf-8", "text/plain", "STRING", "UTF8_STRING", "TEXT"];
+        let mut data_paths = HashMap::new();
+        for (mime, data_path) in &explicit_data_paths {
+            let data_path = Rc::new(RefCell::new(data_path.clone()));
+            // this comes first as we want it no matter what
+            data_paths.insert(mime.clone(), data_path.clone());
+            if is_text(&mime) {
+                for tm in &text_mimes {
+                    // we don't want to overwrite an explicit mime type, because it might be bound to a different data_path
+                    if !&explicit_data_paths.contains_key(&tm.to_string()) {
+                        data_paths.insert(tm.to_string(), data_path.clone());
+                    }
+                }
+            }
+        };
+        data_paths
     };
 
     if !foreground {
