@@ -118,7 +118,7 @@ fn main() -> Result<(), ExitFailure> {
                 Some(t) if is_text(t) => MimeType::TextWithPriority(t),
                 Some(t) => MimeType::Specific(t),
             }
-        },
+        }
     };
 
     let (mut read, mime_type) = get_contents(primary, seat, mime_type)?;

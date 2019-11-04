@@ -1,6 +1,6 @@
 use std::{
     cell::{Cell, RefCell},
-    collections::HashSet,
+    collections::{HashMap, HashSet},
     fs::File,
     io,
     os::unix::io::{IntoRawFd, RawFd},
@@ -10,6 +10,7 @@ use std::{
 
 use derive_new::new;
 use failure::Fail;
+use nix::unistd::close;
 use wayland_client::{
     protocol::{wl_seat::WlSeat, *},
     NewProxy,
@@ -106,13 +107,13 @@ pub enum DataSourceError {
 
 #[derive(new)]
 pub struct DataSourceHandler {
-    data_path: Rc<RefCell<PathBuf>>,
+    data_paths: HashMap<String, Rc<RefCell<PathBuf>>>,
     should_quit: Rc<Cell<bool>>,
     serve_requests: Rc<Cell<ServeRequests>>,
 }
 
 impl zwlr_data_control_source_v1::EventHandler for DataSourceHandler {
-    fn send(&mut self, source: ZwlrDataControlSourceV1, _mime_type: String, target_fd: RawFd) {
+    fn send(&mut self, source: ZwlrDataControlSourceV1, mime_type: String, target_fd: RawFd) {
         // Check if some other source already handled a paste request and indicated that we should
         // quit.
         if self.should_quit.get() {
@@ -120,7 +121,16 @@ impl zwlr_data_control_source_v1::EventHandler for DataSourceHandler {
             return;
         }
 
-        let file = File::open(&*self.data_path.borrow()).map_err(DataSourceError::FileOpen);
+        // I'm not sure if it's the compositor's responsibility to check that the mime type is
+        // valid. Let's check here just in case.
+        if !&self.data_paths.contains_key(&mime_type) {
+            let _ = close(target_fd);
+            return;
+        }
+
+        let data_path = &self.data_paths[&mime_type];
+
+        let file = File::open(&*data_path.borrow()).map_err(DataSourceError::FileOpen);
         let result = file.and_then(|data_file| {
                          let data_fd = data_file.into_raw_fd();
                          copy_data(Some(data_fd), target_fd, false).map_err(DataSourceError::Copy)
