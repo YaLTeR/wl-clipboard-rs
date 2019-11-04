@@ -77,7 +77,7 @@ pub enum Source<'a> {
 ///
 /// Used for [`copy_multi`].
 ///
-/// [`copy_multi`]: method.copy_multi.html
+/// [`copy_multi`]: fn.copy_multi.html
 #[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
 pub struct MimeSource<'a> {
     pub source: Source<'a>,
