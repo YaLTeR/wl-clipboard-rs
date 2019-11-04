@@ -142,10 +142,9 @@ fn copy_test() {
     let child = thread::spawn(move || {
         let mut opts = Options::new();
         opts.foreground(true);
-        let sources = vec![MimeSource { source: Source::Bytes(&[1, 3, 3, 7]), mime_type: MimeType::Specific("test".to_string()) }];
-        copy_internal(opts,
-                      sources,
-                      Some(socket_name))
+        let sources = vec![MimeSource { source: Source::Bytes(&[1, 3, 3, 7]),
+                                        mime_type: MimeType::Specific("test".to_string()) }];
+        copy_internal(opts, sources, Some(socket_name))
     });
 
     thread::sleep(Duration::from_millis(100));
@@ -242,10 +241,20 @@ fn copy_multi_test() {
     let child = thread::spawn(move || {
         let mut opts = Options::new();
         opts.foreground(true);
-        let sources = vec![MimeSource { source: Source::Bytes(&[1, 3, 3, 7]), mime_type: MimeType::Specific("test".to_string()) }, MimeSource { source: Source::Bytes(&[2, 4, 4]), mime_type: MimeType::Specific("test2".to_string()) }];
-        copy_internal(opts,
-                      sources,
-                      Some(socket_name))
+        let sources = vec![MimeSource { source: Source::Bytes(&[1, 3, 3, 7]),
+                                        mime_type: MimeType::Specific("test".to_string()) },
+                           MimeSource { source: Source::Bytes(&[2, 4, 4]),
+                                        mime_type: MimeType::Specific("test2".to_string()) },
+                           // Ignored because it's the second "test" MIME type.
+                           MimeSource { source: Source::Bytes(&[4, 3, 2, 1]),
+                                        mime_type: MimeType::Specific("test".to_string()) },
+                           // The first text source, additional text types should fall back here.
+                           MimeSource { source: Source::Bytes(&b"hello fallback"[..]),
+                                        mime_type: MimeType::Text },
+                           // A specific override of an additional text type.
+                           MimeSource { source: Source::Bytes(&b"hello TEXT"[..]),
+                                        mime_type: MimeType::Specific("TEXT".to_string()) },];
+        copy_internal(opts, sources, Some(socket_name))
     });
 
     thread::sleep(Duration::from_millis(100));
@@ -265,34 +274,52 @@ fn copy_multi_test() {
                                                      .clone()
                                                 });
 
-    let (mut read, write) = pipe().unwrap();
-    let (mut read2, write2) = pipe().unwrap();
+    let (mut read_test, write_test) = pipe().unwrap();
+    let (mut read_test2, write_test2) = pipe().unwrap();
+    let (mut read_fallback, write_fallback) = pipe().unwrap();
+    let (mut read_text, write_text) = pipe().unwrap();
 
     if let Some(source) = selection.borrow().as_ref() {
-        source.send("test".to_string(), write.as_raw_fd());
-        drop(write);
-        source.send("test2".to_string(), write2.as_raw_fd());
-        drop(write2);
+        source.send("test".to_string(), write_test.as_raw_fd());
+        drop(write_test);
+        source.send("test2".to_string(), write_test2.as_raw_fd());
+        drop(write_test2);
+        source.send("STRING".to_string(), write_fallback.as_raw_fd());
+        drop(write_fallback);
+        source.send("TEXT".to_string(), write_text.as_raw_fd());
+        drop(write_text);
         source.cancelled();
     }
 
     thread::sleep(Duration::from_millis(100));
     server.answer();
 
-    let mut contents = vec![];
-    read.read_to_end(&mut contents).unwrap();
-
-    let mut contents2 = vec![];
-    read2.read_to_end(&mut contents2).unwrap();
+    let mut contents_test = vec![];
+    read_test.read_to_end(&mut contents_test).unwrap();
+    let mut contents_test2 = vec![];
+    read_test2.read_to_end(&mut contents_test2).unwrap();
+    let mut contents_fallback = vec![];
+    read_fallback.read_to_end(&mut contents_fallback).unwrap();
+    let mut contents_text = vec![];
+    read_text.read_to_end(&mut contents_text).unwrap();
 
     child.join().unwrap().unwrap();
 
     assert!(mime_types.is_some());
     let mut mimes = mime_types.unwrap();
     mimes.sort();
-    assert_eq!(mimes, vec!["test".to_string(), "test2".to_string()]);
-    assert_eq!(contents, [1, 3, 3, 7]);
-    assert_eq!(contents2, [2, 4, 4]);
+    assert_eq!(mimes,
+               ["STRING",
+                "TEXT",
+                "UTF8_STRING",
+                "test",
+                "test2",
+                "text/plain",
+                "text/plain;charset=utf-8"]);
+    assert_eq!(contents_test, [1, 3, 3, 7]);
+    assert_eq!(contents_test2, [2, 4, 4]);
+    assert_eq!(contents_fallback, b"hello fallback");
+    assert_eq!(contents_text, b"hello TEXT");
 }
 
 // The idea here is to exceed the pipe capacity. This fails unless O_NONBLOCK is cleared when
@@ -362,10 +389,9 @@ fn copy_large() {
         thread::spawn(move || {
             let mut opts = Options::new();
             opts.foreground(true);
-            let sources = vec![MimeSource { source: Source::Bytes(&bytes_to_copy), mime_type: MimeType::Specific("test".to_string()) }];
-            copy_internal(opts,
-                          sources,
-                          Some(socket_name))
+            let sources = vec![MimeSource { source: Source::Bytes(&bytes_to_copy),
+                                            mime_type: MimeType::Specific("test".to_string()) }];
+            copy_internal(opts, sources, Some(socket_name))
         })
     };
 

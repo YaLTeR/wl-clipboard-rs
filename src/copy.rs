@@ -73,7 +73,11 @@ pub enum Source<'a> {
     Bytes(&'a [u8]),
 }
 
-/// Source for copying, with its MIME type included
+/// Source for copying, with a MIME type.
+///
+/// Used for [`copy_multi`].
+///
+/// [`copy_multi`]: method.copy_multi.html
 #[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
 pub struct MimeSource<'a> {
     pub source: Source<'a>,
@@ -305,7 +309,10 @@ impl<'a> Options<'a> {
     /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
     ///
     /// let opts = Options::new();
-    /// opts.copy_multi(vec![MimeSource { source: Source::Bytes(&[1, 2, 3]), mime_type: MimeType::Autodetect }, MimeSource { source: Source::Bytes(&[41, 42, 43, 44]), mime_type: MimeType::Text }])?;
+    /// opts.copy_multi(vec![MimeSource { source: Source::Bytes(&[1, 2, 3]),
+    ///                                   mime_type: MimeType::Autodetect },
+    ///                      MimeSource { source: Source::Bytes(&[41, 42, 43, 44]),
+    ///                                   mime_type: MimeType::Text }])?;
     /// # Ok(())
     /// # }
     /// ```
@@ -527,32 +534,32 @@ fn copy_past_fork(clipboard: ClipboardType,
 
     // Create the data sources and set them as selections.
     let sources = devices_iter.map(|(device, primary)| {
-        let handler = DataSourceHandler::new(data_paths.clone(),
-                                            should_quit.clone(),
-                                            serve_requests.clone());
-        let data_source = clipboard_manager.create_data_source(|source| {
-                            source.implement(handler, error.clone())
-                        })
-                        .unwrap();
+                                  let handler = DataSourceHandler::new(data_paths.clone(),
+                                                                       should_quit.clone(),
+                                                                       serve_requests.clone());
+                                  let data_source = clipboard_manager.create_data_source(|source| {
+                                                        source.implement(handler, error.clone())
+                                                    })
+                                                    .unwrap();
 
-        for mime_type in data_paths.keys() {
-            data_source.offer(mime_type.clone());
-        };
+                                  for mime_type in data_paths.keys() {
+                                      data_source.offer(mime_type.clone());
+                                  }
 
-        if primary {
-            device.set_primary_selection(Some(&data_source));
-        } else {
-            device.set_selection(Some(&data_source));
-        }
+                                  if primary {
+                                      device.set_primary_selection(Some(&data_source));
+                                  } else {
+                                      device.set_selection(Some(&data_source));
+                                  }
 
-        // If we need to serve 0 requests, kill the data source right away.
-        if let ServeRequests::Only(0) = serve_requests.get() {
-            data_source.destroy();
-        }
+                                  // If we need to serve 0 requests, kill the data source right away.
+                                  if let ServeRequests::Only(0) = serve_requests.get() {
+                                      data_source.destroy();
+                                  }
 
-        data_source.into()
-    })
-    .collect::<Vec<Proxy<_>>>();
+                                  data_source.into()
+                              })
+                              .collect::<Vec<Proxy<_>>>();
 
     // Loop until we're done.
     while !should_quit.get() {
@@ -565,22 +572,33 @@ fn copy_past_fork(clipboard: ClipboardType,
         }
     }
 
-    let mut dropped = HashSet::new();
     // Clean up the temp file and directory.
+    //
+    // We want to try cleaning up all files and folders, so if any errors occur in process, collect
+    // them into a vector without interruption, and then return the first one.
+    let mut results = Vec::new();
+    let mut dropped = HashSet::new();
     for data_path in data_paths.values() {
         let buf = data_path.as_ptr();
-        // data_paths can contain duplicate data_path items,
-        // we want to free them only one time
+        // data_paths can contain duplicate items, we want to free each only once.
         if dropped.contains(&buf) {
             continue;
         };
         dropped.insert(buf);
 
         let mut data_path = data_path.borrow_mut();
-        remove_file(&*data_path).map_err(Error::TempFileRemove)?;
-        data_path.pop();
-        remove_dir(&*data_path).map_err(Error::TempDirRemove)?;
-    };
+        match remove_file(&*data_path).map_err(Error::TempFileRemove) {
+            Ok(()) => {
+                data_path.pop();
+                results.push(remove_dir(&*data_path).map_err(Error::TempDirRemove));
+            }
+            result @ Err(_) => results.push(result),
+        }
+    }
+
+    // Return the error, if any.
+    let result: Result<_, _> = results.into_iter().collect();
+    result?;
 
     // Check if an error occurred during data transfer.
     if let Some(err) = error.borrow_mut().take() {
@@ -610,14 +628,19 @@ fn copy_past_fork(clipboard: ClipboardType,
 /// ```
 #[inline]
 pub fn copy(options: Options<'_>, source: Source<'_>, mime_type: MimeType) -> Result<(), Error> {
-    let sources = vec![MimeSource { source: source, mime_type: mime_type}];
+    let sources = vec![MimeSource { source: source,
+                                    mime_type: mime_type }];
     copy_internal(options, sources, None)
 }
 
-/// Copies multiple data to the clipboard.
+/// Copies data to the clipboard, offering multiple data sources.
 ///
-/// Each data item is copied from `source` and offered in the `mime_type` MIME type. See `Options` for
-/// customizing the behavior of this operation.
+/// The data from each source in `sources` is copied and offered in the corresponding MIME type.
+/// See `Options` for customizing the behavior of this operation.
+///
+/// If multiple sources specify the same MIME type, the first one is offered. If one of the MIME
+/// types is text, all automatically added plain text offers will fall back to the first source
+/// with a text MIME type.
 ///
 /// # Examples
 ///
@@ -628,7 +651,10 @@ pub fn copy(options: Options<'_>, source: Source<'_>, mime_type: MimeType) -> Re
 /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
 ///
 /// let opts = Options::new();
-/// opts.copy_multi(vec![MimeSource { source: Source::Bytes(&[1, 2, 3]), mime_type: MimeType::Autodetect }, MimeSource { source: Source::Bytes(&[41, 42, 43, 44]), mime_type: MimeType::Text }])?;
+/// opts.copy_multi(vec![MimeSource { source: Source::Bytes(&[1, 2, 3]),
+///                                   mime_type: MimeType::Autodetect },
+///                      MimeSource { source: Source::Bytes(&[41, 42, 43, 44]),
+///                                   mime_type: MimeType::Text }])?;
 /// # Ok(())
 /// # }
 /// ```
@@ -652,28 +678,43 @@ pub(crate) fn copy_internal(options: Options<'_>,
 
     // Collect the source data to copy.
     let data_paths = {
-        let mut explicit_data_paths = HashMap::new();
-        for mimesource in sources {
-            let (mime_type, data_path) =
-                make_source(mimesource.source, mimesource.mime_type, trim_newline).map_err(Error::TempCopy)?;
-            explicit_data_paths.insert(mime_type, data_path);
-        };
-        // If the MIME type is text, offer it in some other common formats.
-        let text_mimes = vec!["text/plain;charset=utf-8", "text/plain", "STRING", "UTF8_STRING", "TEXT"];
         let mut data_paths = HashMap::new();
-        for (mime, data_path) in &explicit_data_paths {
-            let data_path = Rc::new(RefCell::new(data_path.clone()));
-            // this comes first as we want it no matter what
-            data_paths.insert(mime.clone(), data_path.clone());
-            if is_text(&mime) {
-                for tm in &text_mimes {
-                    // we don't want to overwrite an explicit mime type, because it might be bound to a different data_path
-                    if !&explicit_data_paths.contains_key(&tm.to_string()) {
-                        data_paths.insert(tm.to_string(), data_path.clone());
-                    }
+        let mut text_data_path = None;
+        for MimeSource { source, mime_type } in sources.into_iter() {
+            let (mime_type, mut data_path) =
+                make_source(source, mime_type, trim_newline).map_err(Error::TempCopy)?;
+
+            if data_paths.contains_key(&mime_type) {
+                // This MIME type has already been specified, so ignore it.
+                remove_file(&*data_path).map_err(Error::TempFileRemove)?;
+                data_path.pop();
+                remove_dir(&*data_path).map_err(Error::TempDirRemove)?;
+            } else {
+                let data_path = Rc::new(RefCell::new(data_path));
+
+                if text_data_path.is_none() && is_text(&mime_type) {
+                    text_data_path = Some(data_path.clone());
+                }
+
+                data_paths.insert(mime_type, data_path);
+            }
+        }
+
+        // If the MIME type is text, offer it in some other common formats.
+        if let Some(text_data_path) = text_data_path {
+            let text_mimes = ["text/plain;charset=utf-8",
+                              "text/plain",
+                              "STRING",
+                              "UTF8_STRING",
+                              "TEXT"];
+            for &mime_type in &text_mimes {
+                // We don't want to overwrite an explicit mime type, because it might be bound to a
+                // different data_path
+                if !data_paths.contains_key(mime_type) {
+                    data_paths.insert(mime_type.to_string(), text_data_path.clone());
                 }
             }
-        };
+        }
         data_paths
     };
 
