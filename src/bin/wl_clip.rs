@@ -87,7 +87,10 @@ impl Options {
                         );
 
                         ($longest:expr, $shortest:expr => $action:stmt) => (
-                            parse!($longest, $shortest => { $action; continue; })
+                            parse!($longest, $shortest => {
+                                $action
+                                continue;
+                            })
                         );
                     }
 

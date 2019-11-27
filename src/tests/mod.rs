@@ -20,9 +20,9 @@ impl TestServer {
         let socket_name = display.add_socket_auto()
                                  .expect("Failed to create a server socket.");
 
-        TestServer { display: display,
-                     event_loop: event_loop,
-                     socket_name: socket_name }
+        TestServer { display,
+                     event_loop,
+                     socket_name }
     }
 
     pub fn answer(&mut self) {
