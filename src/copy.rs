@@ -20,6 +20,7 @@ use wayland_client::{ConnectError, EventQueue, Proxy};
 use wayland_protocols::wlr::unstable::data_control::v1::client::{
     zwlr_data_control_device_v1::ZwlrDataControlDeviceV1,
     zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
+    zwlr_data_control_source_v1::ZwlrDataControlSourceV1,
 };
 
 use crate::{
@@ -143,6 +144,15 @@ pub struct Options {
     /// that certain apps may have issues pasting when this option is used, in particular XWayland
     /// clients are known to suffer from this.
     serve_requests: ServeRequests,
+}
+
+/// A copy operation ready to start serving requests.
+pub struct PreparedCopy {
+    should_quit: Rc<Cell<bool>>,
+    queue: EventQueue,
+    sources: Vec<Proxy<ZwlrDataControlSourceV1>>,
+    data_paths: HashMap<String, Rc<RefCell<PathBuf>>>,
+    error: Rc<RefCell<Option<DataSourceError>>>,
 }
 
 /// Errors that can occur for copying the source data to a temporary file.
@@ -319,6 +329,119 @@ impl Options {
     #[inline]
     pub fn copy_multi(self, sources: Vec<MimeSource>) -> Result<(), Error> {
         copy_multi(self, sources)
+    }
+
+    /// Invokes the prepare_copy operation. See `prepare_copy()`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `foreground` is `false`.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # extern crate wl_clipboard_rs;
+    /// # use wl_clipboard_rs::copy::Error;
+    /// # fn foo() -> Result<(), Error> {
+    /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
+    ///
+    /// let mut opts = Options::new();
+    /// opts.foreground(true);
+    /// let prepared_copy = opts.prepare_copy(Source::Bytes([1, 2, 3][..].into()),
+    ///                                       MimeType::Autodetect)?;
+    /// prepared_copy.serve()?;
+    ///
+    /// # Ok(())
+    /// # }
+    /// ```
+    #[inline]
+    pub fn prepare_copy(self, source: Source, mime_type: MimeType) -> Result<PreparedCopy, Error> {
+        prepare_copy(self, source, mime_type)
+    }
+
+    /// Invokes the prepare_copy_multi operation. See `prepare_copy_multi()`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `foreground` is `false`.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # extern crate wl_clipboard_rs;
+    /// # use wl_clipboard_rs::copy::Error;
+    /// # fn foo() -> Result<(), Error> {
+    /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
+    ///
+    /// let mut opts = Options::new();
+    /// opts.foreground(true);
+    /// let prepared_copy =
+    ///     opts.prepare_copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
+    ///                                               mime_type: MimeType::Autodetect },
+    ///                                  MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
+    ///                                               mime_type: MimeType::Text }])?;
+    /// prepared_copy.serve()?;
+    ///
+    /// # Ok(())
+    /// # }
+    /// ```
+    #[inline]
+    pub fn prepare_copy_multi(self, sources: Vec<MimeSource>) -> Result<PreparedCopy, Error> {
+        prepare_copy_multi(self, sources)
+    }
+}
+
+impl PreparedCopy {
+    /// Starts serving copy requests.
+    ///
+    /// This function **blocks** until all requests are served or the clipboard is taken over by
+    /// some other application.
+    pub fn serve(mut self) -> Result<(), Error> {
+        // Loop until we're done.
+        while !self.should_quit.get() {
+            self.queue.dispatch().map_err(Error::WaylandCommunication)?;
+
+            // Check if all sources have been destroyed.
+            let all_destroyed = self.sources.iter().all(|x| !x.is_alive());
+            if all_destroyed {
+                self.should_quit.set(true);
+            }
+        }
+
+        // Clean up the temp file and directory.
+        //
+        // We want to try cleaning up all files and folders, so if any errors occur in process, collect
+        // them into a vector without interruption, and then return the first one.
+        let mut results = Vec::new();
+        let mut dropped = HashSet::new();
+        for data_path in self.data_paths.values() {
+            let buf = data_path.as_ptr();
+            // data_paths can contain duplicate items, we want to free each only once.
+            if dropped.contains(&buf) {
+                continue;
+            };
+            dropped.insert(buf);
+
+            let mut data_path = data_path.borrow_mut();
+            match remove_file(&*data_path).map_err(Error::TempFileRemove) {
+                Ok(()) => {
+                    data_path.pop();
+                    results.push(remove_dir(&*data_path).map_err(Error::TempDirRemove));
+                }
+                result @ Err(_) => results.push(result),
+            }
+        }
+
+        // Return the error, if any.
+        let result: Result<_, _> = results.into_iter().collect();
+        result?;
+
+        // Check if an error occurred during data transfer.
+        if let Some(err) = self.error.borrow_mut().take() {
+            return Err(Error::Paste(err));
+        }
+
+        Ok(())
     }
 }
 
@@ -500,13 +623,152 @@ pub(crate) fn clear_internal(clipboard: ClipboardType,
     Ok(())
 }
 
-fn copy_past_fork(clipboard: ClipboardType,
-                  serve_requests: ServeRequests,
-                  mut queue: EventQueue,
-                  clipboard_manager: ZwlrDataControlManagerV1,
-                  devices: Vec<ZwlrDataControlDeviceV1>,
-                  data_paths: HashMap<String, Rc<RefCell<PathBuf>>>)
-                  -> Result<(), Error> {
+/// Prepares a data copy to the clipboard.
+///
+/// The data is copied from `source` and offered in the `mime_type` MIME type. See `Options` for
+/// customizing the behavior of this operation.
+///
+/// This function can be used instead of `copy()` when it's desirable to separately prepare the
+/// copy operation, handle any errors that this may produce, and then start the serving loop,
+/// potentially past a fork (which is how `wl-copy` uses it). It is meant to be used in the
+/// foreground mode and does not spawn any threads.
+///
+/// # Panics
+///
+/// Panics if `foreground` is `false`.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # use wl_clipboard_rs::copy::Error;
+/// # fn foo() -> Result<(), Error> {
+/// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
+///
+/// let mut opts = Options::new();
+/// opts.foreground(true);
+/// let prepared_copy = opts.prepare_copy(Source::Bytes([1, 2, 3][..].into()),
+///                                       MimeType::Autodetect)?;
+/// prepared_copy.serve()?;
+///
+/// # Ok(())
+/// # }
+/// ```
+#[inline]
+pub fn prepare_copy(options: Options,
+                    source: Source,
+                    mime_type: MimeType)
+                    -> Result<PreparedCopy, Error> {
+    assert_eq!(options.foreground, true);
+
+    let sources = vec![MimeSource { source: source,
+                                    mime_type: mime_type }];
+
+    prepare_copy_internal(options, sources, None)
+}
+
+/// Prepares a data copy to the clipboard, offering multiple data sources.
+///
+/// The data from each source in `sources` is copied and offered in the corresponding MIME type.
+/// See `Options` for customizing the behavior of this operation.
+///
+/// If multiple sources specify the same MIME type, the first one is offered. If one of the MIME
+/// types is text, all automatically added plain text offers will fall back to the first source
+/// with a text MIME type.
+///
+/// This function can be used instead of `copy()` when it's desirable to separately prepare the
+/// copy operation, handle any errors that this may produce, and then start the serving loop,
+/// potentially past a fork (which is how `wl-copy` uses it). It is meant to be used in the
+/// foreground mode and does not spawn any threads.
+///
+/// # Panics
+///
+/// Panics if `foreground` is `false`.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # use wl_clipboard_rs::copy::Error;
+/// # fn foo() -> Result<(), Error> {
+/// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
+///
+/// let mut opts = Options::new();
+/// opts.foreground(true);
+/// let prepared_copy =
+///     opts.prepare_copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
+///                                               mime_type: MimeType::Autodetect },
+///                                  MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
+///                                               mime_type: MimeType::Text }])?;
+/// prepared_copy.serve()?;
+///
+/// # Ok(())
+/// # }
+/// ```
+#[inline]
+pub fn prepare_copy_multi(options: Options,
+                          sources: Vec<MimeSource>)
+                          -> Result<PreparedCopy, Error> {
+    assert_eq!(options.foreground, true);
+
+    prepare_copy_internal(options, sources, None)
+}
+
+fn prepare_copy_internal(options: Options,
+                         sources: Vec<MimeSource>,
+                         socket_name: Option<OsString>)
+                         -> Result<PreparedCopy, Error> {
+    let Options { clipboard,
+                  seat,
+                  trim_newline,
+                  serve_requests,
+                  .. } = options;
+
+    let primary = clipboard != ClipboardType::Regular;
+    let (queue, clipboard_manager, devices) = get_devices(primary, seat, socket_name)?;
+
+    // Collect the source data to copy.
+    let data_paths = {
+        let mut data_paths = HashMap::new();
+        let mut text_data_path = None;
+        for MimeSource { source, mime_type } in sources.into_iter() {
+            let (mime_type, mut data_path) =
+                make_source(source, mime_type, trim_newline).map_err(Error::TempCopy)?;
+
+            if data_paths.contains_key(&mime_type) {
+                // This MIME type has already been specified, so ignore it.
+                remove_file(&*data_path).map_err(Error::TempFileRemove)?;
+                data_path.pop();
+                remove_dir(&*data_path).map_err(Error::TempDirRemove)?;
+            } else {
+                let data_path = Rc::new(RefCell::new(data_path));
+
+                if text_data_path.is_none() && is_text(&mime_type) {
+                    text_data_path = Some(data_path.clone());
+                }
+
+                data_paths.insert(mime_type, data_path);
+            }
+        }
+
+        // If the MIME type is text, offer it in some other common formats.
+        if let Some(text_data_path) = text_data_path {
+            let text_mimes = ["text/plain;charset=utf-8",
+                              "text/plain",
+                              "STRING",
+                              "UTF8_STRING",
+                              "TEXT"];
+            for &mime_type in &text_mimes {
+                // We don't want to overwrite an explicit mime type, because it might be bound to a
+                // different data_path
+                if !data_paths.contains_key(mime_type) {
+                    data_paths.insert(mime_type.to_string(), text_data_path.clone());
+                }
+            }
+        }
+        data_paths
+    };
+
     let should_quit = Rc::new(Cell::new(false));
     let error = Rc::new(RefCell::new(None::<DataSourceError>));
     let serve_requests = Rc::new(Cell::new(serve_requests));
@@ -561,51 +823,11 @@ fn copy_past_fork(clipboard: ClipboardType,
                               })
                               .collect::<Vec<Proxy<_>>>();
 
-    // Loop until we're done.
-    while !should_quit.get() {
-        queue.dispatch().map_err(Error::WaylandCommunication)?;
-
-        // Check if all sources have been destroyed.
-        let all_destroyed = sources.iter().all(|x| !x.is_alive());
-        if all_destroyed {
-            should_quit.set(true);
-        }
-    }
-
-    // Clean up the temp file and directory.
-    //
-    // We want to try cleaning up all files and folders, so if any errors occur in process, collect
-    // them into a vector without interruption, and then return the first one.
-    let mut results = Vec::new();
-    let mut dropped = HashSet::new();
-    for data_path in data_paths.values() {
-        let buf = data_path.as_ptr();
-        // data_paths can contain duplicate items, we want to free each only once.
-        if dropped.contains(&buf) {
-            continue;
-        };
-        dropped.insert(buf);
-
-        let mut data_path = data_path.borrow_mut();
-        match remove_file(&*data_path).map_err(Error::TempFileRemove) {
-            Ok(()) => {
-                data_path.pop();
-                results.push(remove_dir(&*data_path).map_err(Error::TempDirRemove));
-            }
-            result @ Err(_) => results.push(result),
-        }
-    }
-
-    // Return the error, if any.
-    let result: Result<_, _> = results.into_iter().collect();
-    result?;
-
-    // Check if an error occurred during data transfer.
-    if let Some(err) = error.borrow_mut().take() {
-        return Err(Error::Paste(err));
-    }
-
-    Ok(())
+    Ok(PreparedCopy { should_quit,
+                      queue,
+                      sources,
+                      data_paths,
+                      error })
 }
 
 /// Copies data to the clipboard.
@@ -667,56 +889,8 @@ pub(crate) fn copy_internal(options: Options,
                             sources: Vec<MimeSource>,
                             socket_name: Option<OsString>)
                             -> Result<(), Error> {
-    let Options { clipboard,
-                  seat,
-                  trim_newline,
-                  foreground,
-                  serve_requests, } = options;
-
-    let primary = clipboard != ClipboardType::Regular;
-    let (queue, clipboard_manager, devices) = get_devices(primary, seat, socket_name)?;
-
-    // Collect the source data to copy.
-    let data_paths = {
-        let mut data_paths = HashMap::new();
-        let mut text_data_path = None;
-        for MimeSource { source, mime_type } in sources.into_iter() {
-            let (mime_type, mut data_path) =
-                make_source(source, mime_type, trim_newline).map_err(Error::TempCopy)?;
-
-            if data_paths.contains_key(&mime_type) {
-                // This MIME type has already been specified, so ignore it.
-                remove_file(&*data_path).map_err(Error::TempFileRemove)?;
-                data_path.pop();
-                remove_dir(&*data_path).map_err(Error::TempDirRemove)?;
-            } else {
-                let data_path = Rc::new(RefCell::new(data_path));
-
-                if text_data_path.is_none() && is_text(&mime_type) {
-                    text_data_path = Some(data_path.clone());
-                }
-
-                data_paths.insert(mime_type, data_path);
-            }
-        }
-
-        // If the MIME type is text, offer it in some other common formats.
-        if let Some(text_data_path) = text_data_path {
-            let text_mimes = ["text/plain;charset=utf-8",
-                              "text/plain",
-                              "STRING",
-                              "UTF8_STRING",
-                              "TEXT"];
-            for &mime_type in &text_mimes {
-                // We don't want to overwrite an explicit mime type, because it might be bound to a
-                // different data_path
-                if !data_paths.contains_key(mime_type) {
-                    data_paths.insert(mime_type.to_string(), text_data_path.clone());
-                }
-            }
-        }
-        data_paths
-    };
+    let foreground = options.foreground;
+    let prepared_copy = prepare_copy_internal(options, sources, socket_name)?;
 
     if !foreground {
         // Fork an exit the parent.
@@ -726,12 +900,7 @@ pub(crate) fn copy_internal(options: Options,
     }
     // If we forked, we must not return back past this point, just exit the process.
 
-    let result = copy_past_fork(clipboard,
-                                serve_requests,
-                                queue,
-                                clipboard_manager,
-                                devices,
-                                data_paths);
+    let result = prepared_copy.serve();
 
     if foreground {
         return result;
