@@ -892,12 +892,16 @@ pub(crate) fn copy_internal(options: Options,
     if options.foreground {
         prepare_copy_internal(options, sources, socket_name)?.serve()
     } else {
+        // The copy must be prepared on the thread because PreparedCopy isn't Send.
+        // To receive errors from prepare_copy, use a channel.
         let (tx, rx) = sync_channel(1);
 
-        // The copy must be prepared on the thread because PreparedCopy isn't Send.
         thread::spawn(move || match prepare_copy_internal(options, sources, socket_name) {
                           Ok(prepared_copy) => {
+                              // prepare_copy completed successfully, report that.
                               drop(tx.send(None));
+
+                              // There's nobody listening for errors at this point, just drop it.
                               drop(prepared_copy.serve());
                           }
                           Err(err) => drop(tx.send(Some(err))),
