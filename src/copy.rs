@@ -410,8 +410,8 @@ impl PreparedCopy {
 
         // Clean up the temp file and directory.
         //
-        // We want to try cleaning up all files and folders, so if any errors occur in process, collect
-        // them into a vector without interruption, and then return the first one.
+        // We want to try cleaning up all files and folders, so if any errors occur in process,
+        // collect them into a vector without interruption, and then return the first one.
         let mut results = Vec::new();
         let mut dropped = HashSet::new();
         for data_path in self.data_paths.values() {
