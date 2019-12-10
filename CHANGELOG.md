@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- **Breaking** Copying in non-foreground mode no longer forks (which was
+  **unsafe** in multi-threaded programs). Instead, it spawns a background
+  thread to serve copy requests.
 - Added `copy::prepare_copy()` and `copy::prepare_copy_multi()` (and respective
   functions in `copy::Options`) to accommodate workflows which depended on the
   forking behavior, such as `wl-copy`. See `wl-copy` for example usage.

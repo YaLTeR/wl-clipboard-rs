@@ -9,13 +9,13 @@ use std::{
     iter,
     os::unix::io::IntoRawFd,
     path::PathBuf,
-    process,
     rc::Rc,
+    sync::mpsc::sync_channel,
+    thread,
 };
 
 use failure::Fail;
 use log::info;
-use nix::unistd::{fork, ForkResult};
 use wayland_client::{ConnectError, EventQueue, Proxy};
 use wayland_protocols::wlr::unstable::data_control::v1::client::{
     zwlr_data_control_device_v1::ZwlrDataControlDeviceV1,
@@ -131,7 +131,7 @@ pub struct Options {
     /// This flag is only applied for text MIME types.
     trim_newline: bool,
 
-    /// Do not fork.
+    /// Do not spawn a separate thread for serving copy requests.
     ///
     /// Setting this flag will result in the call to `copy()` **blocking** until all data sources
     /// it creates are destroyed, e.g. until someone else copies something into the clipboard.
@@ -266,7 +266,7 @@ impl Options {
         self
     }
 
-    /// Sets the flag for not forking.
+    /// Sets the flag for not spawning a separate thread for serving copy requests.
     ///
     /// Setting this flag will result in the call to `copy()` **blocking** until all data sources
     /// it creates are destroyed, e.g. until someone else copies something into the clipboard.
@@ -889,28 +889,24 @@ pub(crate) fn copy_internal(options: Options,
                             sources: Vec<MimeSource>,
                             socket_name: Option<OsString>)
                             -> Result<(), Error> {
-    let foreground = options.foreground;
-    let prepared_copy = prepare_copy_internal(options, sources, socket_name)?;
-
-    if !foreground {
-        // Fork an exit the parent.
-        if let ForkResult::Parent { .. } = fork().map_err(Error::Fork)? {
-            return Ok(());
-        }
-    }
-    // If we forked, we must not return back past this point, just exit the process.
-
-    let result = prepared_copy.serve();
-
-    if foreground {
-        return result;
-    }
-
-    if let Err(err) = result {
-        // TODO: print causes.
-        eprintln!("Error: {}", err);
-        process::exit(1);
+    if options.foreground {
+        prepare_copy_internal(options, sources, socket_name)?.serve()
     } else {
-        process::exit(0);
+        let (tx, rx) = sync_channel(1);
+
+        // The copy must be prepared on the thread because PreparedCopy isn't Send.
+        thread::spawn(move || match prepare_copy_internal(options, sources, socket_name) {
+                          Ok(prepared_copy) => {
+                              drop(tx.send(None));
+                              drop(prepared_copy.serve());
+                          }
+                          Err(err) => drop(tx.send(Some(err))),
+                      });
+
+        if let Some(err) = rx.recv().unwrap() {
+            return Err(err);
+        }
+
+        Ok(())
     }
 }
