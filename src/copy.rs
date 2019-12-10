@@ -769,7 +769,10 @@ fn prepare_copy_internal(options: Options,
         data_paths
     };
 
+    // This bool can be set to true when serving a request: either if an error occurs, or if the
+    // number of requests to serve was limited and the last request was served.
     let should_quit = Rc::new(Cell::new(false));
+    // An error that occurred while serving a request, if any.
     let error = Rc::new(RefCell::new(None::<DataSourceError>));
     let serve_requests = Rc::new(Cell::new(serve_requests));
 
