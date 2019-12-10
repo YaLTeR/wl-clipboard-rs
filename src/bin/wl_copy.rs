@@ -3,6 +3,7 @@
 use std::{ffi::OsString, os::unix::ffi::OsStringExt};
 
 use exitfailure::ExitFailure;
+use nix::unistd::{fork, ForkResult};
 use structopt::{clap::AppSettings, StructOpt};
 
 use wl_clipboard_rs::copy::{self, clear, ClipboardType, MimeType, Seat, ServeRequests, Source};
@@ -82,7 +83,7 @@ impl From<Options> for copy::Options {
                             } else {
                                 ServeRequests::Unlimited
                             })
-            .foreground(x.foreground)
+            .foreground(true) // We fork manually to support background mode.
             .clipboard(if x.primary {
                            if x.regular {
                                ClipboardType::Both
@@ -145,7 +146,18 @@ fn main() -> Result<(), ExitFailure> {
         MimeType::Autodetect
     };
 
-    copy::Options::from(options).copy(source, mime_type)?;
+    let foreground = options.foreground;
+    let prepared_copy = copy::Options::from(options).prepare_copy(source, mime_type)?;
+
+    if foreground {
+        prepared_copy.serve()?;
+    } else {
+        // We don't spawn any threads, so doing things after forking is safe.
+        // TODO: is there any way to verify that we don't spawn any threads?
+        if let ForkResult::Child = fork().unwrap() {
+            drop(prepared_copy.serve());
+        }
+    }
 
     Ok(())
 }

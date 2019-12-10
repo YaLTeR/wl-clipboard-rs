@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added `copy::prepare_copy()` and `copy::prepare_copy_multi()` (and respective
+  functions in `copy::Options`) to accommodate workflows which depended on the
+  forking behavior, such as `wl-copy`. See `wl-copy` for example usage.
 - **Breaking** Changed `copy::Source` and `copy::Seat` to own the contained
   data rather than borrow it. As a consequence, those types, as well as
   `copy::MimeSource` and `copy::Options`, have dropped their lifetime generic
