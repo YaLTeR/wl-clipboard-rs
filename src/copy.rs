@@ -85,15 +85,15 @@ pub struct MimeSource<'a> {
 }
 
 /// Seat to operate on.
-#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
-pub enum Seat<'a> {
+#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+pub enum Seat {
     /// Operate on all existing seats at once.
     All,
     /// Operate on a seat with the given name.
-    Specific(&'a str),
+    Specific(String),
 }
 
-impl Default for Seat<'_> {
+impl Default for Seat {
     #[inline]
     fn default() -> Self {
         Seat::All
@@ -117,13 +117,13 @@ impl Default for ServeRequests {
 }
 
 /// Options and flags that are used to customize the copying.
-#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Hash, PartialOrd, Ord)]
-pub struct Options<'a> {
+#[derive(Clone, Eq, PartialEq, Debug, Default, Hash, PartialOrd, Ord)]
+pub struct Options {
     /// The clipboard to work with.
     clipboard: ClipboardType,
 
     /// The seat to work with.
-    seat: Seat<'a>,
+    seat: Seat,
 
     /// Trim the trailing newline character before copying.
     ///
@@ -226,7 +226,7 @@ impl From<common::Error> for Error {
     }
 }
 
-impl<'a> Options<'a> {
+impl Options {
     /// Creates a blank new set of options ready for configuration.
     #[inline]
     pub fn new() -> Self {
@@ -242,7 +242,7 @@ impl<'a> Options<'a> {
 
     /// Sets the seat to use for copying.
     #[inline]
-    pub fn seat(&mut self, seat: Seat<'a>) -> &mut Self {
+    pub fn seat(&mut self, seat: Seat) -> &mut Self {
         self.seat = seat;
         self
     }
@@ -376,7 +376,7 @@ fn make_source(source: Source<'_>,
 
 fn get_devices(
     primary: bool,
-    seat: Seat<'_>,
+    seat: Seat,
     socket_name: Option<OsString>)
     -> Result<(EventQueue, ZwlrDataControlManagerV1, Vec<ZwlrDataControlDeviceV1>), Error> {
     let CommonData { mut queue,
@@ -473,12 +473,12 @@ fn get_devices(
 /// # }
 /// ```
 #[inline]
-pub fn clear(clipboard: ClipboardType, seat: Seat<'_>) -> Result<(), Error> {
+pub fn clear(clipboard: ClipboardType, seat: Seat) -> Result<(), Error> {
     clear_internal(clipboard, seat, None)
 }
 
 pub(crate) fn clear_internal(clipboard: ClipboardType,
-                             seat: Seat<'_>,
+                             seat: Seat,
                              socket_name: Option<OsString>)
                              -> Result<(), Error> {
     let primary = clipboard != ClipboardType::Regular;
@@ -627,7 +627,7 @@ fn copy_past_fork(clipboard: ClipboardType,
 /// # }
 /// ```
 #[inline]
-pub fn copy(options: Options<'_>, source: Source<'_>, mime_type: MimeType) -> Result<(), Error> {
+pub fn copy(options: Options, source: Source<'_>, mime_type: MimeType) -> Result<(), Error> {
     let sources = vec![MimeSource { source: source,
                                     mime_type: mime_type }];
     copy_internal(options, sources, None)
@@ -659,11 +659,11 @@ pub fn copy(options: Options<'_>, source: Source<'_>, mime_type: MimeType) -> Re
 /// # }
 /// ```
 #[inline]
-pub fn copy_multi(options: Options<'_>, sources: Vec<MimeSource>) -> Result<(), Error> {
+pub fn copy_multi(options: Options, sources: Vec<MimeSource>) -> Result<(), Error> {
     copy_internal(options, sources, None)
 }
 
-pub(crate) fn copy_internal(options: Options<'_>,
+pub(crate) fn copy_internal(options: Options,
                             sources: Vec<MimeSource>,
                             socket_name: Option<OsString>)
                             -> Result<(), Error> {

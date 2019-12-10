@@ -196,8 +196,8 @@ Unsupported xclip options:
     }
 }
 
-impl<'a> From<&'a Options> for copy::Options<'a> {
-    fn from(x: &'a Options) -> Self {
+impl From<Options> for copy::Options {
+    fn from(x: Options) -> Self {
         let mut opts = copy::Options::new();
         opts.serve_requests(if x.loops == 0 {
                                 ServeRequests::Unlimited
@@ -287,7 +287,7 @@ fn main() -> Result<(), ExitFailure> {
             copy::MimeType::Autodetect
         };
 
-        copy::Options::from(&options).copy(source, mime_type)?;
+        copy::Options::from(options).copy(source, mime_type)?;
     }
 
     Ok(())

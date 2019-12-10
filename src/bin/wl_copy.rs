@@ -74,8 +74,8 @@ struct Options {
     verbose: usize,
 }
 
-impl<'a> From<&'a Options> for copy::Options<'a> {
-    fn from(x: &'a Options) -> Self {
+impl From<Options> for copy::Options {
+    fn from(x: Options) -> Self {
         let mut opts = copy::Options::new();
         opts.serve_requests(if x.paste_once {
                                 ServeRequests::Only(1)
@@ -93,10 +93,7 @@ impl<'a> From<&'a Options> for copy::Options<'a> {
                            ClipboardType::Regular
                        })
             .trim_newline(x.trim_newline)
-            .seat(x.seat
-                   .as_ref()
-                   .map(|x| Seat::Specific(x))
-                   .unwrap_or_default());
+            .seat(x.seat.map(Seat::Specific).unwrap_or_default());
         opts
     }
 }
@@ -116,10 +113,7 @@ fn main() -> Result<(), ExitFailure> {
             ClipboardType::Regular
         };
         clear(clipboard,
-              options.seat
-                     .as_ref()
-                     .map(|x| Seat::Specific(x))
-                     .unwrap_or_default())?;
+              options.seat.map(Seat::Specific).unwrap_or_default())?;
         return Ok(());
     }
 
@@ -151,7 +145,7 @@ fn main() -> Result<(), ExitFailure> {
         MimeType::Autodetect
     };
 
-    copy::Options::from(&options).copy(source, mime_type)?;
+    copy::Options::from(options).copy(source, mime_type)?;
 
     Ok(())
 }
