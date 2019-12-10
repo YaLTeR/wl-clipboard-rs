@@ -34,7 +34,7 @@
 //! use wl_clipboard_rs::copy::{MimeType, Options, Source};
 //!
 //! let opts = Options::new();
-//! opts.copy(Source::Bytes("Hello world!".as_bytes()), MimeType::Autodetect)?;
+//! opts.copy(Source::Bytes("Hello world!".to_string().into_bytes().into()), MimeType::Autodetect)?;
 //! # Ok(())
 //! # }
 //! ```

@@ -65,12 +65,12 @@ pub enum MimeType {
 }
 
 /// Source for copying.
-#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
-pub enum Source<'a> {
+#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+pub enum Source {
     /// Copy contents of the standard input.
     StdIn,
     /// Copy the given bytes.
-    Bytes(&'a [u8]),
+    Bytes(Box<[u8]>),
 }
 
 /// Source for copying, with a MIME type.
@@ -79,8 +79,8 @@ pub enum Source<'a> {
 ///
 /// [`copy_multi`]: fn.copy_multi.html
 #[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
-pub struct MimeSource<'a> {
-    pub source: Source<'a>,
+pub struct MimeSource {
+    pub source: Source,
     pub mime_type: MimeType,
 }
 
@@ -289,12 +289,12 @@ impl Options {
     /// use wl_clipboard_rs::copy::{MimeType, Options, Source};
     ///
     /// let opts = Options::new();
-    /// opts.copy(Source::Bytes(&[1, 2, 3]), MimeType::Autodetect)?;
+    /// opts.copy(Source::Bytes([1, 2, 3][..].into()), MimeType::Autodetect)?;
     /// # Ok(())
     /// # }
     /// ```
     #[inline]
-    pub fn copy(self, source: Source<'_>, mime_type: MimeType) -> Result<(), Error> {
+    pub fn copy(self, source: Source, mime_type: MimeType) -> Result<(), Error> {
         copy(self, source, mime_type)
     }
 
@@ -309,9 +309,9 @@ impl Options {
     /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
     ///
     /// let opts = Options::new();
-    /// opts.copy_multi(vec![MimeSource { source: Source::Bytes(&[1, 2, 3]),
+    /// opts.copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
     ///                                   mime_type: MimeType::Autodetect },
-    ///                      MimeSource { source: Source::Bytes(&[41, 42, 43, 44]),
+    ///                      MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
     ///                                   mime_type: MimeType::Text }])?;
     /// # Ok(())
     /// # }
@@ -322,7 +322,7 @@ impl Options {
     }
 }
 
-fn make_source(source: Source<'_>,
+fn make_source(source: Source,
                mime_type: MimeType,
                trim_newline: bool)
                -> Result<(String, PathBuf), SourceCreationError> {
@@ -622,12 +622,12 @@ fn copy_past_fork(clipboard: ClipboardType,
 /// use wl_clipboard_rs::copy::{copy, MimeType, Options, Source};
 ///
 /// let opts = Options::new();
-/// copy(opts, Source::Bytes(&[1, 2, 3]), MimeType::Autodetect)?;
+/// copy(opts, Source::Bytes([1, 2, 3][..].into()), MimeType::Autodetect)?;
 /// # Ok(())
 /// # }
 /// ```
 #[inline]
-pub fn copy(options: Options, source: Source<'_>, mime_type: MimeType) -> Result<(), Error> {
+pub fn copy(options: Options, source: Source, mime_type: MimeType) -> Result<(), Error> {
     let sources = vec![MimeSource { source: source,
                                     mime_type: mime_type }];
     copy_internal(options, sources, None)
@@ -651,9 +651,9 @@ pub fn copy(options: Options, source: Source<'_>, mime_type: MimeType) -> Result
 /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
 ///
 /// let opts = Options::new();
-/// opts.copy_multi(vec![MimeSource { source: Source::Bytes(&[1, 2, 3]),
+/// opts.copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
 ///                                   mime_type: MimeType::Autodetect },
-///                      MimeSource { source: Source::Bytes(&[41, 42, 43, 44]),
+///                      MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
 ///                                   mime_type: MimeType::Text }])?;
 /// # Ok(())
 /// # }

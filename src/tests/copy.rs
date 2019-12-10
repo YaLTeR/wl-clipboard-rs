@@ -142,7 +142,7 @@ fn copy_test() {
     let child = thread::spawn(move || {
         let mut opts = Options::new();
         opts.foreground(true);
-        let sources = vec![MimeSource { source: Source::Bytes(&[1, 3, 3, 7]),
+        let sources = vec![MimeSource { source: Source::Bytes([1, 3, 3, 7][..].into()),
                                         mime_type: MimeType::Specific("test".to_string()) }];
         copy_internal(opts, sources, Some(socket_name))
     });
@@ -241,18 +241,18 @@ fn copy_multi_test() {
     let child = thread::spawn(move || {
         let mut opts = Options::new();
         opts.foreground(true);
-        let sources = vec![MimeSource { source: Source::Bytes(&[1, 3, 3, 7]),
+        let sources = vec![MimeSource { source: Source::Bytes([1, 3, 3, 7][..].into()),
                                         mime_type: MimeType::Specific("test".to_string()) },
-                           MimeSource { source: Source::Bytes(&[2, 4, 4]),
+                           MimeSource { source: Source::Bytes([2, 4, 4][..].into()),
                                         mime_type: MimeType::Specific("test2".to_string()) },
                            // Ignored because it's the second "test" MIME type.
-                           MimeSource { source: Source::Bytes(&[4, 3, 2, 1]),
+                           MimeSource { source: Source::Bytes([4, 3, 2, 1][..].into()),
                                         mime_type: MimeType::Specific("test".to_string()) },
                            // The first text source, additional text types should fall back here.
-                           MimeSource { source: Source::Bytes(&b"hello fallback"[..]),
+                           MimeSource { source: Source::Bytes(b"hello fallback"[..].into()),
                                         mime_type: MimeType::Text },
                            // A specific override of an additional text type.
-                           MimeSource { source: Source::Bytes(&b"hello TEXT"[..]),
+                           MimeSource { source: Source::Bytes(b"hello TEXT"[..].into()),
                                         mime_type: MimeType::Specific("TEXT".to_string()) },];
         copy_internal(opts, sources, Some(socket_name))
     });
@@ -389,7 +389,7 @@ fn copy_large() {
         thread::spawn(move || {
             let mut opts = Options::new();
             opts.foreground(true);
-            let sources = vec![MimeSource { source: Source::Bytes(&bytes_to_copy),
+            let sources = vec![MimeSource { source: Source::Bytes(bytes_to_copy.into()),
                                             mime_type: MimeType::Specific("test".to_string()) }];
             copy_internal(opts, sources, Some(socket_name))
         })

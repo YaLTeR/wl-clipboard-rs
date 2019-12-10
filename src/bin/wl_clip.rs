@@ -276,7 +276,7 @@ fn main() -> Result<(), ExitFailure> {
         let source = if options.files.is_empty() {
             Source::StdIn
         } else {
-            Source::Bytes(data.as_ref().unwrap())
+            Source::Bytes(data.unwrap().into())
         };
 
         let mime_type = if let Some(mime_type) = options.target.take() {

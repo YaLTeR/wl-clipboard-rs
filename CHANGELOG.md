@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **Breaking** Changed `copy::Source` and `copy::Seat` to own the contained
+  data rather than borrow it. As a consequence, those types, as well as
+  `copy::MimeSource` and `copy::Options`, have dropped their lifetime generic
+  parameter.
+
 ### v0.3.1 (27th Nov 2019)
 
 - Reduced the `wl_seat` version requirement from 6 to 2.

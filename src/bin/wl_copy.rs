@@ -1,6 +1,6 @@
 #![deny(unsafe_code)]
 
-use std::{ffi::OsString, os::unix::ffi::OsStrExt};
+use std::{ffi::OsString, os::unix::ffi::OsStringExt};
 
 use exitfailure::ExitFailure;
 use structopt::{clap::AppSettings, StructOpt};
@@ -133,10 +133,10 @@ fn main() -> Result<(), ExitFailure> {
         Some(data)
     };
 
-    let source = if source_data.is_none() {
-        Source::StdIn
+    let source = if let Some(source_data) = source_data {
+        Source::Bytes(source_data.into_vec().into())
     } else {
-        Source::Bytes(source_data.as_ref().unwrap().as_bytes())
+        Source::StdIn
     };
 
     let mime_type = if let Some(mime_type) = options.mime_type.take() {
