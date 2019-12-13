@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.4.0 (13th Dec 2019)
+
 - **Breaking** Copying in non-foreground mode no longer forks (which was
   **unsafe** in multi-threaded programs). Instead, it spawns a background
   thread to serve copy requests.
