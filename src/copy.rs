@@ -2,7 +2,7 @@
 
 use std::{
     cell::{Cell, RefCell},
-    collections::{HashMap, HashSet},
+    collections::{hash_map::Entry, HashMap, HashSet},
     ffi::OsString,
     fs::{remove_dir, remove_file, File, OpenOptions},
     io::{self, Read, Seek, SeekFrom, Write},
@@ -732,19 +732,24 @@ fn prepare_copy_internal(options: Options,
             let (mime_type, mut data_path) =
                 make_source(source, mime_type, trim_newline).map_err(Error::TempCopy)?;
 
-            if data_paths.contains_key(&mime_type) {
-                // This MIME type has already been specified, so ignore it.
-                remove_file(&*data_path).map_err(Error::TempFileRemove)?;
-                data_path.pop();
-                remove_dir(&*data_path).map_err(Error::TempDirRemove)?;
-            } else {
-                let data_path = Rc::new(RefCell::new(data_path));
+            let mime_type_is_text = is_text(&mime_type);
 
-                if text_data_path.is_none() && is_text(&mime_type) {
-                    text_data_path = Some(data_path.clone());
+            match data_paths.entry(mime_type) {
+                Entry::Occupied(_) => {
+                    // This MIME type has already been specified, so ignore it.
+                    remove_file(&*data_path).map_err(Error::TempFileRemove)?;
+                    data_path.pop();
+                    remove_dir(&*data_path).map_err(Error::TempDirRemove)?;
                 }
+                Entry::Vacant(entry) => {
+                    let data_path = Rc::new(RefCell::new(data_path));
 
-                data_paths.insert(mime_type, data_path);
+                    if text_data_path.is_none() && mime_type_is_text {
+                        text_data_path = Some(data_path.clone());
+                    }
+
+                    entry.insert(data_path);
+                }
             }
         }
 
