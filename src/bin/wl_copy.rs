@@ -12,7 +12,7 @@ use wl_clipboard_rs::copy::{self, clear, ClipboardType, MimeType, Seat, ServeReq
 #[structopt(name = "wl-copy",
             about = "Copy clipboard contents on Wayland.",
             rename_all = "kebab-case",
-            raw(setting = "AppSettings::ColoredHelp"))]
+            setting = AppSettings::ColoredHelp)]
 struct Options {
     /// Serve only a single paste request and then exit
     ///

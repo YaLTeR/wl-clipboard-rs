@@ -116,7 +116,6 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(),
 
     // Don't allocate memory in the child process, it's not async-signal-safe.
     let cat = CString::new("cat").unwrap();
-    let also_cat = cat.clone();
 
     // Fork and exec cat.
     let fork_result = fork().map_err(CopyDataError::Fork)?;
@@ -146,7 +145,7 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(),
             }
 
             // Exec cat.
-            if execvp(&cat, &[also_cat]).is_err() {
+            if execvp(&cat, &[&cat]).is_err() {
                 abort();
             }
         }

@@ -17,7 +17,7 @@ use wl_clipboard_rs::{paste::*, utils::is_text};
 #[structopt(name = "wl-paste",
             about = "Paste clipboard contents on Wayland.",
             rename_all = "kebab-case",
-            raw(setting = "AppSettings::ColoredHelp"))]
+            setting = AppSettings::ColoredHelp)]
 struct Options {
     /// List the offered MIME types instead of pasting
     #[structopt(long, short)]
