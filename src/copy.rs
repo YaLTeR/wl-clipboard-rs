@@ -208,9 +208,6 @@ pub enum Error {
     #[fail(display = "The requested seat was not found")]
     SeatNotFound,
 
-    #[fail(display = "Couldn't fork")]
-    Fork(#[cause] nix::Error),
-
     #[fail(display = "Error copying the source into a temporary file")]
     TempCopy(#[cause] SourceCreationError),
 
