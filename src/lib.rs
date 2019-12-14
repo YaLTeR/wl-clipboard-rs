@@ -121,7 +121,7 @@ mod seat_data;
 #[allow(unsafe_code)] // It's more convenient for testing some stuff.
 mod tests;
 
-#[cfg(cargo_c)]
+// #[cfg(cargo_c)]
 #[allow(unsafe_code)] // Well, obviously.
 mod capi;
 
