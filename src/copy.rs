@@ -29,6 +29,8 @@ use crate::{
     seat_data::SeatData,
     utils::{self, copy_data, is_text},
 };
+#[cfg(feature = "xdg_mime")]
+use crate::xdg_mime;
 
 /// The clipboard to operate on.
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
@@ -461,7 +463,17 @@ fn make_source(source: Source,
     }
 
     let mime_type = match mime_type {
-        MimeType::Autodetect => tree_magic::from_filepath(&temp_filename),
+        // MimeType::Autodetect => tree_magic::from_filepath(&temp_filename),
+        MimeType::Autodetect => {
+            #[cfg(feature = "xdg_mime")]
+            {
+                xdg_mime::mime_from_filename(&temp_filename)
+            }
+            #[cfg(not(feature = "xdg_mime"))]
+            {
+                tree_magic::from_filepath(&temp_filename)
+            }
+        },
         MimeType::Text => "text/plain".to_string(),
         MimeType::Specific(mime_type) => mime_type,
     };
