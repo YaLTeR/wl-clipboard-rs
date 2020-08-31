@@ -1,12 +1,10 @@
 //! Helper functions.
 
 use std::{
-    cell::{Cell, RefCell},
     ffi::{CString, OsString},
     io,
     os::unix::io::RawFd,
     process::abort,
-    rc::Rc,
 };
 
 use failure::Fail;
@@ -17,13 +15,11 @@ use nix::{
     unistd::{close, dup2, execvp, fork, ForkResult},
 };
 use wayland_client::{
-    global_filter, protocol::wl_seat::WlSeat, ConnectError, Display, GlobalError, GlobalManager, Interface, Main,
+    protocol::{wl_registry::WlRegistry, wl_seat::WlSeat},
+    Argument, ConnectError, Display, GlobalError, Interface,
 };
-use wayland_protocols::wlr::unstable::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
-
-use crate::{
-    handlers::{data_device_handler, seat_handler, DataDeviceHandler},
-    seat_data::SeatData,
+use wayland_protocols::wlr::unstable::data_control::v1::client::{
+    zwlr_data_control_device_v1::ZwlrDataControlDeviceV1, zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
 };
 
 /// Checks if the given MIME type represents plain text.
@@ -240,26 +236,64 @@ pub(crate) fn is_primary_selection_supported_internal(socket_name: Option<OsStri
     let mut queue = display.create_event_queue();
     let display = display.attach(queue.token());
 
-    let seats = Rc::new(RefCell::new(Vec::<Main<WlSeat>>::new()));
-
-    let seats_2 = seats.clone();
-    let global_manager =
-        GlobalManager::new_with_cb(&display,
-                                   global_filter!([WlSeat, 2, move |seat: Main<WlSeat>, _: DispatchData| {
-                                                      let seat_data = RefCell::new(SeatData::default());
-                                                      seat.as_ref().user_data().set(move || seat_data);
-                                                      seat.quick_assign(seat_handler);
-                                                      seats_2.borrow_mut().push(seat);
-                                                  }]));
-
     // Retrieve the global interfaces.
-    queue.sync_roundtrip(&mut (), |_, _, _| {})
+    display.get_registry();
+
+    let mut seats = Vec::new();
+    let mut clipboard_manager = Err(GlobalError::Missing);
+
+    queue.sync_roundtrip(&mut (), |event, object, _| {
+             if let Ok(registry) = object.deanonymize::<WlRegistry>() {
+                 if event.opcode == 0 {
+                     // Global
+                     let interface = match &event.args[1] {
+                         Argument::Str(Some(x)) => x.as_ref(),
+                         _ => unreachable!(),
+                     };
+
+                     match interface {
+                         WlSeat::NAME => {
+                             let version = match event.args[2] {
+                                 Argument::Uint(x) => x,
+                                 _ => unreachable!(),
+                             };
+
+                             if version >= 2 {
+                                 let name = match event.args[0] {
+                                     Argument::Uint(x) => x,
+                                     _ => unreachable!(),
+                                 };
+
+                                 seats.push(registry.bind::<WlSeat>(2, name));
+                             }
+                         }
+                         ZwlrDataControlManagerV1::NAME => {
+                             let version = match event.args[2] {
+                                 Argument::Uint(x) => x,
+                                 _ => unreachable!(),
+                             };
+                             let name = match event.args[0] {
+                                 Argument::Uint(x) => x,
+                                 _ => unreachable!(),
+                             };
+
+                             if version < 2 {
+                                 clipboard_manager = Err(GlobalError::VersionTooLow(version))
+                             } else {
+                                 clipboard_manager = Ok(registry.bind::<ZwlrDataControlManagerV1>(2, name));
+                             }
+                         }
+                         _ => (),
+                     }
+                 }
+             }
+         })
          .map_err(PrimarySelectionCheckError::WaylandCommunication)?;
 
     // Try instantiating data control version 2. If data control is missing altogether, return a
     // missing protocol error, but if it's present with version 1 then return false as version 1
     // does not support primary clipboard.
-    let clipboard_manager = match global_manager.instantiate_exact::<ZwlrDataControlManagerV1>(2) {
+    let clipboard_manager = match clipboard_manager {
         Ok(manager) => manager,
         Err(GlobalError::Missing) => {
             return Err(PrimarySelectionCheckError::MissingProtocol { name: ZwlrDataControlManagerV1::NAME,
@@ -269,24 +303,26 @@ pub(crate) fn is_primary_selection_supported_internal(socket_name: Option<OsStri
     };
 
     // Check if there are no seats.
-    if seats.borrow_mut().is_empty() {
+    if seats.is_empty() {
         return Err(PrimarySelectionCheckError::NoSeats);
     }
 
-    let supports_primary = Rc::new(Cell::new(false));
-
     // Go through the seats and get their data devices. They will listen for the primary_selection
     // event and set supports_primary on receiving one.
-    for seat in &*seats.borrow_mut() {
-        let mut handler = DataDeviceHandler::new(seat.detach(), true, supports_primary.clone());
-        let device = clipboard_manager.get_data_device(seat);
-        device.quick_assign(move |data_device, event, dispatch_data| {
-                  data_device_handler(&mut handler, data_device, event, dispatch_data)
-              });
+    for seat in seats.into_iter() {
+        clipboard_manager.get_data_device(&seat);
     }
 
-    queue.sync_roundtrip(&mut (), |_, _, _| {})
+    let mut supports_primary = false;
+    queue.sync_roundtrip(&mut (), |event, object, _| {
+             if object.deanonymize::<ZwlrDataControlDeviceV1>().is_ok() {
+                 if event.opcode == 3 {
+                     // PrimarySelection
+                     supports_primary = true;
+                 }
+             }
+         })
          .map_err(PrimarySelectionCheckError::WaylandCommunication)?;
 
-    Ok(supports_primary.get())
+    Ok(supports_primary)
 }
