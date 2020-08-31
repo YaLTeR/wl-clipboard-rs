@@ -17,8 +17,7 @@ use nix::{
     unistd::{close, dup2, execvp, fork, ForkResult},
 };
 use wayland_client::{
-    global_filter, protocol::wl_seat::WlSeat, ConnectError, Display, GlobalError, GlobalManager,
-    Interface, NewProxy,
+    global_filter, protocol::wl_seat::WlSeat, ConnectError, Display, GlobalError, GlobalManager, Interface, NewProxy,
 };
 use wayland_protocols::wlr::unstable::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
 
@@ -70,8 +69,7 @@ pub enum CopyDataError {
            _0)]
     WaitUnexpected(WaitStatus),
 
-    #[fail(display = "The child process exited with a non-zero error code: {}",
-           _0)]
+    #[fail(display = "The child process exited with a non-zero error code: {}", _0)]
     ChildError(i32),
 }
 
@@ -232,9 +230,8 @@ pub fn is_primary_selection_supported() -> Result<bool, PrimarySelectionCheckErr
     is_primary_selection_supported_internal(None)
 }
 
-pub(crate) fn is_primary_selection_supported_internal(
-    socket_name: Option<OsString>)
-    -> Result<bool, PrimarySelectionCheckError> {
+pub(crate) fn is_primary_selection_supported_internal(socket_name: Option<OsString>)
+                                                      -> Result<bool, PrimarySelectionCheckError> {
     // Connect to the Wayland compositor.
     let (display, mut queue) = match socket_name {
                                    Some(name) => Display::connect_to_name(name),
@@ -247,10 +244,8 @@ pub(crate) fn is_primary_selection_supported_internal(
     let global_manager =
         GlobalManager::new_with_cb(&display,
                                    global_filter!([WlSeat, 2, move |seat: NewProxy<WlSeat>| {
-                                                      let seat_data =
-                                                          RefCell::new(SeatData::default());
-                                                      let seat =
-                                                          seat.implement(WlSeatHandler, seat_data);
+                                                      let seat_data = RefCell::new(SeatData::default());
+                                                      let seat = seat.implement(WlSeatHandler, seat_data);
                                                       seats_2.borrow_mut().push(seat.clone());
                                                       seat
                                                   }]));
@@ -263,15 +258,14 @@ pub(crate) fn is_primary_selection_supported_internal(
     // missing protocol error, but if it's present with version 1 then return false as version 1
     // does not support primary clipboard.
     let impl_manager = |manager: NewProxy<_>| manager.implement_dummy();
-    let clipboard_manager =
-        match global_manager.instantiate_exact::<ZwlrDataControlManagerV1, _>(2, impl_manager) {
-            Ok(manager) => manager,
-            Err(GlobalError::Missing) => {
-                return Err(PrimarySelectionCheckError::MissingProtocol { name: ZwlrDataControlManagerV1::NAME,
-                                                     version: 1 })
-            }
-            Err(GlobalError::VersionTooLow(_)) => return Ok(false),
-        };
+    let clipboard_manager = match global_manager.instantiate_exact::<ZwlrDataControlManagerV1, _>(2, impl_manager) {
+        Ok(manager) => manager,
+        Err(GlobalError::Missing) => {
+            return Err(PrimarySelectionCheckError::MissingProtocol { name: ZwlrDataControlManagerV1::NAME,
+                                                                     version: 1 })
+        }
+        Err(GlobalError::VersionTooLow(_)) => return Ok(false),
+    };
 
     // Check if there are no seats.
     if seats.borrow_mut().is_empty() {

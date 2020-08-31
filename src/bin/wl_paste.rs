@@ -48,10 +48,7 @@ struct Options {
     ///
     /// As a special case, specifying "text" will look for a number of plain text types,
     /// prioritizing ones that are known to give UTF-8 text.
-    #[structopt(name = "mime-type",
-                long = "type",
-                short = "t",
-                conflicts_with = "list-types")]
+    #[structopt(name = "mime-type", long = "type", short = "t", conflicts_with = "list-types")]
     mime_type: Option<String>,
 
     /// Enable verbose logging
@@ -75,10 +72,7 @@ fn main() -> Result<(), ExitFailure> {
     } else {
         ClipboardType::Regular
     };
-    let seat = options.seat
-                      .as_ref()
-                      .map(|x| Seat::Specific(x))
-                      .unwrap_or_default();
+    let seat = options.seat.as_ref().map(|x| Seat::Specific(x)).unwrap_or_default();
 
     stderrlog::new().verbosity(options.verbose.saturating_add(1))
                     .init()

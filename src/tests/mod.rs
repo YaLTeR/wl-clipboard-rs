@@ -17,8 +17,7 @@ impl TestServer {
     pub fn new() -> TestServer {
         let event_loop = self::ways::calloop::EventLoop::<()>::new().unwrap();
         let mut display = self::ways::Display::new(event_loop.handle());
-        let socket_name = display.add_socket_auto()
-                                 .expect("Failed to create a server socket.");
+        let socket_name = display.add_socket_auto().expect("Failed to create a server socket.");
 
         TestServer { display,
                      event_loop,

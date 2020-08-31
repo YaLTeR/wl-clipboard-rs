@@ -152,8 +152,7 @@ fn get_offer(primary: bool,
     }
 
     // Retrieve all seat names and offers.
-    queue.sync_roundtrip()
-         .map_err(Error::WaylandCommunication)?;
+    queue.sync_roundtrip().map_err(Error::WaylandCommunication)?;
 
     // Check if the compositor supports primary selection.
     if primary && !supports_primary.get() {
@@ -163,12 +162,7 @@ fn get_offer(primary: bool,
     // Figure out which offer we're interested in.
     let offer = seats.borrow_mut()
                      .iter()
-                     .map(|seat| {
-                         seat.as_ref()
-                             .user_data::<RefCell<SeatData>>()
-                             .unwrap()
-                             .borrow()
-                     })
+                     .map(|seat| seat.as_ref().user_data::<RefCell<SeatData>>().unwrap().borrow())
                      .find_map(|data| {
                          let SeatData { name, offer, .. } = &*data;
                          match seat {
@@ -190,9 +184,7 @@ fn get_offer(primary: bool,
         return Err(Error::SeatNotFound);
     }
 
-    offer.unwrap()
-         .map(|x| (queue, x))
-         .ok_or(Error::ClipboardEmpty)
+    offer.unwrap().map(|x| (queue, x)).ok_or(Error::ClipboardEmpty)
 }
 
 /// Retrieves the offered MIME types.
@@ -307,12 +299,10 @@ pub(crate) fn get_contents_internal(clipboard: ClipboardType,
         MimeType::Text => mime_types.take("text/plain;charset=utf-8")
                                     .or_else(|| mime_types.take("UTF8_STRING"))
                                     .or_else(|| mime_types.drain().find(|x| is_text(x))),
-        MimeType::TextWithPriority(priority) => {
-            mime_types.take(priority)
-                      .or_else(|| mime_types.take("text/plain;charset=utf-8"))
-                      .or_else(|| mime_types.take("UTF8_STRING"))
-                      .or_else(|| mime_types.drain().find(|x| is_text(x)))
-        }
+        MimeType::TextWithPriority(priority) => mime_types.take(priority)
+                                                          .or_else(|| mime_types.take("text/plain;charset=utf-8"))
+                                                          .or_else(|| mime_types.take("UTF8_STRING"))
+                                                          .or_else(|| mime_types.drain().find(|x| is_text(x))),
         MimeType::Specific(mime_type) => mime_types.take(mime_type),
     };
 
@@ -329,8 +319,7 @@ pub(crate) fn get_contents_internal(clipboard: ClipboardType,
     // Start the transfer.
     offer.receive(mime_type.clone(), write.as_raw_fd());
     drop(write);
-    queue.sync_roundtrip()
-         .map_err(Error::WaylandCommunication)?;
+    queue.sync_roundtrip().map_err(Error::WaylandCommunication)?;
 
     Ok((read, mime_type))
 }

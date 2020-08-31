@@ -16,8 +16,7 @@ use wayland_client::{
     NewProxy,
 };
 use wayland_protocols::wlr::unstable::data_control::v1::client::{
-    zwlr_data_control_device_v1::ZwlrDataControlDeviceV1,
-    zwlr_data_control_offer_v1::ZwlrDataControlOfferV1,
+    zwlr_data_control_device_v1::ZwlrDataControlDeviceV1, zwlr_data_control_offer_v1::ZwlrDataControlOfferV1,
     zwlr_data_control_source_v1::ZwlrDataControlSourceV1, *,
 };
 
@@ -52,9 +51,7 @@ impl DataDeviceHandler {
 }
 
 impl zwlr_data_control_device_v1::EventHandler for DataDeviceHandler {
-    fn data_offer(&mut self,
-                  _device: ZwlrDataControlDeviceV1,
-                  offer: NewProxy<ZwlrDataControlOfferV1>) {
+    fn data_offer(&mut self, _device: ZwlrDataControlDeviceV1, offer: NewProxy<ZwlrDataControlOfferV1>) {
         // Make a container for the new offer's mime types.
         let mime_types = RefCell::new(HashSet::<String>::with_capacity(1));
 
@@ -62,17 +59,13 @@ impl zwlr_data_control_device_v1::EventHandler for DataDeviceHandler {
         offer.implement(DataControlOfferHandler, mime_types);
     }
 
-    fn selection(&mut self,
-                 _device: ZwlrDataControlDeviceV1,
-                 offer: Option<ZwlrDataControlOfferV1>) {
+    fn selection(&mut self, _device: ZwlrDataControlDeviceV1, offer: Option<ZwlrDataControlOfferV1>) {
         if !self.primary {
             self.selection(offer);
         }
     }
 
-    fn primary_selection(&mut self,
-                         _device: ZwlrDataControlDeviceV1,
-                         offer: Option<ZwlrDataControlOfferV1>) {
+    fn primary_selection(&mut self, _device: ZwlrDataControlDeviceV1, offer: Option<ZwlrDataControlOfferV1>) {
         self.got_primary_selection.set(true);
 
         if self.primary {
@@ -132,9 +125,9 @@ impl zwlr_data_control_source_v1::EventHandler for DataSourceHandler {
 
         let file = File::open(&*data_path.borrow()).map_err(DataSourceError::FileOpen);
         let result = file.and_then(|data_file| {
-                         let data_fd = data_file.into_raw_fd();
-                         copy_data(Some(data_fd), target_fd, false).map_err(DataSourceError::Copy)
-                     });
+                             let data_fd = data_file.into_raw_fd();
+                             copy_data(Some(data_fd), target_fd, false).map_err(DataSourceError::Copy)
+                         });
 
         let mut error = source.as_ref()
                               .user_data::<Rc<RefCell<Option<DataSourceError>>>>()

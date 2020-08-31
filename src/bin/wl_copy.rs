@@ -58,10 +58,7 @@ struct Options {
     seat: Option<String>,
 
     /// Override the inferred MIME type for the content
-    #[structopt(name = "mime-type",
-                long = "type",
-                short = "t",
-                conflicts_with = "clear")]
+    #[structopt(name = "mime-type", long = "type", short = "t", conflicts_with = "clear")]
     mime_type: Option<String>,
 
     /// Text to copy
@@ -113,8 +110,7 @@ fn main() -> Result<(), ExitFailure> {
         } else {
             ClipboardType::Regular
         };
-        clear(clipboard,
-              options.seat.map(Seat::Specific).unwrap_or_default())?;
+        clear(clipboard, options.seat.map(Seat::Specific).unwrap_or_default())?;
         return Ok(());
     }
 

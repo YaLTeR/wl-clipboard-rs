@@ -18,8 +18,7 @@ use failure::Fail;
 use log::info;
 use wayland_client::{ConnectError, EventQueue, Proxy};
 use wayland_protocols::wlr::unstable::data_control::v1::client::{
-    zwlr_data_control_device_v1::ZwlrDataControlDeviceV1,
-    zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
+    zwlr_data_control_device_v1::ZwlrDataControlDeviceV1, zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
     zwlr_data_control_source_v1::ZwlrDataControlSourceV1,
 };
 
@@ -453,8 +452,7 @@ fn make_source(source: Source,
     let mut temp_file = File::create(&temp_filename).map_err(SourceCreationError::TempFileCreate)?;
 
     if let Source::Bytes(data) = source {
-        temp_file.write_all(&data)
-                 .map_err(SourceCreationError::TempFileWrite)?;
+        temp_file.write_all(&data).map_err(SourceCreationError::TempFileWrite)?;
     } else {
         // Copy the standard input into the target file.
         copy_data(None, temp_file.into_raw_fd(), true).map_err(SourceCreationError::DataCopy)?;
@@ -474,8 +472,7 @@ fn make_source(source: Source,
                                               .write(true)
                                               .open(&temp_filename)
                                               .map_err(SourceCreationError::TempFileOpen)?;
-        let metadata = temp_file.metadata()
-                                .map_err(SourceCreationError::TempFileMetadata)?;
+        let metadata = temp_file.metadata().map_err(SourceCreationError::TempFileMetadata)?;
         let length = metadata.len();
         if length > 0 {
             temp_file.seek(SeekFrom::End(-1))
@@ -494,11 +491,10 @@ fn make_source(source: Source,
     Ok((mime_type, temp_filename))
 }
 
-fn get_devices(
-    primary: bool,
-    seat: Seat,
-    socket_name: Option<OsString>)
-    -> Result<(EventQueue, ZwlrDataControlManagerV1, Vec<ZwlrDataControlDeviceV1>), Error> {
+fn get_devices(primary: bool,
+               seat: Seat,
+               socket_name: Option<OsString>)
+               -> Result<(EventQueue, ZwlrDataControlManagerV1, Vec<ZwlrDataControlDeviceV1>), Error> {
     let CommonData { mut queue,
                      clipboard_manager,
                      seats, } = initialize(primary, socket_name)?;
@@ -514,17 +510,15 @@ fn get_devices(
     for seat in &*seats.borrow_mut() {
         // TODO: fast path here if all seats.
         let handler = DataDeviceHandler::new(seat.clone(), primary, supports_primary.clone());
-        let device =
-            clipboard_manager.get_data_device(seat, |device| device.implement(handler, ()))
-                             .unwrap();
+        let device = clipboard_manager.get_data_device(seat, |device| device.implement(handler, ()))
+                                      .unwrap();
 
         let seat_data = seat.as_ref().user_data::<RefCell<SeatData>>().unwrap();
         seat_data.borrow_mut().set_device(Some(device));
     }
 
     // Retrieve all seat names.
-    queue.sync_roundtrip()
-         .map_err(Error::WaylandCommunication)?;
+    queue.sync_roundtrip().map_err(Error::WaylandCommunication)?;
 
     // Check if the compositor supports primary selection.
     if primary && !supports_primary.get() {
@@ -534,12 +528,7 @@ fn get_devices(
     // Figure out which devices we're interested in.
     let devices = seats.borrow_mut()
                        .iter()
-                       .map(|seat| {
-                           seat.as_ref()
-                               .user_data::<RefCell<SeatData>>()
-                               .unwrap()
-                               .borrow()
-                       })
+                       .map(|seat| seat.as_ref().user_data::<RefCell<SeatData>>().unwrap().borrow())
                        .filter_map(|data| {
                            let SeatData { name, device, .. } = &*data;
 
@@ -597,10 +586,7 @@ pub fn clear(clipboard: ClipboardType, seat: Seat) -> Result<(), Error> {
     clear_internal(clipboard, seat, None)
 }
 
-pub(crate) fn clear_internal(clipboard: ClipboardType,
-                             seat: Seat,
-                             socket_name: Option<OsString>)
-                             -> Result<(), Error> {
+pub(crate) fn clear_internal(clipboard: ClipboardType, seat: Seat, socket_name: Option<OsString>) -> Result<(), Error> {
     let primary = clipboard != ClipboardType::Regular;
     let (mut queue, _, devices) = get_devices(primary, seat, socket_name)?;
 
@@ -614,8 +600,7 @@ pub(crate) fn clear_internal(clipboard: ClipboardType,
     }
 
     // We're clearing the clipboard so just do one roundtrip and quit.
-    queue.sync_roundtrip()
-         .map_err(Error::WaylandCommunication)?;
+    queue.sync_roundtrip().map_err(Error::WaylandCommunication)?;
 
     Ok(())
 }
@@ -652,10 +637,7 @@ pub(crate) fn clear_internal(clipboard: ClipboardType,
 /// # }
 /// ```
 #[inline]
-pub fn prepare_copy(options: Options,
-                    source: Source,
-                    mime_type: MimeType)
-                    -> Result<PreparedCopy, Error> {
+pub fn prepare_copy(options: Options, source: Source, mime_type: MimeType) -> Result<PreparedCopy, Error> {
     assert_eq!(options.foreground, true);
 
     let sources = vec![MimeSource { source: source,
@@ -703,9 +685,7 @@ pub fn prepare_copy(options: Options,
 /// # }
 /// ```
 #[inline]
-pub fn prepare_copy_multi(options: Options,
-                          sources: Vec<MimeSource>)
-                          -> Result<PreparedCopy, Error> {
+pub fn prepare_copy_multi(options: Options, sources: Vec<MimeSource>) -> Result<PreparedCopy, Error> {
     assert_eq!(options.foreground, true);
 
     prepare_copy_internal(options, sources, None)
@@ -729,8 +709,7 @@ fn prepare_copy_internal(options: Options,
         let mut data_paths = HashMap::new();
         let mut text_data_path = None;
         for MimeSource { source, mime_type } in sources.into_iter() {
-            let (mime_type, mut data_path) =
-                make_source(source, mime_type, trim_newline).map_err(Error::TempCopy)?;
+            let (mime_type, mut data_path) = make_source(source, mime_type, trim_newline).map_err(Error::TempCopy)?;
 
             let mime_type_is_text = is_text(&mime_type);
 
@@ -800,33 +779,32 @@ fn prepare_copy_internal(options: Options,
                                      });
 
     // Create the data sources and set them as selections.
-    let sources = devices_iter.map(|(device, primary)| {
-                                  let handler = DataSourceHandler::new(data_paths.clone(),
-                                                                       should_quit.clone(),
-                                                                       serve_requests.clone());
-                                  let data_source = clipboard_manager.create_data_source(|source| {
-                                                        source.implement(handler, error.clone())
-                                                    })
-                                                    .unwrap();
+    let sources =
+        devices_iter.map(|(device, primary)| {
+                        let handler =
+                            DataSourceHandler::new(data_paths.clone(), should_quit.clone(), serve_requests.clone());
+                        let data_source =
+                            clipboard_manager.create_data_source(|source| source.implement(handler, error.clone()))
+                                             .unwrap();
 
-                                  for mime_type in data_paths.keys() {
-                                      data_source.offer(mime_type.clone());
-                                  }
+                        for mime_type in data_paths.keys() {
+                            data_source.offer(mime_type.clone());
+                        }
 
-                                  if primary {
-                                      device.set_primary_selection(Some(&data_source));
-                                  } else {
-                                      device.set_selection(Some(&data_source));
-                                  }
+                        if primary {
+                            device.set_primary_selection(Some(&data_source));
+                        } else {
+                            device.set_selection(Some(&data_source));
+                        }
 
-                                  // If we need to serve 0 requests, kill the data source right away.
-                                  if let ServeRequests::Only(0) = serve_requests.get() {
-                                      data_source.destroy();
-                                  }
+                        // If we need to serve 0 requests, kill the data source right away.
+                        if let ServeRequests::Only(0) = serve_requests.get() {
+                            data_source.destroy();
+                        }
 
-                                  data_source.into()
-                              })
-                              .collect::<Vec<Proxy<_>>>();
+                        data_source.into()
+                    })
+                    .collect::<Vec<Proxy<_>>>();
 
     Ok(PreparedCopy { should_quit,
                       queue,
@@ -902,15 +880,15 @@ pub(crate) fn copy_internal(options: Options,
         let (tx, rx) = sync_channel(1);
 
         thread::spawn(move || match prepare_copy_internal(options, sources, socket_name) {
-                          Ok(prepared_copy) => {
-                              // prepare_copy completed successfully, report that.
-                              drop(tx.send(None));
+            Ok(prepared_copy) => {
+                // prepare_copy completed successfully, report that.
+                drop(tx.send(None));
 
-                              // There's nobody listening for errors at this point, just drop it.
-                              drop(prepared_copy.serve());
-                          }
-                          Err(err) => drop(tx.send(Some(err))),
-                      });
+                // There's nobody listening for errors at this point, just drop it.
+                drop(prepared_copy.serve());
+            }
+            Err(err) => drop(tx.send(Some(err))),
+        });
 
         if let Some(err) = rx.recv().unwrap() {
             return Err(err);

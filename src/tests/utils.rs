@@ -10,22 +10,20 @@ use crate::{tests::TestServer, utils::*};
 #[test]
 fn is_primary_selection_supported_test() {
     let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, |new_res, _| {
-              new_res.implement_dummy();
-          });
-    server.display
-          .create_global::<ServerManager, _>(2, |new_res, _| {
-              new_res.implement_closure(|request, _| match request {
-                                            ServerManagerRequest::GetDataDevice { id, .. } => {
-                                                let device = id.implement_dummy();
-                                                device.primary_selection(None);
-                                            }
-                                            _ => unreachable!(),
-                                        },
-                                        None::<fn(_)>,
-                                        ());
-          });
+    server.display.create_global::<ServerSeat, _>(6, |new_res, _| {
+                      new_res.implement_dummy();
+                  });
+    server.display.create_global::<ServerManager, _>(2, |new_res, _| {
+                      new_res.implement_closure(|request, _| match request {
+                                                    ServerManagerRequest::GetDataDevice { id, .. } => {
+                                                        let device = id.implement_dummy();
+                                                        device.primary_selection(None);
+                                                    }
+                                                    _ => unreachable!(),
+                                                },
+                                                None::<fn(_)>,
+                                                ());
+                  });
 
     let socket_name = mem::replace(&mut server.socket_name, OsString::new());
     let child = thread::spawn(move || is_primary_selection_supported_internal(Some(socket_name)));
@@ -43,23 +41,21 @@ fn is_primary_selection_supported_test() {
 #[test]
 fn is_primary_selection_supported_primary_selection_unsupported() {
     let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, |new_res, _| {
-              new_res.implement_dummy();
-          });
-    server.display
-          .create_global::<ServerManager, _>(2, |new_res, _| {
-              new_res.implement_closure(|request, _| match request {
-                                            ServerManagerRequest::GetDataDevice { id, .. } => {
-                                                id.implement_dummy();
-                                                // Not sending primary_selection means it's not
-                                                // supported.
-                                            }
-                                            _ => unreachable!(),
-                                        },
-                                        None::<fn(_)>,
-                                        ());
-          });
+    server.display.create_global::<ServerSeat, _>(6, |new_res, _| {
+                      new_res.implement_dummy();
+                  });
+    server.display.create_global::<ServerManager, _>(2, |new_res, _| {
+                      new_res.implement_closure(|request, _| match request {
+                                                    ServerManagerRequest::GetDataDevice { id, .. } => {
+                                                        id.implement_dummy();
+                                                        // Not sending primary_selection means it's not
+                                                        // supported.
+                                                    }
+                                                    _ => unreachable!(),
+                                                },
+                                                None::<fn(_)>,
+                                                ());
+                  });
 
     let socket_name = mem::replace(&mut server.socket_name, OsString::new());
     let child = thread::spawn(move || is_primary_selection_supported_internal(Some(socket_name)));
@@ -77,10 +73,9 @@ fn is_primary_selection_supported_primary_selection_unsupported() {
 #[test]
 fn is_primary_selection_supported_data_control_v1() {
     let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerManager, _>(1, |new_res, _| {
-              new_res.implement_dummy();
-          });
+    server.display.create_global::<ServerManager, _>(1, |new_res, _| {
+                      new_res.implement_dummy();
+                  });
 
     let socket_name = mem::replace(&mut server.socket_name, OsString::new());
     let child = thread::spawn(move || is_primary_selection_supported_internal(Some(socket_name)));
@@ -95,10 +90,9 @@ fn is_primary_selection_supported_data_control_v1() {
 #[test]
 fn is_primary_selection_supported_no_seats() {
     let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerManager, _>(2, |new_res, _| {
-              new_res.implement_dummy();
-          });
+    server.display.create_global::<ServerManager, _>(2, |new_res, _| {
+                      new_res.implement_dummy();
+                  });
 
     let socket_name = mem::replace(&mut server.socket_name, OsString::new());
     let child = thread::spawn(move || is_primary_selection_supported_internal(Some(socket_name)));
@@ -117,14 +111,12 @@ fn is_primary_selection_supported_no_seats() {
 #[test]
 fn supports_v2_seats() {
     let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(2, |new_res, _| {
-              new_res.implement_dummy();
-          });
-    server.display
-          .create_global::<ServerManager, _>(2, |new_res, _| {
-              new_res.implement_dummy();
-          });
+    server.display.create_global::<ServerSeat, _>(2, |new_res, _| {
+                      new_res.implement_dummy();
+                  });
+    server.display.create_global::<ServerManager, _>(2, |new_res, _| {
+                      new_res.implement_dummy();
+                  });
 
     let socket_name = mem::replace(&mut server.socket_name, OsString::new());
     let child = thread::spawn(move || is_primary_selection_supported_internal(Some(socket_name)));

@@ -12,15 +12,11 @@ use std::{
 use nix::fcntl::{fcntl, FcntlArg, OFlag};
 use os_pipe::pipe;
 use wayland_protocols::wlr::unstable::data_control::v1::server::{
-    zwlr_data_control_device_v1::{
-        Request as ServerDeviceRequest, ZwlrDataControlDeviceV1 as ServerDevice,
-    },
+    zwlr_data_control_device_v1::{Request as ServerDeviceRequest, ZwlrDataControlDeviceV1 as ServerDevice},
     zwlr_data_control_manager_v1::{
         RequestHandler as ServerManagerRequestHandler, ZwlrDataControlManagerV1 as ServerManager,
     },
-    zwlr_data_control_source_v1::{
-        Request as ServerSourceRequest, ZwlrDataControlSourceV1 as ServerSource,
-    },
+    zwlr_data_control_source_v1::{Request as ServerSourceRequest, ZwlrDataControlSourceV1 as ServerSource},
 };
 use wayland_server::{protocol::wl_seat::WlSeat as ServerSeat, NewResource};
 
@@ -33,15 +29,10 @@ fn clear_test() {
     }
 
     impl ServerManagerRequestHandler for ServerManagerHandler {
-        fn get_data_device(&mut self,
-                           _manager: ServerManager,
-                           id: NewResource<ServerDevice>,
-                           _seat: ServerSeat) {
+        fn get_data_device(&mut self, _manager: ServerManager, id: NewResource<ServerDevice>, _seat: ServerSeat) {
             let pass = self.pass.clone();
             id.implement_closure(move |request, _| {
-                                     if let ServerDeviceRequest::SetSelection { source: None } =
-                                         request
-                                     {
+                                     if let ServerDeviceRequest::SetSelection { source: None } = request {
                                          pass.set(true);
                                      }
                                  },
@@ -51,25 +42,20 @@ fn clear_test() {
     }
 
     let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, |new_res, _| {
-              new_res.implement_dummy();
-          });
+    server.display.create_global::<ServerSeat, _>(6, |new_res, _| {
+                      new_res.implement_dummy();
+                  });
 
     let pass = Rc::new(Cell::new(false));
     {
         let pass = pass.clone();
-        server.display
-              .create_global::<ServerManager, _>(1, move |new_res, _| {
-                  new_res.implement(ServerManagerHandler { pass: pass.clone() },
-                                    None::<fn(_)>,
-                                    ());
-              });
+        server.display.create_global::<ServerManager, _>(1, move |new_res, _| {
+                          new_res.implement(ServerManagerHandler { pass: pass.clone() }, None::<fn(_)>, ());
+                      });
     }
 
     let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child =
-        thread::spawn(move || clear_internal(ClipboardType::Regular, Seat::All, Some(socket_name)));
+    let child = thread::spawn(move || clear_internal(ClipboardType::Regular, Seat::All, Some(socket_name)));
 
     thread::sleep(Duration::from_millis(100));
     server.answer();
@@ -106,10 +92,7 @@ fn copy_test() {
                                  RefCell::new(Vec::<String>::new()));
         }
 
-        fn get_data_device(&mut self,
-                           _manager: ServerManager,
-                           id: NewResource<ServerDevice>,
-                           _seat: ServerSeat) {
+        fn get_data_device(&mut self, _manager: ServerManager, id: NewResource<ServerDevice>, _seat: ServerSeat) {
             let selection = self.selection.clone();
             id.implement_closure(move |request, _| {
                                      if let ServerDeviceRequest::SetSelection { source } = request {
@@ -122,20 +105,16 @@ fn copy_test() {
     }
 
     let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, |new_res, _| {
-              new_res.implement_dummy();
-          });
+    server.display.create_global::<ServerSeat, _>(6, |new_res, _| {
+                      new_res.implement_dummy();
+                  });
 
     let selection = Rc::new(RefCell::new(None));
     {
         let selection = selection.clone();
-        server.display
-              .create_global::<ServerManager, _>(1, move |new_res, _| {
-                  new_res.implement(ServerManagerHandler { selection: selection.clone() },
-                                    None::<fn(_)>,
-                                    ());
-              });
+        server.display.create_global::<ServerManager, _>(1, move |new_res, _| {
+                          new_res.implement(ServerManagerHandler { selection: selection.clone() }, None::<fn(_)>, ());
+                      });
     }
 
     let socket_name = mem::replace(&mut server.socket_name, OsString::new());
@@ -156,13 +135,10 @@ fn copy_test() {
     thread::sleep(Duration::from_millis(100));
     server.answer();
 
-    let mime_types = selection.borrow().as_ref().map(|x| {
-                                                    x.as_ref()
-                                                     .user_data::<RefCell<Vec<String>>>()
-                                                     .unwrap()
-                                                     .borrow()
-                                                     .clone()
-                                                });
+    let mime_types =
+        selection.borrow()
+                 .as_ref()
+                 .map(|x| x.as_ref().user_data::<RefCell<Vec<String>>>().unwrap().borrow().clone());
 
     let (mut read, write) = pipe().unwrap();
 
@@ -205,10 +181,7 @@ fn copy_multi_test() {
                                  RefCell::new(Vec::<String>::new()));
         }
 
-        fn get_data_device(&mut self,
-                           _manager: ServerManager,
-                           id: NewResource<ServerDevice>,
-                           _seat: ServerSeat) {
+        fn get_data_device(&mut self, _manager: ServerManager, id: NewResource<ServerDevice>, _seat: ServerSeat) {
             let selection = self.selection.clone();
             id.implement_closure(move |request, _| {
                                      if let ServerDeviceRequest::SetSelection { source } = request {
@@ -221,20 +194,16 @@ fn copy_multi_test() {
     }
 
     let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, |new_res, _| {
-              new_res.implement_dummy();
-          });
+    server.display.create_global::<ServerSeat, _>(6, |new_res, _| {
+                      new_res.implement_dummy();
+                  });
 
     let selection = Rc::new(RefCell::new(None));
     {
         let selection = selection.clone();
-        server.display
-              .create_global::<ServerManager, _>(1, move |new_res, _| {
-                  new_res.implement(ServerManagerHandler { selection: selection.clone() },
-                                    None::<fn(_)>,
-                                    ());
-              });
+        server.display.create_global::<ServerManager, _>(1, move |new_res, _| {
+                          new_res.implement(ServerManagerHandler { selection: selection.clone() }, None::<fn(_)>, ());
+                      });
     }
 
     let socket_name = mem::replace(&mut server.socket_name, OsString::new());
@@ -266,13 +235,10 @@ fn copy_multi_test() {
     thread::sleep(Duration::from_millis(100));
     server.answer();
 
-    let mime_types = selection.borrow().as_ref().map(|x| {
-                                                    x.as_ref()
-                                                     .user_data::<RefCell<Vec<String>>>()
-                                                     .unwrap()
-                                                     .borrow()
-                                                     .clone()
-                                                });
+    let mime_types =
+        selection.borrow()
+                 .as_ref()
+                 .map(|x| x.as_ref().user_data::<RefCell<Vec<String>>>().unwrap().borrow().clone());
 
     let (mut read_test, write_test) = pipe().unwrap();
     let (mut read_test2, write_test2) = pipe().unwrap();
@@ -351,10 +317,7 @@ fn copy_large() {
                                  RefCell::new(Vec::<String>::new()));
         }
 
-        fn get_data_device(&mut self,
-                           _manager: ServerManager,
-                           id: NewResource<ServerDevice>,
-                           _seat: ServerSeat) {
+        fn get_data_device(&mut self, _manager: ServerManager, id: NewResource<ServerDevice>, _seat: ServerSeat) {
             let selection = self.selection.clone();
             id.implement_closure(move |request, _| {
                                      if let ServerDeviceRequest::SetSelection { source } = request {
@@ -367,20 +330,16 @@ fn copy_large() {
     }
 
     let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, |new_res, _| {
-              new_res.implement_dummy();
-          });
+    server.display.create_global::<ServerSeat, _>(6, |new_res, _| {
+                      new_res.implement_dummy();
+                  });
 
     let selection = Rc::new(RefCell::new(None));
     {
         let selection = selection.clone();
-        server.display
-              .create_global::<ServerManager, _>(1, move |new_res, _| {
-                  new_res.implement(ServerManagerHandler { selection: selection.clone() },
-                                    None::<fn(_)>,
-                                    ());
-              });
+        server.display.create_global::<ServerManager, _>(1, move |new_res, _| {
+                          new_res.implement(ServerManagerHandler { selection: selection.clone() }, None::<fn(_)>, ());
+                      });
     }
 
     let child = {

@@ -220,11 +220,7 @@ fn main() -> Result<(), ExitFailure> {
     // Parse command-line options.
     let mut options = Options::from_args()?;
 
-    stderrlog::new().verbosity(if options.verbosity == Verbosity::Verbose {
-                                   2
-                               } else {
-                                   1
-                               })
+    stderrlog::new().verbosity(if options.verbosity == Verbosity::Verbose { 2 } else { 1 })
                     .init()
                     .unwrap();
 
@@ -241,8 +237,7 @@ fn main() -> Result<(), ExitFailure> {
             paste::ClipboardType::Regular
         };
 
-        let (mut read, mime_type) =
-            get_contents(clipboard_type, paste::Seat::Unspecified, mime_type)?;
+        let (mut read, mime_type) = get_contents(clipboard_type, paste::Seat::Unspecified, mime_type)?;
 
         // Read the contents.
         let mut contents = vec![];
@@ -266,8 +261,7 @@ fn main() -> Result<(), ExitFailure> {
             let mut data = vec![];
 
             for filename in &options.files {
-                let mut file = File::open(filename).context(format!("Couldn't open {}",
-                                                                    filename.to_string_lossy()))?;
+                let mut file = File::open(filename).context(format!("Couldn't open {}", filename.to_string_lossy()))?;
                 file.read_to_end(&mut data)?;
             }
 
