@@ -16,7 +16,7 @@ use std::{
 
 use failure::Fail;
 use log::info;
-use wayland_client::{ConnectError, EventQueue, Proxy};
+use wayland_client::{ConnectError, EventQueue, Main, Proxy};
 use wayland_protocols::wlr::unstable::data_control::v1::client::{
     zwlr_data_control_device_v1::ZwlrDataControlDeviceV1, zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
     zwlr_data_control_source_v1::ZwlrDataControlSourceV1,
@@ -24,7 +24,7 @@ use wayland_protocols::wlr::unstable::data_control::v1::client::{
 
 use crate::{
     common::{self, initialize, CommonData},
-    handlers::{DataDeviceHandler, DataSourceError, DataSourceHandler},
+    handlers::{data_device_handler, data_source_handler, DataDeviceHandler, DataSourceError, DataSourceHandler},
     seat_data::SeatData,
     utils::{self, copy_data, is_text},
 };
@@ -395,7 +395,9 @@ impl PreparedCopy {
     pub fn serve(mut self) -> Result<(), Error> {
         // Loop until we're done.
         while !self.should_quit.get() {
-            self.queue.dispatch().map_err(Error::WaylandCommunication)?;
+            self.queue
+                .dispatch(&mut (), |_, _, _| {})
+                .map_err(Error::WaylandCommunication)?;
 
             // Check if all sources have been destroyed.
             let all_destroyed = self.sources.iter().all(|x| !x.is_alive());
@@ -494,7 +496,7 @@ fn make_source(source: Source,
 fn get_devices(primary: bool,
                seat: Seat,
                socket_name: Option<OsString>)
-               -> Result<(EventQueue, ZwlrDataControlManagerV1, Vec<ZwlrDataControlDeviceV1>), Error> {
+               -> Result<(EventQueue, Main<ZwlrDataControlManagerV1>, Vec<ZwlrDataControlDeviceV1>), Error> {
     let CommonData { mut queue,
                      clipboard_manager,
                      seats, } = initialize(primary, socket_name)?;
@@ -509,16 +511,19 @@ fn get_devices(primary: bool,
     // Go through the seats and get their data devices.
     for seat in &*seats.borrow_mut() {
         // TODO: fast path here if all seats.
-        let handler = DataDeviceHandler::new(seat.clone(), primary, supports_primary.clone());
-        let device = clipboard_manager.get_data_device(seat, |device| device.implement(handler, ()))
-                                      .unwrap();
+        let mut handler = DataDeviceHandler::new(seat.detach(), true, supports_primary.clone());
+        let device = clipboard_manager.get_data_device(seat);
+        device.quick_assign(move |data_device, event, dispatch_data| {
+                  data_device_handler(&mut handler, data_device, event, dispatch_data)
+              });
 
-        let seat_data = seat.as_ref().user_data::<RefCell<SeatData>>().unwrap();
-        seat_data.borrow_mut().set_device(Some(device));
+        let seat_data = seat.as_ref().user_data().get::<RefCell<SeatData>>().unwrap();
+        seat_data.borrow_mut().set_device(Some(device.detach()));
     }
 
     // Retrieve all seat names.
-    queue.sync_roundtrip().map_err(Error::WaylandCommunication)?;
+    queue.sync_roundtrip(&mut (), |_, _, _| {})
+         .map_err(Error::WaylandCommunication)?;
 
     // Check if the compositor supports primary selection.
     if primary && !supports_primary.get() {
@@ -528,7 +533,7 @@ fn get_devices(primary: bool,
     // Figure out which devices we're interested in.
     let devices = seats.borrow_mut()
                        .iter()
-                       .map(|seat| seat.as_ref().user_data::<RefCell<SeatData>>().unwrap().borrow())
+                       .map(|seat| seat.as_ref().user_data().get::<RefCell<SeatData>>().unwrap().borrow())
                        .filter_map(|data| {
                            let SeatData { name, device, .. } = &*data;
 
@@ -600,7 +605,8 @@ pub(crate) fn clear_internal(clipboard: ClipboardType, seat: Seat, socket_name: 
     }
 
     // We're clearing the clipboard so just do one roundtrip and quit.
-    queue.sync_roundtrip().map_err(Error::WaylandCommunication)?;
+    queue.sync_roundtrip(&mut (), |_, _, _| {})
+         .map_err(Error::WaylandCommunication)?;
 
     Ok(())
 }
@@ -779,32 +785,35 @@ fn prepare_copy_internal(options: Options,
                                      });
 
     // Create the data sources and set them as selections.
-    let sources =
-        devices_iter.map(|(device, primary)| {
-                        let handler =
-                            DataSourceHandler::new(data_paths.clone(), should_quit.clone(), serve_requests.clone());
-                        let data_source =
-                            clipboard_manager.create_data_source(|source| source.implement(handler, error.clone()))
-                                             .unwrap();
+    let sources = devices_iter.map(|(device, primary)| {
+                                  let mut handler = DataSourceHandler::new(data_paths.clone(),
+                                                                           should_quit.clone(),
+                                                                           serve_requests.clone());
+                                  let data_source = clipboard_manager.create_data_source();
+                                  let error = error.clone();
+                                  data_source.as_ref().user_data().set(move || error);
+                                  data_source.quick_assign(move |data_source, event, dispatch_data| {
+                                                 data_source_handler(&mut handler, data_source, event, dispatch_data)
+                                             });
 
-                        for mime_type in data_paths.keys() {
-                            data_source.offer(mime_type.clone());
-                        }
+                                  for mime_type in data_paths.keys() {
+                                      data_source.offer(mime_type.clone());
+                                  }
 
-                        if primary {
-                            device.set_primary_selection(Some(&data_source));
-                        } else {
-                            device.set_selection(Some(&data_source));
-                        }
+                                  if primary {
+                                      device.set_primary_selection(Some(&data_source));
+                                  } else {
+                                      device.set_selection(Some(&data_source));
+                                  }
 
-                        // If we need to serve 0 requests, kill the data source right away.
-                        if let ServeRequests::Only(0) = serve_requests.get() {
-                            data_source.destroy();
-                        }
+                                  // If we need to serve 0 requests, kill the data source right away.
+                                  if let ServeRequests::Only(0) = serve_requests.get() {
+                                      data_source.destroy();
+                                  }
 
-                        data_source.into()
-                    })
-                    .collect::<Vec<Proxy<_>>>();
+                                  data_source.detach().into()
+                              })
+                              .collect::<Vec<Proxy<_>>>();
 
     Ok(PreparedCopy { should_quit,
                       queue,

@@ -13,7 +13,7 @@ use failure::Fail;
 use nix::unistd::close;
 use wayland_client::{
     protocol::{wl_seat::WlSeat, *},
-    NewProxy,
+    DispatchData, Main,
 };
 use wayland_protocols::wlr::unstable::data_control::v1::client::{
     zwlr_data_control_device_v1::ZwlrDataControlDeviceV1, zwlr_data_control_offer_v1::ZwlrDataControlOfferV1,
@@ -26,11 +26,9 @@ use crate::{
     utils::{self, copy_data},
 };
 
-pub struct WlSeatHandler;
-
-impl wl_seat::EventHandler for WlSeatHandler {
-    fn name(&mut self, seat: WlSeat, name: String) {
-        let data = seat.as_ref().user_data::<RefCell<SeatData>>().unwrap();
+pub fn seat_handler(seat: Main<WlSeat>, event: wl_seat::Event, _: DispatchData) {
+    if let wl_seat::Event::Name { name } = event {
+        let data = seat.as_ref().user_data().get::<RefCell<SeatData>>().unwrap();
         data.borrow_mut().set_name(name);
     }
 }
@@ -43,48 +41,59 @@ pub struct DataDeviceHandler {
 }
 
 impl DataDeviceHandler {
-    fn selection(&mut self, offer: Option<ZwlrDataControlOfferV1>) {
+    fn set_offer(&mut self, offer: Option<ZwlrDataControlOfferV1>) {
         // Replace the existing offer with the new one.
-        let seat_data = self.seat.as_ref().user_data::<RefCell<SeatData>>().unwrap();
+        let seat_data = self.seat.as_ref().user_data().get::<RefCell<SeatData>>().unwrap();
         seat_data.borrow_mut().set_offer(offer);
     }
-}
 
-impl zwlr_data_control_device_v1::EventHandler for DataDeviceHandler {
-    fn data_offer(&mut self, _device: ZwlrDataControlDeviceV1, offer: NewProxy<ZwlrDataControlOfferV1>) {
+    fn data_offer(&mut self, offer: Main<ZwlrDataControlOfferV1>) {
         // Make a container for the new offer's mime types.
         let mime_types = RefCell::new(HashSet::<String>::with_capacity(1));
 
         // Bind the new offer with a handler that fills out mime types.
-        offer.implement(DataControlOfferHandler, mime_types);
+        offer.as_ref().user_data().set(move || mime_types);
+        offer.quick_assign(data_offer_handler);
     }
 
-    fn selection(&mut self, _device: ZwlrDataControlDeviceV1, offer: Option<ZwlrDataControlOfferV1>) {
+    fn selection(&mut self, offer: Option<ZwlrDataControlOfferV1>) {
         if !self.primary {
-            self.selection(offer);
+            self.set_offer(offer);
         }
     }
 
-    fn primary_selection(&mut self, _device: ZwlrDataControlDeviceV1, offer: Option<ZwlrDataControlOfferV1>) {
+    fn primary_selection(&mut self, offer: Option<ZwlrDataControlOfferV1>) {
         self.got_primary_selection.set(true);
 
         if self.primary {
-            self.selection(offer);
+            self.set_offer(offer);
         }
     }
 
-    fn finished(&mut self, _device: ZwlrDataControlDeviceV1) {
+    fn finished(&mut self) {
         // Destroy the device stored in the seat as it's no longer valid.
-        let seat_data = self.seat.as_ref().user_data::<RefCell<SeatData>>().unwrap();
+        let seat_data = self.seat.as_ref().user_data().get::<RefCell<SeatData>>().unwrap();
         seat_data.borrow_mut().set_device(None);
     }
 }
 
-pub struct DataControlOfferHandler;
+pub fn data_device_handler(handler: &mut DataDeviceHandler,
+                           _: Main<ZwlrDataControlDeviceV1>,
+                           event: zwlr_data_control_device_v1::Event,
+                           _: DispatchData) {
+    use zwlr_data_control_device_v1::Event::*;
+    match event {
+        DataOffer { id } => handler.data_offer(id),
+        Selection { id } => handler.selection(id),
+        Finished => handler.finished(),
+        PrimarySelection { id } => handler.primary_selection(id),
+        _ => (),
+    }
+}
 
-impl zwlr_data_control_offer_v1::EventHandler for DataControlOfferHandler {
-    fn offer(&mut self, offer: ZwlrDataControlOfferV1, mime_type: String) {
-        let mime_types = offer.as_ref().user_data::<RefCell<HashSet<_>>>().unwrap();
+fn data_offer_handler(offer: Main<ZwlrDataControlOfferV1>, event: zwlr_data_control_offer_v1::Event, _: DispatchData) {
+    if let zwlr_data_control_offer_v1::Event::Offer { mime_type } = event {
+        let mime_types = offer.as_ref().user_data().get::<RefCell<HashSet<_>>>().unwrap();
         mime_types.borrow_mut().insert(mime_type);
     }
 }
@@ -105,8 +114,8 @@ pub struct DataSourceHandler {
     serve_requests: Rc<Cell<ServeRequests>>,
 }
 
-impl zwlr_data_control_source_v1::EventHandler for DataSourceHandler {
-    fn send(&mut self, source: ZwlrDataControlSourceV1, mime_type: String, target_fd: RawFd) {
+impl DataSourceHandler {
+    fn send(&mut self, source: Main<ZwlrDataControlSourceV1>, mime_type: String, target_fd: RawFd) {
         // Check if some other source already handled a paste request and indicated that we should
         // quit.
         if self.should_quit.get() {
@@ -130,7 +139,8 @@ impl zwlr_data_control_source_v1::EventHandler for DataSourceHandler {
                          });
 
         let mut error = source.as_ref()
-                              .user_data::<Rc<RefCell<Option<DataSourceError>>>>()
+                              .user_data()
+                              .get::<Rc<RefCell<Option<DataSourceError>>>>()
                               .unwrap()
                               .borrow_mut();
         if let Err(err) = result {
@@ -151,7 +161,19 @@ impl zwlr_data_control_source_v1::EventHandler for DataSourceHandler {
         }
     }
 
-    fn cancelled(&mut self, source: ZwlrDataControlSourceV1) {
+    fn cancelled(&mut self, source: Main<ZwlrDataControlSourceV1>) {
         source.destroy();
+    }
+}
+
+pub fn data_source_handler(handler: &mut DataSourceHandler,
+                           source: Main<ZwlrDataControlSourceV1>,
+                           event: zwlr_data_control_source_v1::Event,
+                           _: DispatchData) {
+    use zwlr_data_control_source_v1::Event::*;
+    match event {
+        Send { mime_type, fd } => handler.send(source, mime_type, fd),
+        Cancelled => handler.cancelled(source),
+        _ => (),
     }
 }

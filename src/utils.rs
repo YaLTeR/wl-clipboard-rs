@@ -17,12 +17,12 @@ use nix::{
     unistd::{close, dup2, execvp, fork, ForkResult},
 };
 use wayland_client::{
-    global_filter, protocol::wl_seat::WlSeat, ConnectError, Display, GlobalError, GlobalManager, Interface, NewProxy,
+    global_filter, protocol::wl_seat::WlSeat, ConnectError, Display, GlobalError, GlobalManager, Interface, Main,
 };
 use wayland_protocols::wlr::unstable::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
 
 use crate::{
-    handlers::{DataDeviceHandler, WlSeatHandler},
+    handlers::{data_device_handler, seat_handler, DataDeviceHandler},
     seat_data::SeatData,
 };
 
@@ -233,32 +233,33 @@ pub fn is_primary_selection_supported() -> Result<bool, PrimarySelectionCheckErr
 pub(crate) fn is_primary_selection_supported_internal(socket_name: Option<OsString>)
                                                       -> Result<bool, PrimarySelectionCheckError> {
     // Connect to the Wayland compositor.
-    let (display, mut queue) = match socket_name {
-                                   Some(name) => Display::connect_to_name(name),
-                                   None => Display::connect_to_env(),
-                               }.map_err(PrimarySelectionCheckError::WaylandConnection)?;
+    let display = match socket_name {
+                      Some(name) => Display::connect_to_name(name),
+                      None => Display::connect_to_env(),
+                  }.map_err(PrimarySelectionCheckError::WaylandConnection)?;
+    let mut queue = display.create_event_queue();
+    let display = display.attach(queue.token());
 
-    let seats = Rc::new(RefCell::new(Vec::<WlSeat>::new()));
+    let seats = Rc::new(RefCell::new(Vec::<Main<WlSeat>>::new()));
 
     let seats_2 = seats.clone();
     let global_manager =
         GlobalManager::new_with_cb(&display,
-                                   global_filter!([WlSeat, 2, move |seat: NewProxy<WlSeat>| {
+                                   global_filter!([WlSeat, 2, move |seat: Main<WlSeat>, _: DispatchData| {
                                                       let seat_data = RefCell::new(SeatData::default());
-                                                      let seat = seat.implement(WlSeatHandler, seat_data);
-                                                      seats_2.borrow_mut().push(seat.clone());
-                                                      seat
+                                                      seat.as_ref().user_data().set(move || seat_data);
+                                                      seat.quick_assign(seat_handler);
+                                                      seats_2.borrow_mut().push(seat);
                                                   }]));
 
     // Retrieve the global interfaces.
-    queue.sync_roundtrip()
+    queue.sync_roundtrip(&mut (), |_, _, _| {})
          .map_err(PrimarySelectionCheckError::WaylandCommunication)?;
 
     // Try instantiating data control version 2. If data control is missing altogether, return a
     // missing protocol error, but if it's present with version 1 then return false as version 1
     // does not support primary clipboard.
-    let impl_manager = |manager: NewProxy<_>| manager.implement_dummy();
-    let clipboard_manager = match global_manager.instantiate_exact::<ZwlrDataControlManagerV1, _>(2, impl_manager) {
+    let clipboard_manager = match global_manager.instantiate_exact::<ZwlrDataControlManagerV1>(2) {
         Ok(manager) => manager,
         Err(GlobalError::Missing) => {
             return Err(PrimarySelectionCheckError::MissingProtocol { name: ZwlrDataControlManagerV1::NAME,
@@ -277,12 +278,14 @@ pub(crate) fn is_primary_selection_supported_internal(socket_name: Option<OsStri
     // Go through the seats and get their data devices. They will listen for the primary_selection
     // event and set supports_primary on receiving one.
     for seat in &*seats.borrow_mut() {
-        let handler = DataDeviceHandler::new(seat.clone(), true, supports_primary.clone());
-        clipboard_manager.get_data_device(seat, |device| device.implement(handler, ()))
-                         .unwrap();
+        let mut handler = DataDeviceHandler::new(seat.detach(), true, supports_primary.clone());
+        let device = clipboard_manager.get_data_device(seat);
+        device.quick_assign(move |data_device, event, dispatch_data| {
+                  data_device_handler(&mut handler, data_device, event, dispatch_data)
+              });
     }
 
-    queue.sync_roundtrip()
+    queue.sync_roundtrip(&mut (), |_, _, _| {})
          .map_err(PrimarySelectionCheckError::WaylandCommunication)?;
 
     Ok(supports_primary.get())
