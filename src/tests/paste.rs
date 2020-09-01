@@ -55,6 +55,9 @@ fn get_mime_types_test() {
     thread::sleep(Duration::from_millis(100));
     server.answer();
 
+    thread::sleep(Duration::from_millis(100));
+    server.answer();
+
     let mime_types = child.join().unwrap().unwrap();
 
     let mut expected = HashSet::new();
@@ -165,6 +168,9 @@ fn get_mime_types_empty_clipboard() {
     thread::sleep(Duration::from_millis(100));
     server.answer();
 
+    thread::sleep(Duration::from_millis(100));
+    server.answer();
+
     let error = child.join().unwrap().unwrap_err();
     if let Error::ClipboardEmpty = error {
         // Pass
@@ -216,6 +222,9 @@ fn get_contents_test() {
                               MimeType::Any,
                               Some(socket_name))
     });
+
+    thread::sleep(Duration::from_millis(100));
+    server.answer();
 
     thread::sleep(Duration::from_millis(100));
     server.answer();

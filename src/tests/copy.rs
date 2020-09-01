@@ -64,6 +64,9 @@ fn clear_test() {
     thread::sleep(Duration::from_millis(100));
     server.answer();
 
+    thread::sleep(Duration::from_millis(100));
+    server.answer();
+
     child.join().unwrap().unwrap();
 
     assert!(pass.get());
@@ -132,6 +135,9 @@ fn copy_test() {
                                         mime_type: MimeType::Specific("test".to_string()) }];
         copy_internal(opts, sources, Some(socket_name))
     });
+
+    thread::sleep(Duration::from_millis(100));
+    server.answer();
 
     thread::sleep(Duration::from_millis(100));
     server.answer();
@@ -245,6 +251,9 @@ fn copy_multi_test() {
                                         mime_type: MimeType::Specific("TEXT".to_string()) },];
         copy_internal(opts, sources, Some(socket_name))
     });
+
+    thread::sleep(Duration::from_millis(100));
+    server.answer();
 
     thread::sleep(Duration::from_millis(100));
     server.answer();
@@ -386,6 +395,9 @@ fn copy_large() {
             copy_internal(opts, sources, Some(socket_name))
         })
     };
+
+    thread::sleep(Duration::from_millis(100));
+    server.answer();
 
     thread::sleep(Duration::from_millis(100));
     server.answer();
