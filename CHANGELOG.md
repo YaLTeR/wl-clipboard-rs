@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.4.1 (1st Sep 2020)
+
+- Updated `nix` to 0.18 and `wayland-rs` to 0.27.
+
 ## v0.4.0 (13th Dec 2019)
 
 - **Breaking** Copying in non-foreground mode no longer forks (which was
