@@ -121,6 +121,8 @@ mod seat_data;
 #[allow(unsafe_code)] // It's more convenient for testing some stuff.
 mod tests;
 
+#[cfg(feature = "xdg_mime")]
+pub(crate) mod xdg_mime;
 pub mod copy;
 pub mod paste;
 pub mod utils;
