@@ -1,0 +1,664 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="nom, eating data byte by byte"><meta name="keywords" content="rust, rustlang, rust-lang, nom"><title>nom - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../ayu.css" disabled ><script id="default-settings"></script><script src="../storage.js"></script><script src="../crates.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../nom/index.html'><div class='logo-container rust-logo'><img src='../rust-logo.png' alt='logo'></div></a><p class="location">Crate nom</p><div class="block version"><p>Version 3.2.1</p></div><div class="sidebar-elems"><a id="all-types" href="all.html"><p>See all nom's items</p></a><div class="block items"><ul><li><a href="#reexports">Re-exports</a></li><li><a href="#modules">Modules</a></li><li><a href="#macros">Macros</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div><p class="location"></p><div id="sidebar-vars" data-name="nom" data-ty="mod" data-relpath="../"></div><script defer src="../sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+                <a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Crate <a class="mod" href="">nom</a><button id="copy-path" onclick="copy_path(this)">⎘</button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../src/nom/lib.rs.html#1-491" title="goto source code">[src]</a></span></h1><div class="docblock"><p>nom, eating data byte by byte</p>
+<p>nom is a parser combinator library with a focus on safe parsing,
+streaming patterns, and as much as possible zero copy.</p>
+<p>The code is available on <a href="https://github.com/Geal/nom">Github</a></p>
+<p>There are a few <a href="http://rust.unhandledexpression.com/nom/home.html">guides</a> with more details
+about <a href="http://rust.unhandledexpression.com/nom/how_nom_macros_work.html">the design of nom</a>,
+<a href="http://rust.unhandledexpression.com/nom/making_a_new_parser_from_scratch.html">how to write parsers</a>,
+or the <a href="http://rust.unhandledexpression.com/nom/error_management.html">error management system</a>.</p>
+<p>If you are upgrading to nom 2.0, please read the
+<a href="http://rust.unhandledexpression.com/nom/upgrading_to_nom_2.html">migration document</a>.</p>
+<p>See also the <a href="http://rust.unhandledexpression.com/nom/FAQ.html">FAQ</a>.</p>
+<h1 id="what-are-parser-combinators" class="section-header"><a href="#what-are-parser-combinators">What are parser combinators?</a></h1>
+<p>Parser combinators are a way to build parsers out of small functions. instead of
+writing a huge grammar file then generaing code, like you would do with lex and yacc,
+you write small functions, to parse small things like a character, or a number,
+and then you assemble them in larger and larger functions, that can parse larger
+parts of your formats.</p>
+<p>You end up with a list of small functions that you can reuse everywhere you need. Each
+of them can be unit tested anf fuzzed separately.</p>
+<h1 id="nom-parser-design" class="section-header"><a href="#nom-parser-design">nom parser design</a></h1>
+<p>All nom parsers follow the same convention. They are all functions with the following signature:</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+ <span class="kw">fn</span> <span class="ident">parser</span>(<span class="ident">input</span>: <span class="ident">I</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">IResult</span><span class="op">&lt;</span><span class="ident">I</span>,<span class="ident">O</span><span class="op">&gt;</span> { ... }</pre></div>
+<p>Here is the definition of that <code>IResult</code> type:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">IResult</span><span class="op">&lt;</span><span class="ident">I</span>,<span class="ident">O</span>,<span class="ident">E</span><span class="op">=</span><span class="ident">u32</span><span class="op">&gt;</span> {
+  <span class="ident">Done</span>(<span class="ident">I</span>,<span class="ident">O</span>),
+  <span class="ident">Error</span>(<span class="prelude-val">Err</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>), <span class="comment">// indicates the parser encountered an error. E is a custom error type you can redefine</span>
+  <span class="doccomment">/// Incomplete contains a Needed, an enum than can represent a known quantity of input data, or unknown</span>
+  <span class="ident">Incomplete</span>(<span class="ident">Needed</span>) <span class="comment">// if the parser did not have enough data to decide</span>
+}</pre></div>
+<p>What it means:</p>
+<ul>
+<li><code>Done(i,o)</code> means the parser was successful. <code>i</code> is the remaining part of the input, <code>o</code> is the correctly parsed value
+The remaining part can then be used as input for other parsers called in a sequence</li>
+<li><code>Error(e)</code> indicates the parser encountered an error. The <code>Err&lt;E&gt;</code> type is an enum of possible parser errors,
+that can also contain a custom error that you’d specify, by redefining the <code>E</code> error type</li>
+<li><code>Incomplete(i)</code> means the parser did not have enough information to decide, and tells you, if possible,
+how much data it needs</li>
+</ul>
+<p>That way, you could write your own parser that recognizes the letter ‘a’ like this:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="attribute">#[<span class="ident">macro_use</span>]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">nom</span>;
+<span class="kw">use</span> <span class="ident">nom</span>::{<span class="ident">IResult</span>,<span class="ident">Needed</span>,<span class="prelude-val">Err</span>,<span class="ident">ErrorKind</span>};
+
+<span class="kw">fn</span> <span class="ident">a</span>(<span class="ident">input</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">IResult</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">char</span><span class="op">&gt;</span> {
+ <span class="comment">// if there is not enough data, we return Ìncomplete</span>
+ <span class="kw">if</span> <span class="ident">input</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+   <span class="ident">IResult::Incomplete</span>(<span class="ident">Needed::Size</span>(<span class="number">1</span>))
+ } <span class="kw">else</span> {
+   <span class="kw">if</span> <span class="ident">input</span>[<span class="number">0</span>] <span class="op">=</span><span class="op">=</span> <span class="string">&#39;a&#39;</span> <span class="kw">as</span> <span class="ident">u8</span> {
+     <span class="comment">// the first part of the returned value is the remaining slice</span>
+     <span class="ident">IResult::Done</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>[<span class="number">1</span>..], <span class="string">&#39;a&#39;</span>)
+   } <span class="kw">else</span> {
+     <span class="ident">IResult::Error</span>(<span class="macro">error_code!</span>(<span class="ident">ErrorKind::Custom</span>(<span class="number">42</span>)))
+   }
+ }
+}</pre></div>
+<p>Writing all the parsers manually, like this, is dangerous, despite Rust’s safety features. There
+are still a lot of mistakes one can make. That’s why nom provides a list of macros to help in
+developing parsers. As an example, here is a parser that would recognize the phrase
+“Hello <someone>” and return the name of the person we hail:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="attribute">#[<span class="ident">macro_use</span>]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">nom</span>;
+<span class="kw">use</span> <span class="ident">nom::alpha</span>;
+
+<span class="macro">named!</span>(<span class="ident">hello</span>, <span class="macro">preceded!</span>(<span class="macro">tag!</span>(<span class="string">&quot;Hello &quot;</span>), <span class="ident">alpha</span>));</pre></div>
+<p>Let’s deconstruct it:</p>
+<ul>
+<li><code>named!</code> generates a function with the correct type. Without <code>named</code> here, we could write the parser
+as follows:</li>
+</ul>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="attribute">#[<span class="ident">macro_use</span>]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">nom</span>;
+<span class="kw">use</span> <span class="ident">nom</span>::{<span class="ident">alpha</span>,<span class="ident">IResult</span>};
+
+<span class="kw">fn</span> <span class="ident">hello</span>(<span class="ident">input</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">IResult</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> {
+  <span class="macro">preceded!</span>(<span class="ident">input</span>,
+    <span class="macro">tag!</span>(<span class="string">&quot;Hello &quot;</span>), <span class="ident">alpha</span>)
+}</pre></div>
+<p>By default, <code>named</code> makes a function that takes <code>&amp;[u8]</code> as input type, and returns <code>&amp;[u8]</code> as output type.
+You can override it like this:</p>
+<ul>
+<li><code>named!(hello&lt;&amp;str&gt;, ...):</code> would take <code>&amp;[u8]</code> as input type, and return <code>&amp;str</code> as output type.</li>
+<li><code>named!(hello&lt;&amp;str, &amp;str&gt;, ...):</code> would take <code>&amp;str</code> as input type, and return <code>&amp;str</code> as output type.</li>
+</ul>
+<p><em>Note</em> : when we don’t use <code>named!</code>, we must pass the input as first argument of the top
+level combinator (see the line <code>preceded!(input,</code> in the preceding code example). This is a macro trick
+in nom to pass input from one combinator to the next by rewriting the call.</p>
+<p>Next part of the parser: <code>preceded!(tag!(&quot;Hello &quot;), alpha))</code>. Here, <code>tag!</code> is a combinator that recognizes
+a specific serie of bytes or characters. <code>alpha</code> is a function that recognizes alphabetical characters.
+The <code>preceded!</code> combinator assembles them in a more complex parser: if both parsers are successful,
+it returns the result of the second one (<code>alpha</code> is preceded by <code>tag!</code>).</p>
+<p><em>Note</em> : combinators can assemble other combinators (macros), or parser functions, as long as they follow
+the same interface. Here, <code>alpha</code> is a parser function already implemented in nom.</p>
+<h1 id="list-of-parsers-and-combinators" class="section-header"><a href="#list-of-parsers-and-combinators">List of parsers and combinators</a></h1><h2 id="basic-elements" class="section-header"><a href="#basic-elements">Basic elements</a></h2>
+<p>Those are used to recognize the lowest level elements of your grammar, like, “here is a dot”, or
+“here is an big endian integer”.</p>
+<ul>
+<li><strong>char!</strong>: matches one character: <code>char!('a')</code> will make a parser that recognizes the letter ‘a’ (works with non ASCII chars too)</li>
+<li><strong>eof!</strong>: <code>eof!()</code> returns its input if it is at the end of input data</li>
+<li><strong>is_a!, is_a_s!</strong>: matches a sequence of any of the characters passed as arguments. <code>is_a!(&quot;ab1&quot;)</code> could recognize <code>ababa</code> or <code>1bb</code>. <code>is_a_s!</code> is a legacy combinator, it does exactly the same thing as <code>is_a</code></li>
+<li><strong>is_not!, is_not_s!</strong>: matches a sequence of none of the characters passed as arguments</li>
+<li><strong>one_of!</strong>: matches one of the provided characters. <code>one_of!(&quot;abc&quot;)</code> could recognize ‘a’, ‘b’, or ‘c’. It also works with non ASCII characters</li>
+<li><strong>none_of!</strong>: matches anything but the provided characters</li>
+<li><strong>tag!, tag_s!</strong>: recognizes a specific suite of characters or bytes. <code>tag!(&quot;hello&quot;)</code> matches “hello”</li>
+<li><strong>tag_no_case!</strong>: recognizes a suite of ASCII characters, case insensitive. <code>tag_no_case!(&quot;hello&quot;)</code> could match “hello”, “Hello” or even “HeLlO”</li>
+<li><strong>tag_no_case_s!</strong> works like <code>tag_no_case</code> but on UTF-8 characters too (uses <code>&amp;str</code> as input). Note that case insensitive comparison is not well defined for unicode, and that you might have bad surprises. Also, this combinator allocates a new string for the comparison. Ponder for a bit before using this combinator</li>
+<li><strong>take!, take_s!</strong>: takes a specific number of bytes or characters. <code>take!(5)</code> would return “hello” from the string “hello world”</li>
+<li><strong>take_str!</strong>: same as <code>take!</code> but returning a <code>&amp;str</code></li>
+<li><strong>take_till!, take_till_s!</strong>: returns the longest list of bytes until the provided function succeeds. <code>take_till!(is_alphabetic)</code> with input “123abc” would return “123”</li>
+<li><strong>take_till1!, take_till1_s!</strong>: same as <code>take_till!</code>, but the result must not be empty: <code>take_till1!(is_alphabetic)</code> would fail on “abc”</li>
+<li><strong>take_until!, take_until_s!</strong>: returns the longest list of bytes until the provided tag is found. <code>take_until!(&quot;world&quot;)</code> with input “Hello world!” would return “Hello “ and leave “world!” as remaining input</li>
+<li><strong>take_until1!</strong>: same as <code>take_until!</code>, but cannot return an empty result</li>
+<li><strong>take_until_and_consume!, take_until_and_consume_s!</strong>: same as <code>take_until!</code> but consumes the tag. <code>take_until_and_consume!(&quot;world&quot;)</code> with input “Hello world!” would return “Hello “ and leave “!” as remaining input</li>
+<li><strong>take_until_and_consume1!</strong>: same as <code>take_until_and_consume!</code>, but cannot return an empty result</li>
+<li><strong>take_until_either!</strong>: returns the longest list of bytes until any of the provided characters are found</li>
+<li><strong>take_until_either_and_consume!</strong>: same as <code>take_until_either!</code>, but consumes the terminating character</li>
+<li><strong>take_while!, take_while_s!</strong>: returns the longest list of bytes for which the function is true. <code>take_while!(is_alphabetic)</code> with input “abc123” would return “abc”</li>
+<li><strong>take_while1!, take_while1_s!</strong>: same as <code>take_while!</code>, but cannot return an empty result</li>
+<li><strong>value!</strong>: you can use <code>value!</code> to always return the same result value without consuming input, like this: <code>value!(42)</code>. Or you can replace the result of a child parser with a predefined value, like this: <code>value!(42, tag!(&quot;abcd&quot;))</code> which would replace, if successful, the return value from “abcd”, to 42</li>
+</ul>
+<p>Parsing integers from binary formats can be done in two ways: with parser functions, or combinators with configurable endianness:</p>
+<ul>
+<li>configurable endianness: <strong>i16!, i32!, i64!, u16!, u32!, u64!</strong> are combinators that take as argument a <code>nom::Endianness</code>,
+like this: <code>i16!(endianness)</code>. If the parameter is nom::Endianness::Big, parse a big endian i16 integer, otherwise a little endian i16 integer</li>
+<li>fixed endianness: the functions are prefixed by “be_” for big endian numbers, and by “le_” for little endian numbers, and the suffix is the type they parse to. As an example, “be_u32” parses a big endian unsigned integer stored in 32 bits.
+<ul>
+<li><strong>be_f32, be_f64, le_f32, le_f64</strong>: recognize floating point numbers</li>
+<li><strong>be_i8, be_i16, be_i32, be_i24, be_i32, be_i64</strong>: big endian signed integers</li>
+<li><strong>be_u8, be_u16, be_u32, be_u24, be_u32, be_u64</strong>: big endian unsigned integers</li>
+<li><strong>le_i8, le_i16, le_i32, le_i24, le_i32, le_i64</strong>: little endian signed integers</li>
+<li><strong>le_u8, le_u16, le_u32, le_u24, le_u32, le_u64</strong>: little endian unsigned integers</li>
+</ul>
+</li>
+</ul>
+<h2 id="modifiers" class="section-header"><a href="#modifiers">Modifiers</a></h2>
+<ul>
+<li><strong>complete!</strong>: replaces a Incomplete returned by the child parser with an Error</li>
+<li><strong>cond!</strong>: conditional combinator</li>
+<li><strong>cond_reduce!</strong>: Conditional combinator with error</li>
+<li><strong>cond_with_error!</strong>: Conditional combinator</li>
+<li><strong>expr_opt!</strong>: evaluates an expression that returns a Option and returns a IResult::Done(I,T) if Some</li>
+<li><strong>expr_res!</strong>: evaluates an expression that returns a Result and returns a IResult::Done(I,T) if Ok</li>
+<li><strong>flat_map!</strong>:</li>
+<li><strong>map!</strong>: maps a function on the result of a parser</li>
+<li><strong>map_opt!</strong>: maps a function returning an Option on the output of a parser</li>
+<li><strong>map_res!</strong>: maps a function returning a Result on the output of a parser</li>
+<li><strong>not!</strong>: returns a result only if the embedded parser returns Error or Incomplete does not consume the input</li>
+<li><strong>opt!</strong>: make the underlying parser optional</li>
+<li><strong>opt_res!</strong>: make the underlying parser optional</li>
+<li><strong>parse_to!</strong>: uses the parse method from std::str::FromStr to convert the current input to the specified type</li>
+<li><strong>peek!</strong>: returns a result without consuming the input</li>
+<li><strong>recognize!</strong>: if the child parser was successful, return the consumed input as produced value</li>
+<li><strong>return_error!</strong>: prevents backtracking if the child parser fails</li>
+<li><strong>tap!</strong>: allows access to the parser’s result without affecting it</li>
+<li><strong>verify!</strong>: returns the result of the child parser if it satisfies a verification function</li>
+</ul>
+<h2 id="error-management-and-debugging" class="section-header"><a href="#error-management-and-debugging">Error management and debugging</a></h2>
+<ul>
+<li><strong>add_return_error!</strong>: Add an error if the child parser fails</li>
+<li><strong>dbg!</strong>: Prints a message if the parser fails</li>
+<li><strong>dbg_dmp!</strong>: Prints a message and the input if the parser fails</li>
+<li><strong>error_code!</strong>: creates a parse error from a nom::ErrorKind</li>
+<li><strong>error_node!</strong>: creates a parse error from a nom::ErrorKind and the next error in the parsing tree. if “verbose-errors” is not activated, it default to only the error code</li>
+<li><strong>error_node_position!</strong>: creates a parse error from a nom::ErrorKind, the position in the input and the next error in the parsing tree. if “verbose-errors” is not activated, it default to only the error code</li>
+<li><strong>error_position!</strong>: creates a parse error from a nom::ErrorKind and the position in the input if “verbose-errors” is not activated, it default to only the error code</li>
+<li><strong>fix_error!</strong>: translate parser result from IResult to IResult with a custom type</li>
+</ul>
+<h2 id="choice-combinators" class="section-header"><a href="#choice-combinators">Choice combinators</a></h2>
+<ul>
+<li><strong>alt!</strong>: try a list of parsers and return the result of the first successful one</li>
+<li><strong>alt_complete!</strong>: is equivalent to the alt! combinator, except that it will not return Incomplete when one of the constituting parsers returns Incomplete. Instead, it will try the next alternative in the chain.</li>
+<li><strong>switch!</strong>: choose the next parser depending on the result of the first one, if successful, and returns the result of the second parser</li>
+</ul>
+<h1 id="sequence-combinators" class="section-header"><a href="#sequence-combinators">Sequence combinators</a></h1>
+<ul>
+<li><strong>delimited!</strong>: delimited(opening, X, closing) returns X</li>
+<li><strong>do_parse!</strong>: do_parse applies sub parsers in a sequence. it can store intermediary results and make them available for later parsers</li>
+<li><strong>pair!</strong>: pair(X,Y), returns (x,y)</li>
+<li><strong>permutation!</strong>: applies its sub parsers in a sequence, but independent from their order this parser will only succeed if all of its sub parsers succeed</li>
+<li><strong>preceded!</strong>: preceded(opening, X) returns X</li>
+<li><strong>separated_pair!</strong>: separated_pair(X,sep,Y) returns (x,y)</li>
+<li><strong>terminated!</strong>: terminated(X, closing) returns X</li>
+<li><strong>tuple!</strong>: chains parsers and assemble the sub results in a tuple.</li>
+</ul>
+<h2 id="applying-a-parser-multiple-times" class="section-header"><a href="#applying-a-parser-multiple-times">Applying a parser multiple times</a></h2>
+<ul>
+<li><strong>count!</strong>: Applies the child parser a specified number of times</li>
+<li><strong>count_fixed!</strong>: Applies the child parser a fixed number of times and returns a fixed size array The type must be specified and it must be Copy</li>
+<li><strong>fold_many0!</strong>: Applies the parser 0 or more times and folds the list of return values</li>
+<li><strong>fold_many1!</strong>: Applies the parser 1 or more times and folds the list of return values</li>
+<li><strong>fold_many_m_n!</strong>: Applies the parser between m and n times (n included) and folds the list of return value</li>
+<li><strong>length_count!</strong>: gets a number from the first parser, then applies the second parser that many times</li>
+<li><strong>many0!</strong>: Applies the parser 0 or more times and returns the list of results in a Vec</li>
+<li><strong>many1!</strong>: Applies the parser 1 or more times and returns the list of results in a Vec</li>
+<li><strong>many_m_n!</strong>: Applies the parser between m and n times (n included) and returns the list of results in a Vec</li>
+<li><strong>many_till!</strong>: Applies the first parser until the second applies. Returns a tuple containing the list of results from the first in a Vec and the result of the second.</li>
+<li><strong>separated_list!</strong>: separated_list(sep, X) returns Vec will return Incomplete if there may be more elements</li>
+<li><strong>separated_list_complete!</strong>: This is equivalent to the separated_list! combinator, except that it will return Error when either the separator or element subparser returns Incomplete.</li>
+<li><strong>separated_nonempty_list!</strong>: separated_nonempty_list(sep, X) returns Vec will return Incomplete if there may be more elements</li>
+<li><strong>separated_nonempty_list_complete!</strong>: This is equivalent to the separated_nonempty_list! combinator, except that it will return Error when either the separator or element subparser returns Incomplete.</li>
+</ul>
+<h2 id="text-parsing" class="section-header"><a href="#text-parsing">Text parsing</a></h2>
+<ul>
+<li><strong>escaped!</strong>: matches a byte string with escaped characters.</li>
+<li><strong>escaped_transform!</strong>: matches a byte string with escaped characters, and returns a new string with the escaped characters replaced</li>
+</ul>
+<h2 id="binary-format-parsing" class="section-header"><a href="#binary-format-parsing">Binary format parsing</a></h2>
+<ul>
+<li><strong>length_data!</strong>: gets a number from the first parser, than takes a subslice of the input of that size, and returns that subslice</li>
+<li><strong>length_bytes!</strong>: alias for <code>length_data</code></li>
+<li><strong>length_value!</strong>: gets a number from the first parser, takes a subslice of the input of that size, then applies the second parser on that subslice. If the second parser returns Incomplete, length_value will return an error</li>
+</ul>
+<h2 id="bit-stream-parsing" class="section-header"><a href="#bit-stream-parsing">Bit stream parsing</a></h2>
+<ul>
+<li><strong>bits!</strong>: transforms the current input type (byte slice <code>&amp;[u8]</code>) to a bit stream on which bit specific parsers and more general combinators can be applied</li>
+<li><strong>bytes!</strong>: transforms its bits stream input back into a byte slice for the underlying parsers.</li>
+<li><strong>tag_bits!</strong>: matches an integer pattern to a bitstream. The number of bits of the input to compare must be specified</li>
+<li><strong>take_bits!</strong>: generates a parser consuming the specified number of bits</li>
+</ul>
+<h2 id="whitespace-delimited-formats-parsing" class="section-header"><a href="#whitespace-delimited-formats-parsing">Whitespace delimited formats parsing</a></h2>
+<ul>
+<li><strong>eat_separator!</strong>: helper macros to build a separator parser</li>
+<li><strong>sep!</strong>: sep is the parser rewriting macro for whitespace separated formats</li>
+<li><strong>wrap_sep!</strong>:</li>
+<li><strong>ws!</strong>:</li>
+</ul>
+<h2 id="remaining-combinators" class="section-header"><a href="#remaining-combinators">Remaining combinators</a></h2>
+<ul>
+<li><strong>apply!</strong>: emulate function currying: apply!(my_function, arg1, arg2, …) becomes my_function(input, arg1, arg2, …)</li>
+<li><strong>apply_m!</strong>: emulate function currying for method calls on structs apply_m!(self.my_function, arg1, arg2, …) becomes self.my_function(input, arg1, arg2, …)</li>
+<li><strong>call!</strong>: Used to wrap common expressions and function as macros</li>
+<li><strong>call_m!</strong>: Used to called methods then move self back into self</li>
+<li><strong>closure!</strong>: Wraps a parser in a closure</li>
+<li><strong>method!</strong>: Makes a method from a parser combination</li>
+<li><strong>named!</strong>: Makes a function from a parser combination</li>
+<li><strong>named_args!</strong>: Makes a function from a parser combination with arguments.</li>
+<li><strong>named_attr!</strong>: Makes a function from a parser combination, with attributes</li>
+<li><strong>try_parse!</strong>: A bit like std::try!, this macro will return the remaining input and parsed value if the child parser returned Done, and will do an early return for Error and Incomplete this can provide more flexibility than do_parse! if needed</li>
+</ul>
+<h2 id="character-test-functions" class="section-header"><a href="#character-test-functions">Character test functions</a></h2>
+<p>use those functions with a combinator like <code>take_while!</code>:</p>
+<ul>
+<li><strong>is_alphabetic</strong>: Tests if byte is ASCII alphabetic: A-Z, a-z</li>
+<li><strong>is_alphanumeric</strong>: Tests if byte is ASCII alphanumeric: A-Z, a-z, 0-9</li>
+<li><strong>is_digit</strong>: Tests if byte is ASCII digit: 0-9</li>
+<li><strong>is_hex_digit</strong>: Tests if byte is ASCII hex digit: 0-9, A-F, a-f</li>
+<li><strong>is_oct_digit</strong>: Tests if byte is ASCII octal digit: 0-7</li>
+<li><strong>is_space</strong>: Tests if byte is ASCII space or tab</li>
+</ul>
+<h2 id="remaining-functions-sort-those-out-in-the-other-categories" class="section-header"><a href="#remaining-functions-sort-those-out-in-the-other-categories">Remaining functions (sort those out in the other categories)</a></h2>
+<ul>
+<li><strong>alpha</strong>: Recognizes one or more lowercase and uppercase alphabetic characters: a-zA-Z</li>
+<li><strong>alphanumeric</strong>: Recognizes one or more numerical and alphabetic characters: 0-9a-zA-Z</li>
+<li><strong>anychar</strong>: </li>
+<li><strong>begin</strong>: </li>
+<li><strong>crlf</strong>: </li>
+<li><strong>digit</strong>: Recognizes one or more numerical characters: 0-9</li>
+<li><strong>double</strong>: Recognizes floating point number in a byte string and returns a f64</li>
+<li><strong>double_s</strong>: Recognizes floating point number in a string and returns a f64</li>
+<li><strong>eol</strong>: </li>
+<li><strong>float</strong>: Recognizes floating point number in a byte string and returns a f32</li>
+<li><strong>float_s</strong>: Recognizes floating point number in a string and returns a f32</li>
+<li><strong>hex_digit</strong>: Recognizes one or more hexadecimal numerical characters: 0-9, A-F, a-f</li>
+<li><strong>hex_u32</strong>: Recognizes a hex-encoded integer</li>
+<li><strong>line_ending</strong>: Recognizes an end of line (both ‘\n’ and “\r\n”)</li>
+<li><strong>multispace</strong>: Recognizes one or more spaces, tabs, carriage returns and line feeds</li>
+<li><strong>newline</strong>: Matches a newline character ‘\n’</li>
+<li><strong>non_empty</strong>: Recognizes non empty buffers</li>
+<li><strong>not_line_ending</strong>: </li>
+<li><strong>oct_digit</strong>: Recognizes one or more octal characters: 0-7</li>
+<li><strong>rest</strong>: Return the remaining input.</li>
+<li><strong>rest_s</strong>: Return the remaining input, for strings.</li>
+<li><strong>shift</strong>: </li>
+<li><strong>sized_buffer</strong>: </li>
+<li><strong>space</strong>: Recognizes one or more spaces and tabs</li>
+<li><strong>tab</strong>: Matches a tab character ‘\t’</li>
+<li><strong>tag_cl</strong>: </li>
+</ul>
+<h1 id="example" class="section-header"><a href="#example">Example</a></h1>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">nom</span>;
+
+<span class="kw">use</span> <span class="ident">nom</span>::{<span class="ident">IResult</span>,<span class="ident">digit</span>};
+
+<span class="comment">// Parser definition</span>
+
+<span class="kw">use</span> <span class="ident">std::str</span>;
+<span class="kw">use</span> <span class="ident">std::str::FromStr</span>;
+
+<span class="comment">// We parse any expr surrounded by parens, ignoring all whitespaces around those</span>
+<span class="macro">named!</span>(<span class="ident">parens</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span>, <span class="macro">ws!</span>(<span class="macro">delimited!</span>( <span class="macro">tag!</span>(<span class="string">&quot;(&quot;</span>), <span class="ident">expr</span>, <span class="macro">tag!</span>(<span class="string">&quot;)&quot;</span>) )) );
+
+<span class="comment">// We transform an integer string into a i64, ignoring surrounding whitespaces</span>
+<span class="comment">// We look for a digit suite, and try to convert it.</span>
+<span class="comment">// If either str::from_utf8 or FromStr::from_str fail,</span>
+<span class="comment">// we fallback to the parens parser defined above</span>
+<span class="macro">named!</span>(<span class="ident">factor</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span>, <span class="macro">alt!</span>(
+    <span class="macro">map_res!</span>(
+      <span class="macro">map_res!</span>(
+        <span class="macro">ws!</span>(<span class="ident">digit</span>),
+        <span class="ident">str::from_utf8</span>
+      ),
+      <span class="ident">FromStr::from_str</span>
+    )
+  <span class="op">|</span> <span class="ident">parens</span>
+  )
+);
+
+<span class="comment">// We read an initial factor and for each time we find</span>
+<span class="comment">// a * or / operator followed by another factor, we do</span>
+<span class="comment">// the math by folding everything</span>
+<span class="macro">named!</span>(<span class="ident">term</span> <span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span>, <span class="macro">do_parse!</span>(
+    <span class="ident">init</span>: <span class="ident">factor</span> <span class="op">&gt;</span><span class="op">&gt;</span>
+    <span class="ident">res</span>:  <span class="macro">fold_many0!</span>(
+        <span class="macro">pair!</span>(<span class="macro">alt!</span>(<span class="macro">tag!</span>(<span class="string">&quot;*&quot;</span>) <span class="op">|</span> <span class="macro">tag!</span>(<span class="string">&quot;/&quot;</span>)), <span class="ident">factor</span>),
+        <span class="ident">init</span>,
+        <span class="op">|</span><span class="ident">acc</span>, (<span class="ident">op</span>, <span class="ident">val</span>): (<span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">i64</span>)<span class="op">|</span> {
+            <span class="kw">if</span> (<span class="ident">op</span>[<span class="number">0</span>] <span class="kw">as</span> <span class="ident">char</span>) <span class="op">=</span><span class="op">=</span> <span class="string">&#39;*&#39;</span> { <span class="ident">acc</span> <span class="op">*</span> <span class="ident">val</span> } <span class="kw">else</span> { <span class="ident">acc</span> <span class="op">/</span> <span class="ident">val</span> }
+        }
+    ) <span class="op">&gt;</span><span class="op">&gt;</span>
+    (<span class="ident">res</span>)
+  )
+);
+
+<span class="macro">named!</span>(<span class="ident">expr</span> <span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span>, <span class="macro">do_parse!</span>(
+    <span class="ident">init</span>: <span class="ident">term</span> <span class="op">&gt;</span><span class="op">&gt;</span>
+    <span class="ident">res</span>:  <span class="macro">fold_many0!</span>(
+        <span class="macro">pair!</span>(<span class="macro">alt!</span>(<span class="macro">tag!</span>(<span class="string">&quot;+&quot;</span>) <span class="op">|</span> <span class="macro">tag!</span>(<span class="string">&quot;-&quot;</span>)), <span class="ident">term</span>),
+        <span class="ident">init</span>,
+        <span class="op">|</span><span class="ident">acc</span>, (<span class="ident">op</span>, <span class="ident">val</span>): (<span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">i64</span>)<span class="op">|</span> {
+            <span class="kw">if</span> (<span class="ident">op</span>[<span class="number">0</span>] <span class="kw">as</span> <span class="ident">char</span>) <span class="op">=</span><span class="op">=</span> <span class="string">&#39;+&#39;</span> { <span class="ident">acc</span> <span class="op">+</span> <span class="ident">val</span> } <span class="kw">else</span> { <span class="ident">acc</span> <span class="op">-</span> <span class="ident">val</span> }
+        }
+    ) <span class="op">&gt;</span><span class="op">&gt;</span>
+    (<span class="ident">res</span>)
+  )
+);
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+  <span class="macro">assert_eq!</span>(<span class="ident">expr</span>(<span class="string">b&quot;1+2&quot;</span>),         <span class="ident">IResult::Done</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;&quot;</span>[..], <span class="number">3</span>));
+  <span class="macro">assert_eq!</span>(<span class="ident">expr</span>(<span class="string">b&quot;12+6-4+3&quot;</span>),    <span class="ident">IResult::Done</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;&quot;</span>[..], <span class="number">17</span>));
+  <span class="macro">assert_eq!</span>(<span class="ident">expr</span>(<span class="string">b&quot;1+2*3+4&quot;</span>),     <span class="ident">IResult::Done</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;&quot;</span>[..], <span class="number">11</span>));
+
+  <span class="macro">assert_eq!</span>(<span class="ident">expr</span>(<span class="string">b&quot;(2)&quot;</span>),         <span class="ident">IResult::Done</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;&quot;</span>[..], <span class="number">2</span>));
+  <span class="macro">assert_eq!</span>(<span class="ident">expr</span>(<span class="string">b&quot;2*(3+4)&quot;</span>),     <span class="ident">IResult::Done</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;&quot;</span>[..], <span class="number">14</span>));
+  <span class="macro">assert_eq!</span>(<span class="ident">expr</span>(<span class="string">b&quot;2*2/(5-1)+3&quot;</span>), <span class="ident">IResult::Done</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;&quot;</span>[..], <span class="number">4</span>));
+}</pre></div>
+</div><h2 id="reexports" class="section-header"><a href="#reexports">Re-exports</a></h2>
+<table><tr class="import-item"><td><code>pub use self::<a class="mod" href="simple_errors/index.html" title="mod nom::simple_errors">simple_errors</a>::*;</code></td><td class="docblock-short"></td></tr><tr class="import-item"><td><code>pub use self::<a class="mod" href="methods/index.html" title="mod nom::methods">methods</a>::*;</code></td><td class="docblock-short"></td></tr><tr class="import-item"><td><code>pub use self::<a class="mod" href="bits/index.html" title="mod nom::bits">bits</a>::*;</code></td><td class="docblock-short"></td></tr><tr class="import-item"><td><code>pub use self::<a class="mod" href="whitespace/index.html" title="mod nom::whitespace">whitespace</a>::*;</code></td><td class="docblock-short"></td></tr></table><h2 id="modules" class="section-header"><a href="#modules">Modules</a></h2>
+<table><tr class="module-item"><td><a class="mod" href="bits/index.html" title="nom::bits mod">bits</a></td><td class="docblock-short"><p>Bit level parsers and combinators</p>
+</td></tr><tr class="module-item"><td><a class="mod" href="methods/index.html" title="nom::methods mod">methods</a></td><td class="docblock-short"><p>Method macro combinators</p>
+</td></tr><tr class="module-item"><td><a class="mod" href="simple_errors/index.html" title="nom::simple_errors mod">simple_errors</a></td><td class="docblock-short"><p>Error management</p>
+</td></tr><tr class="module-item"><td><a class="mod" href="whitespace/index.html" title="nom::whitespace mod">whitespace</a></td><td class="docblock-short"><p>Support for whitespace delimited formats</p>
+</td></tr></table><h2 id="macros" class="section-header"><a href="#macros">Macros</a></h2>
+<table><tr class="module-item"><td><a class="macro" href="macro.add_return_error.html" title="nom::add_return_error macro">add_return_error</a></td><td class="docblock-short"><p>Add an error if the child parser fails</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.alt.html" title="nom::alt macro">alt</a></td><td class="docblock-short"><p>Try a list of parsers and return the result of the first successful one</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.alt_complete.html" title="nom::alt_complete macro">alt_complete</a></td><td class="docblock-short"><p>Is equivalent to the <code>alt!</code> combinator, except that it will not return <code>Incomplete</code>
+when one of the constituting parsers returns <code>Incomplete</code>. Instead, it will try the
+next alternative in the chain.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.apply.html" title="nom::apply macro">apply</a></td><td class="docblock-short"><p>emulate function currying: <code>apply!(my_function, arg1, arg2, ...)</code> becomes <code>my_function(input, arg1, arg2, ...)</code></p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.apply_m.html" title="nom::apply_m macro">apply_m</a></td><td class="docblock-short"><p>emulate function currying for method calls on structs
+<code>apply_m!(self.my_function, arg1, arg2, ...)</code> becomes <code>self.my_function(input, arg1, arg2, ...)</code></p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.bits.html" title="nom::bits macro">bits</a></td><td class="docblock-short"><p><code>bits!( parser ) =&gt; ( &amp;[u8], (&amp;[u8], usize) -&gt; IResult&lt;(&amp;[u8], usize), T&gt; ) -&gt; IResult&lt;&amp;[u8], T&gt;</code>
+transforms its byte slice input into a bit stream for the underlying parsers</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.bytes.html" title="nom::bytes macro">bytes</a></td><td class="docblock-short"><p>Counterpart to bits,
+<code>bytes!( parser ) =&gt; ( (&amp;[u8], usize), &amp;[u8] -&gt; IResult&lt;&amp;[u8], T&gt; ) -&gt; IResult&lt;(&amp;[u8], usize), T&gt;</code>,
+transforms its bits stream input into a byte slice for the underlying parsers. If we start in the
+middle of a byte throws away the bits until the end of the byte.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.call.html" title="nom::call macro">call</a></td><td class="docblock-short"><p>Used to wrap common expressions and function as macros</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.call_m.html" title="nom::call_m macro">call_m</a></td><td class="docblock-short"><p>Used to called methods then move self back into self</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.char.html" title="nom::char macro">char</a></td><td class="docblock-short"><p>matches one character: `char!(char) =&gt; &amp;<a href="https://doc.rust-lang.org/nightly/std/primitive.u8.html" title="u8">u8</a> -&gt; IResult&lt;&amp;<a href="https://doc.rust-lang.org/nightly/std/primitive.u8.html" title="u8">u8</a>, char&gt;</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.closure.html" title="nom::closure macro">closure</a></td><td class="docblock-short"><p>Wraps a parser in a closure</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.compiler_error.html" title="nom::compiler_error macro">compiler_error</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="macro" href="macro.complete.html" title="nom::complete macro">complete</a></td><td class="docblock-short"><p>replaces a <code>Incomplete</code> returned by the child parser
+with an <code>Error</code></p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.cond.html" title="nom::cond macro">cond</a></td><td class="docblock-short"><p><code>cond!(bool, I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, Option&lt;O&gt;&gt;</code>
+Conditional combinator</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.cond_reduce.html" title="nom::cond_reduce macro">cond_reduce</a></td><td class="docblock-short"><p><code>cond_reduce!(bool, I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, O&gt;</code>
+Conditional combinator with error</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.cond_with_error.html" title="nom::cond_with_error macro">cond_with_error</a></td><td class="docblock-short"><p><code>cond_with_error!(bool, I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, Option&lt;O&gt;&gt;</code>
+Conditional combinator</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.consumer_from_parser.html" title="nom::consumer_from_parser macro">consumer_from_parser</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="macro" href="macro.count.html" title="nom::count macro">count</a></td><td class="docblock-short"><p><code>count!(I -&gt; IResult&lt;I,O&gt;, nb) =&gt; I -&gt; IResult&lt;I, Vec&lt;O&gt;&gt;</code>
+Applies the child parser a specified number of times</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.count_fixed.html" title="nom::count_fixed macro">count_fixed</a></td><td class="docblock-short"><p><code>count_fixed!(O, I -&gt; IResult&lt;I,O&gt;, nb) =&gt; I -&gt; IResult&lt;I, [O; nb]&gt;</code>
+Applies the child parser a fixed number of times and returns a fixed size array
+The type must be specified and it must be <code>Copy</code></p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.dbg.html" title="nom::dbg macro">dbg</a></td><td class="docblock-short"><p>Prints a message if the parser fails</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.dbg_dmp.html" title="nom::dbg_dmp macro">dbg_dmp</a></td><td class="docblock-short"><p>Prints a message and the input if the parser fails</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.delimited.html" title="nom::delimited macro">delimited</a></td><td class="docblock-short"><p><code>delimited!(I -&gt; IResult&lt;I,T&gt;, I -&gt; IResult&lt;I,O&gt;, I -&gt; IResult&lt;I,U&gt;) =&gt; I -&gt; IResult&lt;I, O&gt;</code>
+delimited(opening, X, closing) returns X</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.do_parse.html" title="nom::do_parse macro">do_parse</a></td><td class="docblock-short"><p><code>do_parse!(I-&gt;IResult&lt;I,A&gt; &gt;&gt; I-&gt;IResult&lt;I,B&gt; &gt;&gt; ... I-&gt;IResult&lt;I,X&gt; , ( O ) ) =&gt; I -&gt; IResult&lt;I, O&gt;</code>
+do_parse applies sub parsers in a sequence.
+it can store intermediary results and make them available
+for later parsers</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.eat_separator.html" title="nom::eat_separator macro">eat_separator</a></td><td class="docblock-short"><p>helper macros to build a separator parser</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.eof.html" title="nom::eof macro">eof</a></td><td class="docblock-short"><p><code>eof!()</code> returns its input if it is at the end of input data</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.error_code.html" title="nom::error_code macro">error_code</a></td><td class="docblock-short"><p>creates a parse error from a <code>nom::ErrorKind</code></p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.error_node.html" title="nom::error_node macro">error_node</a></td><td class="docblock-short"><p>creates a parse error from a <code>nom::ErrorKind</code>
+and the next error in the parsing tree.
+if “verbose-errors” is not activated,
+it default to only the error code</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.error_node_position.html" title="nom::error_node_position macro">error_node_position</a></td><td class="docblock-short"><p>creates a parse error from a <code>nom::ErrorKind</code>,
+the position in the input and the next error in
+the parsing tree.
+if “verbose-errors” is not activated,
+it default to only the error code</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.error_position.html" title="nom::error_position macro">error_position</a></td><td class="docblock-short"><p>creates a parse error from a <code>nom::ErrorKind</code>
+and the position in the input
+if “verbose-errors” is not activated,
+it default to only the error code</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.escaped.html" title="nom::escaped macro">escaped</a></td><td class="docblock-short"><p><code>escaped!(&amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;, T, &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+matches a byte string with escaped characters.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.escaped_transform.html" title="nom::escaped_transform macro">escaped_transform</a></td><td class="docblock-short"><p><code>escaped_transform!(&amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;, T, &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], Vec&lt;T&gt;&gt;</code>
+matches a byte string with escaped characters.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.expr_opt.html" title="nom::expr_opt macro">expr_opt</a></td><td class="docblock-short"><p><code>expr_opt!(Option&lt;O&gt;) =&gt; I -&gt; IResult&lt;I, O&gt;</code>
+evaluate an expression that returns a Option<T> and returns a IResult::Done(I,T) if Some</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.expr_res.html" title="nom::expr_res macro">expr_res</a></td><td class="docblock-short"><p><code>expr_res!(Result&lt;E,O&gt;) =&gt; I -&gt; IResult&lt;I, O&gt;</code>
+evaluate an expression that returns a Result&lt;T,E&gt; and returns a IResult::Done(I,T) if Ok</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.fix_error.html" title="nom::fix_error macro">fix_error</a></td><td class="docblock-short"><p>translate parser result from IResult&lt;I,O,u32&gt; to IResult&lt;I,O,E&gt; with a custom type</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.flat_map.html" title="nom::flat_map macro">flat_map</a></td><td class="docblock-short"><p><code>flat_map!(R -&gt; IResult&lt;R,S&gt;, S -&gt; IResult&lt;S,T&gt;) =&gt; R -&gt; IResult&lt;R, T&gt;</code></p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.fold_many0.html" title="nom::fold_many0 macro">fold_many0</a></td><td class="docblock-short"><p><code>fold_many0!(I -&gt; IResult&lt;I,O&gt;, R, Fn(R, O) -&gt; R) =&gt; I -&gt; IResult&lt;I, R&gt;</code>
+Applies the parser 0 or more times and folds the list of return values</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.fold_many1.html" title="nom::fold_many1 macro">fold_many1</a></td><td class="docblock-short"><p><code>fold_many1!(I -&gt; IResult&lt;I,O&gt;, R, Fn(R, O) -&gt; R) =&gt; I -&gt; IResult&lt;I, R&gt;</code>
+Applies the parser 1 or more times and folds the list of return values</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.fold_many_m_n.html" title="nom::fold_many_m_n macro">fold_many_m_n</a></td><td class="docblock-short"><p><code>fold_many_m_n!(usize, usize, I -&gt; IResult&lt;I,O&gt;, R, Fn(R, O) -&gt; R) =&gt; I -&gt; IResult&lt;I, R&gt;</code>
+Applies the parser between m and n times (n included) and folds the list of return value</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.i16.html" title="nom::i16 macro">i16</a></td><td class="docblock-short"><p>if the parameter is nom::Endianness::Big, parse a big endian i16 integer,
+otherwise a little endian i16 integer</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.i32.html" title="nom::i32 macro">i32</a></td><td class="docblock-short"><p>if the parameter is nom::Endianness::Big, parse a big endian i32 integer,
+otherwise a little endian i32 integer</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.i64.html" title="nom::i64 macro">i64</a></td><td class="docblock-short"><p>if the parameter is nom::Endianness::Big, parse a big endian i64 integer,
+otherwise a little endian i64 integer</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.is_a.html" title="nom::is_a macro">is_a</a></td><td class="docblock-short"><p><code>is_a!(&amp;[T]) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+returns the longest list of bytes that appear in the provided array</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.is_a_s.html" title="nom::is_a_s macro">is_a_s</a></td><td class="docblock-short"><p><code>is_a_s!(&amp;str) =&gt; &amp;str -&gt; IResult&lt;&amp;str, &amp;str&gt;</code>
+returns the longest list of characters that appear in the provided array</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.is_not.html" title="nom::is_not macro">is_not</a></td><td class="docblock-short"><p><code>is_not!(&amp;[T:AsBytes]) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+returns the longest list of bytes that do not appear in the provided array</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.is_not_s.html" title="nom::is_not_s macro">is_not_s</a></td><td class="docblock-short"><p><code>is_not_s!(&amp;str) =&gt; &amp;str -&gt; IResult&lt;&amp;str, &amp;str&gt;</code>
+returns the longest list of characters that do not appear in the provided array</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.length_bytes.html" title="nom::length_bytes macro">length_bytes</a></td><td class="docblock-short"><p><code>length_bytes!(&amp;[T] -&gt; IResult&lt;&amp;[T], nb&gt;) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+Gets a number from the first parser, then extracts that many bytes from the
+remaining stream</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.length_count.html" title="nom::length_count macro">length_count</a></td><td class="docblock-short"><p><code>length_count!(I -&gt; IResult&lt;I, nb&gt;, I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, Vec&lt;O&gt;&gt;</code>
+gets a number from the first parser, then applies the second parser that many times</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.length_data.html" title="nom::length_data macro">length_data</a></td><td class="docblock-short"><p><code>length_data!(I -&gt; IResult&lt;I, nb&gt;) =&gt; O</code></p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.length_value.html" title="nom::length_value macro">length_value</a></td><td class="docblock-short"><p><code>length_value!(I -&gt; IResult&lt;I, nb&gt;, I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, Vec&lt;O&gt;&gt;</code>
+gets a number from the first parser, takes a subslice of the input of that size,
+then applies the second parser on that subslice. If the second parser returns
+<code>Incomplete</code>, <code>length_value</code> will return an error</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.many0.html" title="nom::many0 macro">many0</a></td><td class="docblock-short"><p><code>many0!(I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, Vec&lt;O&gt;&gt;</code>
+Applies the parser 0 or more times and returns the list of results in a Vec</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.many1.html" title="nom::many1 macro">many1</a></td><td class="docblock-short"><p><code>many1!(I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, Vec&lt;O&gt;&gt;</code>
+Applies the parser 1 or more times and returns the list of results in a Vec</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.many_m_n.html" title="nom::many_m_n macro">many_m_n</a></td><td class="docblock-short"><p><code>many_m_n!(usize, usize, I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, Vec&lt;O&gt;&gt;</code>
+Applies the parser between m and n times (n included) and returns the list of
+results in a Vec</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.many_till.html" title="nom::many_till macro">many_till</a></td><td class="docblock-short"><p><code>many_till!(I -&gt; IResult&lt;I,O&gt;, I -&gt; IResult&lt;I,P&gt;) =&gt; I -&gt; IResult&lt;I, (Vec&lt;O&gt;, P)&gt;</code>
+Applies the first parser until the second applies. Returns a tuple containing the list
+of results from the first in a Vec and the result of the second.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.map.html" title="nom::map macro">map</a></td><td class="docblock-short"><p><code>map!(I -&gt; IResult&lt;I,O&gt;, O -&gt; P) =&gt; I -&gt; IResult&lt;I, P&gt;</code>
+maps a function on the result of a parser</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.map_opt.html" title="nom::map_opt macro">map_opt</a></td><td class="docblock-short"><p><code>map_opt!(I -&gt; IResult&lt;I,O&gt;, O -&gt; Option&lt;P&gt;) =&gt; I -&gt; IResult&lt;I, P&gt;</code>
+maps a function returning an Option on the output of a parser</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.map_res.html" title="nom::map_res macro">map_res</a></td><td class="docblock-short"><p><code>map_res!(I -&gt; IResult&lt;I,O&gt;, O -&gt; Result&lt;P&gt;) =&gt; I -&gt; IResult&lt;I, P&gt;</code>
+maps a function returning a Result on the output of a parser</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.method.html" title="nom::method macro">method</a></td><td class="docblock-short"><p>Makes a method from a parser combination</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.named.html" title="nom::named macro">named</a></td><td class="docblock-short"><p>Makes a function from a parser combination</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.named_args.html" title="nom::named_args macro">named_args</a></td><td class="docblock-short"><p>Makes a function from a parser combination with arguments.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.named_attr.html" title="nom::named_attr macro">named_attr</a></td><td class="docblock-short"><p>Makes a function from a parser combination, with attributes</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.none_of.html" title="nom::none_of macro">none_of</a></td><td class="docblock-short"><p>matches anything but the provided characters</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.not.html" title="nom::not macro">not</a></td><td class="docblock-short"><p><code>not!(I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, O&gt;</code>
+returns a result only if the embedded parser returns Error or Incomplete
+does not consume the input</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.one_of.html" title="nom::one_of macro">one_of</a></td><td class="docblock-short"><p>matches one of the provided characters</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.opt.html" title="nom::opt macro">opt</a></td><td class="docblock-short"><p><code>opt!(I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, Option&lt;O&gt;&gt;</code>
+make the underlying parser optional</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.opt_res.html" title="nom::opt_res macro">opt_res</a></td><td class="docblock-short"><p><code>opt_res!(I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, Result&lt;nom::Err,O&gt;&gt;</code>
+make the underlying parser optional</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.pair.html" title="nom::pair macro">pair</a></td><td class="docblock-short"><p><code>pair!(I -&gt; IResult&lt;I,O&gt;, I -&gt; IResult&lt;I,P&gt;) =&gt; I -&gt; IResult&lt;I, (O,P)&gt;</code>
+pair(X,Y), returns (x,y)</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.parse_to.html" title="nom::parse_to macro">parse_to</a></td><td class="docblock-short"><p><code>parse_to!(O) =&gt; I -&gt; IResult&lt;I, O&gt;</code>
+uses the <code>parse</code> method from <code>std::str::FromStr</code> to convert the current
+input to the specified type</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.peek.html" title="nom::peek macro">peek</a></td><td class="docblock-short"><p><code>peek!(I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, O&gt;</code>
+returns a result without consuming the input</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.permutation.html" title="nom::permutation macro">permutation</a></td><td class="docblock-short"><p><code>permutation!(I -&gt; IResult&lt;I,A&gt;, I -&gt; IResult&lt;I,B&gt;, ... I -&gt; IResult&lt;I,X&gt; ) =&gt; I -&gt; IResult&lt;I, (A,B,...X)&gt;</code>
+applies its sub parsers in a sequence, but independent from their order
+this parser will only succeed if all of its sub parsers succeed</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.preceded.html" title="nom::preceded macro">preceded</a></td><td class="docblock-short"><p><code>preceded!(I -&gt; IResult&lt;I,T&gt;, I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, O&gt;</code>
+preceded(opening, X) returns X</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.recognize.html" title="nom::recognize macro">recognize</a></td><td class="docblock-short"><p><code>recognize!(I -&gt; IResult&lt;I, O&gt; ) =&gt; I -&gt; IResult&lt;I, I&gt;</code>
+if the child parser was successful, return the consumed input as produced value</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.return_error.html" title="nom::return_error macro">return_error</a></td><td class="docblock-short"><p>Prevents backtracking if the child parser fails</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.sep.html" title="nom::sep macro">sep</a></td><td class="docblock-short"><p>sep is the parser rewriting macro for whitespace separated formats</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.separated_list.html" title="nom::separated_list macro">separated_list</a></td><td class="docblock-short"><p><code>separated_list!(I -&gt; IResult&lt;I,T&gt;, I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, Vec&lt;O&gt;&gt;</code>
+separated_list(sep, X) returns Vec<X> will return Incomplete if there may be more elements</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.separated_list_complete.html" title="nom::separated_list_complete macro">separated_list_complete</a></td><td class="docblock-short"><p><code>separated_list_complete!(I -&gt; IResult&lt;I,T&gt;, I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, Vec&lt;O&gt;&gt;</code>
+This is equivalent to the <code>separated_list!</code> combinator, except that it will return <code>Error</code>
+when either the separator or element subparser returns <code>Incomplete</code>.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.separated_nonempty_list.html" title="nom::separated_nonempty_list macro">separated_nonempty_list</a></td><td class="docblock-short"><p><code>separated_nonempty_list!(I -&gt; IResult&lt;I,T&gt;, I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, Vec&lt;O&gt;&gt;</code>
+separated_nonempty_list(sep, X) returns Vec<X> will return Incomplete if there may be more elements</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.separated_nonempty_list_complete.html" title="nom::separated_nonempty_list_complete macro">separated_nonempty_list_complete</a></td><td class="docblock-short"><p><code>separated_nonempty_list_complete!(I -&gt; IResult&lt;I,T&gt;, I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, Vec&lt;O&gt;&gt;</code>
+This is equivalent to the <code>separated_nonempty_list!</code> combinator, except that it will return
+<code>Error</code> when either the separator or element subparser returns <code>Incomplete</code>.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.separated_pair.html" title="nom::separated_pair macro">separated_pair</a></td><td class="docblock-short"><p><code>separated_pair!(I -&gt; IResult&lt;I,O&gt;, I -&gt; IResult&lt;I, T&gt;, I -&gt; IResult&lt;I,P&gt;) =&gt; I -&gt; IResult&lt;I, (O,P)&gt;</code>
+separated_pair(X,sep,Y) returns (x,y)</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.switch.html" title="nom::switch macro">switch</a></td><td class="docblock-short"><p><code>switch!(I -&gt; IResult&lt;I,P&gt;, P =&gt; I -&gt; IResult&lt;I,O&gt; | ... | P =&gt; I -&gt; IResult&lt;I,O&gt; ) =&gt; I -&gt; IResult&lt;I, O&gt;</code>
+choose the next parser depending on the result of the first one, if successful,
+and returns the result of the second parser</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.tag.html" title="nom::tag macro">tag</a></td><td class="docblock-short"><p><code>tag!(&amp;[T]: nom::AsBytes) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+declares a byte array as a suite to recognize</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.tag_bits.html" title="nom::tag_bits macro">tag_bits</a></td><td class="docblock-short"><p>matches an integer pattern to a bitstream. The number of bits of the input to compare must be specified</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.tag_no_case.html" title="nom::tag_no_case macro">tag_no_case</a></td><td class="docblock-short"><p><code>tag_no_case!(&amp;[T]) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+declares a case insensitive ascii string as a suite to recognize</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.tag_no_case_s.html" title="nom::tag_no_case_s macro">tag_no_case_s</a></td><td class="docblock-short"><p><code>tag_no_case_s!(&amp;str) =&gt; &amp;str -&gt; IResult&lt;&amp;str, &amp;str&gt;</code>
+declares a case-insensitive string as a suite to recognize</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.tag_s.html" title="nom::tag_s macro">tag_s</a></td><td class="docblock-short"><p><code>tag_s!(&amp;str) =&gt; &amp;str -&gt; IResult&lt;&amp;str, &amp;str&gt;</code>
+declares a string as a suite to recognize</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take.html" title="nom::take macro">take</a></td><td class="docblock-short"><p><code>take!(nb) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+generates a parser consuming the specified number of bytes</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_bits.html" title="nom::take_bits macro">take_bits</a></td><td class="docblock-short"><p><code>take_bits!(type, nb) =&gt; ( (&amp;[T], usize), U, usize) -&gt; IResult&lt;(&amp;[T], usize), U&gt;</code>
+generates a parser consuming the specified number of bits.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_s.html" title="nom::take_s macro">take_s</a></td><td class="docblock-short"><p><code>take_s!(nb) =&gt; &amp;str -&gt; IResult&lt;&amp;str, &amp;str&gt;</code>
+generates a parser consuming the specified number of characters</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_str.html" title="nom::take_str macro">take_str</a></td><td class="docblock-short"><p><code>take_str!(nb) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;str&gt;</code>
+same as take! but returning a &amp;str</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_till.html" title="nom::take_till macro">take_till</a></td><td class="docblock-short"><p><code>take_till!(T -&gt; bool) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+returns the longest list of bytes until the provided function succeeds</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_till1.html" title="nom::take_till1 macro">take_till1</a></td><td class="docblock-short"><p><code>take_till1!(T -&gt; bool) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+returns the longest non empty list of bytes until the provided function succeeds</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_till1_s.html" title="nom::take_till1_s macro">take_till1_s</a></td><td class="docblock-short"><p><code>take_till1_s!(char -&gt; bool) =&gt; &amp;str -&gt; IResult&lt;&amp;str, &amp;str&gt;</code>
+returns the longest non empty list of characters until the provided function succeeds</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_till_s.html" title="nom::take_till_s macro">take_till_s</a></td><td class="docblock-short"><p><code>take_till_s!(char -&gt; bool) =&gt; &amp;str -&gt; IResult&lt;&amp;str, &amp;str&gt;</code>
+returns the longest list of characters until the provided function succeeds</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_until.html" title="nom::take_until macro">take_until</a></td><td class="docblock-short"><p><code>take_until!(tag) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+consumes data until it finds the specified tag</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_until1.html" title="nom::take_until1 macro">take_until1</a></td><td class="docblock-short"><p><code>take_until1!(tag) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+consumes data until it finds the specified tag</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_until_and_consume.html" title="nom::take_until_and_consume macro">take_until_and_consume</a></td><td class="docblock-short"><p><code>take_until_and_consume!(tag) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+generates a parser consuming bytes until the specified byte sequence is found, and consumes it</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_until_and_consume1.html" title="nom::take_until_and_consume1 macro">take_until_and_consume1</a></td><td class="docblock-short"><p><code>take_until_and_consume1!(tag) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+generates a parser consuming bytes (at least 1) until the specified byte sequence is found, and consumes it</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_until_and_consume_s.html" title="nom::take_until_and_consume_s macro">take_until_and_consume_s</a></td><td class="docblock-short"><p><code>take_until_and_consume_s!(&amp;str) =&gt; &amp;str -&gt; IResult&lt;&amp;str, &amp;str&gt;</code>
+generates a parser consuming all chars until the specified string is found and consumes it</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_until_either.html" title="nom::take_until_either macro">take_until_either</a></td><td class="docblock-short"><p><code>take_until_either!(tag) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code></p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_until_either_and_consume.html" title="nom::take_until_either_and_consume macro">take_until_either_and_consume</a></td><td class="docblock-short"><p><code>take_until_either_and_consume!(tag) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+consumes data until it finds any of the specified characters, and consume it</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_until_s.html" title="nom::take_until_s macro">take_until_s</a></td><td class="docblock-short"><p><code>take_until_s!(&amp;str) =&gt; &amp;str -&gt; IResult&lt;&amp;str, &amp;str&gt;</code>
+generates a parser consuming all chars until the specified string is found and leaves it in the remaining input</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_while.html" title="nom::take_while macro">take_while</a></td><td class="docblock-short"><p><code>take_while!(T -&gt; bool) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+returns the longest list of bytes until the provided function fails.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_while1.html" title="nom::take_while1 macro">take_while1</a></td><td class="docblock-short"><p><code>take_while1!(T -&gt; bool) =&gt; &amp;[T] -&gt; IResult&lt;&amp;[T], &amp;[T]&gt;</code>
+returns the longest (non empty) list of bytes until the provided function fails.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_while1_s.html" title="nom::take_while1_s macro">take_while1_s</a></td><td class="docblock-short"><p><code>take_while1_s!(char -&gt; bool) =&gt; &amp;str -&gt; IResult&lt;&amp;str, &amp;str&gt;</code>
+returns the longest (non empty) list of characters until the provided function fails.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.take_while_s.html" title="nom::take_while_s macro">take_while_s</a></td><td class="docblock-short"><p><code>take_while_s!(char -&gt; bool) =&gt; &amp;str -&gt; IResult&lt;&amp;str, &amp;str&gt;</code>
+returns the longest list of characters until the provided function fails.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.tap.html" title="nom::tap macro">tap</a></td><td class="docblock-short"><p><code>tap!(name: I -&gt; IResult&lt;I,O&gt; =&gt; { block }) =&gt; I -&gt; IResult&lt;I, O&gt;</code>
+allows access to the parser’s result without affecting it</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.terminated.html" title="nom::terminated macro">terminated</a></td><td class="docblock-short"><p><code>terminated!(I -&gt; IResult&lt;I,O&gt;, I -&gt; IResult&lt;I,T&gt;) =&gt; I -&gt; IResult&lt;I, O&gt;</code>
+terminated(X, closing) returns X</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.try_parse.html" title="nom::try_parse macro">try_parse</a></td><td class="docblock-short"><p>A bit like <code>std::try!</code>, this macro will return the remaining input and parsed value if the child parser returned <code>Done</code>,
+and will do an early return for <code>Error</code> and <code>Incomplete</code>
+this can provide more flexibility than <code>do_parse!</code> if needed</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.tuple.html" title="nom::tuple macro">tuple</a></td><td class="docblock-short"><p><code>tuple!(I-&gt;IResult&lt;I,A&gt;, I-&gt;IResult&lt;I,B&gt;, ... I-&gt;IResult&lt;I,X&gt;) =&gt; I -&gt; IResult&lt;I, (A, B, ..., X)&gt;</code>
+chains parsers and assemble the sub results in a tuple.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.u16.html" title="nom::u16 macro">u16</a></td><td class="docblock-short"><p>if the parameter is nom::Endianness::Big, parse a big endian u16 integer,
+otherwise a little endian u16 integer</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.u32.html" title="nom::u32 macro">u32</a></td><td class="docblock-short"><p>if the parameter is nom::Endianness::Big, parse a big endian u32 integer,
+otherwise a little endian u32 integer</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.u64.html" title="nom::u64 macro">u64</a></td><td class="docblock-short"><p>if the parameter is nom::Endianness::Big, parse a big endian u64 integer,
+otherwise a little endian u64 integer</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.value.html" title="nom::value macro">value</a></td><td class="docblock-short"><p><code>value!(T, R -&gt; IResult&lt;R, S&gt; ) =&gt; R -&gt; IResult&lt;R, T&gt;</code></p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.verify.html" title="nom::verify macro">verify</a></td><td class="docblock-short"><p><code>verify!(I -&gt; IResult&lt;I,O&gt;, O -&gt; bool) =&gt; I -&gt; IResult&lt;I, O&gt;</code>
+returns the result of the child parser if it satisfies a verification function</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.wrap_sep.html" title="nom::wrap_sep macro">wrap_sep</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="macro" href="macro.ws.html" title="nom::ws macro">ws</a></td><td class="docblock-short"><p><code>ws!(I -&gt; IResult&lt;I,O&gt;) =&gt; I -&gt; IResult&lt;I, O&gt;</code></p>
+</td></tr></table><h2 id="structs" class="section-header"><a href="#structs">Structs</a></h2>
+<table><tr class="module-item"><td><a class="struct" href="struct.ChainConsumer.html" title="nom::ChainConsumer struct">ChainConsumer</a></td><td class="docblock-short"><p>ChainConsumer takes a consumer C1 R -&gt; S, and a consumer C2 S -&gt; T, and makes a consumer R -&gt; T by applying C2 on C1’s result</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.FileProducer.html" title="nom::FileProducer struct">FileProducer</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="struct" href="struct.MapConsumer.html" title="nom::MapConsumer struct">MapConsumer</a></td><td class="docblock-short"><p>MapConsumer takes a function S -&gt; T and applies it on a consumer producing values of type S</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.MemProducer.html" title="nom::MemProducer struct">MemProducer</a></td><td class="docblock-short"><p>A MemProducer generates values from an in memory byte buffer</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.ProducerRepeat.html" title="nom::ProducerRepeat struct">ProducerRepeat</a></td><td class="docblock-short"><p>ProducerRepeat takes a single value, and generates it at each step</p>
+</td></tr></table><h2 id="enums" class="section-header"><a href="#enums">Enums</a></h2>
+<table><tr class="module-item"><td><a class="enum" href="enum.CompareResult.html" title="nom::CompareResult enum">CompareResult</a></td><td class="docblock-short"><p>indicates wether a comparison was successful, an error, or
+if more data was needed</p>
+</td></tr><tr class="module-item"><td><a class="enum" href="enum.ConsumerState.html" title="nom::ConsumerState enum">ConsumerState</a></td><td class="docblock-short"><p>Stores a consumer’s current computation state</p>
+</td></tr><tr class="module-item"><td><a class="enum" href="enum.Endianness.html" title="nom::Endianness enum">Endianness</a></td><td class="docblock-short"><p>Configurable endianness</p>
+</td></tr><tr class="module-item"><td><a class="enum" href="enum.ErrorKind.html" title="nom::ErrorKind enum">ErrorKind</a></td><td class="docblock-short"><p>indicates which parser returned an error</p>
+</td></tr><tr class="module-item"><td><a class="enum" href="enum.FileProducerState.html" title="nom::FileProducerState enum">FileProducerState</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="enum" href="enum.IError.html" title="nom::IError enum">IError</a></td><td class="docblock-short"><p>This is the same as IResult, but without Done</p>
+</td></tr><tr class="module-item"><td><a class="enum" href="enum.IResult.html" title="nom::IResult enum">IResult</a></td><td class="docblock-short"><p>Holds the result of parsing functions</p>
+</td></tr><tr class="module-item"><td><a class="enum" href="enum.Input.html" title="nom::Input enum">Input</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="enum" href="enum.Move.html" title="nom::Move enum">Move</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="enum" href="enum.Needed.html" title="nom::Needed enum">Needed</a></td><td class="docblock-short"><p>Contains information on needed data if a parser returned <code>Incomplete</code></p>
+</td></tr></table><h2 id="traits" class="section-header"><a href="#traits">Traits</a></h2>
+<table><tr class="module-item"><td><a class="trait" href="trait.AsBytes.html" title="nom::AsBytes trait">AsBytes</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="trait" href="trait.AsChar.html" title="nom::AsChar trait">AsChar</a></td><td class="docblock-short"><p>transforms common types to a char for basic token parsing</p>
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.Compare.html" title="nom::Compare trait">Compare</a></td><td class="docblock-short"><p>abstracts comparison operations</p>
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.Consumer.html" title="nom::Consumer trait">Consumer</a></td><td class="docblock-short"><p>The Consumer trait wraps a computation and its state</p>
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.FindSubstring.html" title="nom::FindSubstring trait">FindSubstring</a></td><td class="docblock-short"><p>look for a substring in self</p>
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.FindToken.html" title="nom::FindToken trait">FindToken</a></td><td class="docblock-short"><p>look for self in the given input stream</p>
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.GetInput.html" title="nom::GetInput trait">GetInput</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="trait" href="trait.GetOutput.html" title="nom::GetOutput trait">GetOutput</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="trait" href="trait.HexDisplay.html" title="nom::HexDisplay trait">HexDisplay</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="trait" href="trait.InputIter.html" title="nom::InputIter trait">InputIter</a></td><td class="docblock-short"><p>abstracts common iteration operations on the input type</p>
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.InputLength.html" title="nom::InputLength trait">InputLength</a></td><td class="docblock-short"><p>abstract method to calculate the input length</p>
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.InputTake.html" title="nom::InputTake trait">InputTake</a></td><td class="docblock-short"><p>abstracts slicing operations</p>
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.Offset.html" title="nom::Offset trait">Offset</a></td><td class="docblock-short"><p>useful functions to calculate the offset between slices and show a hexdump of a slice</p>
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.ParseTo.html" title="nom::ParseTo trait">ParseTo</a></td><td class="docblock-short"><p>used to integrate str’s parse() method</p>
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.Producer.html" title="nom::Producer trait">Producer</a></td><td class="docblock-short"><p>The producer wraps a data source, like file or network, and applies a consumer on it</p>
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.Slice.html" title="nom::Slice trait">Slice</a></td><td class="docblock-short"><p>slicing operations using ranges</p>
+</td></tr></table><h2 id="functions" class="section-header"><a href="#functions">Functions</a></h2>
+<table><tr class="module-item"><td><a class="fn" href="fn.alpha.html" title="nom::alpha fn">alpha</a></td><td class="docblock-short"><p>Recognizes one or more lowercase and uppercase alphabetic characters: a-zA-Z</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.alphanumeric.html" title="nom::alphanumeric fn">alphanumeric</a></td><td class="docblock-short"><p>Recognizes one or more numerical and alphabetic characters: 0-9a-zA-Z</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.anychar.html" title="nom::anychar fn">anychar</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.be_f32.html" title="nom::be_f32 fn">be_f32</a></td><td class="docblock-short"><p>Recognizes big endian 4 bytes floating point number</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.be_f64.html" title="nom::be_f64 fn">be_f64</a></td><td class="docblock-short"><p>Recognizes big endian 8 bytes floating point number</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.be_i8.html" title="nom::be_i8 fn">be_i8</a></td><td class="docblock-short"><p>Recognizes a signed 1 byte integer (equivalent to take!(1)</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.be_i16.html" title="nom::be_i16 fn">be_i16</a></td><td class="docblock-short"><p>Recognizes big endian signed 2 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.be_i24.html" title="nom::be_i24 fn">be_i24</a></td><td class="docblock-short"><p>Recognizes big endian signed 3 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.be_i32.html" title="nom::be_i32 fn">be_i32</a></td><td class="docblock-short"><p>Recognizes big endian signed 4 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.be_i64.html" title="nom::be_i64 fn">be_i64</a></td><td class="docblock-short"><p>Recognizes big endian signed 8 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.be_u8.html" title="nom::be_u8 fn">be_u8</a></td><td class="docblock-short"><p>Recognizes an unsigned 1 byte integer (equivalent to take!(1)</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.be_u16.html" title="nom::be_u16 fn">be_u16</a></td><td class="docblock-short"><p>Recognizes big endian unsigned 2 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.be_u24.html" title="nom::be_u24 fn">be_u24</a></td><td class="docblock-short"><p>Recognizes big endian unsigned 3 byte integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.be_u32.html" title="nom::be_u32 fn">be_u32</a></td><td class="docblock-short"><p>Recognizes big endian unsigned 4 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.be_u64.html" title="nom::be_u64 fn">be_u64</a></td><td class="docblock-short"><p>Recognizes big endian unsigned 8 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.begin.html" title="nom::begin fn">begin</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.code_from_offset.html" title="nom::code_from_offset fn">code_from_offset</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.crlf.html" title="nom::crlf fn">crlf</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.digit.html" title="nom::digit fn">digit</a></td><td class="docblock-short"><p>Recognizes one or more numerical characters: 0-9</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.double.html" title="nom::double fn">double</a></td><td class="docblock-short"><p>Recognizes floating point number in a byte string and returns a f64</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.double_s.html" title="nom::double_s fn">double_s</a></td><td class="docblock-short"><p>Recognizes floating point number in a string and returns a f64</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.eol.html" title="nom::eol fn">eol</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.error_to_u32.html" title="nom::error_to_u32 fn">error_to_u32</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.float.html" title="nom::float fn">float</a></td><td class="docblock-short"><p>Recognizes floating point number in a byte string and returns a f32</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.float_s.html" title="nom::float_s fn">float_s</a></td><td class="docblock-short"><p>Recognizes floating point number in a string and returns a f32</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.hex_digit.html" title="nom::hex_digit fn">hex_digit</a></td><td class="docblock-short"><p>Recognizes one or more hexadecimal numerical characters: 0-9, A-F, a-f</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.hex_u32.html" title="nom::hex_u32 fn">hex_u32</a></td><td class="docblock-short"><p>Recognizes a hex-encoded integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.is_alphabetic.html" title="nom::is_alphabetic fn">is_alphabetic</a></td><td class="docblock-short"><p>Tests if byte is ASCII alphabetic: A-Z, a-z</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.is_alphanumeric.html" title="nom::is_alphanumeric fn">is_alphanumeric</a></td><td class="docblock-short"><p>Tests if byte is ASCII alphanumeric: A-Z, a-z, 0-9</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.is_digit.html" title="nom::is_digit fn">is_digit</a></td><td class="docblock-short"><p>Tests if byte is ASCII digit: 0-9</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.is_hex_digit.html" title="nom::is_hex_digit fn">is_hex_digit</a></td><td class="docblock-short"><p>Tests if byte is ASCII hex digit: 0-9, A-F, a-f</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.is_oct_digit.html" title="nom::is_oct_digit fn">is_oct_digit</a></td><td class="docblock-short"><p>Tests if byte is ASCII octal digit: 0-7</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.is_space.html" title="nom::is_space fn">is_space</a></td><td class="docblock-short"><p>Tests if byte is ASCII space or tab</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.le_f32.html" title="nom::le_f32 fn">le_f32</a></td><td class="docblock-short"><p>Recognizes little endian 4 bytes floating point number</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.le_f64.html" title="nom::le_f64 fn">le_f64</a></td><td class="docblock-short"><p>Recognizes little endian 8 bytes floating point number</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.le_i8.html" title="nom::le_i8 fn">le_i8</a></td><td class="docblock-short"><p>Recognizes a signed 1 byte integer (equivalent to take!(1)</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.le_i16.html" title="nom::le_i16 fn">le_i16</a></td><td class="docblock-short"><p>Recognizes little endian signed 2 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.le_i24.html" title="nom::le_i24 fn">le_i24</a></td><td class="docblock-short"><p>Recognizes little endian signed 3 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.le_i32.html" title="nom::le_i32 fn">le_i32</a></td><td class="docblock-short"><p>Recognizes little endian signed 4 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.le_i64.html" title="nom::le_i64 fn">le_i64</a></td><td class="docblock-short"><p>Recognizes little endian signed 8 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.le_u8.html" title="nom::le_u8 fn">le_u8</a></td><td class="docblock-short"><p>Recognizes an unsigned 1 byte integer (equivalent to take!(1)</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.le_u16.html" title="nom::le_u16 fn">le_u16</a></td><td class="docblock-short"><p>Recognizes little endian unsigned 2 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.le_u24.html" title="nom::le_u24 fn">le_u24</a></td><td class="docblock-short"><p>Recognizes little endian unsigned 3 byte integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.le_u32.html" title="nom::le_u32 fn">le_u32</a></td><td class="docblock-short"><p>Recognizes little endian unsigned 4 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.le_u64.html" title="nom::le_u64 fn">le_u64</a></td><td class="docblock-short"><p>Recognizes little endian unsigned 8 bytes integer</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.line_ending.html" title="nom::line_ending fn">line_ending</a></td><td class="docblock-short"><p>Recognizes an end of line (both ‘\n’ and ‘\r\n’)</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.multispace.html" title="nom::multispace fn">multispace</a></td><td class="docblock-short"><p>Recognizes one or more spaces, tabs, carriage returns and line feeds</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.newline.html" title="nom::newline fn">newline</a></td><td class="docblock-short"><p>Matches a newline character ‘\n’</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.non_empty.html" title="nom::non_empty fn">non_empty</a></td><td class="docblock-short"><p>Recognizes non empty buffers</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.not_line_ending.html" title="nom::not_line_ending fn">not_line_ending</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.oct_digit.html" title="nom::oct_digit fn">oct_digit</a></td><td class="docblock-short"><p>Recognizes one or more octal characters: 0-7</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.print.html" title="nom::print fn">print</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.print_codes.html" title="nom::print_codes fn">print_codes</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.reset_color.html" title="nom::reset_color fn">reset_color</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.rest.html" title="nom::rest fn">rest</a></td><td class="docblock-short"><p>Return the remaining input.</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.rest_s.html" title="nom::rest_s fn">rest_s</a></td><td class="docblock-short"><p>Return the remaining input, for strings.</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.shift.html" title="nom::shift fn">shift</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.sized_buffer.html" title="nom::sized_buffer fn">sized_buffer</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.slice_to_offsets.html" title="nom::slice_to_offsets fn">slice_to_offsets</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.space.html" title="nom::space fn">space</a></td><td class="docblock-short"><p>Recognizes one or more spaces and tabs</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.tab.html" title="nom::tab fn">tab</a></td><td class="docblock-short"><p>Matches a tab character ‘\t’</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.tag_cl.html" title="nom::tag_cl fn">tag_cl</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.write_color.html" title="nom::write_color fn">write_color</a></td><td class="docblock-short"></td></tr></table></section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../" data-current-crate="nom" data-search-index-js="../search-index.js" data-search-js="../search.js"></div>
+    <script src="../main.js"></script></body></html>

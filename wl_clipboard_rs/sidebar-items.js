@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["copy","Copying and clearing clipboard contents."],["paste","Getting the offered MIME types and the clipboard contents."],["utils","Helper functions."]]});

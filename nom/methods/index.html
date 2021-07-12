@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Method macro combinators"><meta name="keywords" content="rust, rustlang, rust-lang, methods"><title>nom::methods - Rust</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings"></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../nom/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a><p class="location">Module methods</p><div class="sidebar-elems"><p class="location"><a href="../index.html">nom</a></p><div id="sidebar-vars" data-name="methods" data-ty="mod" data-relpath="../"></div><script defer src="../sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Module <a href="../index.html">nom</a>::<wbr><a class="mod" href="">methods</a><button id="copy-path" onclick="copy_path(this)">⎘</button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../../src/nom/methods.rs.html#1-500" title="goto source code">[src]</a></span></h1><div class="docblock"><p>Method macro combinators</p>
+<p>These macros make parsers as methods of structs
+and that can take methods of structs to call
+as parsers.</p>
+<p>There is a trick to make them easier to assemble,
+combinators are defined like this:</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="macro">macro_rules!</span> <span class="ident">tag</span> (
+  (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">inp</span>: <span class="ident">expr</span>) <span class="op">=</span><span class="op">&gt;</span> (
+    {
+      ...
+    }
+  );
+);</pre></div>
+<p>But when used as methods in other combinators, are used
+like this:</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="macro">method!</span>(<span class="ident">my_function</span><span class="op">&lt;</span><span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">&gt;</span>, <span class="self">self</span>, <span class="macro">tag!</span>(<span class="string">&quot;abcd&quot;</span>));</pre></div>
+<p>Internally, other combinators will rewrite
+that call to pass the input as second argument:</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="macro">macro_rules!</span> <span class="ident">method</span> (
+  (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ty</span><span class="op">&gt;</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">submac</span>:<span class="macro">ident!</span>( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">args</span>:<span class="ident">tt</span>)<span class="op">*</span> )) <span class="op">=</span><span class="op">&gt;</span> (
+    <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">self_</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>, <span class="ident">i</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] ) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="kw">crate</span><span class="macro-nonterminal">::IResult</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> {
+      <span class="macro-nonterminal">$</span><span class="macro">submac!</span>(<span class="macro-nonterminal">i</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">args</span>)<span class="kw-2">*</span>)
+    }
+  );
+);</pre></div>
+<p>The <code>method!</code> macro is similar to the <code>named!</code> macro in the macros module.
+While <code>named!</code> will create a parser function, <code>method!</code> will create a parser
+method on the struct it is defined in.</p>
+<p>Compared to the <code>named!</code> macro there are a few differences in how they are
+invoked. A <code>method!</code> invocation always has to have the type of <code>self</code>
+declared and it can’t be a reference due to Rust’s borrow lifetime
+restrictions:</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="comment">//                  -`self`&#39;s type-</span>
+<span class="macro">method!</span>(<span class="ident">method_name</span><span class="op">&lt;</span>  <span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">&gt;</span>, ...);</pre></div>
+<p><code>self</code>’s type always comes first.
+The next difference is you have to input the self struct. Due to Rust’s
+macro hygiene the macro can’t declare it on it’s own.</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="comment">//                                                 -self-</span>
+<span class="macro">method!</span>(<span class="ident">method_name</span><span class="op">&lt;</span><span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span>, <span class="self">self</span>, ...);</pre></div>
+<p>When making a parsing struct with parsing methods, due to the static borrow
+checker,calling any parsing methods on self (or any other parsing struct)
+will cause self to be moved for the rest of the method.To get around this
+restriction all self is moved into the called method and then the called
+method will return self to the caller.</p>
+<p>To call a method on self you need to use the <code>call_m!</code> macro. For example:</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="kw">struct</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+  <span class="ident">parsed</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
+}
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+  <span class="comment">// Constructor omitted for brevity</span>
+  <span class="macro">method!</span>(<span class="ident">take4</span><span class="op">&lt;</span><span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span>, <span class="self">self</span>, <span class="macro">take!</span>(<span class="number">4</span>));
+  <span class="macro">method!</span>(<span class="ident">caller</span><span class="op">&lt;</span><span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span>, <span class="self">self</span>, <span class="macro">call_m!</span>(<span class="self">self</span>.<span class="ident">take4</span>));
+}</pre></div>
+<p>More complicated combinations still mostly look the same as their <code>named!</code>
+counterparts:</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+   <span class="macro">method!</span>(<span class="kw">pub</span> <span class="ident">simple_chain</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span>, <span class="self">self</span>,
+     <span class="macro">do_parse!</span>(
+            <span class="macro">call_m!</span>(<span class="self">self</span>.<span class="ident">tag_abc</span>)                                        <span class="op">&gt;</span><span class="op">&gt;</span>
+            <span class="macro">call_m!</span>(<span class="self">self</span>.<span class="ident">tag_def</span>)                                        <span class="op">&gt;</span><span class="op">&gt;</span>
+            <span class="macro">call_m!</span>(<span class="self">self</span>.<span class="ident">tag_ghi</span>)                                        <span class="op">&gt;</span><span class="op">&gt;</span>
+      <span class="ident">last</span>: <span class="macro">map!</span>(<span class="macro">call_m!</span>(<span class="self">self</span>.<span class="ident">simple_peek</span>), <span class="op">|</span><span class="ident">parsed</span><span class="op">|</span> <span class="ident">sb</span>.<span class="ident">parsed</span> <span class="op">=</span> <span class="ident">parsed</span>) <span class="op">&gt;</span><span class="op">&gt;</span>
+      (<span class="ident">last</span>)
+     )
+   );</pre></div>
+<p>The three additions to method definitions to remember are:</p>
+<ol>
+<li>Specify <code>self</code>’s type</li>
+<li>Pass <code>self</code> to the macro</li>
+<li>Call parser methods using the <code>call_m!</code> macro.</li>
+</ol>
+</div></section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nom" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
+    <script src="../../main.js"></script></body></html>

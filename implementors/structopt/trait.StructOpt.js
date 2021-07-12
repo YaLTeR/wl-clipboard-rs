@@ -1,0 +1,5 @@
+(function() {var implementors = {};
+implementors["structopt"] = [];
+implementors["wl_copy"] = [{"text":"impl <a class=\"trait\" href=\"structopt/trait.StructOpt.html\" title=\"trait structopt::StructOpt\">StructOpt</a> for <a class=\"struct\" href=\"wl_copy/struct.Options.html\" title=\"struct wl_copy::Options\">Options</a>","synthetic":false,"types":["wl_copy::Options"]}];
+implementors["wl_paste"] = [{"text":"impl <a class=\"trait\" href=\"structopt/trait.StructOpt.html\" title=\"trait structopt::StructOpt\">StructOpt</a> for <a class=\"struct\" href=\"wl_paste/struct.Options.html\" title=\"struct wl_paste::Options\">Options</a>","synthetic":false,"types":["wl_paste::Options"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
