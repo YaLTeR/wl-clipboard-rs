@@ -461,7 +461,14 @@ fn make_source(source: Source,
     }
 
     let mime_type = match mime_type {
-        MimeType::Autodetect => tree_magic::from_filepath(&temp_filename),
+        MimeType::Autodetect => match tree_magic_mini::from_filepath(&temp_filename) {
+            Some(magic) => Ok(magic),
+            None => Err(SourceCreationError::TempFileOpen(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "problem with temp file",
+            ))),
+        }?
+        .to_string(),
         MimeType::Text => "text/plain".to_string(),
         MimeType::Specific(mime_type) => mime_type,
     };
