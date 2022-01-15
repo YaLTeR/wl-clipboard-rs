@@ -5,6 +5,7 @@
 ## v0.4.1 (1st Sep 2020)
 
 - Updated `nix` to 0.18 and `wayland-rs` to 0.27.
+- Split binaries from the main crate wl-clipboard-rs and create a new subcrate wl-clipboard-tools. (Closes: issue#15)
 
 ## v0.4.0 (13th Dec 2019)
 
