@@ -14,7 +14,7 @@ use libc::{STDIN_FILENO, STDOUT_FILENO};
 use nix::{
     fcntl::{fcntl, FcntlArg, OFlag},
     sys::wait::{waitpid, WaitStatus},
-    unistd::{close, dup2, execvp, fork, ForkResult},
+    unistd::{close, dup2, execv, fork, ForkResult},
 };
 use wayland_client::{
     global_filter, protocol::wl_seat::WlSeat, ConnectError, Display, GlobalError, GlobalManager, Interface, Main,
@@ -100,6 +100,7 @@ pub enum CopyDataError {
 /// # Ok(())
 /// # }
 /// ```
+#[allow(unsafe_code)]
 pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(), CopyDataError> {
     // We use the cat utility for data copying. It's easier (no need to implement any comlpex
     // buffering logic), surprisingly safer (a Rust implementation would likely require usage of
@@ -113,10 +114,14 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(),
     fcntl(to_fd, FcntlArg::F_SETFL(OFlag::empty())).map_err(CopyDataError::SetTargetFdFlags)?;
 
     // Don't allocate memory in the child process, it's not async-signal-safe.
+    let bin_env = CString::new("/usr/bin/env").unwrap();
+    let env = CString::new("env").unwrap();
     let cat = CString::new("cat").unwrap();
 
     // Fork and exec cat.
-    let fork_result = fork().map_err(CopyDataError::Fork)?;
+    // SAFETY: Within the child, we are only using the following system calls: dup2, close, execv
+    // As required by the safety of `fork`, these are all [async-signal-safe](https://man7.org/linux/man-pages/man7/signal-safety.7.html).
+    let fork_result = unsafe { fork() }.map_err(CopyDataError::Fork)?;
     match fork_result {
         ForkResult::Child => {
             if let Some(fd) = from_fd {
@@ -143,7 +148,7 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(),
             }
 
             // Exec cat.
-            if execvp(&cat, &[&cat]).is_err() {
+            if execv(&bin_env, &[&env, &cat]).is_err() {
                 abort();
             }
         }
