@@ -1,6 +1,5 @@
 use std::{cell::RefCell, ffi::OsString, io, rc::Rc};
 
-use failure::Fail;
 use wayland_client::{
     global_filter, protocol::wl_seat::WlSeat, ConnectError, Display, EventQueue, GlobalManager, Interface, Main,
 };
@@ -14,16 +13,17 @@ pub struct CommonData {
     pub seats: Rc<RefCell<Vec<Main<WlSeat>>>>,
 }
 
-#[derive(Fail, Debug)]
+#[derive(derive_more::Error, derive_more::Display, Debug)]
 pub enum Error {
-    #[fail(display = "Couldn't connect to the Wayland compositor")]
-    WaylandConnection(#[cause] ConnectError),
+    #[display(fmt = "Couldn't connect to the Wayland compositor")]
+    WaylandConnection(#[error(source)] ConnectError),
 
-    #[fail(display = "Wayland compositor communication error")]
-    WaylandCommunication(#[cause] io::Error),
+    #[display(fmt = "Wayland compositor communication error")]
+    WaylandCommunication(#[error(source)] io::Error),
 
-    #[fail(display = "A required Wayland protocol ({} version {}) is not supported by the compositor",
-           name, version)]
+    #[display(fmt = "A required Wayland protocol ({} version {}) is not supported by the compositor",
+              name,
+              version)]
     MissingProtocol { name: &'static str, version: u32 },
 }
 

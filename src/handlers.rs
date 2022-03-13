@@ -9,7 +9,6 @@ use std::{
 };
 
 use derive_new::new;
-use failure::Fail;
 use nix::unistd::close;
 use wayland_client::{
     protocol::{wl_seat::WlSeat, *},
@@ -98,13 +97,13 @@ fn data_offer_handler(offer: Main<ZwlrDataControlOfferV1>, event: zwlr_data_cont
     }
 }
 
-#[derive(Fail, Debug)]
+#[derive(derive_more::Error, derive_more::Display, Debug)]
 pub enum DataSourceError {
-    #[fail(display = "Couldn't open the data file")]
-    FileOpen(#[cause] io::Error),
+    #[display(fmt = "Couldn't open the data file")]
+    FileOpen(#[error(source)] io::Error),
 
-    #[fail(display = "Couldn't copy the data to the target file descriptor")]
-    Copy(#[cause] utils::CopyDataError),
+    #[display(fmt = "Couldn't copy the data to the target file descriptor")]
+    Copy(#[error(source)] utils::CopyDataError),
 }
 
 #[derive(new)]
