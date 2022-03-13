@@ -21,7 +21,7 @@
   `copy::MimeSource` and `copy::Options`, have dropped their lifetime generic
   parameter.
 
-### v0.3.1 (27th Nov 2019)
+## v0.3.1 (27th Nov 2019)
 
 - Reduced the `wl_seat` version requirement from 6 to 2.
 - Added `copy::copy_multi()` for offering multiple data sources under multiple
