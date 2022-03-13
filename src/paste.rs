@@ -9,7 +9,6 @@ use std::{
     rc::Rc,
 };
 
-use failure::Fail;
 use os_pipe::{pipe, PipeReader};
 use wayland_client::{ConnectError, EventQueue};
 use wayland_protocols::wlr::unstable::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1;
@@ -86,35 +85,36 @@ impl Default for Seat<'_> {
 /// You may want to ignore some of these errors (rather than show an error message), like
 /// `NoSeats`, `ClipboardEmpty` or `NoMimeType` as they are essentially equivalent to an empty
 /// clipboard.
-#[derive(Fail, Debug)]
+#[derive(derive_more::Error, derive_more::Display, Debug)]
 pub enum Error {
-    #[fail(display = "There are no seats")]
+    #[display(fmt = "There are no seats")]
     NoSeats,
 
-    #[fail(display = "The clipboard of the requested seat is empty")]
+    #[display(fmt = "The clipboard of the requested seat is empty")]
     ClipboardEmpty,
 
-    #[fail(display = "No suitable type of content copied")]
+    #[display(fmt = "No suitable type of content copied")]
     NoMimeType,
 
-    #[fail(display = "Couldn't connect to the Wayland compositor")]
-    WaylandConnection(#[cause] ConnectError),
+    #[display(fmt = "Couldn't connect to the Wayland compositor")]
+    WaylandConnection(#[error(source)] ConnectError),
 
-    #[fail(display = "Wayland compositor communication error")]
-    WaylandCommunication(#[cause] io::Error),
+    #[display(fmt = "Wayland compositor communication error")]
+    WaylandCommunication(#[error(source)] io::Error),
 
-    #[fail(display = "A required Wayland protocol ({} version {}) is not supported by the compositor",
-           name, version)]
+    #[display(fmt = "A required Wayland protocol ({} version {}) is not supported by the compositor",
+              name,
+              version)]
     MissingProtocol { name: &'static str, version: u32 },
 
-    #[fail(display = "The compositor does not support primary selection")]
+    #[display(fmt = "The compositor does not support primary selection")]
     PrimarySelectionUnsupported,
 
-    #[fail(display = "The requested seat was not found")]
+    #[display(fmt = "The requested seat was not found")]
     SeatNotFound,
 
-    #[fail(display = "Couldn't create a pipe for content transfer")]
-    PipeCreation(#[cause] io::Error),
+    #[display(fmt = "Couldn't create a pipe for content transfer")]
+    PipeCreation(#[error(source)] io::Error),
 }
 
 impl From<common::Error> for Error {
@@ -247,9 +247,7 @@ pub(crate) fn get_mime_types_internal(clipboard: ClipboardType,
 ///
 /// ```no_run
 /// # extern crate wl_clipboard_rs;
-/// # extern crate failure;
-/// # use failure::Error;
-/// # fn foo() -> Result<(), Error> {
+/// # fn foo() -> Result<(), Box<dyn std::error::Error>> {
 /// use std::io::Read;
 /// use wl_clipboard_rs::{paste::{get_contents, ClipboardType, Error, MimeType, Seat}};
 ///

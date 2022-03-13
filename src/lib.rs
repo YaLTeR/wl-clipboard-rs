@@ -29,8 +29,7 @@
 //! Copying to the regular clipboard:
 //! ```no_run
 //! # extern crate wl_clipboard_rs;
-//! # use wl_clipboard_rs::copy::Error;
-//! # fn foo() -> Result<(), Error> {
+//! # fn foo() -> Result<(), Box<dyn std::error::Error>> {
 //! use wl_clipboard_rs::copy::{MimeType, Options, Source};
 //!
 //! let opts = Options::new();
@@ -42,9 +41,7 @@
 //! Pasting plain text from the regular clipboard:
 //! ```no_run
 //! # extern crate wl_clipboard_rs;
-//! # extern crate failure;
-//! # use failure::Error;
-//! # fn foo() -> Result<(), Error> {
+//! # fn foo() -> Result<(), Box<dyn std::error::Error>> {
 //! use std::io::Read;
 //! use wl_clipboard_rs::{paste::{get_contents, ClipboardType, Error, MimeType, Seat}};
 //!
@@ -72,9 +69,7 @@
 //!
 //! ```no_run
 //! # extern crate wl_clipboard_rs;
-//! # extern crate failure;
-//! # use failure::Error;
-//! # fn foo() -> Result<(), Error> {
+//! # fn foo() -> Result<(), Box<dyn std::error::Error>> {
 //! use wl_clipboard_rs::utils::{is_primary_selection_supported, PrimarySelectionCheckError};
 //!
 //! match is_primary_selection_supported() {

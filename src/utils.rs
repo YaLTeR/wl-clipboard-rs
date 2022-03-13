@@ -9,7 +9,6 @@ use std::{
     rc::Rc,
 };
 
-use failure::Fail;
 use libc::{STDIN_FILENO, STDOUT_FILENO};
 use nix::{
     fcntl::{fcntl, FcntlArg, OFlag},
@@ -45,32 +44,31 @@ pub fn is_text(mime_type: &str) -> bool {
 }
 
 /// Errors that can occur in `copy_data()`.
-#[derive(Fail, Debug)]
+#[derive(derive_more::Error, derive_more::Display, Debug)]
 pub enum CopyDataError {
-    #[fail(display = "Couldn't set the source file descriptor flags")]
-    SetSourceFdFlags(#[cause] nix::Error),
+    #[display(fmt = "Couldn't set the source file descriptor flags")]
+    SetSourceFdFlags(#[error(source)] nix::Error),
 
-    #[fail(display = "Couldn't set the target file descriptor flags")]
-    SetTargetFdFlags(#[cause] nix::Error),
+    #[display(fmt = "Couldn't set the target file descriptor flags")]
+    SetTargetFdFlags(#[error(source)] nix::Error),
 
-    #[fail(display = "Couldn't fork")]
-    Fork(#[cause] nix::Error),
+    #[display(fmt = "Couldn't fork")]
+    Fork(#[error(source)] nix::Error),
 
-    #[fail(display = "Couldn't close the source file descriptor")]
-    CloseSourceFd(#[cause] nix::Error),
+    #[display(fmt = "Couldn't close the source file descriptor")]
+    CloseSourceFd(#[error(source)] nix::Error),
 
-    #[fail(display = "Couldn't close the target file descriptor")]
-    CloseTargetFd(#[cause] nix::Error),
+    #[display(fmt = "Couldn't close the target file descriptor")]
+    CloseTargetFd(#[error(source)] nix::Error),
 
-    #[fail(display = "Couldn't wait for the child process")]
-    Wait(#[cause] nix::Error),
+    #[display(fmt = "Couldn't wait for the child process")]
+    Wait(#[error(source)] nix::Error),
 
-    #[fail(display = "Received an unexpected status when waiting for the child process: {:?}",
-           _0)]
-    WaitUnexpected(WaitStatus),
+    #[display(fmt = "Received an unexpected status when waiting for the child process: {:?}", _0)]
+    WaitUnexpected(#[error(ignore)] WaitStatus),
 
-    #[fail(display = "The child process exited with a non-zero error code: {}", _0)]
-    ChildError(i32),
+    #[display(fmt = "The child process exited with a non-zero error code: {}", _0)]
+    ChildError(#[error(ignore)] i32),
 }
 
 /// Copies data from one file to another.
@@ -87,9 +85,7 @@ pub enum CopyDataError {
 ///
 /// ```no_run
 /// # extern crate wl_clipboard_rs;
-/// # extern crate failure;
-/// # use failure::Error;
-/// # fn foo() -> Result<(), Error> {
+/// # fn foo() -> Result<(), Box<dyn std::error::Error>> {
 /// use std::{fs::File, os::unix::io::IntoRawFd};
 /// use wl_clipboard_rs::utils::copy_data;
 ///
@@ -178,19 +174,20 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(),
 }
 
 /// Errors that can occur when checking whether the primary selection is supported.
-#[derive(Fail, Debug)]
+#[derive(derive_more::Error, derive_more::Display, Debug)]
 pub enum PrimarySelectionCheckError {
-    #[fail(display = "There are no seats")]
+    #[display(fmt = "There are no seats")]
     NoSeats,
 
-    #[fail(display = "Couldn't connect to the Wayland compositor")]
-    WaylandConnection(#[cause] ConnectError),
+    #[display(fmt = "Couldn't connect to the Wayland compositor")]
+    WaylandConnection(#[error(source)] ConnectError),
 
-    #[fail(display = "Wayland compositor communication error")]
-    WaylandCommunication(#[cause] io::Error),
+    #[display(fmt = "Wayland compositor communication error")]
+    WaylandCommunication(#[error(source)] io::Error),
 
-    #[fail(display = "A required Wayland protocol ({} version {}) is not supported by the compositor",
-           name, version)]
+    #[display(fmt = "A required Wayland protocol ({} version {}) is not supported by the compositor",
+              name,
+              version)]
     MissingProtocol { name: &'static str, version: u32 },
 }
 
@@ -200,9 +197,7 @@ pub enum PrimarySelectionCheckError {
 ///
 /// ```no_run
 /// # extern crate wl_clipboard_rs;
-/// # extern crate failure;
-/// # use failure::Error;
-/// # fn foo() -> Result<(), Error> {
+/// # fn foo() -> Result<(), Box<dyn std::error::Error>> {
 /// use wl_clipboard_rs::utils::{is_primary_selection_supported, PrimarySelectionCheckError};
 ///
 /// match is_primary_selection_supported() {
