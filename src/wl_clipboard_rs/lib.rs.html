@@ -1,0 +1,257 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../../wl_clipboard_rs/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></div>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../wl_clipboard_rs/index.html"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+<span id="2">  2</span>
+<span id="3">  3</span>
+<span id="4">  4</span>
+<span id="5">  5</span>
+<span id="6">  6</span>
+<span id="7">  7</span>
+<span id="8">  8</span>
+<span id="9">  9</span>
+<span id="10"> 10</span>
+<span id="11"> 11</span>
+<span id="12"> 12</span>
+<span id="13"> 13</span>
+<span id="14"> 14</span>
+<span id="15"> 15</span>
+<span id="16"> 16</span>
+<span id="17"> 17</span>
+<span id="18"> 18</span>
+<span id="19"> 19</span>
+<span id="20"> 20</span>
+<span id="21"> 21</span>
+<span id="22"> 22</span>
+<span id="23"> 23</span>
+<span id="24"> 24</span>
+<span id="25"> 25</span>
+<span id="26"> 26</span>
+<span id="27"> 27</span>
+<span id="28"> 28</span>
+<span id="29"> 29</span>
+<span id="30"> 30</span>
+<span id="31"> 31</span>
+<span id="32"> 32</span>
+<span id="33"> 33</span>
+<span id="34"> 34</span>
+<span id="35"> 35</span>
+<span id="36"> 36</span>
+<span id="37"> 37</span>
+<span id="38"> 38</span>
+<span id="39"> 39</span>
+<span id="40"> 40</span>
+<span id="41"> 41</span>
+<span id="42"> 42</span>
+<span id="43"> 43</span>
+<span id="44"> 44</span>
+<span id="45"> 45</span>
+<span id="46"> 46</span>
+<span id="47"> 47</span>
+<span id="48"> 48</span>
+<span id="49"> 49</span>
+<span id="50"> 50</span>
+<span id="51"> 51</span>
+<span id="52"> 52</span>
+<span id="53"> 53</span>
+<span id="54"> 54</span>
+<span id="55"> 55</span>
+<span id="56"> 56</span>
+<span id="57"> 57</span>
+<span id="58"> 58</span>
+<span id="59"> 59</span>
+<span id="60"> 60</span>
+<span id="61"> 61</span>
+<span id="62"> 62</span>
+<span id="63"> 63</span>
+<span id="64"> 64</span>
+<span id="65"> 65</span>
+<span id="66"> 66</span>
+<span id="67"> 67</span>
+<span id="68"> 68</span>
+<span id="69"> 69</span>
+<span id="70"> 70</span>
+<span id="71"> 71</span>
+<span id="72"> 72</span>
+<span id="73"> 73</span>
+<span id="74"> 74</span>
+<span id="75"> 75</span>
+<span id="76"> 76</span>
+<span id="77"> 77</span>
+<span id="78"> 78</span>
+<span id="79"> 79</span>
+<span id="80"> 80</span>
+<span id="81"> 81</span>
+<span id="82"> 82</span>
+<span id="83"> 83</span>
+<span id="84"> 84</span>
+<span id="85"> 85</span>
+<span id="86"> 86</span>
+<span id="87"> 87</span>
+<span id="88"> 88</span>
+<span id="89"> 89</span>
+<span id="90"> 90</span>
+<span id="91"> 91</span>
+<span id="92"> 92</span>
+<span id="93"> 93</span>
+<span id="94"> 94</span>
+<span id="95"> 95</span>
+<span id="96"> 96</span>
+<span id="97"> 97</span>
+<span id="98"> 98</span>
+<span id="99"> 99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+</pre><pre class="rust"><code><span class="doccomment">//! A safe Rust crate for working with the Wayland clipboard.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! This crate is intended to be used by terminal applications, clipboard managers and other</span>
+<span class="doccomment">//! utilities which don&#39;t spawn Wayland surfaces (windows). If your application has a window,</span>
+<span class="doccomment">//! please use the appropriate Wayland protocols for interacting with the Wayland clipboard</span>
+<span class="doccomment">//! (`wl_data_device` from the core Wayland protocol, the `primary_selection` protocol for the</span>
+<span class="doccomment">//! primary selection), for example via the</span>
+<span class="doccomment">//! [smithay-clipboard](https://crates.io/crates/smithay-clipboard) crate.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The protocol used for clipboard interaction is `data-control` from</span>
+<span class="doccomment">//! [wlroots](https://github.com/swaywm/wlr-protocols). When using the regular clipboard, the</span>
+<span class="doccomment">//! compositor must support the first version of the protocol. When using the &quot;primary&quot; clipboard,</span>
+<span class="doccomment">//! the compositor must support the second version of the protocol (or higher).</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! For example applications using these features, see `wl-clipboard-tools/src/bin/wl_copy.rs` and</span>
+<span class="doccomment">//! `wl-clipboard-tools/src/bin/wl_paste.rs` which implement terminal apps similar to</span>
+<span class="doccomment">//! [wl-clipboard](https://github.com/bugaevc/wl-clipboard) or</span>
+<span class="doccomment">//! `wl-clipboard-tools/src/bin/wl_clip.rs` which implements a Wayland version of `xclip`.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The Rust implementation of the Wayland client is used by default; use the `native_lib` feature</span>
+<span class="doccomment">//! to link to `libwayland-client.so` for communication instead. A `dlopen` feature is also</span>
+<span class="doccomment">//! available for loading `libwayland-client.so` dynamically at runtime rather than linking to it.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The code of the crate itself (and the code of the example utilities) is 100% safe Rust. This</span>
+<span class="doccomment">//! doesn&#39;t include the dependencies.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! # Examples</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Copying to the regular clipboard:</span>
+<span class="doccomment">//! ```no_run</span>
+<span class="doccomment">//! # extern crate wl_clipboard_rs;</span>
+<span class="doccomment">//! # use wl_clipboard_rs::copy::Error;</span>
+<span class="doccomment">//! # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
+<span class="doccomment">//! use wl_clipboard_rs::copy::{MimeType, Options, Source};</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! let opts = Options::new();</span>
+<span class="doccomment">//! opts.copy(Source::Bytes(&quot;Hello world!&quot;.to_string().into_bytes().into()), MimeType::Autodetect)?;</span>
+<span class="doccomment">//! # Ok(())</span>
+<span class="doccomment">//! # }</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Pasting plain text from the regular clipboard:</span>
+<span class="doccomment">//! ```no_run</span>
+<span class="doccomment">//! # extern crate wl_clipboard_rs;</span>
+<span class="doccomment">//! # extern crate failure;</span>
+<span class="doccomment">//! # use failure::Error;</span>
+<span class="doccomment">//! # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
+<span class="doccomment">//! use std::io::Read;</span>
+<span class="doccomment">//! use wl_clipboard_rs::{paste::{get_contents, ClipboardType, Error, MimeType, Seat}};</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! let result = get_contents(ClipboardType::Regular, Seat::Unspecified, MimeType::Text);</span>
+<span class="doccomment">//! match result {</span>
+<span class="doccomment">//!     Ok((mut pipe, _)) =&gt; {</span>
+<span class="doccomment">//!         let mut contents = vec![];</span>
+<span class="doccomment">//!         pipe.read_to_end(&amp;mut contents)?;</span>
+<span class="doccomment">//!         println!(&quot;Pasted: {}&quot;, String::from_utf8_lossy(&amp;contents));</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     Err(Error::NoSeats) | Err(Error::ClipboardEmpty) | Err(Error::NoMimeType) =&gt; {</span>
+<span class="doccomment">//!         // The clipboard is empty or doesn&#39;t contain text, nothing to worry about.</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     Err(err) =&gt; Err(err)?</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//! # Ok(())</span>
+<span class="doccomment">//! # }</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Checking if the &quot;primary&quot; clipboard is supported (note that this might be unnecessary depending</span>
+<span class="doccomment">//! on your crate usage, the regular copying and pasting functions do report if the primary</span>
+<span class="doccomment">//! selection is unsupported when it is requested):</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```no_run</span>
+<span class="doccomment">//! # extern crate wl_clipboard_rs;</span>
+<span class="doccomment">//! # extern crate failure;</span>
+<span class="doccomment">//! # use failure::Error;</span>
+<span class="doccomment">//! # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
+<span class="doccomment">//! use wl_clipboard_rs::utils::{is_primary_selection_supported, PrimarySelectionCheckError};</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! match is_primary_selection_supported() {</span>
+<span class="doccomment">//!     Ok(supported) =&gt; {</span>
+<span class="doccomment">//!         // We have our definitive result. False means that either data-control version 1</span>
+<span class="doccomment">//!         // is present (which does not support the primary selection), or that data-control</span>
+<span class="doccomment">//!         // version 2 is present and it did not signal the primary selection support.</span>
+<span class="doccomment">//!     },</span>
+<span class="doccomment">//!     Err(PrimarySelectionCheckError::NoSeats) =&gt; {</span>
+<span class="doccomment">//!         // Impossible to give a definitive result. Primary selection may or may not be</span>
+<span class="doccomment">//!         // supported.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!         // The required protocol (data-control version 2) is there, but there are no seats.</span>
+<span class="doccomment">//!         // Unfortunately, at least one seat is needed to check for the primary clipboard</span>
+<span class="doccomment">//!         // support.</span>
+<span class="doccomment">//!     },</span>
+<span class="doccomment">//!     Err(PrimarySelectionCheckError::MissingProtocol { .. }) =&gt; {</span>
+<span class="doccomment">//!         // The data-control protocol (required for wl-clipboard-rs operation) is not</span>
+<span class="doccomment">//!         // supported by the compositor.</span>
+<span class="doccomment">//!     },</span>
+<span class="doccomment">//!     Err(_) =&gt; {</span>
+<span class="doccomment">//!         // Some communication error occurred.</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//! # Ok(())</span>
+<span class="doccomment">//! # }</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! # Included terminal utilities</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! - `wl-paste`: implements `wl-paste` from</span>
+<span class="doccomment">//!   [wl-clipboard](https://github.com/bugaevc/wl-clipboard).</span>
+<span class="doccomment">//! - `wl-copy`: implements `wl-copy` from [wl-clipboard](https://github.com/bugaevc/wl-clipboard).</span>
+<span class="doccomment">//! - `wl-clip`: a Wayland version of `xclip`.</span>
+
+<span class="attribute">#![<span class="ident">doc</span>(<span class="ident">html_root_url</span> <span class="op">=</span> <span class="string">&quot;https://docs.rs/wl-clipboard-rs/0.5.0&quot;</span>)]</span>
+<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">unsafe_code</span>)]</span>
+
+<span class="kw">mod</span> <span class="ident">common</span>;
+<span class="kw">mod</span> <span class="ident">handlers</span>;
+<span class="kw">mod</span> <span class="ident">seat_data</span>;
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unsafe_code</span>)]</span> <span class="comment">// It&#39;s more convenient for testing some stuff.</span>
+<span class="kw">mod</span> <span class="ident">tests</span>;
+
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">copy</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">paste</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">utils</span>;
+</code></pre></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wl_clipboard_rs" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0 (9d1b2106e 2022-02-23)" ></div>
+</body></html>

@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["org_kde_kwin_server_decoration",""],["org_kde_kwin_server_decoration_manager","Server side window decoration manager"]]});

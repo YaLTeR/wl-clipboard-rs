@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Gtk primary selection protocol"><meta name="keywords" content="rust, rustlang, rust-lang, gtk_primary_selection"><title>wayland_protocols::misc::gtk_primary_selection - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script>
+    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../../../wayland_protocols/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.png" alt="logo"></div>
+        </a><h2 class="location">Module gtk_primary_selection</h2><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li></ul></div><div id="sidebar-vars" data-name="gtk_primary_selection" data-ty="mod" data-relpath="./"></div><script defer src="./sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../wayland_protocols/index.html"><img class="rust-logo" src="../../../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><h1 class="fqn"><span class="in-band">Module <a href="../../index.html">wayland_protocols</a>::<wbr><a href="../index.html">misc</a>::<wbr><a class="mod" href="#">gtk_primary_selection</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../../../src/wayland_protocols/misc.rs.html#14-60" title="goto source code">[src]</a></span></h1><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Gtk primary selection protocol</p>
+<p>This protocol provides the ability to have a primary selection device to
+match that of the X server. This primary selection is a shortcut to the
+common clipboard selection, where text just needs to be selected in order
+to allow copying it elsewhere. The de facto way to perform this action
+is the middle mouse button, although it is not limited to this one.</p>
+<p>Clients wishing to honor primary selection should create a primary
+selection source and set it as the selection through
+<code>wp_primary_selection_device.set_selection</code> whenever the text selection
+changes. In order to minimize calls in pointer-driven text selection,
+it should happen only once after the operation finished. Similarly,
+a NULL source should be set when text is unselected.</p>
+<p><code>wp_primary_selection_offer</code> objects are first announced through the
+<code>wp_primary_selection_device.data_offer</code> event. Immediately after this event,
+the primary data offer will emit <code>wp_primary_selection_offer.offer</code> events
+to let know of the mime types being offered.</p>
+<p>When the primary selection changes, the client with the keyboard focus
+will receive <code>wp_primary_selection_device.selection</code> events. Only the client
+with the keyboard focus will receive such events with a non-NULL
+<code>wp_primary_selection_offer</code>. Across keyboard focus changes, previously
+focused clients will receive <code>wp_primary_selection_device.events</code> with a
+NULL <code>wp_primary_selection_offer</code>.</p>
+<p>In order to request the primary selection data, the client must pass
+a recent serial pertaining to the press event that is triggering the
+operation, if the compositor deems the serial valid and recent, the
+<code>wp_primary_selection_source.send</code> event will happen in the other end
+to let the transfer begin. The client owning the primary selection
+should write the requested data, and close the file descriptor
+immediately.</p>
+<p>If the primary selection owner client disappeared during the transfer,
+the client reading the data will receive a
+<code>wp_primary_selection_device.selection</code> event with a NULL
+<code>wp_primary_selection_offer</code>, the client should take this as a hint
+to finish the reads related to the no longer existing offer.</p>
+<p>The primary selection owner should be checking for errors during
+writes, merely cancelling the ongoing transfer if any happened.</p>
+</div></details><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="mod" href="client/index.html" title="wayland_protocols::misc::gtk_primary_selection::client mod">client</a></div><div class="item-right docblock-short"><p>Client-side API of this protocol</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="mod" href="server/index.html" title="wayland_protocols::misc::gtk_primary_selection::server mod">server</a></div><div class="item-right docblock-short"><p>Server-side API of this protocol</p>
+</div></div></div></section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="wayland_protocols" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0 (9d1b2106e 2022-02-23)" ></div>
+</body></html>
