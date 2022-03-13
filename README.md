@@ -20,10 +20,10 @@ The protocol used for clipboard interaction is `data-control` from
 compositor must support the first version of the protocol. When using the "primary" clipboard,
 the compositor must support the second version of the protocol (or higher).
 
-For example applications using these features, see `src/bin/wl_copy.rs` and
-`src/bin/wl_paste.rs` which implement terminal apps similar to
-[wl-clipboard](https://github.com/bugaevc/wl-clipboard) or `src/bin/wl_clip.rs` which
-implements a Wayland version of `xclip`.
+For example applications using these features, see `wl-clipboard-tools/src/bin/wl_copy.rs` and
+`wl-clipboard-tools/src/bin/wl_paste.rs` which implement terminal apps similar to
+[wl-clipboard](https://github.com/bugaevc/wl-clipboard) or
+`wl-clipboard-tools/src/bin/wl_clip.rs` which implements a Wayland version of `xclip`.
 
 The Rust implementation of the Wayland client is used by default; use the `native_lib` feature
 to link to `libwayland-client.so` for communication instead. A `dlopen` feature is also
@@ -39,7 +39,7 @@ Copying to the regular clipboard:
 use wl_clipboard_rs::copy::{MimeType, Options, Source};
 
 let opts = Options::new();
-opts.copy(Source::Bytes("Hello world!".as_bytes()), MimeType::Autodetect)?;
+opts.copy(Source::Bytes("Hello world!".to_string().into_bytes().into()), MimeType::Autodetect)?;
 ```
 
 Pasting plain text from the regular clipboard:
