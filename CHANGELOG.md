@@ -2,7 +2,16 @@
 
 ## Unreleased
 
-- Split binaries from the main crate wl-clipboard-rs and create a new subcrate wl-clipboard-tools. (Closes: issue#15)
+## v0.5.0 (13th Mar 2022)
+
+- Split binaries from the main crate `wl-clipboard-rs` into a new sub-crate
+  `wl-clipboard-tools`. This removes a few dependencies that were only used in
+  the binaries (like `structopt`).
+- Replaced `tree_magic` (which went unmaintained) with `tree_magic_mini`.
+- Changed the `fork` code which runs during the copy operation to exec
+  `/usr/bin/env cat` instead of just `cat`. This was done to remove
+  a non-async-signal-safe call in the child process.
+- Updated dependencies.
 
 ## v0.4.1 (1st Sep 2020)
 
