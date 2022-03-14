@@ -650,10 +650,9 @@ pub(crate) fn clear_internal(clipboard: ClipboardType, seat: Seat, socket_name: 
 /// ```
 #[inline]
 pub fn prepare_copy(options: Options, source: Source, mime_type: MimeType) -> Result<PreparedCopy, Error> {
-    assert_eq!(options.foreground, true);
+    assert!(options.foreground);
 
-    let sources = vec![MimeSource { source: source,
-                                    mime_type: mime_type }];
+    let sources = vec![MimeSource { source, mime_type }];
 
     prepare_copy_internal(options, sources, None)
 }
@@ -698,7 +697,7 @@ pub fn prepare_copy(options: Options, source: Source, mime_type: MimeType) -> Re
 /// ```
 #[inline]
 pub fn prepare_copy_multi(options: Options, sources: Vec<MimeSource>) -> Result<PreparedCopy, Error> {
-    assert_eq!(options.foreground, true);
+    assert!(options.foreground);
 
     prepare_copy_internal(options, sources, None)
 }
@@ -787,7 +786,7 @@ fn prepare_copy_internal(options: Options,
                                              iter::once(None)
                                          };
 
-                                         first.chain(second.filter_map(|x| x))
+                                         first.chain(second.flatten())
                                      });
 
     // Create the data sources and set them as selections.
@@ -848,8 +847,7 @@ fn prepare_copy_internal(options: Options,
 /// ```
 #[inline]
 pub fn copy(options: Options, source: Source, mime_type: MimeType) -> Result<(), Error> {
-    let sources = vec![MimeSource { source: source,
-                                    mime_type: mime_type }];
+    let sources = vec![MimeSource { source, mime_type }];
     copy_internal(options, sources, None)
 }
 

@@ -37,7 +37,7 @@ fn is_primary_selection_supported_test() {
     server.answer();
 
     let result = child.join().unwrap().unwrap();
-    assert_eq!(result, true);
+    assert!(result);
 }
 
 #[test]
@@ -69,7 +69,7 @@ fn is_primary_selection_supported_primary_selection_unsupported() {
     server.answer();
 
     let result = child.join().unwrap().unwrap();
-    assert_eq!(result, false);
+    assert!(!result);
 }
 
 #[test]
@@ -88,7 +88,7 @@ fn is_primary_selection_supported_data_control_v1() {
     server.answer();
 
     let result = child.join().unwrap().unwrap();
-    assert_eq!(result, false);
+    assert!(!result);
 }
 
 #[test]
