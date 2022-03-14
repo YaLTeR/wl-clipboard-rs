@@ -5,8 +5,7 @@ use std::{
     io::{stdout, Read, Write},
 };
 
-use exitfailure::ExitFailure;
-use failure::ResultExt;
+use anyhow::Context;
 use libc::STDOUT_FILENO;
 use log::info;
 use mime_guess::Mime;
@@ -64,7 +63,7 @@ fn infer_mime_type() -> Option<Mime> {
     }
 }
 
-fn main() -> Result<(), ExitFailure> {
+fn main() -> Result<(), anyhow::Error> {
     // Parse command-line options.
     let options = Options::from_args();
     let primary = if options.primary {

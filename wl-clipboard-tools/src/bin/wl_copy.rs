@@ -2,7 +2,6 @@
 
 use std::{ffi::OsString, os::unix::ffi::OsStringExt};
 
-use exitfailure::ExitFailure;
 use nix::unistd::{fork, ForkResult};
 use structopt::{clap::AppSettings, StructOpt};
 
@@ -96,7 +95,7 @@ impl From<Options> for copy::Options {
     }
 }
 
-fn main() -> Result<(), ExitFailure> {
+fn main() -> Result<(), anyhow::Error> {
     // Parse command-line options.
     let mut options = Options::from_args();
 
