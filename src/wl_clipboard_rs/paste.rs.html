@@ -329,8 +329,6 @@
 <span id="327">327</span>
 <span id="328">328</span>
 <span id="329">329</span>
-<span id="330">330</span>
-<span id="331">331</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Getting the offered MIME types and the clipboard contents.</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -342,7 +340,6 @@
     <span class="ident">rc::Rc</span>,
 };
 
-<span class="kw">use</span> <span class="ident">failure::Fail</span>;
 <span class="kw">use</span> <span class="ident">os_pipe</span>::{<span class="ident">pipe</span>, <span class="ident">PipeReader</span>};
 <span class="kw">use</span> <span class="ident">wayland_client</span>::{<span class="ident">ConnectError</span>, <span class="ident">EventQueue</span>};
 <span class="kw">use</span> <span class="ident">wayland_protocols::wlr::unstable::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1</span>;
@@ -419,35 +416,36 @@
 <span class="doccomment">/// You may want to ignore some of these errors (rather than show an error message), like</span>
 <span class="doccomment">/// `NoSeats`, `ClipboardEmpty` or `NoMimeType` as they are essentially equivalent to an empty</span>
 <span class="doccomment">/// clipboard.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Fail</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_more::Error</span>, <span class="ident">derive_more::Display</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Error</span> {
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;There are no seats&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;There are no seats&quot;</span>)]</span>
     <span class="ident">NoSeats</span>,
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;The clipboard of the requested seat is empty&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;The clipboard of the requested seat is empty&quot;</span>)]</span>
     <span class="ident">ClipboardEmpty</span>,
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;No suitable type of content copied&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;No suitable type of content copied&quot;</span>)]</span>
     <span class="ident">NoMimeType</span>,
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t connect to the Wayland compositor&quot;</span>)]</span>
-    <span class="ident">WaylandConnection</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">ConnectError</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t connect to the Wayland compositor&quot;</span>)]</span>
+    <span class="ident">WaylandConnection</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">ConnectError</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Wayland compositor communication error&quot;</span>)]</span>
-    <span class="ident">WaylandCommunication</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Wayland compositor communication error&quot;</span>)]</span>
+    <span class="ident">WaylandCommunication</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;A required Wayland protocol ({} version {}) is not supported by the compositor&quot;</span>,
-           <span class="ident">name</span>, <span class="ident">version</span>)]</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;A required Wayland protocol ({} version {}) is not supported by the compositor&quot;</span>,
+              <span class="ident">name</span>,
+              <span class="ident">version</span>)]</span>
     <span class="ident">MissingProtocol</span> { <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">version</span>: <span class="ident">u32</span> },
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;The compositor does not support primary selection&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;The compositor does not support primary selection&quot;</span>)]</span>
     <span class="ident">PrimarySelectionUnsupported</span>,
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;The requested seat was not found&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;The requested seat was not found&quot;</span>)]</span>
     <span class="ident">SeatNotFound</span>,
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t create a pipe for content transfer&quot;</span>)]</span>
-    <span class="ident">PipeCreation</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t create a pipe for content transfer&quot;</span>)]</span>
+    <span class="ident">PipeCreation</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">common::Error</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Error</span> {
@@ -580,9 +578,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// # extern crate wl_clipboard_rs;</span>
-<span class="doccomment">/// # extern crate failure;</span>
-<span class="doccomment">/// # use failure::Error;</span>
-<span class="doccomment">/// # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
+<span class="doccomment">/// # fn foo() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {</span>
 <span class="doccomment">/// use std::io::Read;</span>
 <span class="doccomment">/// use wl_clipboard_rs::{paste::{get_contents, ClipboardType, Error, MimeType, Seat}};</span>
 <span class="doccomment">///</span>

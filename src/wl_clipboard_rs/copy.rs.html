@@ -928,7 +928,6 @@
     <span class="ident">thread</span>,
 };
 
-<span class="kw">use</span> <span class="ident">failure::Fail</span>;
 <span class="kw">use</span> <span class="ident">log::info</span>;
 <span class="kw">use</span> <span class="ident">wayland_client</span>::{<span class="ident">ConnectError</span>, <span class="ident">EventQueue</span>, <span class="ident">Main</span>, <span class="ident">Proxy</span>};
 <span class="kw">use</span> <span class="ident">wayland_protocols::wlr::unstable::data_control::v1::client</span>::{
@@ -1069,69 +1068,70 @@
 }
 
 <span class="doccomment">/// Errors that can occur for copying the source data to a temporary file.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Fail</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_more::Error</span>, <span class="ident">derive_more::Display</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SourceCreationError</span> {
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t create a temporary directory&quot;</span>)]</span>
-    <span class="ident">TempDirCreate</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t create a temporary directory&quot;</span>)]</span>
+    <span class="ident">TempDirCreate</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t create a temporary file&quot;</span>)]</span>
-    <span class="ident">TempFileCreate</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t create a temporary file&quot;</span>)]</span>
+    <span class="ident">TempFileCreate</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t copy data to the temporary file&quot;</span>)]</span>
-    <span class="ident">DataCopy</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">utils::CopyDataError</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t copy data to the temporary file&quot;</span>)]</span>
+    <span class="ident">DataCopy</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">utils::CopyDataError</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t write to the temporary file&quot;</span>)]</span>
-    <span class="ident">TempFileWrite</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t write to the temporary file&quot;</span>)]</span>
+    <span class="ident">TempFileWrite</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t open the temporary file for newline trimming&quot;</span>)]</span>
-    <span class="ident">TempFileOpen</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t open the temporary file for newline trimming&quot;</span>)]</span>
+    <span class="ident">TempFileOpen</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t get the temporary file metadata for newline trimming&quot;</span>)]</span>
-    <span class="ident">TempFileMetadata</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t get the temporary file metadata for newline trimming&quot;</span>)]</span>
+    <span class="ident">TempFileMetadata</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t seek the temporary file for newline trimming&quot;</span>)]</span>
-    <span class="ident">TempFileSeek</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t seek the temporary file for newline trimming&quot;</span>)]</span>
+    <span class="ident">TempFileSeek</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t read the last byte of the temporary file for newline trimming&quot;</span>)]</span>
-    <span class="ident">TempFileRead</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t read the last byte of the temporary file for newline trimming&quot;</span>)]</span>
+    <span class="ident">TempFileRead</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t truncate the temporary file for newline trimming&quot;</span>)]</span>
-    <span class="ident">TempFileTruncate</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t truncate the temporary file for newline trimming&quot;</span>)]</span>
+    <span class="ident">TempFileTruncate</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 }
 
 <span class="doccomment">/// Errors that can occur for copying and clearing the clipboard.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Fail</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_more::Error</span>, <span class="ident">derive_more::Display</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Error</span> {
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;There are no seats&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;There are no seats&quot;</span>)]</span>
     <span class="ident">NoSeats</span>,
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t connect to the Wayland compositor&quot;</span>)]</span>
-    <span class="ident">WaylandConnection</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">ConnectError</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t connect to the Wayland compositor&quot;</span>)]</span>
+    <span class="ident">WaylandConnection</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">ConnectError</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Wayland compositor communication error&quot;</span>)]</span>
-    <span class="ident">WaylandCommunication</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Wayland compositor communication error&quot;</span>)]</span>
+    <span class="ident">WaylandCommunication</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;A required Wayland protocol ({} version {}) is not supported by the compositor&quot;</span>,
-           <span class="ident">name</span>, <span class="ident">version</span>)]</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;A required Wayland protocol ({} version {}) is not supported by the compositor&quot;</span>,
+              <span class="ident">name</span>,
+              <span class="ident">version</span>)]</span>
     <span class="ident">MissingProtocol</span> { <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">version</span>: <span class="ident">u32</span> },
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;The compositor does not support primary selection&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;The compositor does not support primary selection&quot;</span>)]</span>
     <span class="ident">PrimarySelectionUnsupported</span>,
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;The requested seat was not found&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;The requested seat was not found&quot;</span>)]</span>
     <span class="ident">SeatNotFound</span>,
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Error copying the source into a temporary file&quot;</span>)]</span>
-    <span class="ident">TempCopy</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">SourceCreationError</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Error copying the source into a temporary file&quot;</span>)]</span>
+    <span class="ident">TempCopy</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">SourceCreationError</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t remove the temporary file&quot;</span>)]</span>
-    <span class="ident">TempFileRemove</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t remove the temporary file&quot;</span>)]</span>
+    <span class="ident">TempFileRemove</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t remove the temporary directory&quot;</span>)]</span>
-    <span class="ident">TempDirRemove</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t remove the temporary directory&quot;</span>)]</span>
+    <span class="ident">TempDirRemove</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Error satisfying a paste request&quot;</span>)]</span>
-    <span class="ident">Paste</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">DataSourceError</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Error satisfying a paste request&quot;</span>)]</span>
+    <span class="ident">Paste</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">DataSourceError</span>),
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">common::Error</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Error</span> {

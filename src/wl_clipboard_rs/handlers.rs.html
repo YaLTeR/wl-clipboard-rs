@@ -178,7 +178,6 @@
 <span id="176">176</span>
 <span id="177">177</span>
 <span id="178">178</span>
-<span id="179">179</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">cell</span>::{<span class="ident">Cell</span>, <span class="ident">RefCell</span>},
     <span class="ident">collections</span>::{<span class="ident">HashMap</span>, <span class="ident">HashSet</span>},
@@ -190,7 +189,6 @@
 };
 
 <span class="kw">use</span> <span class="ident">derive_new::new</span>;
-<span class="kw">use</span> <span class="ident">failure::Fail</span>;
 <span class="kw">use</span> <span class="ident">nix::unistd::close</span>;
 <span class="kw">use</span> <span class="ident">wayland_client</span>::{
     <span class="ident">protocol</span>::{<span class="ident">wl_seat::WlSeat</span>, <span class="kw-2">*</span>},
@@ -279,13 +277,13 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Fail</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_more::Error</span>, <span class="ident">derive_more::Display</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DataSourceError</span> {
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t open the data file&quot;</span>)]</span>
-    <span class="ident">FileOpen</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t open the data file&quot;</span>)]</span>
+    <span class="ident">FileOpen</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
 
-    <span class="attribute">#[<span class="ident">fail</span>(<span class="ident">display</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t copy the data to the target file descriptor&quot;</span>)]</span>
-    <span class="ident">Copy</span>(<span class="attribute">#[<span class="ident">cause</span>]</span> <span class="ident">utils::CopyDataError</span>),
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t copy the data to the target file descriptor&quot;</span>)]</span>
+    <span class="ident">Copy</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">utils::CopyDataError</span>),
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">new</span>)]</span>
