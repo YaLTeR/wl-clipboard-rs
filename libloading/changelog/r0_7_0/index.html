@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Release 0.7.0 (2021-02-06)"><meta name="keywords" content="rust, rustlang, rust-lang, r0_7_0"><title>libloading::changelog::r0_7_0 - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script>
+    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../../../libloading/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.png" alt="logo"></div>
+        </a><h2 class="location">Module r0_7_0</h2><div class="sidebar-elems"><div id="sidebar-vars" data-name="r0_7_0" data-ty="mod" data-relpath="./"></div><script defer src="./sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../libloading/index.html"><img class="rust-logo" src="../../../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><h1 class="fqn"><span class="in-band">Module <a href="../../index.html">libloading</a>::<wbr><a href="../index.html">changelog</a>::<wbr><a class="mod" href="#">r0_7_0</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../../../src/libloading/changelog.rs.html#140" title="goto source code">[src]</a></span></h1><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Release 0.7.0 (2021-02-06)</p>
+<h3 id="breaking-changes" class="section-header"><a href="#breaking-changes">Breaking changes</a></h3><h4 id="loading-functions-are-now-unsafe" class="section-header"><a href="#loading-functions-are-now-unsafe">Loading functions are now <code>unsafe</code></a></h4>
+<p>A number of associated methods involved in loading a library were changed to
+be <code>unsafe</code>. The affected functions are: <a href="../../struct.Library.html#method.new"><code>Library::new</code></a>, <a href="../../os/unix/struct.Library.html#method.new"><code>os::unix::Library::new</code></a>,
+<a href="../../os/unix/struct.Library.html#method.new"><code>os::unix::Library::open</code></a>, <a href="crate::os::windows::Library::new"><code>os::windows::Library::new</code></a>,
+<a href="crate::os::windows::Library::load_with_flags"><code>os::windows::Library::load_with_flags</code></a>. This is the most prominent breaking change in this
+release and affects majority of the users of <code>libloading</code>.</p>
+<p>In order to see why it was necessary, consider the following snippet of C++ code:</p>
+<div class="example-wrap"><pre class="language-c++"><code>#include &lt;vector&gt;
+#include &lt;iostream&gt;
+
+static std::vector&lt;unsigned int&gt; UNSHUU = { 1, 2, 3 };
+
+int main() {
+    std::cout &lt;&lt; UNSHUU[0] &lt;&lt; UNSHUU[1] &lt;&lt; UNSHUU[2] &lt;&lt; std::endl; // Prints 123
+    return 0;
+}</code></pre></div>
+<p>The <code>std::vector</code> type, much like in Rust’s <code>Vec</code>, stores its contents in a buffer allocated on
+the heap. In this example the vector object itself is stored and initialized as a static
+variable – a compile time construct. The heap, on the other hand, is a runtime construct. And
+yet the code works exactly as you’d expect – the vector contains numbers 1, 2 and 3 stored in
+a buffer on heap. So, <em>what</em> makes it work out, exactly?</p>
+<p>Various executable and shared library formats define conventions and machinery to execute
+arbitrary code when a program or a shared library is loaded. On systems using the PE format
+(e.g. Windows) this is available via the optional <code>DllMain</code> initializer. Various systems
+utilizing the ELF format take a sightly different approach of maintaining an array of function
+pointers in the <code>.init_array</code> section. A very similar mechanism exists on systems that utilize
+the Mach-O format.</p>
+<p>For the C++ program above, the object stored in the <code>UNSHUU</code> global variable is constructed
+by code run as part of such an initializer routine. This initializer is run before the entry
+point (the <code>main</code> function) is executed, allowing for this magical behaviour to be possible.
+Were the C++ code built as a shared library instead, the initialization routines would run as
+the resulting shared library is loaded. In case of <code>libloading</code> – during the call to
+<code>Library::new</code> and other methods affected by this change.</p>
+<p>These initialization (and very closely related termination) routines can be utilized outside of
+C++ too. Anybody can build a shared library in variety of different programming languages and
+set up the initializers to execute arbitrary code. Potentially code that does all sorts of
+wildly unsound stuff.</p>
+<p>The routines are executed by components that are an integral part of the operating system.
+Changing or controlling the operation of these components is infeasible. With that in
+mind, the initializer and termination routines are something anybody loading a library must
+carefully evaluate the libraries loaded for soundness.</p>
+<p>In practice, a vast majority of the libraries can be considered a good citizen and their
+initialization and termination routines, if they have any at all, can be trusted to be sound.</p>
+<p>Also see: <a href="https://github.com/nagisa/rust_libloading/issues/86">issue #86</a>.</p>
+<h4 id="better--more-consistent-default-behaviour-on-unix-systems" class="section-header"><a href="#better--more-consistent-default-behaviour-on-unix-systems">Better &amp; more consistent default behaviour on UNIX systems</a></h4>
+<p>On UNIX systems the <a href="../../struct.Library.html#method.new"><code>Library::new</code></a>, <a href="../../os/unix/struct.Library.html#method.new"><code>os::unix::Library::new</code></a> and
+<a href="../../os/unix/struct.Library.html#method.this"><code>os::unix::Library::this</code></a> methods have been changed to use
+<code><a href="../../os/unix/constant.RTLD_LAZY.html">RTLD_LAZY</a> | <a href="../../os/unix/constant.RTLD_LOCAL.html">RTLD_LOCAL</a></code> as the default set of loader options (previously:
+<a href="../../os/unix/constant.RTLD_NOW.html"><code>RTLD_NOW</code></a>). This has a couple benefits. Namely:</p>
+<ul>
+<li>Lazy binding is generally quicker to execute when only a subset of symbols from a library are
+used and is typically the default when neither <code>RTLD_LAZY</code> nor <code>RTLD_NOW</code> are specified when
+calling the underlying <code>dlopen</code> API;</li>
+<li>On most UNIX systems (macOS being a notable exception) <code>RTLD_LOCAL</code> is the default when
+neither <code>RTLD_LOCAL</code> nor <a href="../../os/unix/constant.RTLD_GLOBAL.html"><code>RTLD_GLOBAL</code></a> are specified. The explicit setting of the
+<code>RTLD_LOCAL</code> flag makes this behaviour consistent across platforms.</li>
+</ul>
+<h4 id="dropped-support-for-windows-xpvista" class="section-header"><a href="#dropped-support-for-windows-xpvista">Dropped support for Windows XP/Vista</a></h4>
+<p>The (broken) support for Windows XP and Windows Vista environments was removed. This was
+prompted primarily by a similar policy change in the <a href="https://github.com/rust-lang/compiler-team/issues/378">Rust
+project</a> but also as an acknowledgement
+to the fact that <code>libloading</code> never worked in these environments anyway.</p>
+<h4 id="more-accurate-error-variant-names" class="section-header"><a href="#more-accurate-error-variant-names">More accurate error variant names</a></h4>
+<p>Finally, the <code>Error::LoadLibraryW</code> renamed to <a href="../../enum.Error.html#variant.LoadLibraryExW"><code>Error::LoadLibraryExW</code></a> to more accurately
+represent the underlying API that’s failing. No functional changes as part of this rename
+intended.</p>
+</div></details></section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="libloading" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0 (9d1b2106e 2022-02-23)" ></div>
+</body></html>
