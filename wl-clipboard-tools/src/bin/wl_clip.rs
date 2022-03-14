@@ -8,8 +8,7 @@ use std::{
     process,
 };
 
-use exitfailure::ExitFailure;
-use failure::{Fail, ResultExt};
+use anyhow::{Context, Error};
 use nix::unistd::{fork, ForkResult};
 
 use wl_clipboard_rs::{
@@ -45,12 +44,6 @@ impl Default for Options {
                verbosity: Verbosity::Silent,
                primary: true }
     }
-}
-
-#[derive(Debug, Fail)]
-enum Error {
-    #[fail(display = "Unsupported option: {}", _0)]
-    UnsupportedOption(&'static str),
 }
 
 impl Options {
@@ -106,23 +99,23 @@ impl Options {
 
                     parse!("-filter", "-f"          => {
                         // Not sure there's a good way to support this.
-                        return Err(Error::UnsupportedOption("-filter"));
+                        anyhow::bail!("Unsupported option: -filter");
                     });
 
                     parse!("-noutf8", "-n"          => {
-                        return Err(Error::UnsupportedOption("-noutf8"));
+                        anyhow::bail!("Unsupported option: -noutf8");
                     });
 
                     parse!("-display", "-d"         => {
-                        return Err(Error::UnsupportedOption("-display"));
+                        anyhow::bail!("Unsupported option: -display");
                     });
 
                     parse!("-selection", "-se", val => {
                         match val.to_string_lossy().chars().next().unwrap_or('_') {
                             'c' => opts.primary = false,
                             'p' => opts.primary = true,
-                            's' => return Err(Error::UnsupportedOption("-selection secondary")),
-                            'b' => return Err(Error::UnsupportedOption("-selection buffer-cut")),
+                            's' => anyhow::bail!("Unsupported option: -selection secondary"),
+                            'b' => anyhow::bail!("Unsupported option: -selection buffer-cut"),
                             _ => {}
                         }
 
@@ -141,7 +134,7 @@ impl Options {
                         if let Ok(val) = val.into_string() {
                             opts.target = Some(val);
                         } else {
-                            return Err(Error::UnsupportedOption("-target <invalid UTF-8>"));
+                            anyhow::bail!("Unsupported option: -target <invalid UTF-8>");
                         }
 
                         continue;
@@ -216,7 +209,7 @@ impl From<Options> for copy::Options {
     }
 }
 
-fn main() -> Result<(), ExitFailure> {
+fn main() -> Result<(), Error> {
     // Parse command-line options.
     let mut options = Options::from_args()?;
 
