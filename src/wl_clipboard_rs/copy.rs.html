@@ -912,8 +912,6 @@
 <span id="910">910</span>
 <span id="911">911</span>
 <span id="912">912</span>
-<span id="913">913</span>
-<span id="914">914</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Copying and clearing clipboard contents.</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -1566,10 +1564,9 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prepare_copy</span>(<span class="ident">options</span>: <span class="ident">Options</span>, <span class="ident">source</span>: <span class="ident">Source</span>, <span class="ident">mime_type</span>: <span class="ident">MimeType</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PreparedCopy</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="macro">assert_eq!</span>(<span class="ident">options</span>.<span class="ident">foreground</span>, <span class="bool-val">true</span>);
+    <span class="macro">assert!</span>(<span class="ident">options</span>.<span class="ident">foreground</span>);
 
-    <span class="kw">let</span> <span class="ident">sources</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">MimeSource</span> { <span class="ident">source</span>: <span class="ident">source</span>,
-                                    <span class="ident">mime_type</span>: <span class="ident">mime_type</span> }];
+    <span class="kw">let</span> <span class="ident">sources</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">MimeSource</span> { <span class="ident">source</span>, <span class="ident">mime_type</span> }];
 
     <span class="ident">prepare_copy_internal</span>(<span class="ident">options</span>, <span class="ident">sources</span>, <span class="prelude-val">None</span>)
 }
@@ -1614,7 +1611,7 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prepare_copy_multi</span>(<span class="ident">options</span>: <span class="ident">Options</span>, <span class="ident">sources</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MimeSource</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PreparedCopy</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="macro">assert_eq!</span>(<span class="ident">options</span>.<span class="ident">foreground</span>, <span class="bool-val">true</span>);
+    <span class="macro">assert!</span>(<span class="ident">options</span>.<span class="ident">foreground</span>);
 
     <span class="ident">prepare_copy_internal</span>(<span class="ident">options</span>, <span class="ident">sources</span>, <span class="prelude-val">None</span>)
 }
@@ -1703,7 +1700,7 @@
                                              <span class="ident">iter::once</span>(<span class="prelude-val">None</span>)
                                          };
 
-                                         <span class="ident">first</span>.<span class="ident">chain</span>(<span class="ident">second</span>.<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>))
+                                         <span class="ident">first</span>.<span class="ident">chain</span>(<span class="ident">second</span>.<span class="ident">flatten</span>())
                                      });
 
     <span class="comment">// Create the data sources and set them as selections.</span>
@@ -1764,8 +1761,7 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">copy</span>(<span class="ident">options</span>: <span class="ident">Options</span>, <span class="ident">source</span>: <span class="ident">Source</span>, <span class="ident">mime_type</span>: <span class="ident">MimeType</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">sources</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">MimeSource</span> { <span class="ident">source</span>: <span class="ident">source</span>,
-                                    <span class="ident">mime_type</span>: <span class="ident">mime_type</span> }];
+    <span class="kw">let</span> <span class="ident">sources</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">MimeSource</span> { <span class="ident">source</span>, <span class="ident">mime_type</span> }];
     <span class="ident">copy_internal</span>(<span class="ident">options</span>, <span class="ident">sources</span>, <span class="prelude-val">None</span>)
 }
 
