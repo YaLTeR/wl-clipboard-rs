@@ -226,7 +226,7 @@ fn main() -> Result<(), ExitFailure> {
 
     if options.out {
         // Paste.
-        let mime_type = match options.target.as_ref().map(|x| x) {
+        let mime_type = match options.target.as_ref() {
             Some(target) => paste::MimeType::Specific(target),
             None => paste::MimeType::Text,
         };
