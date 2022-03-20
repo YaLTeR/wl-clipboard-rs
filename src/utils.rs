@@ -98,7 +98,7 @@ pub enum CopyDataError {
 /// ```
 #[allow(unsafe_code)]
 pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(), CopyDataError> {
-    // We use the cat utility for data copying. It's easier (no need to implement any comlpex
+    // We use the cat utility for data copying. It's easier (no need to implement any complex
     // buffering logic), surprisingly safer (a Rust implementation would likely require usage of
     // `from_raw_fd()` which is unsafe) and ideally faster (cat's been around for a while and is
     // probably pretty optimized).
