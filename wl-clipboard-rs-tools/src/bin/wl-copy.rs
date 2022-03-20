@@ -1,5 +1,3 @@
-#![deny(unsafe_code)]
-
 use std::{ffi::OsString, os::unix::ffi::OsStringExt};
 
 use nix::unistd::{fork, ForkResult};
@@ -147,9 +145,9 @@ fn main() -> Result<(), anyhow::Error> {
     if foreground {
         prepared_copy.serve()?;
     } else {
-        // We don't spawn any threads, so doing things after forking is safe.
+        // SAFETY: We don't spawn any threads, so doing things after forking is safe.
         // TODO: is there any way to verify that we don't spawn any threads?
-        if let ForkResult::Child = fork().unwrap() {
+        if let ForkResult::Child = unsafe { fork() }.unwrap() {
             drop(prepared_copy.serve());
         }
     }
