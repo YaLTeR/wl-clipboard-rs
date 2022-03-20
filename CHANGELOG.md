@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Replaced underscores back with dashes in the tool binary names.
+
 ## v0.5.0 (13th Mar 2022)
 
 - Split binaries from the main crate `wl-clipboard-rs` into a new sub-crate
