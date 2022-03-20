@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.6.0 (20th Mar 2022)
+
 - Fixed `wl-copy` and `wl-clip` hangs when followed by a pipe (e.g. `wl-copy
   hello | cat`).
 - Removed the deprecated `failure` dependency from both the library and the
