@@ -7,6 +7,8 @@
 - Split binaries from the main crate `wl-clipboard-rs` into a new sub-crate
   `wl-clipboard-tools`. This removes a few dependencies that were only used in
   the binaries (like `structopt`).
+  - This change also unintentionally replaced dashes with underscores in tool
+    binary names.
 - Replaced `tree_magic` (which went unmaintained) with `tree_magic_mini`.
 - Changed the `fork` code which runs during the copy operation to exec
   `/usr/bin/env cat` instead of just `cat`. This was done to remove
