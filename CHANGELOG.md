@@ -5,6 +5,7 @@
 - Removed the deprecated `failure` dependency from both the library and the
   tools. The standard `Error` trait is now used.
 - Replaced underscores back with dashes in the tool binary names.
+- Renamed `wl-clipboard-tools` subcrate to `wl-clipboard-rs-tools`.
 
 ## v0.5.0 (13th Mar 2022)
 
