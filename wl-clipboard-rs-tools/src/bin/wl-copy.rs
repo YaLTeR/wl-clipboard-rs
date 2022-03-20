@@ -1,6 +1,10 @@
 use std::{ffi::OsString, os::unix::ffi::OsStringExt};
 
-use nix::unistd::{fork, ForkResult};
+use libc::{STDIN_FILENO, STDOUT_FILENO};
+use nix::{
+    fcntl::OFlag,
+    unistd::{close, dup2, fork, ForkResult},
+};
 use structopt::{clap::AppSettings, StructOpt};
 
 use wl_clipboard_rs::copy::{self, clear, ClipboardType, MimeType, Seat, ServeRequests, Source};
@@ -148,6 +152,16 @@ fn main() -> Result<(), anyhow::Error> {
         // SAFETY: We don't spawn any threads, so doing things after forking is safe.
         // TODO: is there any way to verify that we don't spawn any threads?
         if let ForkResult::Child = unsafe { fork() }.unwrap() {
+            // Replace STDIN and STDOUT with /dev/null. We won't be using them, and keeping them as
+            // is hangs a potential pipeline (i.e. wl-copy hello | cat). Also, simply closing the
+            // file descriptors is a bad idea because then they get reused by subsequent temp file
+            // opens, which breaks the dup2/close logic during data copying.
+            if let Ok(dev_null) = nix::fcntl::open("/dev/null", OFlag::O_RDWR, nix::sys::stat::Mode::empty()) {
+                let _ = dup2(dev_null, STDIN_FILENO);
+                let _ = dup2(dev_null, STDOUT_FILENO);
+                let _ = close(dev_null);
+            }
+
             drop(prepared_copy.serve());
         }
     }
