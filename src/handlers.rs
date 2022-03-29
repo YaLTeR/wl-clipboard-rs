@@ -134,7 +134,7 @@ impl DataSourceHandler {
         let file = File::open(&*data_path.borrow()).map_err(DataSourceError::FileOpen);
         let result = file.and_then(|data_file| {
                              let data_fd = data_file.into_raw_fd();
-                             copy_data(Some(data_fd), target_fd, false).map_err(DataSourceError::Copy)
+                             copy_data(Some(data_fd), target_fd, true).map_err(DataSourceError::Copy)
                          });
 
         let mut error = source.as_ref()
