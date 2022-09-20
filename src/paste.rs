@@ -85,36 +85,36 @@ impl Default for Seat<'_> {
 /// You may want to ignore some of these errors (rather than show an error message), like
 /// `NoSeats`, `ClipboardEmpty` or `NoMimeType` as they are essentially equivalent to an empty
 /// clipboard.
-#[derive(derive_more::Error, derive_more::Display, Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum Error {
-    #[display(fmt = "There are no seats")]
+    #[error("There are no seats")]
     NoSeats,
 
-    #[display(fmt = "The clipboard of the requested seat is empty")]
+    #[error("The clipboard of the requested seat is empty")]
     ClipboardEmpty,
 
-    #[display(fmt = "No suitable type of content copied")]
+    #[error("No suitable type of content copied")]
     NoMimeType,
 
-    #[display(fmt = "Couldn't connect to the Wayland compositor")]
-    WaylandConnection(#[error(source)] ConnectError),
+    #[error("Couldn't connect to the Wayland compositor")]
+    WaylandConnection(#[source] ConnectError),
 
-    #[display(fmt = "Wayland compositor communication error")]
-    WaylandCommunication(#[error(source)] io::Error),
+    #[error("Wayland compositor communication error")]
+    WaylandCommunication(#[source] io::Error),
 
-    #[display(fmt = "A required Wayland protocol ({} version {}) is not supported by the compositor",
-              name,
-              version)]
+    #[error("A required Wayland protocol ({} version {}) is not supported by the compositor",
+            name,
+            version)]
     MissingProtocol { name: &'static str, version: u32 },
 
-    #[display(fmt = "The compositor does not support primary selection")]
+    #[error("The compositor does not support primary selection")]
     PrimarySelectionUnsupported,
 
-    #[display(fmt = "The requested seat was not found")]
+    #[error("The requested seat was not found")]
     SeatNotFound,
 
-    #[display(fmt = "Couldn't create a pipe for content transfer")]
-    PipeCreation(#[error(source)] io::Error),
+    #[error("Couldn't create a pipe for content transfer")]
+    PipeCreation(#[source] io::Error),
 }
 
 impl From<common::Error> for Error {

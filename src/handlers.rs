@@ -97,13 +97,13 @@ fn data_offer_handler(offer: Main<ZwlrDataControlOfferV1>, event: zwlr_data_cont
     }
 }
 
-#[derive(derive_more::Error, derive_more::Display, Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum DataSourceError {
-    #[display(fmt = "Couldn't open the data file")]
-    FileOpen(#[error(source)] io::Error),
+    #[error("Couldn't open the data file")]
+    FileOpen(#[source] io::Error),
 
-    #[display(fmt = "Couldn't copy the data to the target file descriptor")]
-    Copy(#[error(source)] utils::CopyDataError),
+    #[error("Couldn't copy the data to the target file descriptor")]
+    Copy(#[source] utils::CopyDataError),
 }
 
 #[derive(new)]

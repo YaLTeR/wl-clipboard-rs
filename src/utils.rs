@@ -44,31 +44,31 @@ pub fn is_text(mime_type: &str) -> bool {
 }
 
 /// Errors that can occur in `copy_data()`.
-#[derive(derive_more::Error, derive_more::Display, Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum CopyDataError {
-    #[display(fmt = "Couldn't set the source file descriptor flags")]
-    SetSourceFdFlags(#[error(source)] nix::Error),
+    #[error("Couldn't set the source file descriptor flags")]
+    SetSourceFdFlags(#[source] nix::Error),
 
-    #[display(fmt = "Couldn't set the target file descriptor flags")]
-    SetTargetFdFlags(#[error(source)] nix::Error),
+    #[error("Couldn't set the target file descriptor flags")]
+    SetTargetFdFlags(#[source] nix::Error),
 
-    #[display(fmt = "Couldn't fork")]
-    Fork(#[error(source)] nix::Error),
+    #[error("Couldn't fork")]
+    Fork(#[source] nix::Error),
 
-    #[display(fmt = "Couldn't close the source file descriptor")]
-    CloseSourceFd(#[error(source)] nix::Error),
+    #[error("Couldn't close the source file descriptor")]
+    CloseSourceFd(#[source] nix::Error),
 
-    #[display(fmt = "Couldn't close the target file descriptor")]
-    CloseTargetFd(#[error(source)] nix::Error),
+    #[error("Couldn't close the target file descriptor")]
+    CloseTargetFd(#[source] nix::Error),
 
-    #[display(fmt = "Couldn't wait for the child process")]
-    Wait(#[error(source)] nix::Error),
+    #[error("Couldn't wait for the child process")]
+    Wait(#[source] nix::Error),
 
-    #[display(fmt = "Received an unexpected status when waiting for the child process: {:?}", _0)]
-    WaitUnexpected(#[error(ignore)] WaitStatus),
+    #[error("Received an unexpected status when waiting for the child process: {:?}", _0)]
+    WaitUnexpected(WaitStatus),
 
-    #[display(fmt = "The child process exited with a non-zero error code: {}", _0)]
-    ChildError(#[error(ignore)] i32),
+    #[error("The child process exited with a non-zero error code: {}", _0)]
+    ChildError(i32),
 }
 
 /// Copies data from one file to another.
@@ -174,20 +174,20 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(),
 }
 
 /// Errors that can occur when checking whether the primary selection is supported.
-#[derive(derive_more::Error, derive_more::Display, Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum PrimarySelectionCheckError {
-    #[display(fmt = "There are no seats")]
+    #[error("There are no seats")]
     NoSeats,
 
-    #[display(fmt = "Couldn't connect to the Wayland compositor")]
-    WaylandConnection(#[error(source)] ConnectError),
+    #[error("Couldn't connect to the Wayland compositor")]
+    WaylandConnection(#[source] ConnectError),
 
-    #[display(fmt = "Wayland compositor communication error")]
-    WaylandCommunication(#[error(source)] io::Error),
+    #[error("Wayland compositor communication error")]
+    WaylandCommunication(#[source] io::Error),
 
-    #[display(fmt = "A required Wayland protocol ({} version {}) is not supported by the compositor",
-              name,
-              version)]
+    #[error("A required Wayland protocol ({} version {}) is not supported by the compositor",
+            name,
+            version)]
     MissingProtocol { name: &'static str, version: u32 },
 }
 
