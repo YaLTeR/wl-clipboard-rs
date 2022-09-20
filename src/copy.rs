@@ -14,7 +14,7 @@ use std::{
     thread,
 };
 
-use log::info;
+use log::trace;
 use wayland_client::{ConnectError, EventQueue, Main, Proxy};
 use wayland_protocols::wlr::unstable::data_control::v1::client::{
     zwlr_data_control_device_v1::ZwlrDataControlDeviceV1, zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
@@ -450,7 +450,7 @@ fn make_source(source: Source,
     let temp_dir = tempfile::tempdir().map_err(SourceCreationError::TempDirCreate)?;
     let mut temp_filename = temp_dir.into_path();
     temp_filename.push("stdin");
-    info!("Temp filename: {}", temp_filename.to_string_lossy());
+    trace!("Temp filename: {}", temp_filename.to_string_lossy());
     let mut temp_file = File::create(&temp_filename).map_err(SourceCreationError::TempFileCreate)?;
 
     if let Source::Bytes(data) = source {
@@ -472,7 +472,7 @@ fn make_source(source: Source,
         MimeType::Specific(mime_type) => mime_type,
     };
 
-    info!("Base MIME type: {}", mime_type);
+    trace!("Base MIME type: {}", mime_type);
 
     // Trim the trailing newline if needed.
     if trim_newline && is_text(&mime_type) {
