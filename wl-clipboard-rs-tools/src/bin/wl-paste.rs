@@ -7,7 +7,7 @@ use std::{
 
 use anyhow::Context;
 use libc::STDOUT_FILENO;
-use log::info;
+use log::trace;
 use mime_guess::Mime;
 use structopt::{clap::AppSettings, StructOpt};
 use wl_clipboard_rs::{paste::*, utils::is_text};
@@ -103,7 +103,7 @@ fn main() -> Result<(), anyhow::Error> {
         Some(ref mime_type) => MimeType::Specific(mime_type),
         None => {
             let inferred: Option<&str> = inferred.as_ref().map(Mime::as_ref);
-            info!("Inferred MIME type: {:?}", inferred);
+            trace!("Inferred MIME type: {:?}", inferred);
             match inferred {
                 None | Some("application/octet-stream") => MimeType::Any,
                 // If the inferred MIME type is text, make sure we'll fall back to requesting
