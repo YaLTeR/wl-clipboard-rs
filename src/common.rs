@@ -13,17 +13,15 @@ pub struct CommonData {
     pub seats: Rc<RefCell<Vec<Main<WlSeat>>>>,
 }
 
-#[derive(derive_more::Error, derive_more::Display, Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum Error {
-    #[display(fmt = "Couldn't connect to the Wayland compositor")]
-    WaylandConnection(#[error(source)] ConnectError),
+    #[error("Couldn't connect to the Wayland compositor")]
+    WaylandConnection(#[source] ConnectError),
 
-    #[display(fmt = "Wayland compositor communication error")]
-    WaylandCommunication(#[error(source)] io::Error),
+    #[error("Wayland compositor communication error")]
+    WaylandCommunication(#[source] io::Error),
 
-    #[display(fmt = "A required Wayland protocol ({} version {}) is not supported by the compositor",
-              name,
-              version)]
+    #[error("A required Wayland protocol ({name} version {version}) is not supported by the compositor")]
     MissingProtocol { name: &'static str, version: u32 },
 }
 

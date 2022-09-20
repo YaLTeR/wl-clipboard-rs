@@ -154,70 +154,70 @@ pub struct PreparedCopy {
 }
 
 /// Errors that can occur for copying the source data to a temporary file.
-#[derive(derive_more::Error, derive_more::Display, Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum SourceCreationError {
-    #[display(fmt = "Couldn't create a temporary directory")]
-    TempDirCreate(#[error(source)] io::Error),
+    #[error("Couldn't create a temporary directory")]
+    TempDirCreate(#[source] io::Error),
 
-    #[display(fmt = "Couldn't create a temporary file")]
-    TempFileCreate(#[error(source)] io::Error),
+    #[error("Couldn't create a temporary file")]
+    TempFileCreate(#[source] io::Error),
 
-    #[display(fmt = "Couldn't copy data to the temporary file")]
-    DataCopy(#[error(source)] utils::CopyDataError),
+    #[error("Couldn't copy data to the temporary file")]
+    DataCopy(#[source] utils::CopyDataError),
 
-    #[display(fmt = "Couldn't write to the temporary file")]
-    TempFileWrite(#[error(source)] io::Error),
+    #[error("Couldn't write to the temporary file")]
+    TempFileWrite(#[source] io::Error),
 
-    #[display(fmt = "Couldn't open the temporary file for newline trimming")]
-    TempFileOpen(#[error(source)] io::Error),
+    #[error("Couldn't open the temporary file for newline trimming")]
+    TempFileOpen(#[source] io::Error),
 
-    #[display(fmt = "Couldn't get the temporary file metadata for newline trimming")]
-    TempFileMetadata(#[error(source)] io::Error),
+    #[error("Couldn't get the temporary file metadata for newline trimming")]
+    TempFileMetadata(#[source] io::Error),
 
-    #[display(fmt = "Couldn't seek the temporary file for newline trimming")]
-    TempFileSeek(#[error(source)] io::Error),
+    #[error("Couldn't seek the temporary file for newline trimming")]
+    TempFileSeek(#[source] io::Error),
 
-    #[display(fmt = "Couldn't read the last byte of the temporary file for newline trimming")]
-    TempFileRead(#[error(source)] io::Error),
+    #[error("Couldn't read the last byte of the temporary file for newline trimming")]
+    TempFileRead(#[source] io::Error),
 
-    #[display(fmt = "Couldn't truncate the temporary file for newline trimming")]
-    TempFileTruncate(#[error(source)] io::Error),
+    #[error("Couldn't truncate the temporary file for newline trimming")]
+    TempFileTruncate(#[source] io::Error),
 }
 
 /// Errors that can occur for copying and clearing the clipboard.
-#[derive(derive_more::Error, derive_more::Display, Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum Error {
-    #[display(fmt = "There are no seats")]
+    #[error("There are no seats")]
     NoSeats,
 
-    #[display(fmt = "Couldn't connect to the Wayland compositor")]
-    WaylandConnection(#[error(source)] ConnectError),
+    #[error("Couldn't connect to the Wayland compositor")]
+    WaylandConnection(#[source] ConnectError),
 
-    #[display(fmt = "Wayland compositor communication error")]
-    WaylandCommunication(#[error(source)] io::Error),
+    #[error("Wayland compositor communication error")]
+    WaylandCommunication(#[source] io::Error),
 
-    #[display(fmt = "A required Wayland protocol ({} version {}) is not supported by the compositor",
-              name,
-              version)]
+    #[error("A required Wayland protocol ({} version {}) is not supported by the compositor",
+            name,
+            version)]
     MissingProtocol { name: &'static str, version: u32 },
 
-    #[display(fmt = "The compositor does not support primary selection")]
+    #[error("The compositor does not support primary selection")]
     PrimarySelectionUnsupported,
 
-    #[display(fmt = "The requested seat was not found")]
+    #[error("The requested seat was not found")]
     SeatNotFound,
 
-    #[display(fmt = "Error copying the source into a temporary file")]
-    TempCopy(#[error(source)] SourceCreationError),
+    #[error("Error copying the source into a temporary file")]
+    TempCopy(#[source] SourceCreationError),
 
-    #[display(fmt = "Couldn't remove the temporary file")]
-    TempFileRemove(#[error(source)] io::Error),
+    #[error("Couldn't remove the temporary file")]
+    TempFileRemove(#[source] io::Error),
 
-    #[display(fmt = "Couldn't remove the temporary directory")]
-    TempDirRemove(#[error(source)] io::Error),
+    #[error("Couldn't remove the temporary directory")]
+    TempDirRemove(#[source] io::Error),
 
-    #[display(fmt = "Error satisfying a paste request")]
-    Paste(#[error(source)] DataSourceError),
+    #[error("Error satisfying a paste request")]
+    Paste(#[source] DataSourceError),
 }
 
 impl From<common::Error> for Error {
