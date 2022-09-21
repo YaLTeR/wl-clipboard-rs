@@ -342,31 +342,31 @@
 }
 
 <span class="doccomment">/// Errors that can occur in `copy_data()`.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_more::Error</span>, <span class="ident">derive_more::Display</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">thiserror::Error</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CopyDataError</span> {
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t set the source file descriptor flags&quot;</span>)]</span>
-    <span class="ident">SetSourceFdFlags</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">nix::Error</span>),
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t set the source file descriptor flags&quot;</span>)]</span>
+    <span class="ident">SetSourceFdFlags</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">nix::Error</span>),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t set the target file descriptor flags&quot;</span>)]</span>
-    <span class="ident">SetTargetFdFlags</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">nix::Error</span>),
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t set the target file descriptor flags&quot;</span>)]</span>
+    <span class="ident">SetTargetFdFlags</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">nix::Error</span>),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t fork&quot;</span>)]</span>
-    <span class="ident">Fork</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">nix::Error</span>),
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t fork&quot;</span>)]</span>
+    <span class="ident">Fork</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">nix::Error</span>),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t close the source file descriptor&quot;</span>)]</span>
-    <span class="ident">CloseSourceFd</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">nix::Error</span>),
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t close the source file descriptor&quot;</span>)]</span>
+    <span class="ident">CloseSourceFd</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">nix::Error</span>),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t close the target file descriptor&quot;</span>)]</span>
-    <span class="ident">CloseTargetFd</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">nix::Error</span>),
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t close the target file descriptor&quot;</span>)]</span>
+    <span class="ident">CloseTargetFd</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">nix::Error</span>),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t wait for the child process&quot;</span>)]</span>
-    <span class="ident">Wait</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">nix::Error</span>),
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t wait for the child process&quot;</span>)]</span>
+    <span class="ident">Wait</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">nix::Error</span>),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Received an unexpected status when waiting for the child process: {:?}&quot;</span>, <span class="ident">_0</span>)]</span>
-    <span class="ident">WaitUnexpected</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">ignore</span>)]</span> <span class="ident">WaitStatus</span>),
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Received an unexpected status when waiting for the child process: {:?}&quot;</span>, <span class="ident">_0</span>)]</span>
+    <span class="ident">WaitUnexpected</span>(<span class="ident">WaitStatus</span>),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;The child process exited with a non-zero error code: {}&quot;</span>, <span class="ident">_0</span>)]</span>
-    <span class="ident">ChildError</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">ignore</span>)]</span> <span class="ident">i32</span>),
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;The child process exited with a non-zero error code: {}&quot;</span>, <span class="ident">_0</span>)]</span>
+    <span class="ident">ChildError</span>(<span class="ident">i32</span>),
 }
 
 <span class="doccomment">/// Copies data from one file to another.</span>
@@ -472,20 +472,20 @@
 }
 
 <span class="doccomment">/// Errors that can occur when checking whether the primary selection is supported.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">derive_more::Error</span>, <span class="ident">derive_more::Display</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">thiserror::Error</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">PrimarySelectionCheckError</span> {
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;There are no seats&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;There are no seats&quot;</span>)]</span>
     <span class="ident">NoSeats</span>,
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Couldn&#39;t connect to the Wayland compositor&quot;</span>)]</span>
-    <span class="ident">WaylandConnection</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">ConnectError</span>),
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t connect to the Wayland compositor&quot;</span>)]</span>
+    <span class="ident">WaylandConnection</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">ConnectError</span>),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Wayland compositor communication error&quot;</span>)]</span>
-    <span class="ident">WaylandCommunication</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">source</span>)]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Wayland compositor communication error&quot;</span>)]</span>
+    <span class="ident">WaylandCommunication</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;A required Wayland protocol ({} version {}) is not supported by the compositor&quot;</span>,
-              <span class="ident">name</span>,
-              <span class="ident">version</span>)]</span>
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;A required Wayland protocol ({} version {}) is not supported by the compositor&quot;</span>,
+            <span class="ident">name</span>,
+            <span class="ident">version</span>)]</span>
     <span class="ident">MissingProtocol</span> { <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">version</span>: <span class="ident">u32</span> },
 }
 
