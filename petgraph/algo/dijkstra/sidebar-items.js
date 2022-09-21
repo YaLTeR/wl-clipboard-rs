@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["dijkstra","[Generic] Dijkstra’s shortest path algorithm."]]});
+window.SIDEBAR_ITEMS = {"fn":[["dijkstra","[Generic] Dijkstra’s shortest path algorithm."]]};

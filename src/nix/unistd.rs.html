@@ -1,9 +1,10 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.23.1/src/unistd.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>unistd.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.2/src/unistd.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>unistd.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../nix/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../nix/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
+                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
+                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -2997,6 +2998,248 @@
 <span id="2992">2992</span>
 <span id="2993">2993</span>
 <span id="2994">2994</span>
+<span id="2995">2995</span>
+<span id="2996">2996</span>
+<span id="2997">2997</span>
+<span id="2998">2998</span>
+<span id="2999">2999</span>
+<span id="3000">3000</span>
+<span id="3001">3001</span>
+<span id="3002">3002</span>
+<span id="3003">3003</span>
+<span id="3004">3004</span>
+<span id="3005">3005</span>
+<span id="3006">3006</span>
+<span id="3007">3007</span>
+<span id="3008">3008</span>
+<span id="3009">3009</span>
+<span id="3010">3010</span>
+<span id="3011">3011</span>
+<span id="3012">3012</span>
+<span id="3013">3013</span>
+<span id="3014">3014</span>
+<span id="3015">3015</span>
+<span id="3016">3016</span>
+<span id="3017">3017</span>
+<span id="3018">3018</span>
+<span id="3019">3019</span>
+<span id="3020">3020</span>
+<span id="3021">3021</span>
+<span id="3022">3022</span>
+<span id="3023">3023</span>
+<span id="3024">3024</span>
+<span id="3025">3025</span>
+<span id="3026">3026</span>
+<span id="3027">3027</span>
+<span id="3028">3028</span>
+<span id="3029">3029</span>
+<span id="3030">3030</span>
+<span id="3031">3031</span>
+<span id="3032">3032</span>
+<span id="3033">3033</span>
+<span id="3034">3034</span>
+<span id="3035">3035</span>
+<span id="3036">3036</span>
+<span id="3037">3037</span>
+<span id="3038">3038</span>
+<span id="3039">3039</span>
+<span id="3040">3040</span>
+<span id="3041">3041</span>
+<span id="3042">3042</span>
+<span id="3043">3043</span>
+<span id="3044">3044</span>
+<span id="3045">3045</span>
+<span id="3046">3046</span>
+<span id="3047">3047</span>
+<span id="3048">3048</span>
+<span id="3049">3049</span>
+<span id="3050">3050</span>
+<span id="3051">3051</span>
+<span id="3052">3052</span>
+<span id="3053">3053</span>
+<span id="3054">3054</span>
+<span id="3055">3055</span>
+<span id="3056">3056</span>
+<span id="3057">3057</span>
+<span id="3058">3058</span>
+<span id="3059">3059</span>
+<span id="3060">3060</span>
+<span id="3061">3061</span>
+<span id="3062">3062</span>
+<span id="3063">3063</span>
+<span id="3064">3064</span>
+<span id="3065">3065</span>
+<span id="3066">3066</span>
+<span id="3067">3067</span>
+<span id="3068">3068</span>
+<span id="3069">3069</span>
+<span id="3070">3070</span>
+<span id="3071">3071</span>
+<span id="3072">3072</span>
+<span id="3073">3073</span>
+<span id="3074">3074</span>
+<span id="3075">3075</span>
+<span id="3076">3076</span>
+<span id="3077">3077</span>
+<span id="3078">3078</span>
+<span id="3079">3079</span>
+<span id="3080">3080</span>
+<span id="3081">3081</span>
+<span id="3082">3082</span>
+<span id="3083">3083</span>
+<span id="3084">3084</span>
+<span id="3085">3085</span>
+<span id="3086">3086</span>
+<span id="3087">3087</span>
+<span id="3088">3088</span>
+<span id="3089">3089</span>
+<span id="3090">3090</span>
+<span id="3091">3091</span>
+<span id="3092">3092</span>
+<span id="3093">3093</span>
+<span id="3094">3094</span>
+<span id="3095">3095</span>
+<span id="3096">3096</span>
+<span id="3097">3097</span>
+<span id="3098">3098</span>
+<span id="3099">3099</span>
+<span id="3100">3100</span>
+<span id="3101">3101</span>
+<span id="3102">3102</span>
+<span id="3103">3103</span>
+<span id="3104">3104</span>
+<span id="3105">3105</span>
+<span id="3106">3106</span>
+<span id="3107">3107</span>
+<span id="3108">3108</span>
+<span id="3109">3109</span>
+<span id="3110">3110</span>
+<span id="3111">3111</span>
+<span id="3112">3112</span>
+<span id="3113">3113</span>
+<span id="3114">3114</span>
+<span id="3115">3115</span>
+<span id="3116">3116</span>
+<span id="3117">3117</span>
+<span id="3118">3118</span>
+<span id="3119">3119</span>
+<span id="3120">3120</span>
+<span id="3121">3121</span>
+<span id="3122">3122</span>
+<span id="3123">3123</span>
+<span id="3124">3124</span>
+<span id="3125">3125</span>
+<span id="3126">3126</span>
+<span id="3127">3127</span>
+<span id="3128">3128</span>
+<span id="3129">3129</span>
+<span id="3130">3130</span>
+<span id="3131">3131</span>
+<span id="3132">3132</span>
+<span id="3133">3133</span>
+<span id="3134">3134</span>
+<span id="3135">3135</span>
+<span id="3136">3136</span>
+<span id="3137">3137</span>
+<span id="3138">3138</span>
+<span id="3139">3139</span>
+<span id="3140">3140</span>
+<span id="3141">3141</span>
+<span id="3142">3142</span>
+<span id="3143">3143</span>
+<span id="3144">3144</span>
+<span id="3145">3145</span>
+<span id="3146">3146</span>
+<span id="3147">3147</span>
+<span id="3148">3148</span>
+<span id="3149">3149</span>
+<span id="3150">3150</span>
+<span id="3151">3151</span>
+<span id="3152">3152</span>
+<span id="3153">3153</span>
+<span id="3154">3154</span>
+<span id="3155">3155</span>
+<span id="3156">3156</span>
+<span id="3157">3157</span>
+<span id="3158">3158</span>
+<span id="3159">3159</span>
+<span id="3160">3160</span>
+<span id="3161">3161</span>
+<span id="3162">3162</span>
+<span id="3163">3163</span>
+<span id="3164">3164</span>
+<span id="3165">3165</span>
+<span id="3166">3166</span>
+<span id="3167">3167</span>
+<span id="3168">3168</span>
+<span id="3169">3169</span>
+<span id="3170">3170</span>
+<span id="3171">3171</span>
+<span id="3172">3172</span>
+<span id="3173">3173</span>
+<span id="3174">3174</span>
+<span id="3175">3175</span>
+<span id="3176">3176</span>
+<span id="3177">3177</span>
+<span id="3178">3178</span>
+<span id="3179">3179</span>
+<span id="3180">3180</span>
+<span id="3181">3181</span>
+<span id="3182">3182</span>
+<span id="3183">3183</span>
+<span id="3184">3184</span>
+<span id="3185">3185</span>
+<span id="3186">3186</span>
+<span id="3187">3187</span>
+<span id="3188">3188</span>
+<span id="3189">3189</span>
+<span id="3190">3190</span>
+<span id="3191">3191</span>
+<span id="3192">3192</span>
+<span id="3193">3193</span>
+<span id="3194">3194</span>
+<span id="3195">3195</span>
+<span id="3196">3196</span>
+<span id="3197">3197</span>
+<span id="3198">3198</span>
+<span id="3199">3199</span>
+<span id="3200">3200</span>
+<span id="3201">3201</span>
+<span id="3202">3202</span>
+<span id="3203">3203</span>
+<span id="3204">3204</span>
+<span id="3205">3205</span>
+<span id="3206">3206</span>
+<span id="3207">3207</span>
+<span id="3208">3208</span>
+<span id="3209">3209</span>
+<span id="3210">3210</span>
+<span id="3211">3211</span>
+<span id="3212">3212</span>
+<span id="3213">3213</span>
+<span id="3214">3214</span>
+<span id="3215">3215</span>
+<span id="3216">3216</span>
+<span id="3217">3217</span>
+<span id="3218">3218</span>
+<span id="3219">3219</span>
+<span id="3220">3220</span>
+<span id="3221">3221</span>
+<span id="3222">3222</span>
+<span id="3223">3223</span>
+<span id="3224">3224</span>
+<span id="3225">3225</span>
+<span id="3226">3226</span>
+<span id="3227">3227</span>
+<span id="3228">3228</span>
+<span id="3229">3229</span>
+<span id="3230">3230</span>
+<span id="3231">3231</span>
+<span id="3232">3232</span>
+<span id="3233">3233</span>
+<span id="3234">3234</span>
+<span id="3235">3235</span>
+<span id="3236">3236</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Safe wrappers around functions found in libc &quot;unistd.h&quot; header</span>
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
@@ -3004,11 +3247,12 @@
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errno</span>::{<span class="self">self</span>, <span class="ident">Errno</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Error</span>, <span class="prelude-ty">Result</span>, <span class="ident">NixPath</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::fcntl</span>::{<span class="ident">AtFlags</span>, <span class="ident">at_rawfd</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::fcntl</span>::{<span class="ident">FdFlag</span>, <span class="ident">OFlag</span>, <span class="ident">fcntl</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::fcntl::FcntlArg::F_SETFD</span>;
 <span class="kw">use</span> <span class="ident">libc</span>::{<span class="self">self</span>, <span class="ident">c_char</span>, <span class="ident">c_void</span>, <span class="ident">c_int</span>, <span class="ident">c_long</span>, <span class="ident">c_uint</span>, <span class="ident">size_t</span>, <span class="ident">pid_t</span>, <span class="ident">off_t</span>,
            <span class="ident">uid_t</span>, <span class="ident">gid_t</span>, <span class="ident">mode_t</span>, <span class="ident">PATH_MAX</span>};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>)]</span>
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::fcntl</span>::{<span class="ident">FdFlag</span>, <span class="ident">OFlag</span>, <span class="ident">fcntl</span>, <span class="ident">FcntlArg::F_SETFD</span>};
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">fmt</span>, <span class="ident">mem</span>, <span class="ident">ptr</span>};
 <span class="kw">use</span> <span class="ident">std::convert::Infallible</span>;
 <span class="kw">use</span> <span class="ident">std::ffi</span>::{<span class="ident">CStr</span>, <span class="ident">OsString</span>};
@@ -3019,17 +3263,31 @@
 <span class="kw">use</span> <span class="ident">std::os::unix::ffi::OsStrExt</span>;
 <span class="kw">use</span> <span class="ident">std::os::unix::io::RawFd</span>;
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::sys::stat::Mode</span>;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::pivot_root</span>::<span class="kw-2">*</span>;
+<span class="macro">feature!</span> {
+    <span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>]</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::pivot_root</span>::<span class="kw-2">*</span>;
+}
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
-          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>))]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::setres</span>::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>))]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::getres</span>::<span class="kw-2">*</span>;
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;user&quot;</span>]</span>
 
 <span class="doccomment">/// User identifier</span>
 <span class="doccomment">///</span>
@@ -3120,7 +3378,10 @@
         <span class="ident">fmt::Display::fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, <span class="ident">f</span>)
     }
 }
+}
 
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;process&quot;</span>]</span>
 <span class="doccomment">/// Process identifier</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Newtype pattern around `pid_t` (which is just alias). It prevents bugs caused by accidentally</span>
@@ -3192,8 +3453,8 @@
 <span class="doccomment">/// Create a new child process duplicating the parent process ([see</span>
 <span class="doccomment">/// fork(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fork.html)).</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// After calling the fork system call (successfully) two processes will</span>
-<span class="doccomment">/// be created that are identical with the exception of their pid and the</span>
+<span class="doccomment">/// After successfully calling the fork system call, a second process will</span>
+<span class="doccomment">/// be created which is identical to the original except for the pid and the</span>
 <span class="doccomment">/// return value of this function.  As an example:</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
@@ -3213,7 +3474,7 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// This will print something like the following (order indeterministic).  The</span>
+<span class="doccomment">/// This will print something like the following (order nondeterministic).  The</span>
 <span class="doccomment">/// thing to note is that you end up with two processes continuing execution</span>
 <span class="doccomment">/// immediately after the fork call but with different match arms.</span>
 <span class="doccomment">///</span>
@@ -3302,8 +3563,10 @@
     <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::getsid</span>(<span class="ident">pid</span>.<span class="ident">unwrap_or</span>(<span class="ident">Pid</span>(<span class="number">0</span>)).<span class="ident">into</span>()) };
     <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">Pid</span>)
 }
+}
 
-
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;process&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;term&quot;</span>)]</span>
 <span class="doccomment">/// Get the terminal foreground process group (see</span>
 <span class="doccomment">/// [tcgetpgrp(3)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/tcgetpgrp.html)).</span>
 <span class="doccomment">///</span>
@@ -3324,8 +3587,10 @@
     <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::tcsetpgrp</span>(<span class="ident">fd</span>, <span class="ident">pgrp</span>.<span class="ident">into</span>()) };
     <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
 }
+}
 
-
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;process&quot;</span>]</span>
 <span class="doccomment">/// Get the group id of the calling process (see</span>
 <span class="doccomment">///[getpgrp(3)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpgrp.html)).</span>
 <span class="doccomment">///</span>
@@ -3351,7 +3616,10 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gettid</span>() -&gt; <span class="ident">Pid</span> {
     <span class="ident">Pid</span>(<span class="kw">unsafe</span> { <span class="ident">libc::syscall</span>(<span class="ident">libc::SYS_gettid</span>) <span class="kw">as</span> <span class="ident">pid_t</span> })
 }
+}
 
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>]</span>
 <span class="doccomment">/// Create a copy of the specified file descriptor (see</span>
 <span class="doccomment">/// [dup(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/dup.html)).</span>
 <span class="doccomment">///</span>
@@ -3561,9 +3829,11 @@
         })<span class="question-mark">?</span><span class="question-mark">?</span>;
     <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
 }
+}
 
 <span class="comment">// Double the buffer capacity up to limit. In case it already has</span>
 <span class="comment">// reached the limit, return Errno::ERANGE.</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;user&quot;</span>))]</span>
 <span class="kw">fn</span> <span class="ident">reserve_double_buffer_size</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">limit</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">use</span> <span class="ident">std::cmp::min</span>;
 
@@ -3576,6 +3846,9 @@
 
     <span class="prelude-val">Ok</span>(())
 }
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>]</span>
 
 <span class="doccomment">/// Returns the current directory as a `PathBuf`</span>
 <span class="doccomment">///</span>
@@ -3620,6 +3893,10 @@
         }
     }
 }
+}
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;user&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>)]</span>
 
 <span class="doccomment">/// Computes the raw UID and GID values to pass to a `*chown` call.</span>
 <span class="comment">// The cast is not unnecessary on all platforms.</span>
@@ -3715,10 +3992,16 @@
 
     <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
 }
+}
 
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;process&quot;</span>]</span>
 <span class="kw">fn</span> <span class="ident">to_exec_array</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">CStr</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">args</span>: <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">*const</span> <span class="ident">c_char</span><span class="op">&gt;</span> {
     <span class="kw">use</span> <span class="ident">std::iter::once</span>;
-    <span class="ident">args</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">as_ref</span>().<span class="ident">as_ptr</span>()).<span class="ident">chain</span>(<span class="ident">once</span>(<span class="ident">ptr::null</span>())).<span class="ident">collect</span>()
+    <span class="ident">args</span>.<span class="ident">iter</span>()
+        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">as_ref</span>().<span class="ident">as_ptr</span>())
+        .<span class="ident">chain</span>(<span class="ident">once</span>(<span class="ident">ptr::null</span>()))
+        .<span class="ident">collect</span>()
 }
 
 <span class="doccomment">/// Replace the current process image with a new one (see</span>
@@ -3814,11 +4097,9 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// This function is similar to `execve`, except that the program to be executed</span>
 <span class="doccomment">/// is referenced as a file descriptor instead of a path.</span>
-<span class="comment">// Note for NetBSD and OpenBSD: although rust-lang/libc includes it (under</span>
-<span class="comment">// unix/bsd/netbsdlike/) fexecve is not currently implemented on NetBSD nor on</span>
-<span class="comment">// OpenBSD.</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>,
           <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>,
           <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>))]</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fexecve</span><span class="op">&lt;</span><span class="ident">SA</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">CStr</span><span class="op">&gt;</span> ,<span class="ident">SE</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">CStr</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">args</span>: <span class="kw-2">&amp;</span>[<span class="ident">SA</span>], <span class="ident">env</span>: <span class="kw-2">&amp;</span>[<span class="ident">SE</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Infallible</span><span class="op">&gt;</span> {
@@ -3894,14 +4175,18 @@
     <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::daemon</span>(<span class="ident">nochdir</span> <span class="kw">as</span> <span class="ident">c_int</span>, <span class="ident">noclose</span> <span class="kw">as</span> <span class="ident">c_int</span>) };
     <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
 }
+}
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;hostname&quot;</span>]</span>
 
 <span class="doccomment">/// Set the system host name (see</span>
 <span class="doccomment">/// [sethostname(2)](https://man7.org/linux/man-pages/man2/gethostname.2.html)).</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Given a name, attempt to update the system host name to the given string.</span>
 <span class="doccomment">/// On some systems, the host name is limited to as few as 64 bytes.  An error</span>
-<span class="doccomment">/// will be return if the name is not valid or the current process does not have</span>
-<span class="doccomment">/// permissions to update the host name.</span>
+<span class="doccomment">/// will be returned if the name is not valid or the current process does not</span>
+<span class="doccomment">/// have permissions to update the host name.</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sethostname</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">OsStr</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">name</span>: <span class="ident">S</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="comment">// Handle some differences in type of the len arg across platforms.</span>
@@ -3954,6 +4239,7 @@
         <span class="kw">unsafe</span> { <span class="ident">CStr::from_ptr</span>(<span class="ident">buffer</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">c_char</span>) }
     })
 }
+}
 
 <span class="doccomment">/// Close a raw file descriptor</span>
 <span class="doccomment">///</span>
@@ -4002,6 +4288,9 @@
 
     <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span> <span class="kw">as</span> <span class="ident">usize</span>)
 }
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>]</span>
 
 <span class="doccomment">/// Directive that tells [`lseek`] and [`lseek64`] what the offset is relative to.</span>
 <span class="doccomment">///</span>
@@ -4053,6 +4342,7 @@
 
     <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span> <span class="kw">as</span> <span class="ident">libc::off64_t</span>)
 }
+}
 
 <span class="doccomment">/// Create an interprocess channel.</span>
 <span class="doccomment">///</span>
@@ -4069,6 +4359,8 @@
     }
 }
 
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>]</span>
 <span class="doccomment">/// Like `pipe`, but allows setting certain file descriptor flags.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// The following flags are supported, and will be set atomically as the pipe is</span>
@@ -4280,11 +4572,13 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// See also</span>
 <span class="doccomment">/// [fdatasync(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fdatasync.html)</span>
-<span class="comment">// `fdatasync(2) is in POSIX, but in libc it is only defined in `libc::notbsd`.</span>
-<span class="comment">// TODO: exclude only Apple systems after https://github.com/rust-lang/libc/pull/211</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
           <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>,
           <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;emscripten&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;fuchsia&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>,
           <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
           <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -4293,6 +4587,10 @@
 
     <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
 }
+}
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;user&quot;</span>]</span>
 
 <span class="doccomment">/// Get a real user ID</span>
 <span class="doccomment">///</span>
@@ -4373,7 +4671,10 @@
 
     <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
 }
+}
 
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;user&quot;</span>)]</span>
 <span class="doccomment">/// Set the user identity used for filesystem checks per-thread.</span>
 <span class="doccomment">/// On both success and failure, this call returns the previous filesystem user</span>
 <span class="doccomment">/// ID of the caller.</span>
@@ -4395,6 +4696,10 @@
     <span class="kw">let</span> <span class="ident">prev_fsgid</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::setfsgid</span>(<span class="ident">gid</span>.<span class="ident">into</span>()) };
     <span class="ident">Gid::from_raw</span>(<span class="ident">prev_fsgid</span> <span class="kw">as</span> <span class="ident">gid_t</span>)
 }
+}
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;user&quot;</span>]</span>
 
 <span class="doccomment">/// Get the list of supplementary group IDs of the calling process.</span>
 <span class="doccomment">///</span>
@@ -4624,6 +4929,10 @@
 
     <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
 }
+}
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;signal&quot;</span>]</span>
 
 <span class="doccomment">/// Suspend the thread until a signal is received.</span>
 <span class="doccomment">///</span>
@@ -4721,6 +5030,7 @@
         }
     }
 }
+}
 
 <span class="doccomment">/// Suspend execution for an interval of time</span>
 <span class="doccomment">///</span>
@@ -4730,6 +5040,9 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sleep</span>(<span class="ident">seconds</span>: <span class="ident">c_uint</span>) -&gt; <span class="ident">c_uint</span> {
     <span class="kw">unsafe</span> { <span class="ident">libc::sleep</span>(<span class="ident">seconds</span>) }
 }
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;acct&quot;</span>]</span>
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">acct</span> {
@@ -4755,7 +5068,10 @@
         <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
     }
 }
+}
 
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>]</span>
 <span class="doccomment">/// Creates a regular file which persists even after process termination</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// * `template`: a path whose 6 rightmost characters must be X, e.g. `/tmp/tmpfile_XXXXXX`</span>
@@ -4791,6 +5107,10 @@
     <span class="ident">Errno::result</span>(<span class="ident">fd</span>)<span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>((<span class="ident">fd</span>, <span class="ident">PathBuf::from</span>(<span class="ident">pathname</span>)))
 }
+}
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;feature&quot;</span>)]</span>
 
 <span class="doccomment">/// Variable names for `pathconf`</span>
 <span class="doccomment">///</span>
@@ -4816,6 +5136,7 @@
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
     <span class="doccomment">/// Minimum number of bits needed to represent, as a signed integer value,</span>
     <span class="doccomment">/// the maximum size of a regular file allowed in the specified directory.</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">FILESIZEBITS</span> <span class="op">=</span> <span class="ident">libc::_PC_FILESIZEBITS</span>,
     <span class="doccomment">/// Maximum number of links to a single file.</span>
     <span class="ident">LINK_MAX</span> <span class="op">=</span> <span class="ident">libc::_PC_LINK_MAX</span>,
@@ -4839,33 +5160,40 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// Symbolic links can be created.</span>
     <span class="ident">POSIX2_SYMLINKS</span> <span class="op">=</span> <span class="ident">libc::_PC_2_SYMLINKS</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// Minimum number of bytes of storage actually allocated for any portion of</span>
     <span class="doccomment">/// a file.</span>
     <span class="ident">POSIX_ALLOC_SIZE_MIN</span> <span class="op">=</span> <span class="ident">libc::_PC_ALLOC_SIZE_MIN</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// Recommended increment for file transfer sizes between the</span>
     <span class="doccomment">/// `POSIX_REC_MIN_XFER_SIZE` and `POSIX_REC_MAX_XFER_SIZE` values.</span>
     <span class="ident">POSIX_REC_INCR_XFER_SIZE</span> <span class="op">=</span> <span class="ident">libc::_PC_REC_INCR_XFER_SIZE</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// Maximum recommended file transfer size.</span>
     <span class="ident">POSIX_REC_MAX_XFER_SIZE</span> <span class="op">=</span> <span class="ident">libc::_PC_REC_MAX_XFER_SIZE</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// Minimum recommended file transfer size.</span>
     <span class="ident">POSIX_REC_MIN_XFER_SIZE</span> <span class="op">=</span> <span class="ident">libc::_PC_REC_MIN_XFER_SIZE</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">///  Recommended file transfer buffer alignment.</span>
     <span class="ident">POSIX_REC_XFER_ALIGN</span> <span class="op">=</span> <span class="ident">libc::_PC_REC_XFER_ALIGN</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// Maximum number of bytes in a symbolic link.</span>
     <span class="ident">SYMLINK_MAX</span> <span class="op">=</span> <span class="ident">libc::_PC_SYMLINK_MAX</span>,
     <span class="doccomment">/// The use of `chown` and `fchown` is restricted to a process with</span>
@@ -4881,22 +5209,26 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// Asynchronous input or output operations may be performed for the</span>
     <span class="doccomment">/// associated file.</span>
     <span class="ident">_POSIX_ASYNC_IO</span> <span class="op">=</span> <span class="ident">libc::_PC_ASYNC_IO</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// Prioritized input or output operations may be performed for the</span>
     <span class="doccomment">/// associated file.</span>
     <span class="ident">_POSIX_PRIO_IO</span> <span class="op">=</span> <span class="ident">libc::_PC_PRIO_IO</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// Synchronized input or output operations may be performed for the</span>
     <span class="doccomment">/// associated file.</span>
     <span class="ident">_POSIX_SYNC_IO</span> <span class="op">=</span> <span class="ident">libc::_PC_SYNC_IO</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The resolution in nanoseconds for all file timestamps.</span>
     <span class="ident">_POSIX_TIMESTAMP_RESOLUTION</span> <span class="op">=</span> <span class="ident">libc::_PC_TIMESTAMP_RESOLUTION</span>
 }
@@ -4971,6 +5303,10 @@
         <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">raw</span>))
     }
 }
+}
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;feature&quot;</span>]</span>
 
 <span class="doccomment">/// Variable names for `sysconf`</span>
 <span class="doccomment">///</span>
@@ -4995,14 +5331,17 @@
     <span class="doccomment">/// Maximum number of I/O operations in a single list I/O call supported by</span>
     <span class="doccomment">/// the implementation.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">AIO_LISTIO_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_AIO_LISTIO_MAX</span>,
     <span class="doccomment">/// Maximum number of outstanding asynchronous I/O operations supported by</span>
     <span class="doccomment">/// the implementation.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">AIO_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_AIO_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The maximum amount by which a process can decrease its asynchronous I/O</span>
     <span class="doccomment">/// priority level from its own scheduling priority.</span>
     <span class="ident">AIO_PRIO_DELTA_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_AIO_PRIO_DELTA_MAX</span>,
@@ -5010,18 +5349,23 @@
     <span class="ident">ARG_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_ARG_MAX</span>,
     <span class="doccomment">/// Maximum number of functions that may be registered with `atexit`.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">ATEXIT_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_ATEXIT_MAX</span>,
     <span class="doccomment">/// Maximum obase values allowed by the bc utility.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">BC_BASE_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_BC_BASE_MAX</span>,
     <span class="doccomment">/// Maximum number of elements permitted in an array by the bc utility.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">BC_DIM_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_BC_DIM_MAX</span>,
     <span class="doccomment">/// Maximum scale value allowed by the bc utility.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">BC_SCALE_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_BC_SCALE_MAX</span>,
     <span class="doccomment">/// Maximum length of a string constant accepted by the bc utility.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">BC_STRING_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_BC_STRING_MAX</span>,
     <span class="doccomment">/// Maximum number of simultaneous processes per real user ID.</span>
     <span class="ident">CHILD_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_CHILD_MAX</span>,
@@ -5030,29 +5374,35 @@
     <span class="doccomment">/// Maximum number of weights that can be assigned to an entry of the</span>
     <span class="doccomment">/// LC_COLLATE order keyword in the locale definition file</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">COLL_WEIGHTS_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_COLL_WEIGHTS_MAX</span>,
     <span class="doccomment">/// Maximum number of timer expiration overruns.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">DELAYTIMER_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_DELAYTIMER_MAX</span>,
     <span class="doccomment">/// Maximum number of expressions that can be nested within parentheses by</span>
     <span class="doccomment">/// the expr utility.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">EXPR_NEST_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_EXPR_NEST_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// Maximum length of a host name (not including the terminating null) as</span>
     <span class="doccomment">/// returned from the `gethostname` function</span>
     <span class="ident">HOST_NAME_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_HOST_NAME_MAX</span>,
     <span class="doccomment">/// Maximum number of iovec structures that one process has available for</span>
     <span class="doccomment">/// use with `readv` or `writev`.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">IOV_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_IOV_MAX</span>,
     <span class="doccomment">/// Unless otherwise noted, the maximum length, in bytes, of a utility&#39;s</span>
     <span class="doccomment">/// input line (either standard input or another file), when the utility is</span>
     <span class="doccomment">/// described as processing text files. The length includes room for the</span>
     <span class="doccomment">/// trailing &lt;newline&gt;.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">LINE_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_LINE_MAX</span>,
     <span class="doccomment">/// Maximum length of a login name.</span>
     <span class="ident">LOGIN_NAME_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_LOGIN_NAME_MAX</span>,
@@ -5060,211 +5410,267 @@
     <span class="ident">NGROUPS_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_NGROUPS_MAX</span>,
     <span class="doccomment">/// Initial size of `getgrgid_r` and `getgrnam_r` data buffers</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">GETGR_R_SIZE_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_GETGR_R_SIZE_MAX</span>,
     <span class="doccomment">/// Initial size of `getpwuid_r` and `getpwnam_r` data buffers</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">GETPW_R_SIZE_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_GETPW_R_SIZE_MAX</span>,
     <span class="doccomment">/// The maximum number of open message queue descriptors a process may hold.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">MQ_OPEN_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_MQ_OPEN_MAX</span>,
     <span class="doccomment">/// The maximum number of message priorities supported by the implementation.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">MQ_PRIO_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_MQ_PRIO_MAX</span>,
     <span class="doccomment">/// A value one greater than the maximum value that the system may assign to</span>
     <span class="doccomment">/// a newly-created file descriptor.</span>
     <span class="ident">OPEN_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_OPEN_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Advisory Information option.</span>
     <span class="ident">_POSIX_ADVISORY_INFO</span> <span class="op">=</span> <span class="ident">libc::_SC_ADVISORY_INFO</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports barriers.</span>
     <span class="ident">_POSIX_BARRIERS</span> <span class="op">=</span> <span class="ident">libc::_SC_BARRIERS</span>,
     <span class="doccomment">/// The implementation supports asynchronous input and output.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_ASYNCHRONOUS_IO</span> <span class="op">=</span> <span class="ident">libc::_SC_ASYNCHRONOUS_IO</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports clock selection.</span>
     <span class="ident">_POSIX_CLOCK_SELECTION</span> <span class="op">=</span> <span class="ident">libc::_SC_CLOCK_SELECTION</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Process CPU-Time Clocks option.</span>
     <span class="ident">_POSIX_CPUTIME</span> <span class="op">=</span> <span class="ident">libc::_SC_CPUTIME</span>,
     <span class="doccomment">/// The implementation supports the File Synchronization option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_FSYNC</span> <span class="op">=</span> <span class="ident">libc::_SC_FSYNC</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the IPv6 option.</span>
     <span class="ident">_POSIX_IPV6</span> <span class="op">=</span> <span class="ident">libc::_SC_IPV6</span>,
     <span class="doccomment">/// The implementation supports job control.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_JOB_CONTROL</span> <span class="op">=</span> <span class="ident">libc::_SC_JOB_CONTROL</span>,
     <span class="doccomment">/// The implementation supports memory mapped Files.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_MAPPED_FILES</span> <span class="op">=</span> <span class="ident">libc::_SC_MAPPED_FILES</span>,
     <span class="doccomment">/// The implementation supports the Process Memory Locking option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_MEMLOCK</span> <span class="op">=</span> <span class="ident">libc::_SC_MEMLOCK</span>,
     <span class="doccomment">/// The implementation supports the Range Memory Locking option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_MEMLOCK_RANGE</span> <span class="op">=</span> <span class="ident">libc::_SC_MEMLOCK_RANGE</span>,
     <span class="doccomment">/// The implementation supports memory protection.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_MEMORY_PROTECTION</span> <span class="op">=</span> <span class="ident">libc::_SC_MEMORY_PROTECTION</span>,
     <span class="doccomment">/// The implementation supports the Message Passing option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_MESSAGE_PASSING</span> <span class="op">=</span> <span class="ident">libc::_SC_MESSAGE_PASSING</span>,
     <span class="doccomment">/// The implementation supports the Monotonic Clock option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_MONOTONIC_CLOCK</span> <span class="op">=</span> <span class="ident">libc::_SC_MONOTONIC_CLOCK</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Prioritized Input and Output option.</span>
     <span class="ident">_POSIX_PRIORITIZED_IO</span> <span class="op">=</span> <span class="ident">libc::_SC_PRIORITIZED_IO</span>,
     <span class="doccomment">/// The implementation supports the Process Scheduling option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_PRIORITY_SCHEDULING</span> <span class="op">=</span> <span class="ident">libc::_SC_PRIORITY_SCHEDULING</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Raw Sockets option.</span>
     <span class="ident">_POSIX_RAW_SOCKETS</span> <span class="op">=</span> <span class="ident">libc::_SC_RAW_SOCKETS</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports read-write locks.</span>
     <span class="ident">_POSIX_READER_WRITER_LOCKS</span> <span class="op">=</span> <span class="ident">libc::_SC_READER_WRITER_LOCKS</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports realtime signals.</span>
     <span class="ident">_POSIX_REALTIME_SIGNALS</span> <span class="op">=</span> <span class="ident">libc::_SC_REALTIME_SIGNALS</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Regular Expression Handling option.</span>
     <span class="ident">_POSIX_REGEXP</span> <span class="op">=</span> <span class="ident">libc::_SC_REGEXP</span>,
     <span class="doccomment">/// Each process has a saved set-user-ID and a saved set-group-ID.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_SAVED_IDS</span> <span class="op">=</span> <span class="ident">libc::_SC_SAVED_IDS</span>,
     <span class="doccomment">/// The implementation supports semaphores.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_SEMAPHORES</span> <span class="op">=</span> <span class="ident">libc::_SC_SEMAPHORES</span>,
     <span class="doccomment">/// The implementation supports the Shared Memory Objects option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_SHARED_MEMORY_OBJECTS</span> <span class="op">=</span> <span class="ident">libc::_SC_SHARED_MEMORY_OBJECTS</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the POSIX shell.</span>
     <span class="ident">_POSIX_SHELL</span> <span class="op">=</span> <span class="ident">libc::_SC_SHELL</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Spawn option.</span>
     <span class="ident">_POSIX_SPAWN</span> <span class="op">=</span> <span class="ident">libc::_SC_SPAWN</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports spin locks.</span>
     <span class="ident">_POSIX_SPIN_LOCKS</span> <span class="op">=</span> <span class="ident">libc::_SC_SPIN_LOCKS</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Process Sporadic Server option.</span>
     <span class="ident">_POSIX_SPORADIC_SERVER</span> <span class="op">=</span> <span class="ident">libc::_SC_SPORADIC_SERVER</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_SS_REPL_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_SS_REPL_MAX</span>,
     <span class="doccomment">/// The implementation supports the Synchronized Input and Output option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_SYNCHRONIZED_IO</span> <span class="op">=</span> <span class="ident">libc::_SC_SYNCHRONIZED_IO</span>,
     <span class="doccomment">/// The implementation supports the Thread Stack Address Attribute option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_THREAD_ATTR_STACKADDR</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_ATTR_STACKADDR</span>,
     <span class="doccomment">/// The implementation supports the Thread Stack Size Attribute option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_THREAD_ATTR_STACKSIZE</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_ATTR_STACKSIZE</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Thread CPU-Time Clocks option.</span>
     <span class="ident">_POSIX_THREAD_CPUTIME</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_CPUTIME</span>,
     <span class="doccomment">/// The implementation supports the Non-Robust Mutex Priority Inheritance</span>
     <span class="doccomment">/// option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_THREAD_PRIO_INHERIT</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_PRIO_INHERIT</span>,
     <span class="doccomment">/// The implementation supports the Non-Robust Mutex Priority Protection option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_THREAD_PRIO_PROTECT</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_PRIO_PROTECT</span>,
     <span class="doccomment">/// The implementation supports the Thread Execution Scheduling option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_THREAD_PRIORITY_SCHEDULING</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_PRIORITY_SCHEDULING</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Thread Process-Shared Synchronization</span>
     <span class="doccomment">/// option.</span>
     <span class="ident">_POSIX_THREAD_PROCESS_SHARED</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_PROCESS_SHARED</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Robust Mutex Priority Inheritance option.</span>
     <span class="ident">_POSIX_THREAD_ROBUST_PRIO_INHERIT</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_ROBUST_PRIO_INHERIT</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Robust Mutex Priority Protection option.</span>
     <span class="ident">_POSIX_THREAD_ROBUST_PRIO_PROTECT</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_ROBUST_PRIO_PROTECT</span>,
     <span class="doccomment">/// The implementation supports thread-safe functions.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_THREAD_SAFE_FUNCTIONS</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_SAFE_FUNCTIONS</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Thread Sporadic Server option.</span>
     <span class="ident">_POSIX_THREAD_SPORADIC_SERVER</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_SPORADIC_SERVER</span>,
     <span class="doccomment">/// The implementation supports threads.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_THREADS</span> <span class="op">=</span> <span class="ident">libc::_SC_THREADS</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports timeouts.</span>
     <span class="ident">_POSIX_TIMEOUTS</span> <span class="op">=</span> <span class="ident">libc::_SC_TIMEOUTS</span>,
     <span class="doccomment">/// The implementation supports timers.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_TIMERS</span> <span class="op">=</span> <span class="ident">libc::_SC_TIMERS</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Trace option.</span>
     <span class="ident">_POSIX_TRACE</span> <span class="op">=</span> <span class="ident">libc::_SC_TRACE</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Trace Event Filter option.</span>
     <span class="ident">_POSIX_TRACE_EVENT_FILTER</span> <span class="op">=</span> <span class="ident">libc::_SC_TRACE_EVENT_FILTER</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_TRACE_EVENT_NAME_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_TRACE_EVENT_NAME_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Trace Inherit option.</span>
     <span class="ident">_POSIX_TRACE_INHERIT</span> <span class="op">=</span> <span class="ident">libc::_SC_TRACE_INHERIT</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Trace Log option.</span>
     <span class="ident">_POSIX_TRACE_LOG</span> <span class="op">=</span> <span class="ident">libc::_SC_TRACE_LOG</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_TRACE_NAME_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_TRACE_NAME_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_TRACE_SYS_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_TRACE_SYS_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX_TRACE_USER_EVENT_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_TRACE_USER_EVENT_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Typed Memory Objects option.</span>
     <span class="ident">_POSIX_TYPED_MEMORY_OBJECTS</span> <span class="op">=</span> <span class="ident">libc::_SC_TYPED_MEMORY_OBJECTS</span>,
     <span class="doccomment">/// Integer value indicating version of this standard (C-language binding)</span>
@@ -5274,12 +5680,14 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation provides a C-language compilation environment with</span>
     <span class="doccomment">/// 32-bit `int`, `long`, `pointer`, and `off_t` types.</span>
     <span class="ident">_POSIX_V6_ILP32_OFF32</span> <span class="op">=</span> <span class="ident">libc::_SC_V6_ILP32_OFF32</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation provides a C-language compilation environment with</span>
     <span class="doccomment">/// 32-bit `int`, `long`, and pointer types and an `off_t` type using at</span>
     <span class="doccomment">/// least 64 bits.</span>
@@ -5287,75 +5695,92 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation provides a C-language compilation environment with</span>
     <span class="doccomment">/// 32-bit `int` and 64-bit `long`, `pointer`, and `off_t` types.</span>
     <span class="ident">_POSIX_V6_LP64_OFF64</span> <span class="op">=</span> <span class="ident">libc::_SC_V6_LP64_OFF64</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation provides a C-language compilation environment with an</span>
     <span class="doccomment">/// `int` type using at least 32 bits and `long`, pointer, and `off_t` types</span>
     <span class="doccomment">/// using at least 64 bits.</span>
     <span class="ident">_POSIX_V6_LPBIG_OFFBIG</span> <span class="op">=</span> <span class="ident">libc::_SC_V6_LPBIG_OFFBIG</span>,
     <span class="doccomment">/// The implementation supports the C-Language Binding option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX2_C_BIND</span> <span class="op">=</span> <span class="ident">libc::_SC_2_C_BIND</span>,
     <span class="doccomment">/// The implementation supports the C-Language Development Utilities option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX2_C_DEV</span> <span class="op">=</span> <span class="ident">libc::_SC_2_C_DEV</span>,
     <span class="doccomment">/// The implementation supports the Terminal Characteristics option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX2_CHAR_TERM</span> <span class="op">=</span> <span class="ident">libc::_SC_2_CHAR_TERM</span>,
     <span class="doccomment">/// The implementation supports the FORTRAN Development Utilities option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX2_FORT_DEV</span> <span class="op">=</span> <span class="ident">libc::_SC_2_FORT_DEV</span>,
     <span class="doccomment">/// The implementation supports the FORTRAN Runtime Utilities option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX2_FORT_RUN</span> <span class="op">=</span> <span class="ident">libc::_SC_2_FORT_RUN</span>,
     <span class="doccomment">/// The implementation supports the creation of locales by the localedef</span>
     <span class="doccomment">/// utility.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX2_LOCALEDEF</span> <span class="op">=</span> <span class="ident">libc::_SC_2_LOCALEDEF</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Batch Environment Services and Utilities</span>
     <span class="doccomment">/// option.</span>
     <span class="ident">_POSIX2_PBS</span> <span class="op">=</span> <span class="ident">libc::_SC_2_PBS</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Batch Accounting option.</span>
     <span class="ident">_POSIX2_PBS_ACCOUNTING</span> <span class="op">=</span> <span class="ident">libc::_SC_2_PBS_ACCOUNTING</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Batch Checkpoint/Restart option.</span>
     <span class="ident">_POSIX2_PBS_CHECKPOINT</span> <span class="op">=</span> <span class="ident">libc::_SC_2_PBS_CHECKPOINT</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Locate Batch Job Request option.</span>
     <span class="ident">_POSIX2_PBS_LOCATE</span> <span class="op">=</span> <span class="ident">libc::_SC_2_PBS_LOCATE</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Batch Job Message Request option.</span>
     <span class="ident">_POSIX2_PBS_MESSAGE</span> <span class="op">=</span> <span class="ident">libc::_SC_2_PBS_MESSAGE</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Track Batch Job Request option.</span>
     <span class="ident">_POSIX2_PBS_TRACK</span> <span class="op">=</span> <span class="ident">libc::_SC_2_PBS_TRACK</span>,
     <span class="doccomment">/// The implementation supports the Software Development Utilities option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX2_SW_DEV</span> <span class="op">=</span> <span class="ident">libc::_SC_2_SW_DEV</span>,
     <span class="doccomment">/// The implementation supports the User Portability Utilities option.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX2_UPE</span> <span class="op">=</span> <span class="ident">libc::_SC_2_UPE</span>,
     <span class="doccomment">/// Integer value indicating version of the Shell and Utilities volume of</span>
     <span class="doccomment">/// POSIX.1 to which the implementation conforms.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_POSIX2_VERSION</span> <span class="op">=</span> <span class="ident">libc::_SC_2_VERSION</span>,
     <span class="doccomment">/// The size of a system page in bytes.</span>
     <span class="doccomment">///</span>
@@ -5363,78 +5788,97 @@
     <span class="doccomment">/// enum constants to have the same value, so nix omits `PAGESIZE`.</span>
     <span class="ident">PAGE_SIZE</span> <span class="op">=</span> <span class="ident">libc::_SC_PAGE_SIZE</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">PTHREAD_DESTRUCTOR_ITERATIONS</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_DESTRUCTOR_ITERATIONS</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">PTHREAD_KEYS_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_KEYS_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">PTHREAD_STACK_MIN</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_STACK_MIN</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">PTHREAD_THREADS_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_THREAD_THREADS_MAX</span>,
     <span class="ident">RE_DUP_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_RE_DUP_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">RTSIG_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_RTSIG_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">SEM_NSEMS_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_SEM_NSEMS_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">SEM_VALUE_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_SEM_VALUE_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">SIGQUEUE_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_SIGQUEUE_MAX</span>,
     <span class="ident">STREAM_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_STREAM_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;netbsd&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">SYMLOOP_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_SYMLOOP_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">TIMER_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_TIMER_MAX</span>,
     <span class="ident">TTY_NAME_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_TTY_NAME_MAX</span>,
     <span class="ident">TZNAME_MAX</span> <span class="op">=</span> <span class="ident">libc::_SC_TZNAME_MAX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the X/Open Encryption Option Group.</span>
     <span class="ident">_XOPEN_CRYPT</span> <span class="op">=</span> <span class="ident">libc::_SC_XOPEN_CRYPT</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the Issue 4, Version 2 Enhanced</span>
     <span class="doccomment">/// Internationalization Option Group.</span>
     <span class="ident">_XOPEN_ENH_I18N</span> <span class="op">=</span> <span class="ident">libc::_SC_XOPEN_ENH_I18N</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_XOPEN_LEGACY</span> <span class="op">=</span> <span class="ident">libc::_SC_XOPEN_LEGACY</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the X/Open Realtime Option Group.</span>
     <span class="ident">_XOPEN_REALTIME</span> <span class="op">=</span> <span class="ident">libc::_SC_XOPEN_REALTIME</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the X/Open Realtime Threads Option Group.</span>
     <span class="ident">_XOPEN_REALTIME_THREADS</span> <span class="op">=</span> <span class="ident">libc::_SC_XOPEN_REALTIME_THREADS</span>,
     <span class="doccomment">/// The implementation supports the Issue 4, Version 2 Shared Memory Option</span>
     <span class="doccomment">/// Group.</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="ident">_XOPEN_SHM</span> <span class="op">=</span> <span class="ident">libc::_SC_XOPEN_SHM</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the XSI STREAMS Option Group.</span>
     <span class="ident">_XOPEN_STREAMS</span> <span class="op">=</span> <span class="ident">libc::_SC_XOPEN_STREAMS</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// The implementation supports the XSI option</span>
     <span class="ident">_XOPEN_UNIX</span> <span class="op">=</span> <span class="ident">libc::_SC_XOPEN_UNIX</span>,
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;freebsd&quot;</span>,
               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
               <span class="ident">target_os</span><span class="op">=</span><span class="string">&quot;openbsd&quot;</span>))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="doccomment">/// Integer value indicating version of the X/Open Portability Guide to</span>
     <span class="doccomment">/// which the implementation conforms.</span>
     <span class="ident">_XOPEN_VERSION</span> <span class="op">=</span> <span class="ident">libc::_SC_XOPEN_VERSION</span>,
@@ -5471,6 +5915,10 @@
         <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">raw</span>))
     }
 }
+}
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>]</span>
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
 <span class="kw">mod</span> <span class="ident">pivot_root</span> {
@@ -5490,10 +5938,17 @@
         <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
     }
 }
+}
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
-          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>))]</span>
 <span class="kw">mod</span> <span class="ident">setres</span> {
+    <span class="macro">feature!</span> {
+    <span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;user&quot;</span>]</span>
+
     <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::Result</span>;
     <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errno::Errno</span>;
     <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">Uid</span>, <span class="ident">Gid</span>};
@@ -5529,10 +5984,18 @@
 
         <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
     }
+    }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
+          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>))]</span>
 <span class="kw">mod</span> <span class="ident">getres</span> {
+    <span class="macro">feature!</span> {
+    <span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;user&quot;</span>]</span>
+
     <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::Result</span>;
     <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errno::Errno</span>;
     <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">Uid</span>, <span class="ident">Gid</span>};
@@ -5590,10 +6053,13 @@
 
         <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ResGid</span> { <span class="ident">real</span>: <span class="ident">Gid</span>(<span class="ident">rgid</span>), <span class="ident">effective</span>: <span class="ident">Gid</span>(<span class="ident">egid</span>), <span class="ident">saved</span>: <span class="ident">Gid</span>(<span class="ident">sgid</span>) } )
     }
+    }
 }
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>)]</span>
 <span class="macro">libc_bitflags!</span>{
     <span class="doccomment">/// Options for access()</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>)))]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AccessFlags</span> : <span class="ident">c_int</span> {
         <span class="doccomment">/// Test for existence of file.</span>
         <span class="ident">F_OK</span>;
@@ -5606,6 +6072,9 @@
     }
 }
 
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fs&quot;</span>]</span>
+
 <span class="doccomment">/// Checks the file named by `path` for accessibility according to the flags given by `amode`</span>
 <span class="doccomment">/// See [access(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/access.html)</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">access</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">NixPath</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">P</span>, <span class="ident">amode</span>: <span class="ident">AccessFlags</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
@@ -5616,6 +6085,10 @@
     })<span class="question-mark">?</span>;
     <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
 }
+}
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;user&quot;</span>]</span>
 
 <span class="doccomment">/// Representation of a User, based on `libc::passwd`</span>
 <span class="doccomment">///</span>
@@ -5624,7 +6097,7 @@
 <span class="doccomment">/// guaranteed to conform to [`NAME_REGEX`](https://serverfault.com/a/73101/407341), which only</span>
 <span class="doccomment">/// contains ASCII.</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span> <span class="comment">// RedoxFS does not support passwd</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">User</span> {
     <span class="doccomment">/// Username</span>
     <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">String</span>,
@@ -5647,6 +6120,7 @@
                   <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
                   <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
                   <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>)))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="kw">pub</span> <span class="ident">class</span>: <span class="ident">CString</span>,
     <span class="doccomment">/// Last password change</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>,
@@ -5654,6 +6128,7 @@
                   <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
                   <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
                   <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>)))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="kw">pub</span> <span class="ident">change</span>: <span class="ident">libc::time_t</span>,
     <span class="doccomment">/// Expiration time of account</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>,
@@ -5661,6 +6136,7 @@
                   <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
                   <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
                   <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>)))]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
     <span class="kw">pub</span> <span class="ident">expire</span>: <span class="ident">libc::time_t</span>
 }
 
@@ -5669,32 +6145,32 @@
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">pw</span>: <span class="kw-2">&amp;</span><span class="ident">libc::passwd</span>) -&gt; <span class="ident">User</span> {
         <span class="kw">unsafe</span> {
             <span class="ident">User</span> {
-                <span class="ident">name</span>: <span class="ident">CStr::from_ptr</span>((<span class="kw-2">*</span><span class="ident">pw</span>).<span class="ident">pw_name</span>).<span class="ident">to_string_lossy</span>().<span class="ident">into_owned</span>(),
-                <span class="ident">passwd</span>: <span class="ident">CString::new</span>(<span class="ident">CStr::from_ptr</span>((<span class="kw-2">*</span><span class="ident">pw</span>).<span class="ident">pw_passwd</span>).<span class="ident">to_bytes</span>()).<span class="ident">unwrap</span>(),
+                <span class="ident">name</span>: <span class="ident">CStr::from_ptr</span>(<span class="ident">pw</span>.<span class="ident">pw_name</span>).<span class="ident">to_string_lossy</span>().<span class="ident">into_owned</span>(),
+                <span class="ident">passwd</span>: <span class="ident">CString::new</span>(<span class="ident">CStr::from_ptr</span>(<span class="ident">pw</span>.<span class="ident">pw_passwd</span>).<span class="ident">to_bytes</span>()).<span class="ident">unwrap</span>(),
                 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">all</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;32&quot;</span>)))]</span>
-                <span class="ident">gecos</span>: <span class="ident">CString::new</span>(<span class="ident">CStr::from_ptr</span>((<span class="kw-2">*</span><span class="ident">pw</span>).<span class="ident">pw_gecos</span>).<span class="ident">to_bytes</span>()).<span class="ident">unwrap</span>(),
-                <span class="ident">dir</span>: <span class="ident">PathBuf::from</span>(<span class="ident">OsStr::from_bytes</span>(<span class="ident">CStr::from_ptr</span>((<span class="kw-2">*</span><span class="ident">pw</span>).<span class="ident">pw_dir</span>).<span class="ident">to_bytes</span>())),
-                <span class="ident">shell</span>: <span class="ident">PathBuf::from</span>(<span class="ident">OsStr::from_bytes</span>(<span class="ident">CStr::from_ptr</span>((<span class="kw-2">*</span><span class="ident">pw</span>).<span class="ident">pw_shell</span>).<span class="ident">to_bytes</span>())),
-                <span class="ident">uid</span>: <span class="ident">Uid::from_raw</span>((<span class="kw-2">*</span><span class="ident">pw</span>).<span class="ident">pw_uid</span>),
-                <span class="ident">gid</span>: <span class="ident">Gid::from_raw</span>((<span class="kw-2">*</span><span class="ident">pw</span>).<span class="ident">pw_gid</span>),
+                <span class="ident">gecos</span>: <span class="ident">CString::new</span>(<span class="ident">CStr::from_ptr</span>(<span class="ident">pw</span>.<span class="ident">pw_gecos</span>).<span class="ident">to_bytes</span>()).<span class="ident">unwrap</span>(),
+                <span class="ident">dir</span>: <span class="ident">PathBuf::from</span>(<span class="ident">OsStr::from_bytes</span>(<span class="ident">CStr::from_ptr</span>(<span class="ident">pw</span>.<span class="ident">pw_dir</span>).<span class="ident">to_bytes</span>())),
+                <span class="ident">shell</span>: <span class="ident">PathBuf::from</span>(<span class="ident">OsStr::from_bytes</span>(<span class="ident">CStr::from_ptr</span>(<span class="ident">pw</span>.<span class="ident">pw_shell</span>).<span class="ident">to_bytes</span>())),
+                <span class="ident">uid</span>: <span class="ident">Uid::from_raw</span>(<span class="ident">pw</span>.<span class="ident">pw_uid</span>),
+                <span class="ident">gid</span>: <span class="ident">Gid::from_raw</span>(<span class="ident">pw</span>.<span class="ident">pw_gid</span>),
                 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>,
                               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;fuchsia&quot;</span>,
                               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
                               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
                               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>)))]</span>
-                <span class="ident">class</span>: <span class="ident">CString::new</span>(<span class="ident">CStr::from_ptr</span>((<span class="kw-2">*</span><span class="ident">pw</span>).<span class="ident">pw_class</span>).<span class="ident">to_bytes</span>()).<span class="ident">unwrap</span>(),
+                <span class="ident">class</span>: <span class="ident">CString::new</span>(<span class="ident">CStr::from_ptr</span>(<span class="ident">pw</span>.<span class="ident">pw_class</span>).<span class="ident">to_bytes</span>()).<span class="ident">unwrap</span>(),
                 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>,
                               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;fuchsia&quot;</span>,
                               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
                               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
                               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>)))]</span>
-                <span class="ident">change</span>: (<span class="kw-2">*</span><span class="ident">pw</span>).<span class="ident">pw_change</span>,
+                <span class="ident">change</span>: <span class="ident">pw</span>.<span class="ident">pw_change</span>,
                 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>,
                               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;fuchsia&quot;</span>,
                               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
                               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
                               <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>)))]</span>
-                <span class="ident">expire</span>: (<span class="kw-2">*</span><span class="ident">pw</span>).<span class="ident">pw_expire</span>
+                <span class="ident">expire</span>: <span class="ident">pw</span>.<span class="ident">pw_expire</span>
             }
         }
     }
@@ -5757,7 +6233,7 @@
     <span class="kw">fn</span> <span class="ident">from_anything</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">f</span>: <span class="ident">F</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">*mut</span> <span class="ident">libc::passwd</span>,
-              <span class="kw-2">*mut</span> <span class="ident">libc::c_char</span>,
+              <span class="kw-2">*mut</span> <span class="ident">c_char</span>,
               <span class="ident">libc::size_t</span>,
               <span class="kw-2">*mut</span> <span class="kw-2">*mut</span> <span class="ident">libc::passwd</span>) -&gt; <span class="ident">libc::c_int</span>
     {
@@ -5831,7 +6307,7 @@
 
 <span class="doccomment">/// Representation of a Group, based on `libc::group`</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span> <span class="comment">// RedoxFS does not support passwd</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Group</span> {
     <span class="doccomment">/// Group name</span>
     <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">String</span>,
@@ -5848,10 +6324,10 @@
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">gr</span>: <span class="kw-2">&amp;</span><span class="ident">libc::group</span>) -&gt; <span class="ident">Group</span> {
         <span class="kw">unsafe</span> {
             <span class="ident">Group</span> {
-                <span class="ident">name</span>: <span class="ident">CStr::from_ptr</span>((<span class="kw-2">*</span><span class="ident">gr</span>).<span class="ident">gr_name</span>).<span class="ident">to_string_lossy</span>().<span class="ident">into_owned</span>(),
-                <span class="ident">passwd</span>: <span class="ident">CString::new</span>(<span class="ident">CStr::from_ptr</span>((<span class="kw-2">*</span><span class="ident">gr</span>).<span class="ident">gr_passwd</span>).<span class="ident">to_bytes</span>()).<span class="ident">unwrap</span>(),
-                <span class="ident">gid</span>: <span class="ident">Gid::from_raw</span>((<span class="kw-2">*</span><span class="ident">gr</span>).<span class="ident">gr_gid</span>),
-                <span class="ident">mem</span>: <span class="ident">Group::members</span>((<span class="kw-2">*</span><span class="ident">gr</span>).<span class="ident">gr_mem</span>)
+                <span class="ident">name</span>: <span class="ident">CStr::from_ptr</span>(<span class="ident">gr</span>.<span class="ident">gr_name</span>).<span class="ident">to_string_lossy</span>().<span class="ident">into_owned</span>(),
+                <span class="ident">passwd</span>: <span class="ident">CString::new</span>(<span class="ident">CStr::from_ptr</span>(<span class="ident">gr</span>.<span class="ident">gr_passwd</span>).<span class="ident">to_bytes</span>()).<span class="ident">unwrap</span>(),
+                <span class="ident">gid</span>: <span class="ident">Gid::from_raw</span>(<span class="ident">gr</span>.<span class="ident">gr_gid</span>),
+                <span class="ident">mem</span>: <span class="ident">Group::members</span>(<span class="ident">gr</span>.<span class="ident">gr_mem</span>)
             }
         }
     }
@@ -5878,7 +6354,7 @@
     <span class="kw">fn</span> <span class="ident">from_anything</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">f</span>: <span class="ident">F</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">*mut</span> <span class="ident">libc::group</span>,
-              <span class="kw-2">*mut</span> <span class="ident">libc::c_char</span>,
+              <span class="kw-2">*mut</span> <span class="ident">c_char</span>,
               <span class="ident">libc::size_t</span>,
               <span class="kw-2">*mut</span> <span class="kw-2">*mut</span> <span class="ident">libc::group</span>) -&gt; <span class="ident">libc::c_int</span>
     {
@@ -5953,6 +6429,10 @@
         })
     }
 }
+}
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;term&quot;</span>]</span>
 
 <span class="doccomment">/// Get the name of the terminal device that is open on file descriptor fd</span>
 <span class="doccomment">/// (see [`ttyname(3)`](https://man7.org/linux/man-pages/man3/ttyname.3.html)).</span>
@@ -5971,6 +6451,10 @@
     <span class="ident">buf</span>.<span class="ident">truncate</span>(<span class="ident">nul</span>);
     <span class="prelude-val">Ok</span>(<span class="ident">OsString::from_vec</span>(<span class="ident">buf</span>).<span class="ident">into</span>())
 }
+}
+
+<span class="macro">feature!</span> {
+<span class="attribute">#![<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;socket&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;user&quot;</span>)]</span>
 
 <span class="doccomment">/// Get the effective user ID and group ID associated with a Unix domain socket.</span>
 <span class="doccomment">///</span>
@@ -5991,6 +6475,7 @@
 
     <span class="ident">Errno::result</span>(<span class="ident">ret</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> (<span class="ident">Uid</span>(<span class="ident">uid</span>), <span class="ident">Gid</span>(<span class="ident">gid</span>)))
 }
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.1 (e092d0b6b 2022-07-16)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
 </body></html>

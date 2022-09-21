@@ -1,9 +1,10 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.23.1/src/sched.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sched.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.2/src/sched.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sched.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../nix/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../nix/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
+                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
+                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -285,6 +286,18 @@
 <span id="280">280</span>
 <span id="281">281</span>
 <span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Execution scheduling</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! See Also</span>
@@ -295,6 +308,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::sched_linux_like</span>::<span class="kw-2">*</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
 <span class="kw">mod</span> <span class="ident">sched_linux_like</span> {
     <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errno::Errno</span>;
     <span class="kw">use</span> <span class="ident">libc</span>::{<span class="self">self</span>, <span class="ident">c_int</span>, <span class="ident">c_void</span>};
@@ -372,6 +386,71 @@
 
     <span class="doccomment">/// Type for the function executed by [`clone`].</span>
     <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CloneCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnMut</span>() -&gt; <span class="ident">isize</span> <span class="op">+</span> <span class="lifetime">&#39;a</span><span class="op">&gt;</span>;
+
+    <span class="doccomment">/// `clone` create a child process</span>
+    <span class="doccomment">/// ([`clone(2)`](https://man7.org/linux/man-pages/man2/clone.2.html))</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// `stack` is a reference to an array which will hold the stack of the new</span>
+    <span class="doccomment">/// process.  Unlike when calling `clone(2)` from C, the provided stack</span>
+    <span class="doccomment">/// address need not be the highest address of the region.  Nix will take</span>
+    <span class="doccomment">/// care of that requirement.  The user only needs to provide a reference to</span>
+    <span class="doccomment">/// a normally allocated buffer.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clone</span>(
+        <span class="kw-2">mut</span> <span class="ident">cb</span>: <span class="ident">CloneCb</span>,
+        <span class="ident">stack</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>],
+        <span class="ident">flags</span>: <span class="ident">CloneFlags</span>,
+        <span class="ident">signal</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">c_int</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Pid</span><span class="op">&gt;</span> {
+        <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">callback</span>(<span class="ident">data</span>: <span class="kw-2">*mut</span> <span class="ident">CloneCb</span>) -&gt; <span class="ident">c_int</span> {
+            <span class="kw">let</span> <span class="ident">cb</span>: <span class="kw-2">&amp;mut</span> <span class="ident">CloneCb</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">data</span> };
+            (<span class="kw-2">*</span><span class="ident">cb</span>)() <span class="kw">as</span> <span class="ident">c_int</span>
+        }
+
+        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> {
+            <span class="kw">let</span> <span class="ident">combined</span> <span class="op">=</span> <span class="ident">flags</span>.<span class="ident">bits</span>() <span class="op">|</span> <span class="ident">signal</span>.<span class="ident">unwrap_or</span>(<span class="number">0</span>);
+            <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">stack</span>.<span class="ident">as_mut_ptr</span>().<span class="ident">add</span>(<span class="ident">stack</span>.<span class="ident">len</span>());
+            <span class="kw">let</span> <span class="ident">ptr_aligned</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">sub</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">%</span> <span class="number">16</span>);
+            <span class="ident">libc::clone</span>(
+                <span class="ident">mem::transmute</span>(
+                    <span class="ident">callback</span> <span class="kw">as</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span>(<span class="kw-2">*mut</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnMut</span>() -&gt; <span class="ident">isize</span><span class="op">&gt;</span>) -&gt; <span class="ident">i32</span>,
+                ),
+                <span class="ident">ptr_aligned</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>,
+                <span class="ident">combined</span>,
+                <span class="kw-2">&amp;mut</span> <span class="ident">cb</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="kw">_</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>,
+            )
+        };
+
+        <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">Pid::from_raw</span>)
+    }
+
+    <span class="doccomment">/// disassociate parts of the process execution context</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// See also [unshare(2)](https://man7.org/linux/man-pages/man2/unshare.2.html)</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unshare</span>(<span class="ident">flags</span>: <span class="ident">CloneFlags</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::unshare</span>(<span class="ident">flags</span>.<span class="ident">bits</span>()) };
+
+        <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+    }
+
+    <span class="doccomment">/// reassociate thread with a namespace</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// See also [setns(2)](https://man7.org/linux/man-pages/man2/setns.2.html)</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">setns</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">nstype</span>: <span class="ident">CloneFlags</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::setns</span>(<span class="ident">fd</span>, <span class="ident">nstype</span>.<span class="ident">bits</span>()) };
+
+        <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+    }
+}
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::sched_affinity</span>::<span class="kw-2">*</span>;
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
+<span class="kw">mod</span> <span class="ident">sched_affinity</span> {
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errno::Errno</span>;
+    <span class="kw">use</span> <span class="ident">std::mem</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::unistd::Pid</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::Result</span>;
 
     <span class="doccomment">/// CpuSet represent a bit-mask of CPUs.</span>
     <span class="doccomment">/// CpuSets are used by sched_setaffinity and</span>
@@ -503,60 +582,6 @@
 
         <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">and</span>(<span class="prelude-val">Ok</span>(<span class="ident">cpuset</span>))
     }
-
-    <span class="doccomment">/// `clone` create a child process</span>
-    <span class="doccomment">/// ([`clone(2)`](https://man7.org/linux/man-pages/man2/clone.2.html))</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// `stack` is a reference to an array which will hold the stack of the new</span>
-    <span class="doccomment">/// process.  Unlike when calling `clone(2)` from C, the provided stack</span>
-    <span class="doccomment">/// address need not be the highest address of the region.  Nix will take</span>
-    <span class="doccomment">/// care of that requirement.  The user only needs to provide a reference to</span>
-    <span class="doccomment">/// a normally allocated buffer.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clone</span>(
-        <span class="kw-2">mut</span> <span class="ident">cb</span>: <span class="ident">CloneCb</span>,
-        <span class="ident">stack</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>],
-        <span class="ident">flags</span>: <span class="ident">CloneFlags</span>,
-        <span class="ident">signal</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">c_int</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Pid</span><span class="op">&gt;</span> {
-        <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">callback</span>(<span class="ident">data</span>: <span class="kw-2">*mut</span> <span class="ident">CloneCb</span>) -&gt; <span class="ident">c_int</span> {
-            <span class="kw">let</span> <span class="ident">cb</span>: <span class="kw-2">&amp;mut</span> <span class="ident">CloneCb</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">data</span> };
-            (<span class="kw-2">*</span><span class="ident">cb</span>)() <span class="kw">as</span> <span class="ident">c_int</span>
-        }
-
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">combined</span> <span class="op">=</span> <span class="ident">flags</span>.<span class="ident">bits</span>() <span class="op">|</span> <span class="ident">signal</span>.<span class="ident">unwrap_or</span>(<span class="number">0</span>);
-            <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">stack</span>.<span class="ident">as_mut_ptr</span>().<span class="ident">add</span>(<span class="ident">stack</span>.<span class="ident">len</span>());
-            <span class="kw">let</span> <span class="ident">ptr_aligned</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">sub</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">%</span> <span class="number">16</span>);
-            <span class="ident">libc::clone</span>(
-                <span class="ident">mem::transmute</span>(
-                    <span class="ident">callback</span> <span class="kw">as</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span>(<span class="kw-2">*mut</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnMut</span>() -&gt; <span class="ident">isize</span><span class="op">&gt;</span>) -&gt; <span class="ident">i32</span>,
-                ),
-                <span class="ident">ptr_aligned</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>,
-                <span class="ident">combined</span>,
-                <span class="kw-2">&amp;mut</span> <span class="ident">cb</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="kw">_</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>,
-            )
-        };
-
-        <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">Pid::from_raw</span>)
-    }
-
-    <span class="doccomment">/// disassociate parts of the process execution context</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// See also [unshare(2)](https://man7.org/linux/man-pages/man2/unshare.2.html)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unshare</span>(<span class="ident">flags</span>: <span class="ident">CloneFlags</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::unshare</span>(<span class="ident">flags</span>.<span class="ident">bits</span>()) };
-
-        <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
-    }
-
-    <span class="doccomment">/// reassociate thread with a namespace</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// See also [setns(2)](https://man7.org/linux/man-pages/man2/setns.2.html)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">setns</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">nstype</span>: <span class="ident">CloneFlags</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::setns</span>(<span class="ident">fd</span>, <span class="ident">nstype</span>.<span class="ident">bits</span>()) };
-
-        <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
-    }
 }
 
 <span class="doccomment">/// Explicitly yield the processor to other threads.</span>
@@ -568,5 +593,5 @@
     <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.1 (e092d0b6b 2022-07-16)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
 </body></html>

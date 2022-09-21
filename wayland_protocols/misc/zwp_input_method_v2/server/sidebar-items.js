@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["zwp_input_method_keyboard_grab_v2","keyboard grab"],["zwp_input_method_manager_v2","input method manager"],["zwp_input_method_v2","input method"],["zwp_input_popup_surface_v2","popup surface"]]});
+window.SIDEBAR_ITEMS = {"mod":[["zwp_input_method_keyboard_grab_v2","keyboard grab"],["zwp_input_method_manager_v2","input method manager"],["zwp_input_method_v2","input method"],["zwp_input_popup_surface_v2","popup surface"]]};

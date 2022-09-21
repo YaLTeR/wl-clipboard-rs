@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["complement","[Generic] complement of the graph"]]});
+window.SIDEBAR_ITEMS = {"fn":[["complement","[Generic] complement of the graph"]]};

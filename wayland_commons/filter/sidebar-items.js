@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["DispatchData","Holder of global dispatch-related data"],["Filter","An event filter"]]});
+window.SIDEBAR_ITEMS = {"struct":[["DispatchData","Holder of global dispatch-related data"],["Filter","An event filter"]]};

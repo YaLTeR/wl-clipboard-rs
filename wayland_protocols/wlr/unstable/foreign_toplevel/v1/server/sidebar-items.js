@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["zwlr_foreign_toplevel_handle_v1","an opened toplevel"],["zwlr_foreign_toplevel_manager_v1","list and control opened apps"]]});
+window.SIDEBAR_ITEMS = {"mod":[["zwlr_foreign_toplevel_handle_v1","an opened toplevel"],["zwlr_foreign_toplevel_manager_v1","list and control opened apps"]]};

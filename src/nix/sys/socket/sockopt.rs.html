@@ -1,9 +1,10 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.23.1/src/sys/socket/sockopt.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sockopt.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script src="../../../../crates.js"></script><script defer src="../../../../main.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.2/src/sys/socket/sockopt.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sockopt.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../main.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"></h2>
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../../../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../nix/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../nix/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
+                                <a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div>
+                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -933,6 +934,87 @@
 <span id="928">928</span>
 <span id="929">929</span>
 <span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
+<span id="937">937</span>
+<span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
+<span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
+<span id="973">973</span>
+<span id="974">974</span>
+<span id="975">975</span>
+<span id="976">976</span>
+<span id="977">977</span>
+<span id="978">978</span>
+<span id="979">979</span>
+<span id="980">980</span>
+<span id="981">981</span>
+<span id="982">982</span>
+<span id="983">983</span>
+<span id="984">984</span>
+<span id="985">985</span>
+<span id="986">986</span>
+<span id="987">987</span>
+<span id="988">988</span>
+<span id="989">989</span>
+<span id="990">990</span>
+<span id="991">991</span>
+<span id="992">992</span>
+<span id="993">993</span>
+<span id="994">994</span>
+<span id="995">995</span>
+<span id="996">996</span>
+<span id="997">997</span>
+<span id="998">998</span>
+<span id="999">999</span>
+<span id="1000">1000</span>
+<span id="1001">1001</span>
+<span id="1002">1002</span>
+<span id="1003">1003</span>
+<span id="1004">1004</span>
+<span id="1005">1005</span>
+<span id="1006">1006</span>
+<span id="1007">1007</span>
+<span id="1008">1008</span>
+<span id="1009">1009</span>
+<span id="1010">1010</span>
+<span id="1011">1011</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Socket options as used by `setsockopt` and `getsockopt`.</span>
 <span class="kw">use</span> <span class="ident">cfg_if::cfg_if</span>;
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">GetSockOpt</span>, <span class="ident">SetSockOpt</span>};
@@ -951,7 +1033,8 @@
 
 <span class="comment">// Constants</span>
 <span class="comment">// TCP_CA_NAME_MAX isn&#39;t defined in user space include files</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span> 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="kw">const</span> <span class="ident">TCP_CA_NAME_MAX</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">16</span>;
 
 <span class="doccomment">/// Helper for implementing `SetSockOpt` for a given socket option. See</span>
@@ -1063,6 +1146,9 @@
 <span class="doccomment">/// * `$ty:ty`: type of the value that will be get/set.</span>
 <span class="doccomment">/// * `$getter:ty`: `Get` implementation; optional; only for `GetOnly` and `Both`.</span>
 <span class="doccomment">/// * `$setter:ty`: `Set` implementation; optional; only for `SetOnly` and `Both`.</span>
+<span class="comment">// Some targets don&#39;t use all rules.</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unknown_lints</span>)]</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_macro_rules</span>)]</span>
 <span class="macro">macro_rules!</span> <span class="ident">sockopt_impl</span> {
     ($(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>:<span class="ident">meta</span>]</span>)<span class="op">*</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="ident">GetOnly</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">level</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">flag</span>:<span class="ident">path</span>, <span class="ident">bool</span>) =&gt; {
         <span class="macro">sockopt_impl!</span>($(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>]</span>)<span class="op">*</span>
@@ -1186,7 +1272,9 @@
     <span class="doccomment">/// Permits multiple AF_INET or AF_INET6 sockets to be bound to an</span>
     <span class="doccomment">/// identical socket address.</span>
     <span class="ident">ReusePort</span>, <span class="ident">Both</span>, <span class="ident">libc::SOL_SOCKET</span>, <span class="ident">libc::SO_REUSEPORT</span>, <span class="ident">bool</span>);
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// Under most circumstances, TCP sends data when it is presented; when</span>
     <span class="doccomment">/// outstanding data has not yet been acknowledged, it gathers small amounts</span>
     <span class="doccomment">/// of output to be sent in a single packet once an acknowledgement is</span>
@@ -1200,20 +1288,28 @@
     <span class="doccomment">/// queued messages for the socket have been successfully sent or the</span>
     <span class="doccomment">/// linger timeout has been reached.</span>
     <span class="ident">Linger</span>, <span class="ident">Both</span>, <span class="ident">libc::SOL_SOCKET</span>, <span class="ident">libc::SO_LINGER</span>, <span class="ident">libc::linger</span>);
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// Join a multicast group</span>
     <span class="ident">IpAddMembership</span>, <span class="ident">SetOnly</span>, <span class="ident">libc::IPPROTO_IP</span>, <span class="ident">libc::IP_ADD_MEMBERSHIP</span>,
     <span class="ident"><span class="kw">super</span>::IpMembershipRequest</span>);
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// Leave a multicast group.</span>
     <span class="ident">IpDropMembership</span>, <span class="ident">SetOnly</span>, <span class="ident">libc::IPPROTO_IP</span>, <span class="ident">libc::IP_DROP_MEMBERSHIP</span>,
     <span class="ident"><span class="kw">super</span>::IpMembershipRequest</span>);
 <span class="macro">cfg_if!</span> {
     <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span> {
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
         <span class="macro">sockopt_impl!</span>(
+            <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
             <span class="doccomment">/// Join an IPv6 multicast group.</span>
             <span class="ident">Ipv6AddMembership</span>, <span class="ident">SetOnly</span>, <span class="ident">libc::IPPROTO_IPV6</span>, <span class="ident">libc::IPV6_ADD_MEMBERSHIP</span>, <span class="ident"><span class="kw">super</span>::Ipv6MembershipRequest</span>);
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
         <span class="macro">sockopt_impl!</span>(
+            <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
             <span class="doccomment">/// Leave an IPv6 multicast group.</span>
             <span class="ident">Ipv6DropMembership</span>, <span class="ident">SetOnly</span>, <span class="ident">libc::IPPROTO_IPV6</span>, <span class="ident">libc::IPV6_DROP_MEMBERSHIP</span>, <span class="ident"><span class="kw">super</span>::Ipv6MembershipRequest</span>);
     } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>,
@@ -1224,26 +1320,36 @@
                         <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>,
                         <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>,
                         <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span> {
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
         <span class="macro">sockopt_impl!</span>(
+            <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
             <span class="doccomment">/// Join an IPv6 multicast group.</span>
             <span class="ident">Ipv6AddMembership</span>, <span class="ident">SetOnly</span>, <span class="ident">libc::IPPROTO_IPV6</span>,
             <span class="ident">libc::IPV6_JOIN_GROUP</span>, <span class="ident"><span class="kw">super</span>::Ipv6MembershipRequest</span>);
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
         <span class="macro">sockopt_impl!</span>(
+            <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
             <span class="doccomment">/// Leave an IPv6 multicast group.</span>
             <span class="ident">Ipv6DropMembership</span>, <span class="ident">SetOnly</span>, <span class="ident">libc::IPPROTO_IPV6</span>,
             <span class="ident">libc::IPV6_LEAVE_GROUP</span>, <span class="ident"><span class="kw">super</span>::Ipv6MembershipRequest</span>);
     }
 }
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// Set or read the time-to-live value of outgoing multicast packets for</span>
     <span class="doccomment">/// this socket.</span>
     <span class="ident">IpMulticastTtl</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_IP</span>, <span class="ident">libc::IP_MULTICAST_TTL</span>, <span class="ident">u8</span>);
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// Set or read a boolean integer argument that determines whether sent</span>
     <span class="doccomment">/// multicast packets should be looped back to the local sockets.</span>
     <span class="ident">IpMulticastLoop</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_IP</span>, <span class="ident">libc::IP_MULTICAST_LOOP</span>, <span class="ident">bool</span>);
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;fuchsia&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// If enabled, this boolean option allows binding to an IP address that</span>
     <span class="doccomment">/// is nonlocal or does not (yet) exist.</span>
     <span class="ident">IpFreebind</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_IP</span>, <span class="ident">libc::IP_FREEBIND</span>, <span class="ident">bool</span>);
@@ -1282,7 +1388,9 @@
     <span class="ident">PeerCredentials</span>, <span class="ident">GetOnly</span>, <span class="ident">libc::SOL_SOCKET</span>, <span class="ident">libc::SO_PEERCRED</span>, <span class="ident"><span class="kw">super</span>::UnixCredentials</span>);
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
           <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// Specify the amount of time, in seconds, that the connection must be idle</span>
     <span class="doccomment">/// before keepalive probes (if enabled) are sent.</span>
     <span class="ident">TcpKeepAlive</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_TCP</span>, <span class="ident">libc::TCP_KEEPALIVE</span>, <span class="ident">u32</span>);
@@ -1291,7 +1399,9 @@
           <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
           <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
           <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;nacl&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// The time (in seconds) the connection needs to remain idle before TCP</span>
     <span class="doccomment">/// starts sending keepalive probes</span>
     <span class="ident">TcpKeepIdle</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_TCP</span>, <span class="ident">libc::TCP_KEEPIDLE</span>, <span class="ident">u32</span>);
@@ -1307,7 +1417,9 @@
     }
 }
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// The maximum number of keepalive probes TCP should send before</span>
     <span class="doccomment">/// dropping the connection.</span>
     <span class="ident">TcpKeepCount</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_TCP</span>, <span class="ident">libc::TCP_KEEPCNT</span>, <span class="ident">u32</span>);
@@ -1319,11 +1431,15 @@
     <span class="comment">// Not documented by Linux!</span>
     <span class="ident">TcpRepair</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_TCP</span>, <span class="ident">libc::TCP_REPAIR</span>, <span class="ident">u32</span>);
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// The time (in seconds) between individual keepalive probes.</span>
     <span class="ident">TcpKeepInterval</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_TCP</span>, <span class="ident">libc::TCP_KEEPINTVL</span>, <span class="ident">u32</span>);
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;fuchsia&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// Specifies the maximum amount of time in milliseconds that transmitted</span>
     <span class="doccomment">/// data may remain unacknowledged before TCP will forcibly close the</span>
     <span class="doccomment">/// corresponding connection</span>
@@ -1358,7 +1474,9 @@
     <span class="doccomment">/// Bind this socket to a particular device like “eth0”.</span>
     <span class="ident">BindToDevice</span>, <span class="ident">Both</span>, <span class="ident">libc::SOL_SOCKET</span>, <span class="ident">libc::SO_BINDTODEVICE</span>, <span class="ident">OsString</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="ident">libc::IFNAMSIZ</span>]<span class="op">&gt;</span>);
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
     <span class="comment">// Not documented by Linux!</span>
     <span class="ident">OriginalDst</span>, <span class="ident">GetOnly</span>, <span class="ident">libc::SOL_IP</span>, <span class="ident">libc::SO_ORIGINAL_DST</span>, <span class="ident">libc::sockaddr_in</span>);
@@ -1367,7 +1485,12 @@
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
     <span class="comment">// Not documented by Linux!</span>
     <span class="ident">Ip6tOriginalDst</span>, <span class="ident">GetOnly</span>, <span class="ident">libc::SOL_IPV6</span>, <span class="ident">libc::IP6T_SO_ORIGINAL_DST</span>, <span class="ident">libc::sockaddr_in6</span>);
-<span class="macro">sockopt_impl!</span>( 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
+<span class="macro">sockopt_impl!</span>(
+    <span class="doccomment">/// Specifies exact type of timestamping information collected by the kernel</span>
+    <span class="doccomment">/// [Further reading](https://www.kernel.org/doc/html/latest/networking/timestamping.html)</span>
+    <span class="ident">Timestamping</span>, <span class="ident">Both</span>, <span class="ident">libc::SOL_SOCKET</span>, <span class="ident">libc::SO_TIMESTAMPING</span>, <span class="ident"><span class="kw">super</span>::TimestampingFlag</span>);
+<span class="macro">sockopt_impl!</span>(
     <span class="doccomment">/// Enable or disable the receiving of the `SO_TIMESTAMP` control message.</span>
     <span class="ident">ReceiveTimestamp</span>, <span class="ident">Both</span>, <span class="ident">libc::SOL_SOCKET</span>, <span class="ident">libc::SO_TIMESTAMP</span>, <span class="ident">bool</span>);
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
@@ -1375,16 +1498,22 @@
     <span class="doccomment">/// Enable or disable the receiving of the `SO_TIMESTAMPNS` control message.</span>
     <span class="ident">ReceiveTimestampns</span>, <span class="ident">Both</span>, <span class="ident">libc::SOL_SOCKET</span>, <span class="ident">libc::SO_TIMESTAMPNS</span>, <span class="ident">bool</span>);
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// Setting this boolean option enables transparent proxying on this socket.</span>
     <span class="ident">IpTransparent</span>, <span class="ident">Both</span>, <span class="ident">libc::SOL_IP</span>, <span class="ident">libc::IP_TRANSPARENT</span>, <span class="ident">bool</span>);
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// Allows the socket to be bound to addresses which are not local to the</span>
     <span class="doccomment">/// machine, so it can be used to make a transparent proxy.</span>
     <span class="ident">BindAny</span>, <span class="ident">Both</span>, <span class="ident">libc::SOL_SOCKET</span>, <span class="ident">libc::SO_BINDANY</span>, <span class="ident">bool</span>);
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// Can `bind(2)` to any address, even one not bound to any available</span>
     <span class="doccomment">/// network interface in the system.</span>
     <span class="ident">BindAny</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_IP</span>, <span class="ident">libc::IP_BINDANY</span>, <span class="ident">bool</span>);
@@ -1398,8 +1527,10 @@
     <span class="doccomment">/// Enable or disable the receiving of the `SCM_CREDENTIALS` control</span>
     <span class="doccomment">/// message.</span>
     <span class="ident">PassCred</span>, <span class="ident">Both</span>, <span class="ident">libc::SOL_SOCKET</span>, <span class="ident">libc::SO_PASSCRED</span>, <span class="ident">bool</span>);
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span> 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// This option allows the caller to set the TCP congestion control</span>
     <span class="doccomment">/// algorithm to be used,  on a per-socket basis.</span>
     <span class="ident">TcpCongestion</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_TCP</span>, <span class="ident">libc::TCP_CONGESTION</span>, <span class="ident">OsString</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="ident">TCP_CA_NAME_MAX</span>]<span class="op">&gt;</span>);
@@ -1410,7 +1541,9 @@
     <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
     <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>,
 ))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// Pass an `IP_PKTINFO` ancillary message that contains a pktinfo</span>
     <span class="doccomment">/// structure that supplies some information about the incoming packet.</span>
     <span class="ident">Ipv4PacketInfo</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_IP</span>, <span class="ident">libc::IP_PKTINFO</span>, <span class="ident">bool</span>);
@@ -1423,7 +1556,9 @@
     <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>,
     <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>,
 ))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// Set delivery of the `IPV6_PKTINFO` control message on incoming</span>
     <span class="doccomment">/// datagrams.</span>
     <span class="ident">Ipv6RecvPacketInfo</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_IPV6</span>, <span class="ident">libc::IPV6_RECVPKTINFO</span>, <span class="ident">bool</span>);
@@ -1434,7 +1569,9 @@
     <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>,
     <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>,
 ))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// The `recvmsg(2)` call returns a `struct sockaddr_dl` corresponding to</span>
     <span class="doccomment">/// the interface on which the packet was received.</span>
     <span class="ident">Ipv4RecvIf</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_IP</span>, <span class="ident">libc::IP_RECVIF</span>, <span class="ident">bool</span>);
@@ -1445,27 +1582,40 @@
     <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>,
     <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>,
 ))]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// The `recvmsg(2)` call will return the destination IP address for a UDP</span>
     <span class="doccomment">/// datagram.</span>
     <span class="ident">Ipv4RecvDstAddr</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_IP</span>, <span class="ident">libc::IP_RECVDSTADDR</span>, <span class="ident">bool</span>);
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
     <span class="comment">// Not documented by Linux!</span>
     <span class="ident">UdpGsoSegment</span>, <span class="ident">Both</span>, <span class="ident">libc::SOL_UDP</span>, <span class="ident">libc::UDP_SEGMENT</span>, <span class="ident">libc::c_int</span>);
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
     <span class="comment">// Not documented by Linux!</span>
     <span class="ident">UdpGroSegment</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_UDP</span>, <span class="ident">libc::UDP_GRO</span>, <span class="ident">bool</span>);
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>)]</span>
+<span class="macro">sockopt_impl!</span>(
+    <span class="doccomment">/// Configures the behavior of time-based transmission of packets, for use</span>
+    <span class="doccomment">/// with the `TxTime` control message.</span>
+    <span class="ident">TxTime</span>, <span class="ident">Both</span>, <span class="ident">libc::SOL_SOCKET</span>, <span class="ident">libc::SO_TXTIME</span>, <span class="ident">libc::sock_txtime</span>);
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;fuchsia&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
 <span class="macro">sockopt_impl!</span>(
     <span class="doccomment">/// Indicates that an unsigned 32-bit value ancillary message (cmsg) should</span>
     <span class="doccomment">/// be attached to received skbs indicating the number of packets dropped by</span>
     <span class="doccomment">/// the socket since its creation.</span>
     <span class="ident">RxqOvfl</span>, <span class="ident">Both</span>, <span class="ident">libc::SOL_SOCKET</span>, <span class="ident">libc::SO_RXQ_OVFL</span>, <span class="ident">libc::c_int</span>);
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)]</span>
 <span class="macro">sockopt_impl!</span>(
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;net&quot;</span>)))]</span>
     <span class="doccomment">/// The socket is restricted to sending and receiving IPv6 packets only.</span>
     <span class="ident">Ipv6V6Only</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_IPV6</span>, <span class="ident">libc::IPV6_V6ONLY</span>, <span class="ident">bool</span>);
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
@@ -1485,6 +1635,19 @@
 <span class="macro">sockopt_impl!</span>(
     <span class="doccomment">/// Set the unicast hop limit for the socket.</span>
     <span class="ident">Ipv6Ttl</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_IPV6</span>, <span class="ident">libc::IPV6_UNICAST_HOPS</span>, <span class="ident">libc::c_int</span>);
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>))]</span>
+<span class="macro">sockopt_impl!</span>(
+    <span class="doccomment">/// Set &quot;don&#39;t fragment packet&quot; flag on the IP packet.</span>
+    <span class="ident">IpDontFrag</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_IP</span>, <span class="ident">libc::IP_DONTFRAG</span>, <span class="ident">bool</span>);
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(
+    <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>,
+    <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
+    <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
+    <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
+))]</span>
+<span class="macro">sockopt_impl!</span>(
+    <span class="doccomment">/// Set &quot;don&#39;t fragment packet&quot; flag on the IPv6 packet.</span>
+    <span class="ident">Ipv6DontFrag</span>, <span class="ident">Both</span>, <span class="ident">libc::IPPROTO_IPV6</span>, <span class="ident">libc::IPV6_DONTFRAG</span>, <span class="ident">bool</span>);
 
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
 <span class="comment">// Not documented by Linux!</span>
@@ -1864,5 +2027,5 @@
 
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.1 (e092d0b6b 2022-07-16)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
 </body></html>
