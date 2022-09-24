@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v0.7.0 (23rd Sep 2022)
+
+- Fixed `paste::get_contents()` leaving behind zombie `cat` processes.
+- Changed debug logging from `info!` to `trace!`.
+- Bumped `nix` dependency to `0.24` to match that of the wayland-rs crates.
+- Replaced `derive_more` with `thiserror`.
+
 ## v0.6.0 (20th Mar 2022)
 
 - Fixed `wl-copy` and `wl-clip` hangs when followed by a pipe (e.g. `wl-copy
