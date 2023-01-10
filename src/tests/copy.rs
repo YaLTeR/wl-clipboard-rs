@@ -236,6 +236,7 @@ fn copy_multi_test() {
     let child = thread::spawn(move || {
         let mut opts = Options::new();
         opts.foreground(true);
+        opts.offer_additional_text_mimes(true);
         let sources = vec![MimeSource { source: Source::Bytes([1, 3, 3, 7][..].into()),
                                         mime_type: MimeType::Specific("test".to_string()) },
                            MimeSource { source: Source::Bytes([2, 4, 4][..].into()),

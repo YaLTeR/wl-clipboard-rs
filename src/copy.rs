@@ -142,6 +142,12 @@ pub struct Options {
     /// that certain apps may have issues pasting when this option is used, in particular XWayland
     /// clients are known to suffer from this.
     serve_requests: ServeRequests,
+
+    /// Offer additional text mime types if at least one text mime type is provided.
+    ///
+    /// Additionaly offers `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
+    /// `TEXT` mime types if at least one text mime type is provided.
+    offer_additional_text_mimes: bool
 }
 
 /// A copy operation ready to start serving requests.
@@ -281,6 +287,16 @@ impl Options {
     #[inline]
     pub fn serve_requests(&mut self, serve_requests: ServeRequests) -> &mut Self {
         self.serve_requests = serve_requests;
+        self
+    }
+
+    /// Sets the flag for offering additional text mime types if at least one text mime type is provided.
+    ///
+    /// Additionaly offers `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
+    /// `TEXT` mime types if at least one text mime type is provided.
+    #[inline]
+    pub fn offer_additional_text_mimes(&mut self, offer_additional_text_mimes: bool) -> &mut Self {
+        self.offer_additional_text_mimes = offer_additional_text_mimes;
         self
     }
 
@@ -734,7 +750,7 @@ fn prepare_copy_internal(options: Options,
                 Entry::Vacant(entry) => {
                     let data_path = Rc::new(RefCell::new(data_path));
 
-                    if text_data_path.is_none() && mime_type_is_text {
+                    if options.offer_additional_text_mimes && text_data_path.is_none() && mime_type_is_text {
                         text_data_path = Some(data_path.clone());
                     }
 
@@ -743,18 +759,20 @@ fn prepare_copy_internal(options: Options,
             }
         }
 
-        // If the MIME type is text, offer it in some other common formats.
-        if let Some(text_data_path) = text_data_path {
-            let text_mimes = ["text/plain;charset=utf-8",
-                              "text/plain",
-                              "STRING",
-                              "UTF8_STRING",
-                              "TEXT"];
-            for &mime_type in &text_mimes {
-                // We don't want to overwrite an explicit mime type, because it might be bound to a
-                // different data_path
-                if !data_paths.contains_key(mime_type) {
-                    data_paths.insert(mime_type.to_string(), text_data_path.clone());
+        if options.offer_additional_text_mimes {
+            // If the MIME type is text, offer it in some other common formats.
+            if let Some(text_data_path) = text_data_path {
+                let text_mimes = ["text/plain;charset=utf-8",
+                                "text/plain",
+                                "STRING",
+                                "UTF8_STRING",
+                                "TEXT"];
+                for &mime_type in &text_mimes {
+                    // We don't want to overwrite an explicit mime type, because it might be bound to a
+                    // different data_path
+                    if !data_paths.contains_key(mime_type) {
+                        data_paths.insert(mime_type.to_string(), text_data_path.clone());
+                    }
                 }
             }
         }
