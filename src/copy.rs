@@ -147,7 +147,7 @@ pub struct Options {
     ///
     /// Omits additionally offered `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
     /// `TEXT` mime types which are offered by default if at least one text mime type is provided.
-    omit_additional_text_mime_types: bool
+    omit_additional_text_mime_types: bool,
 }
 
 /// A copy operation ready to start serving requests.

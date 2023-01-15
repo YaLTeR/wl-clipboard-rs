@@ -444,10 +444,7 @@ fn copy_multi_no_additional_text_mime_types_test() {
     assert!(mime_types.is_some());
     let mut mimes = mime_types.unwrap();
     mimes.sort();
-    assert_eq!(mimes,
-               ["TEXT",
-                "test",
-                "test2"]);
+    assert_eq!(mimes, ["TEXT", "test", "test2"]);
     assert_eq!(contents_test, [1, 3, 3, 7]);
     assert_eq!(contents_test2, [2, 4, 4]);
     assert_eq!(contents_text, b"hello TEXT");
