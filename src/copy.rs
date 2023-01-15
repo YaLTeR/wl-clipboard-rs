@@ -762,10 +762,10 @@ fn prepare_copy_internal(options: Options,
         // If the MIME type is text, offer it in some other common formats.
         if let Some(text_data_path) = text_data_path {
             let text_mimes = ["text/plain;charset=utf-8",
-                            "text/plain",
-                            "STRING",
-                            "UTF8_STRING",
-                            "TEXT"];
+                              "text/plain",
+                              "STRING",
+                              "UTF8_STRING",
+                              "TEXT"];
             for &mime_type in &text_mimes {
                 // We don't want to overwrite an explicit mime type, because it might be bound to a
                 // different data_path
