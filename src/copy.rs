@@ -143,11 +143,11 @@ pub struct Options {
     /// clients are known to suffer from this.
     serve_requests: ServeRequests,
 
-    /// Offer additional text mime types if at least one text mime type is provided.
+    /// Omit additional text mime types which are offered by default if at least one text mime type is provided.
     ///
-    /// Additionaly offers `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
-    /// `TEXT` mime types if at least one text mime type is provided.
-    offer_additional_text_mimes: bool
+    /// Omits additionally offered `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
+    /// `TEXT` mime types which are offered by default if at least one text mime type is provided.
+    omit_additional_text_mime_types: bool
 }
 
 /// A copy operation ready to start serving requests.
@@ -290,13 +290,16 @@ impl Options {
         self
     }
 
-    /// Sets the flag for offering additional text mime types if at least one text mime type is provided.
+    /// Omit additional text mime types which are offered by default if at least one text mime type is provided.
     ///
-    /// Additionaly offers `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
-    /// `TEXT` mime types if at least one text mime type is provided.
+    
+    /// Sets the flag for omitting additional text mime types which are offered by default if at least one text mime type is provided.
+    ///
+    /// Omits additionally offered `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
+    /// `TEXT` mime types which are offered by default if at least one text mime type is provided.
     #[inline]
-    pub fn offer_additional_text_mimes(&mut self, offer_additional_text_mimes: bool) -> &mut Self {
-        self.offer_additional_text_mimes = offer_additional_text_mimes;
+    pub fn omit_additional_text_mime_types(&mut self, omit_additional_text_mime_types: bool) -> &mut Self {
+        self.omit_additional_text_mime_types = omit_additional_text_mime_types;
         self
     }
 
@@ -750,7 +753,7 @@ fn prepare_copy_internal(options: Options,
                 Entry::Vacant(entry) => {
                     let data_path = Rc::new(RefCell::new(data_path));
 
-                    if options.offer_additional_text_mimes && text_data_path.is_none() && mime_type_is_text {
+                    if !options.omit_additional_text_mime_types && text_data_path.is_none() && mime_type_is_text {
                         text_data_path = Some(data_path.clone());
                     }
 
@@ -759,20 +762,18 @@ fn prepare_copy_internal(options: Options,
             }
         }
 
-        if options.offer_additional_text_mimes {
-            // If the MIME type is text, offer it in some other common formats.
-            if let Some(text_data_path) = text_data_path {
-                let text_mimes = ["text/plain;charset=utf-8",
-                                "text/plain",
-                                "STRING",
-                                "UTF8_STRING",
-                                "TEXT"];
-                for &mime_type in &text_mimes {
-                    // We don't want to overwrite an explicit mime type, because it might be bound to a
-                    // different data_path
-                    if !data_paths.contains_key(mime_type) {
-                        data_paths.insert(mime_type.to_string(), text_data_path.clone());
-                    }
+        // If the MIME type is text, offer it in some other common formats.
+        if let Some(text_data_path) = text_data_path {
+            let text_mimes = ["text/plain;charset=utf-8",
+                            "text/plain",
+                            "STRING",
+                            "UTF8_STRING",
+                            "TEXT"];
+            for &mime_type in &text_mimes {
+                // We don't want to overwrite an explicit mime type, because it might be bound to a
+                // different data_path
+                if !data_paths.contains_key(mime_type) {
+                    data_paths.insert(mime_type.to_string(), text_data_path.clone());
                 }
             }
         }
