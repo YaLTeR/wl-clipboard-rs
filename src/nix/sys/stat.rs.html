@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.2/src/sys/stat.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>stat.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../nix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.3/src/sys/stat.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>stat.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../nix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -322,329 +322,329 @@
 <span id="322">322</span>
 <span id="323">323</span>
 <span id="324">324</span>
-</pre><pre class="rust"><code><span class="kw">pub</span> <span class="kw">use</span> <span class="ident">libc</span>::{<span class="ident">dev_t</span>, <span class="ident">mode_t</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">libc::stat</span> <span class="kw">as</span> <span class="ident">FileStat</span>;
+</pre><pre class="rust"><code><span class="kw">pub use </span>libc::{dev_t, mode_t};
+<span class="kw">pub use </span>libc::stat <span class="kw">as </span>FileStat;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="prelude-ty">Result</span>, <span class="ident">NixPath</span>, <span class="ident">errno::Errno</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::fcntl</span>::{<span class="ident">AtFlags</span>, <span class="ident">at_rawfd</span>};
-<span class="kw">use</span> <span class="ident">std::mem</span>;
-<span class="kw">use</span> <span class="ident">std::os::unix::io::RawFd</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::sys::time</span>::{<span class="ident">TimeSpec</span>, <span class="ident">TimeVal</span>};
+<span class="kw">use crate</span>::{<span class="prelude-ty">Result</span>, NixPath, errno::Errno};
+<span class="attribute">#[cfg(not(target_os = <span class="string">&quot;redox&quot;</span>))]
+</span><span class="kw">use </span><span class="kw">crate</span>::fcntl::{AtFlags, at_rawfd};
+<span class="kw">use </span>std::mem;
+<span class="kw">use </span>std::os::unix::io::RawFd;
+<span class="kw">use </span><span class="kw">crate</span>::sys::time::{TimeSpec, TimeVal};
 
 <span class="macro">libc_bitflags!</span>(
-    <span class="doccomment">/// &quot;File type&quot; flags for `mknod` and related functions.</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SFlag</span>: <span class="ident">mode_t</span> {
-        <span class="ident">S_IFIFO</span>;
-        <span class="ident">S_IFCHR</span>;
-        <span class="ident">S_IFDIR</span>;
-        <span class="ident">S_IFBLK</span>;
-        <span class="ident">S_IFREG</span>;
-        <span class="ident">S_IFLNK</span>;
-        <span class="ident">S_IFSOCK</span>;
-        <span class="ident">S_IFMT</span>;
+    <span class="doccomment">/// &quot;File type&quot; flags for `mknod` and related functions.
+    </span><span class="kw">pub struct </span>SFlag: mode_t {
+        S_IFIFO;
+        S_IFCHR;
+        S_IFDIR;
+        S_IFBLK;
+        S_IFREG;
+        S_IFLNK;
+        S_IFSOCK;
+        S_IFMT;
     }
 );
 
-<span class="macro">libc_bitflags!</span> {
-    <span class="doccomment">/// &quot;File mode / permissions&quot; flags.</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Mode</span>: <span class="ident">mode_t</span> {
-        <span class="ident">S_IRWXU</span>;
-        <span class="ident">S_IRUSR</span>;
-        <span class="ident">S_IWUSR</span>;
-        <span class="ident">S_IXUSR</span>;
-        <span class="ident">S_IRWXG</span>;
-        <span class="ident">S_IRGRP</span>;
-        <span class="ident">S_IWGRP</span>;
-        <span class="ident">S_IXGRP</span>;
-        <span class="ident">S_IRWXO</span>;
-        <span class="ident">S_IROTH</span>;
-        <span class="ident">S_IWOTH</span>;
-        <span class="ident">S_IXOTH</span>;
-        <span class="ident">S_ISUID</span> <span class="kw">as</span> <span class="ident">mode_t</span>;
-        <span class="ident">S_ISGID</span> <span class="kw">as</span> <span class="ident">mode_t</span>;
-        <span class="ident">S_ISVTX</span> <span class="kw">as</span> <span class="ident">mode_t</span>;
+<span class="macro">libc_bitflags! </span>{
+    <span class="doccomment">/// &quot;File mode / permissions&quot; flags.
+    </span><span class="kw">pub struct </span>Mode: mode_t {
+        S_IRWXU;
+        S_IRUSR;
+        S_IWUSR;
+        S_IXUSR;
+        S_IRWXG;
+        S_IRGRP;
+        S_IWGRP;
+        S_IXGRP;
+        S_IRWXO;
+        S_IROTH;
+        S_IWOTH;
+        S_IXOTH;
+        S_ISUID <span class="kw">as </span>mode_t;
+        S_ISGID <span class="kw">as </span>mode_t;
+        S_ISVTX <span class="kw">as </span>mode_t;
     }
 }
 
-<span class="doccomment">/// Create a special or ordinary file, by pathname.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mknod</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">NixPath</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">P</span>, <span class="ident">kind</span>: <span class="ident">SFlag</span>, <span class="ident">perm</span>: <span class="ident">Mode</span>, <span class="ident">dev</span>: <span class="ident">dev_t</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">with_nix_path</span>(<span class="op">|</span><span class="ident">cstr</span><span class="op">|</span> <span class="kw">unsafe</span> {
-        <span class="ident">libc::mknod</span>(<span class="ident">cstr</span>.<span class="ident">as_ptr</span>(), <span class="ident">kind</span>.<span class="ident">bits</span> <span class="op">|</span> <span class="ident">perm</span>.<span class="ident">bits</span>() <span class="kw">as</span> <span class="ident">mode_t</span>, <span class="ident">dev</span>)
+<span class="doccomment">/// Create a special or ordinary file, by pathname.
+</span><span class="kw">pub fn </span>mknod&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(path: <span class="kw-2">&amp;</span>P, kind: SFlag, perm: Mode, dev: dev_t) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>res = path.with_nix_path(|cstr| <span class="kw">unsafe </span>{
+        libc::mknod(cstr.as_ptr(), kind.bits | perm.bits() <span class="kw">as </span>mode_t, dev)
     })<span class="question-mark">?</span>;
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+    Errno::result(res).map(drop)
 }
 
-<span class="doccomment">/// Create a special or ordinary file, relative to a given directory.</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>)))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mknodat</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">NixPath</span><span class="op">&gt;</span>(
-    <span class="ident">dirfd</span>: <span class="ident">RawFd</span>,
-    <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">P</span>,
-    <span class="ident">kind</span>: <span class="ident">SFlag</span>,
-    <span class="ident">perm</span>: <span class="ident">Mode</span>,
-    <span class="ident">dev</span>: <span class="ident">dev_t</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">with_nix_path</span>(<span class="op">|</span><span class="ident">cstr</span><span class="op">|</span> <span class="kw">unsafe</span> {
-        <span class="ident">libc::mknodat</span>(<span class="ident">dirfd</span>, <span class="ident">cstr</span>.<span class="ident">as_ptr</span>(), <span class="ident">kind</span>.<span class="ident">bits</span> <span class="op">|</span> <span class="ident">perm</span>.<span class="ident">bits</span>() <span class="kw">as</span> <span class="ident">mode_t</span>, <span class="ident">dev</span>)
+<span class="doccomment">/// Create a special or ordinary file, relative to a given directory.
+</span><span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>, target_os = <span class="string">&quot;redox&quot;</span>)))]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">pub fn </span>mknodat&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(
+    dirfd: RawFd,
+    path: <span class="kw-2">&amp;</span>P,
+    kind: SFlag,
+    perm: Mode,
+    dev: dev_t,
+) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>res = path.with_nix_path(|cstr| <span class="kw">unsafe </span>{
+        libc::mknodat(dirfd, cstr.as_ptr(), kind.bits | perm.bits() <span class="kw">as </span>mode_t, dev)
     })<span class="question-mark">?</span>;
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+    Errno::result(res).map(drop)
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">major</span>(<span class="ident">dev</span>: <span class="ident">dev_t</span>) -&gt; <span class="ident">u64</span> {
-    ((<span class="ident">dev</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">32</span>) <span class="op">&amp;</span> <span class="number">0xffff_f000</span>) <span class="op">|</span>
-    ((<span class="ident">dev</span> <span class="op">&gt;</span><span class="op">&gt;</span>  <span class="number">8</span>) <span class="op">&amp;</span> <span class="number">0x0000_0fff</span>)
+<span class="attribute">#[cfg(target_os = <span class="string">&quot;linux&quot;</span>)]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">pub const fn </span>major(dev: dev_t) -&gt; u64 {
+    ((dev &gt;&gt; <span class="number">32</span>) &amp; <span class="number">0xffff_f000</span>) |
+    ((dev &gt;&gt;  <span class="number">8</span>) &amp; <span class="number">0x0000_0fff</span>)
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">minor</span>(<span class="ident">dev</span>: <span class="ident">dev_t</span>) -&gt; <span class="ident">u64</span> {
-    ((<span class="ident">dev</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">12</span>) <span class="op">&amp;</span> <span class="number">0xffff_ff00</span>) <span class="op">|</span>
-    ((<span class="ident">dev</span>      ) <span class="op">&amp;</span> <span class="number">0x0000_00ff</span>)
+<span class="attribute">#[cfg(target_os = <span class="string">&quot;linux&quot;</span>)]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">pub const fn </span>minor(dev: dev_t) -&gt; u64 {
+    ((dev &gt;&gt; <span class="number">12</span>) &amp; <span class="number">0xffff_ff00</span>) |
+    ((dev      ) &amp; <span class="number">0x0000_00ff</span>)
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">makedev</span>(<span class="ident">major</span>: <span class="ident">u64</span>, <span class="ident">minor</span>: <span class="ident">u64</span>) -&gt; <span class="ident">dev_t</span> {
-    ((<span class="ident">major</span> <span class="op">&amp;</span> <span class="number">0xffff_f000</span>) <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">32</span>) <span class="op">|</span>
-    ((<span class="ident">major</span> <span class="op">&amp;</span> <span class="number">0x0000_0fff</span>) <span class="op">&lt;</span><span class="op">&lt;</span>  <span class="number">8</span>) <span class="op">|</span>
-    ((<span class="ident">minor</span> <span class="op">&amp;</span> <span class="number">0xffff_ff00</span>) <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">12</span>) <span class="op">|</span>
-     (<span class="ident">minor</span> <span class="op">&amp;</span> <span class="number">0x0000_00ff</span>)
+<span class="attribute">#[cfg(target_os = <span class="string">&quot;linux&quot;</span>)]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">pub const fn </span>makedev(major: u64, minor: u64) -&gt; dev_t {
+    ((major &amp; <span class="number">0xffff_f000</span>) &lt;&lt; <span class="number">32</span>) |
+    ((major &amp; <span class="number">0x0000_0fff</span>) &lt;&lt;  <span class="number">8</span>) |
+    ((minor &amp; <span class="number">0xffff_ff00</span>) &lt;&lt; <span class="number">12</span>) |
+     (minor &amp; <span class="number">0x0000_00ff</span>)
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">umask</span>(<span class="ident">mode</span>: <span class="ident">Mode</span>) -&gt; <span class="ident">Mode</span> {
-    <span class="kw">let</span> <span class="ident">prev</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::umask</span>(<span class="ident">mode</span>.<span class="ident">bits</span>() <span class="kw">as</span> <span class="ident">mode_t</span>) };
-    <span class="ident">Mode::from_bits</span>(<span class="ident">prev</span>).<span class="ident">expect</span>(<span class="string">&quot;[BUG] umask returned invalid Mode&quot;</span>)
+<span class="kw">pub fn </span>umask(mode: Mode) -&gt; Mode {
+    <span class="kw">let </span>prev = <span class="kw">unsafe </span>{ libc::umask(mode.bits() <span class="kw">as </span>mode_t) };
+    Mode::from_bits(prev).expect(<span class="string">&quot;[BUG] umask returned invalid Mode&quot;</span>)
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">stat</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">NixPath</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">P</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FileStat</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dst</span> <span class="op">=</span> <span class="ident">mem::MaybeUninit::uninit</span>();
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">with_nix_path</span>(<span class="op">|</span><span class="ident">cstr</span><span class="op">|</span> {
-        <span class="kw">unsafe</span> {
-            <span class="ident">libc::stat</span>(<span class="ident">cstr</span>.<span class="ident">as_ptr</span>(), <span class="ident">dst</span>.<span class="ident">as_mut_ptr</span>())
+<span class="kw">pub fn </span>stat&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(path: <span class="kw-2">&amp;</span>P) -&gt; <span class="prelude-ty">Result</span>&lt;FileStat&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>dst = mem::MaybeUninit::uninit();
+    <span class="kw">let </span>res = path.with_nix_path(|cstr| {
+        <span class="kw">unsafe </span>{
+            libc::stat(cstr.as_ptr(), dst.as_mut_ptr())
         }
     })<span class="question-mark">?</span>;
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>)<span class="question-mark">?</span>;
+    Errno::result(res)<span class="question-mark">?</span>;
 
-    <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span>{<span class="ident">dst</span>.<span class="ident">assume_init</span>()})
+    <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span>{dst.assume_init()})
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lstat</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">NixPath</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">P</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FileStat</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dst</span> <span class="op">=</span> <span class="ident">mem::MaybeUninit::uninit</span>();
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">with_nix_path</span>(<span class="op">|</span><span class="ident">cstr</span><span class="op">|</span> {
-        <span class="kw">unsafe</span> {
-            <span class="ident">libc::lstat</span>(<span class="ident">cstr</span>.<span class="ident">as_ptr</span>(), <span class="ident">dst</span>.<span class="ident">as_mut_ptr</span>())
+<span class="kw">pub fn </span>lstat&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(path: <span class="kw-2">&amp;</span>P) -&gt; <span class="prelude-ty">Result</span>&lt;FileStat&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>dst = mem::MaybeUninit::uninit();
+    <span class="kw">let </span>res = path.with_nix_path(|cstr| {
+        <span class="kw">unsafe </span>{
+            libc::lstat(cstr.as_ptr(), dst.as_mut_ptr())
         }
     })<span class="question-mark">?</span>;
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>)<span class="question-mark">?</span>;
+    Errno::result(res)<span class="question-mark">?</span>;
 
-    <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span>{<span class="ident">dst</span>.<span class="ident">assume_init</span>()})
+    <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span>{dst.assume_init()})
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fstat</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FileStat</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dst</span> <span class="op">=</span> <span class="ident">mem::MaybeUninit::uninit</span>();
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::fstat</span>(<span class="ident">fd</span>, <span class="ident">dst</span>.<span class="ident">as_mut_ptr</span>()) };
+<span class="kw">pub fn </span>fstat(fd: RawFd) -&gt; <span class="prelude-ty">Result</span>&lt;FileStat&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>dst = mem::MaybeUninit::uninit();
+    <span class="kw">let </span>res = <span class="kw">unsafe </span>{ libc::fstat(fd, dst.as_mut_ptr()) };
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>)<span class="question-mark">?</span>;
+    Errno::result(res)<span class="question-mark">?</span>;
 
-    <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span>{<span class="ident">dst</span>.<span class="ident">assume_init</span>()})
+    <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span>{dst.assume_init()})
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fstatat</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">NixPath</span><span class="op">&gt;</span>(<span class="ident">dirfd</span>: <span class="ident">RawFd</span>, <span class="ident">pathname</span>: <span class="kw-2">&amp;</span><span class="ident">P</span>, <span class="ident">f</span>: <span class="ident">AtFlags</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FileStat</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dst</span> <span class="op">=</span> <span class="ident">mem::MaybeUninit::uninit</span>();
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">pathname</span>.<span class="ident">with_nix_path</span>(<span class="op">|</span><span class="ident">cstr</span><span class="op">|</span> {
-        <span class="kw">unsafe</span> { <span class="ident">libc::fstatat</span>(<span class="ident">dirfd</span>, <span class="ident">cstr</span>.<span class="ident">as_ptr</span>(), <span class="ident">dst</span>.<span class="ident">as_mut_ptr</span>(), <span class="ident">f</span>.<span class="ident">bits</span>() <span class="kw">as</span> <span class="ident">libc::c_int</span>) }
+<span class="attribute">#[cfg(not(target_os = <span class="string">&quot;redox&quot;</span>))]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">pub fn </span>fstatat&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(dirfd: RawFd, pathname: <span class="kw-2">&amp;</span>P, f: AtFlags) -&gt; <span class="prelude-ty">Result</span>&lt;FileStat&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>dst = mem::MaybeUninit::uninit();
+    <span class="kw">let </span>res = pathname.with_nix_path(|cstr| {
+        <span class="kw">unsafe </span>{ libc::fstatat(dirfd, cstr.as_ptr(), dst.as_mut_ptr(), f.bits() <span class="kw">as </span>libc::c_int) }
     })<span class="question-mark">?</span>;
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>)<span class="question-mark">?</span>;
+    Errno::result(res)<span class="question-mark">?</span>;
 
-    <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span>{<span class="ident">dst</span>.<span class="ident">assume_init</span>()})
+    <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span>{dst.assume_init()})
 }
 
-<span class="doccomment">/// Change the file permission bits of the file specified by a file descriptor.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [fchmod(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fchmod.html).</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fchmod</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">mode</span>: <span class="ident">Mode</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::fchmod</span>(<span class="ident">fd</span>, <span class="ident">mode</span>.<span class="ident">bits</span>() <span class="kw">as</span> <span class="ident">mode_t</span>) };
+<span class="doccomment">/// Change the file permission bits of the file specified by a file descriptor.
+///
+/// # References
+///
+/// [fchmod(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fchmod.html).
+</span><span class="kw">pub fn </span>fchmod(fd: RawFd, mode: Mode) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>res = <span class="kw">unsafe </span>{ libc::fchmod(fd, mode.bits() <span class="kw">as </span>mode_t) };
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+    Errno::result(res).map(drop)
 }
 
-<span class="doccomment">/// Flags for `fchmodat` function.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">FchmodatFlags</span> {
-    <span class="ident">FollowSymlink</span>,
-    <span class="ident">NoFollowSymlink</span>,
+<span class="doccomment">/// Flags for `fchmodat` function.
+</span><span class="attribute">#[derive(Clone, Copy, Debug)]
+</span><span class="kw">pub enum </span>FchmodatFlags {
+    FollowSymlink,
+    NoFollowSymlink,
 }
 
-<span class="doccomment">/// Change the file permission bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The file to be changed is determined relative to the directory associated</span>
-<span class="doccomment">/// with the file descriptor `dirfd` or the current working directory</span>
-<span class="doccomment">/// if `dirfd` is `None`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// If `flag` is `FchmodatFlags::NoFollowSymlink` and `path` names a symbolic link,</span>
-<span class="doccomment">/// then the mode of the symbolic link is changed.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `fchmodat(None, path, mode, FchmodatFlags::FollowSymlink)` is identical to</span>
-<span class="doccomment">/// a call `libc::chmod(path, mode)`. That&#39;s why `chmod` is unimplemented</span>
-<span class="doccomment">/// in the `nix` crate.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [fchmodat(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fchmodat.html).</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fchmodat</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">NixPath</span><span class="op">&gt;</span>(
-    <span class="ident">dirfd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RawFd</span><span class="op">&gt;</span>,
-    <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">P</span>,
-    <span class="ident">mode</span>: <span class="ident">Mode</span>,
-    <span class="ident">flag</span>: <span class="ident">FchmodatFlags</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">atflag</span> <span class="op">=</span>
-        <span class="kw">match</span> <span class="ident">flag</span> {
-            <span class="ident">FchmodatFlags::FollowSymlink</span> =&gt; <span class="ident">AtFlags::empty</span>(),
-            <span class="ident">FchmodatFlags::NoFollowSymlink</span> =&gt; <span class="ident">AtFlags::AT_SYMLINK_NOFOLLOW</span>,
+<span class="doccomment">/// Change the file permission bits.
+///
+/// The file to be changed is determined relative to the directory associated
+/// with the file descriptor `dirfd` or the current working directory
+/// if `dirfd` is `None`.
+///
+/// If `flag` is `FchmodatFlags::NoFollowSymlink` and `path` names a symbolic link,
+/// then the mode of the symbolic link is changed.
+///
+/// `fchmodat(None, path, mode, FchmodatFlags::FollowSymlink)` is identical to
+/// a call `libc::chmod(path, mode)`. That&#39;s why `chmod` is unimplemented
+/// in the `nix` crate.
+///
+/// # References
+///
+/// [fchmodat(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fchmodat.html).
+</span><span class="attribute">#[cfg(not(target_os = <span class="string">&quot;redox&quot;</span>))]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">pub fn </span>fchmodat&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(
+    dirfd: <span class="prelude-ty">Option</span>&lt;RawFd&gt;,
+    path: <span class="kw-2">&amp;</span>P,
+    mode: Mode,
+    flag: FchmodatFlags,
+) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>atflag =
+        <span class="kw">match </span>flag {
+            FchmodatFlags::FollowSymlink =&gt; AtFlags::empty(),
+            FchmodatFlags::NoFollowSymlink =&gt; AtFlags::AT_SYMLINK_NOFOLLOW,
         };
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">with_nix_path</span>(<span class="op">|</span><span class="ident">cstr</span><span class="op">|</span> <span class="kw">unsafe</span> {
-        <span class="ident">libc::fchmodat</span>(
-            <span class="ident">at_rawfd</span>(<span class="ident">dirfd</span>),
-            <span class="ident">cstr</span>.<span class="ident">as_ptr</span>(),
-            <span class="ident">mode</span>.<span class="ident">bits</span>() <span class="kw">as</span> <span class="ident">mode_t</span>,
-            <span class="ident">atflag</span>.<span class="ident">bits</span>() <span class="kw">as</span> <span class="ident">libc::c_int</span>,
+    <span class="kw">let </span>res = path.with_nix_path(|cstr| <span class="kw">unsafe </span>{
+        libc::fchmodat(
+            at_rawfd(dirfd),
+            cstr.as_ptr(),
+            mode.bits() <span class="kw">as </span>mode_t,
+            atflag.bits() <span class="kw">as </span>libc::c_int,
         )
     })<span class="question-mark">?</span>;
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+    Errno::result(res).map(drop)
 }
 
-<span class="doccomment">/// Change the access and modification times of a file.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `utimes(path, times)` is identical to</span>
-<span class="doccomment">/// `utimensat(None, path, times, UtimensatFlags::FollowSymlink)`. The former</span>
-<span class="doccomment">/// is a deprecated API so prefer using the latter if the platforms you care</span>
-<span class="doccomment">/// about support it.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [utimes(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/utimes.html).</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">utimes</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">NixPath</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">P</span>, <span class="ident">atime</span>: <span class="kw-2">&amp;</span><span class="ident">TimeVal</span>, <span class="ident">mtime</span>: <span class="kw-2">&amp;</span><span class="ident">TimeVal</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">times</span>: [<span class="ident">libc::timeval</span>; <span class="number">2</span>] <span class="op">=</span> [<span class="kw-2">*</span><span class="ident">atime</span>.<span class="ident">as_ref</span>(), <span class="kw-2">*</span><span class="ident">mtime</span>.<span class="ident">as_ref</span>()];
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">with_nix_path</span>(<span class="op">|</span><span class="ident">cstr</span><span class="op">|</span> <span class="kw">unsafe</span> {
-        <span class="ident">libc::utimes</span>(<span class="ident">cstr</span>.<span class="ident">as_ptr</span>(), <span class="kw-2">&amp;</span><span class="ident">times</span>[<span class="number">0</span>])
+<span class="doccomment">/// Change the access and modification times of a file.
+///
+/// `utimes(path, times)` is identical to
+/// `utimensat(None, path, times, UtimensatFlags::FollowSymlink)`. The former
+/// is a deprecated API so prefer using the latter if the platforms you care
+/// about support it.
+///
+/// # References
+///
+/// [utimes(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/utimes.html).
+</span><span class="kw">pub fn </span>utimes&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(path: <span class="kw-2">&amp;</span>P, atime: <span class="kw-2">&amp;</span>TimeVal, mtime: <span class="kw-2">&amp;</span>TimeVal) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>times: [libc::timeval; <span class="number">2</span>] = [<span class="kw-2">*</span>atime.as_ref(), <span class="kw-2">*</span>mtime.as_ref()];
+    <span class="kw">let </span>res = path.with_nix_path(|cstr| <span class="kw">unsafe </span>{
+        libc::utimes(cstr.as_ptr(), <span class="kw-2">&amp;</span>times[<span class="number">0</span>])
     })<span class="question-mark">?</span>;
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+    Errno::result(res).map(drop)
 }
 
-<span class="doccomment">/// Change the access and modification times of a file without following symlinks.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `lutimes(path, times)` is identical to</span>
-<span class="doccomment">/// `utimensat(None, path, times, UtimensatFlags::NoFollowSymlink)`. The former</span>
-<span class="doccomment">/// is a deprecated API so prefer using the latter if the platforms you care</span>
-<span class="doccomment">/// about support it.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [lutimes(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/lutimes.html).</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
-          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;haiku&quot;</span>,
-          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
-          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
-          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
-          <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lutimes</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">NixPath</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">P</span>, <span class="ident">atime</span>: <span class="kw-2">&amp;</span><span class="ident">TimeVal</span>, <span class="ident">mtime</span>: <span class="kw-2">&amp;</span><span class="ident">TimeVal</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">times</span>: [<span class="ident">libc::timeval</span>; <span class="number">2</span>] <span class="op">=</span> [<span class="kw-2">*</span><span class="ident">atime</span>.<span class="ident">as_ref</span>(), <span class="kw-2">*</span><span class="ident">mtime</span>.<span class="ident">as_ref</span>()];
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">with_nix_path</span>(<span class="op">|</span><span class="ident">cstr</span><span class="op">|</span> <span class="kw">unsafe</span> {
-        <span class="ident">libc::lutimes</span>(<span class="ident">cstr</span>.<span class="ident">as_ptr</span>(), <span class="kw-2">&amp;</span><span class="ident">times</span>[<span class="number">0</span>])
+<span class="doccomment">/// Change the access and modification times of a file without following symlinks.
+///
+/// `lutimes(path, times)` is identical to
+/// `utimensat(None, path, times, UtimensatFlags::NoFollowSymlink)`. The former
+/// is a deprecated API so prefer using the latter if the platforms you care
+/// about support it.
+///
+/// # References
+///
+/// [lutimes(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/lutimes.html).
+</span><span class="attribute">#[cfg(any(target_os = <span class="string">&quot;linux&quot;</span>,
+          target_os = <span class="string">&quot;haiku&quot;</span>,
+          target_os = <span class="string">&quot;ios&quot;</span>,
+          target_os = <span class="string">&quot;macos&quot;</span>,
+          target_os = <span class="string">&quot;freebsd&quot;</span>,
+          target_os = <span class="string">&quot;netbsd&quot;</span>))]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">pub fn </span>lutimes&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(path: <span class="kw-2">&amp;</span>P, atime: <span class="kw-2">&amp;</span>TimeVal, mtime: <span class="kw-2">&amp;</span>TimeVal) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>times: [libc::timeval; <span class="number">2</span>] = [<span class="kw-2">*</span>atime.as_ref(), <span class="kw-2">*</span>mtime.as_ref()];
+    <span class="kw">let </span>res = path.with_nix_path(|cstr| <span class="kw">unsafe </span>{
+        libc::lutimes(cstr.as_ptr(), <span class="kw-2">&amp;</span>times[<span class="number">0</span>])
     })<span class="question-mark">?</span>;
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+    Errno::result(res).map(drop)
 }
 
-<span class="doccomment">/// Change the access and modification times of the file specified by a file descriptor.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [futimens(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/futimens.html).</span>
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">futimens</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">atime</span>: <span class="kw-2">&amp;</span><span class="ident">TimeSpec</span>, <span class="ident">mtime</span>: <span class="kw-2">&amp;</span><span class="ident">TimeSpec</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">times</span>: [<span class="ident">libc::timespec</span>; <span class="number">2</span>] <span class="op">=</span> [<span class="kw-2">*</span><span class="ident">atime</span>.<span class="ident">as_ref</span>(), <span class="kw-2">*</span><span class="ident">mtime</span>.<span class="ident">as_ref</span>()];
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::futimens</span>(<span class="ident">fd</span>, <span class="kw-2">&amp;</span><span class="ident">times</span>[<span class="number">0</span>]) };
+<span class="doccomment">/// Change the access and modification times of the file specified by a file descriptor.
+///
+/// # References
+///
+/// [futimens(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/futimens.html).
+</span><span class="attribute">#[inline]
+</span><span class="kw">pub fn </span>futimens(fd: RawFd, atime: <span class="kw-2">&amp;</span>TimeSpec, mtime: <span class="kw-2">&amp;</span>TimeSpec) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>times: [libc::timespec; <span class="number">2</span>] = [<span class="kw-2">*</span>atime.as_ref(), <span class="kw-2">*</span>mtime.as_ref()];
+    <span class="kw">let </span>res = <span class="kw">unsafe </span>{ libc::futimens(fd, <span class="kw-2">&amp;</span>times[<span class="number">0</span>]) };
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+    Errno::result(res).map(drop)
 }
 
-<span class="doccomment">/// Flags for `utimensat` function.</span>
-<span class="comment">// TODO: replace with fcntl::AtFlags</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">UtimensatFlags</span> {
-    <span class="ident">FollowSymlink</span>,
-    <span class="ident">NoFollowSymlink</span>,
+<span class="doccomment">/// Flags for `utimensat` function.
+</span><span class="comment">// TODO: replace with fcntl::AtFlags
+</span><span class="attribute">#[derive(Clone, Copy, Debug)]
+</span><span class="kw">pub enum </span>UtimensatFlags {
+    FollowSymlink,
+    NoFollowSymlink,
 }
 
-<span class="doccomment">/// Change the access and modification times of a file.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The file to be changed is determined relative to the directory associated</span>
-<span class="doccomment">/// with the file descriptor `dirfd` or the current working directory</span>
-<span class="doccomment">/// if `dirfd` is `None`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// If `flag` is `UtimensatFlags::NoFollowSymlink` and `path` names a symbolic link,</span>
-<span class="doccomment">/// then the mode of the symbolic link is changed.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `utimensat(None, path, times, UtimensatFlags::FollowSymlink)` is identical to</span>
-<span class="doccomment">/// `utimes(path, times)`. The latter is a deprecated API so prefer using the</span>
-<span class="doccomment">/// former if the platforms you care about support it.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [utimensat(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/utimens.html).</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">utimensat</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">NixPath</span><span class="op">&gt;</span>(
-    <span class="ident">dirfd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RawFd</span><span class="op">&gt;</span>,
-    <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">P</span>,
-    <span class="ident">atime</span>: <span class="kw-2">&amp;</span><span class="ident">TimeSpec</span>,
-    <span class="ident">mtime</span>: <span class="kw-2">&amp;</span><span class="ident">TimeSpec</span>,
-    <span class="ident">flag</span>: <span class="ident">UtimensatFlags</span>
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">atflag</span> <span class="op">=</span>
-        <span class="kw">match</span> <span class="ident">flag</span> {
-            <span class="ident">UtimensatFlags::FollowSymlink</span> =&gt; <span class="ident">AtFlags::empty</span>(),
-            <span class="ident">UtimensatFlags::NoFollowSymlink</span> =&gt; <span class="ident">AtFlags::AT_SYMLINK_NOFOLLOW</span>,
+<span class="doccomment">/// Change the access and modification times of a file.
+///
+/// The file to be changed is determined relative to the directory associated
+/// with the file descriptor `dirfd` or the current working directory
+/// if `dirfd` is `None`.
+///
+/// If `flag` is `UtimensatFlags::NoFollowSymlink` and `path` names a symbolic link,
+/// then the mode of the symbolic link is changed.
+///
+/// `utimensat(None, path, times, UtimensatFlags::FollowSymlink)` is identical to
+/// `utimes(path, times)`. The latter is a deprecated API so prefer using the
+/// former if the platforms you care about support it.
+///
+/// # References
+///
+/// [utimensat(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/utimens.html).
+</span><span class="attribute">#[cfg(not(target_os = <span class="string">&quot;redox&quot;</span>))]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">pub fn </span>utimensat&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(
+    dirfd: <span class="prelude-ty">Option</span>&lt;RawFd&gt;,
+    path: <span class="kw-2">&amp;</span>P,
+    atime: <span class="kw-2">&amp;</span>TimeSpec,
+    mtime: <span class="kw-2">&amp;</span>TimeSpec,
+    flag: UtimensatFlags
+) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>atflag =
+        <span class="kw">match </span>flag {
+            UtimensatFlags::FollowSymlink =&gt; AtFlags::empty(),
+            UtimensatFlags::NoFollowSymlink =&gt; AtFlags::AT_SYMLINK_NOFOLLOW,
         };
-    <span class="kw">let</span> <span class="ident">times</span>: [<span class="ident">libc::timespec</span>; <span class="number">2</span>] <span class="op">=</span> [<span class="kw-2">*</span><span class="ident">atime</span>.<span class="ident">as_ref</span>(), <span class="kw-2">*</span><span class="ident">mtime</span>.<span class="ident">as_ref</span>()];
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">with_nix_path</span>(<span class="op">|</span><span class="ident">cstr</span><span class="op">|</span> <span class="kw">unsafe</span> {
-        <span class="ident">libc::utimensat</span>(
-            <span class="ident">at_rawfd</span>(<span class="ident">dirfd</span>),
-            <span class="ident">cstr</span>.<span class="ident">as_ptr</span>(),
-            <span class="kw-2">&amp;</span><span class="ident">times</span>[<span class="number">0</span>],
-            <span class="ident">atflag</span>.<span class="ident">bits</span>() <span class="kw">as</span> <span class="ident">libc::c_int</span>,
+    <span class="kw">let </span>times: [libc::timespec; <span class="number">2</span>] = [<span class="kw-2">*</span>atime.as_ref(), <span class="kw-2">*</span>mtime.as_ref()];
+    <span class="kw">let </span>res = path.with_nix_path(|cstr| <span class="kw">unsafe </span>{
+        libc::utimensat(
+            at_rawfd(dirfd),
+            cstr.as_ptr(),
+            <span class="kw-2">&amp;</span>times[<span class="number">0</span>],
+            atflag.bits() <span class="kw">as </span>libc::c_int,
         )
     })<span class="question-mark">?</span>;
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+    Errno::result(res).map(drop)
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mkdirat</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">NixPath</span><span class="op">&gt;</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">P</span>, <span class="ident">mode</span>: <span class="ident">Mode</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">with_nix_path</span>(<span class="op">|</span><span class="ident">cstr</span><span class="op">|</span> {
-        <span class="kw">unsafe</span> { <span class="ident">libc::mkdirat</span>(<span class="ident">fd</span>, <span class="ident">cstr</span>.<span class="ident">as_ptr</span>(), <span class="ident">mode</span>.<span class="ident">bits</span>() <span class="kw">as</span> <span class="ident">mode_t</span>) }
+<span class="attribute">#[cfg(not(target_os = <span class="string">&quot;redox&quot;</span>))]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">pub fn </span>mkdirat&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(fd: RawFd, path: <span class="kw-2">&amp;</span>P, mode: Mode) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>res = path.with_nix_path(|cstr| {
+        <span class="kw">unsafe </span>{ libc::mkdirat(fd, cstr.as_ptr(), mode.bits() <span class="kw">as </span>mode_t) }
     })<span class="question-mark">?</span>;
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+    Errno::result(res).map(drop)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

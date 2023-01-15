@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-server-0.29.5/src/rust_imp/event_loop_glue.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>event_loop_glue.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../wayland_server/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../wayland_server/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../wayland_server/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-server-0.29.5/src/rust_imp/event_loop_glue.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>event_loop_glue.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../wayland_server/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -91,88 +91,88 @@
 <span id="91">91</span>
 <span id="92">92</span>
 <span id="93">93</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::cell::RefCell</span>;
-<span class="kw">use</span> <span class="ident">std::os::unix::io::RawFd</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>std::cell::RefCell;
+<span class="kw">use </span>std::os::unix::io::RawFd;
 
-<span class="kw">use</span> <span class="ident">nix::sys::epoll</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>nix::sys::epoll::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::DispatchData</span>;
+<span class="kw">use </span><span class="kw">crate</span>::DispatchData;
 
-<span class="kw">type</span> <span class="ident">FdData</span> <span class="op">=</span> (<span class="ident">RawFd</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnMut</span>(<span class="ident"><span class="kw">crate</span>::DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>)<span class="op">&gt;</span><span class="op">&gt;</span>);
+<span class="kw">type </span>FdData = (RawFd, <span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">dyn </span>FnMut(<span class="kw">crate</span>::DispatchData&lt;<span class="lifetime">&#39;_</span>&gt;)&gt;&gt;);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">Token</span>(<span class="ident">usize</span>);
+<span class="attribute">#[derive(Copy, Clone)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>Token(usize);
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">FdManager</span> {
-    <span class="ident">epoll_fd</span>: <span class="ident">RawFd</span>,
-    <span class="ident">callbacks</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">FdData</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>FdManager {
+    epoll_fd: RawFd,
+    callbacks: RefCell&lt;Vec&lt;<span class="prelude-ty">Option</span>&lt;FdData&gt;&gt;&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">FdManager</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">nix::Result</span><span class="op">&lt;</span><span class="ident">FdManager</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">fd</span> <span class="op">=</span> <span class="ident">epoll_create1</span>(<span class="ident">EpollCreateFlags::EPOLL_CLOEXEC</span>)<span class="question-mark">?</span>;
+<span class="kw">impl </span>FdManager {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new() -&gt; nix::Result&lt;FdManager&gt; {
+        <span class="kw">let </span>fd = epoll_create1(EpollCreateFlags::EPOLL_CLOEXEC)<span class="question-mark">?</span>;
 
-        <span class="prelude-val">Ok</span>(<span class="ident">FdManager</span> { <span class="ident">epoll_fd</span>: <span class="ident">fd</span>, <span class="ident">callbacks</span>: <span class="ident">RefCell::new</span>(<span class="ident">Vec::new</span>()) })
+        <span class="prelude-val">Ok</span>(FdManager { epoll_fd: fd, callbacks: RefCell::new(Vec::new()) })
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">register</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>register&lt;F: FnMut(DispatchData&lt;<span class="lifetime">&#39;_</span>&gt;) + <span class="lifetime">&#39;static</span>&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">fd</span>: <span class="ident">RawFd</span>,
-        <span class="ident">cb</span>: <span class="ident">F</span>,
-    ) -&gt; <span class="ident">nix::Result</span><span class="op">&lt;</span><span class="ident">Token</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">callbacks</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">callbacks</span>.<span class="ident">borrow_mut</span>();
-        <span class="comment">// find the first free id</span>
-        <span class="kw">let</span> <span class="ident">free_id</span> <span class="op">=</span> <span class="ident">callbacks</span>.<span class="ident">iter</span>().<span class="ident">position</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">is_none</span>());
-        <span class="kw">let</span> <span class="ident">cb</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Box::new</span>(<span class="ident">cb</span>) <span class="kw">as</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnMut</span>(<span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>)<span class="op">&gt;</span>);
-        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">free_id</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">i</span>) =&gt; {
-                <span class="ident">callbacks</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="ident">fd</span>, <span class="ident">cb</span>));
-                <span class="ident">i</span>
+        fd: RawFd,
+        cb: F,
+    ) -&gt; nix::Result&lt;Token&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>callbacks = <span class="self">self</span>.callbacks.borrow_mut();
+        <span class="comment">// find the first free id
+        </span><span class="kw">let </span>free_id = callbacks.iter().position(|c| c.is_none());
+        <span class="kw">let </span>cb = <span class="prelude-val">Some</span>(Box::new(cb) <span class="kw">as </span>Box&lt;<span class="kw">dyn </span>FnMut(DispatchData&lt;<span class="lifetime">&#39;_</span>&gt;)&gt;);
+        <span class="kw">let </span>id = <span class="kw">match </span>free_id {
+            <span class="prelude-val">Some</span>(i) =&gt; {
+                callbacks[i] = <span class="prelude-val">Some</span>((fd, cb));
+                i
             }
-            <span class="prelude-val">None</span> =&gt; {
-                <span class="ident">callbacks</span>.<span class="ident">push</span>(<span class="prelude-val">Some</span>((<span class="ident">fd</span>, <span class="ident">cb</span>)));
-                <span class="ident">callbacks</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>
-            }
+            <span class="prelude-val">None </span>=&gt; {
+                callbacks.push(<span class="prelude-val">Some</span>((fd, cb)));
+                callbacks.len() - <span class="number">1
+            </span>}
         };
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">evt</span> <span class="op">=</span> <span class="ident">EpollEvent::new</span>(<span class="ident">EpollFlags::EPOLLIN</span>, <span class="ident">id</span> <span class="kw">as</span> <span class="ident">u64</span>);
-        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">epoll_ctl</span>(<span class="self">self</span>.<span class="ident">epoll_fd</span>, <span class="ident">EpollOp::EpollCtlAdd</span>, <span class="ident">fd</span>, <span class="kw-2">&amp;mut</span> <span class="ident">evt</span>);
-        <span class="kw">match</span> <span class="ident">ret</span> {
-            <span class="prelude-val">Ok</span>(()) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Token</span>(<span class="ident">id</span>)),
-            <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; {
-                <span class="ident">callbacks</span>[<span class="ident">id</span>] <span class="op">=</span> <span class="prelude-val">None</span>;
-                <span class="prelude-val">Err</span>(<span class="ident">e</span>)
+        <span class="kw">let </span><span class="kw-2">mut </span>evt = EpollEvent::new(EpollFlags::EPOLLIN, id <span class="kw">as </span>u64);
+        <span class="kw">let </span>ret = epoll_ctl(<span class="self">self</span>.epoll_fd, EpollOp::EpollCtlAdd, fd, <span class="kw-2">&amp;mut </span>evt);
+        <span class="kw">match </span>ret {
+            <span class="prelude-val">Ok</span>(()) =&gt; <span class="prelude-val">Ok</span>(Token(id)),
+            <span class="prelude-val">Err</span>(e) =&gt; {
+                callbacks[id] = <span class="prelude-val">None</span>;
+                <span class="prelude-val">Err</span>(e)
             }
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">deregister</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="ident">Token</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">fd</span>, <span class="kw">_</span>)) <span class="op">=</span> <span class="self">self</span>.<span class="ident">callbacks</span>.<span class="ident">borrow_mut</span>()[<span class="ident">token</span>.<span class="number">0</span>].<span class="ident">take</span>() {
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">epoll_ctl</span>(<span class="self">self</span>.<span class="ident">epoll_fd</span>, <span class="ident">EpollOp::EpollCtlDel</span>, <span class="ident">fd</span>, <span class="prelude-val">None</span>);
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>deregister(<span class="kw-2">&amp;</span><span class="self">self</span>, token: Token) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>((fd, <span class="kw">_</span>)) = <span class="self">self</span>.callbacks.borrow_mut()[token.<span class="number">0</span>].take() {
+            <span class="kw">let _ </span>= epoll_ctl(<span class="self">self</span>.epoll_fd, EpollOp::EpollCtlDel, fd, <span class="prelude-val">None</span>);
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">timeout</span>: <span class="ident">i32</span>, <span class="kw-2">mut</span> <span class="ident">data</span>: <span class="ident"><span class="kw">crate</span>::DispatchData</span>) -&gt; <span class="ident">nix::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">events</span> <span class="op">=</span> [<span class="ident">EpollEvent::empty</span>(); <span class="number">32</span>];
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">epoll_wait</span>(<span class="self">self</span>.<span class="ident">epoll_fd</span>, <span class="kw-2">&amp;mut</span> <span class="ident">events</span>, <span class="ident">timeout</span> <span class="kw">as</span> <span class="ident">isize</span>)<span class="question-mark">?</span>;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>poll(<span class="kw-2">&amp;</span><span class="self">self</span>, timeout: i32, <span class="kw-2">mut </span>data: <span class="kw">crate</span>::DispatchData) -&gt; nix::Result&lt;()&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>events = [EpollEvent::empty(); <span class="number">32</span>];
+        <span class="kw">let </span>n = epoll_wait(<span class="self">self</span>.epoll_fd, <span class="kw-2">&amp;mut </span>events, timeout <span class="kw">as </span>isize)<span class="question-mark">?</span>;
 
-        <span class="kw">for</span> <span class="ident">event</span> <span class="kw">in</span> <span class="ident">events</span>.<span class="ident">iter</span>().<span class="ident">take</span>(<span class="ident">n</span>) {
-            <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">event</span>.<span class="ident">data</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="comment">// remove the cb while we call it, to gracefully handle reentrancy</span>
-            <span class="kw">let</span> <span class="ident">cb</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">callbacks</span>.<span class="ident">borrow_mut</span>()[<span class="ident">id</span>].<span class="ident">as_mut</span>().<span class="ident">and_then</span>(<span class="op">|</span>(<span class="kw">_</span>, <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">cb</span>)<span class="op">|</span> <span class="ident">cb</span>.<span class="ident">take</span>());
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">cb</span>) <span class="op">=</span> <span class="ident">cb</span> {
-                <span class="ident">cb</span>(<span class="ident">data</span>.<span class="ident">reborrow</span>());
-                <span class="comment">// now, put it back in place</span>
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">place</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">callbacks</span>.<span class="ident">borrow_mut</span>()[<span class="ident">id</span>] {
-                    <span class="kw">if</span> <span class="ident">place</span>.<span class="number">1</span>.<span class="ident">is_none</span>() {
-                        <span class="ident">place</span>.<span class="number">1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">cb</span>)
+        <span class="kw">for </span>event <span class="kw">in </span>events.iter().take(n) {
+            <span class="kw">let </span>id = event.data() <span class="kw">as </span>usize;
+            <span class="comment">// remove the cb while we call it, to gracefully handle reentrancy
+            </span><span class="kw">let </span>cb = <span class="self">self</span>.callbacks.borrow_mut()[id].as_mut().and_then(|(<span class="kw">_</span>, <span class="kw-2">ref mut </span>cb)| cb.take());
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>cb) = cb {
+                cb(data.reborrow());
+                <span class="comment">// now, put it back in place
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>place) = <span class="self">self</span>.callbacks.borrow_mut()[id] {
+                    <span class="kw">if </span>place.<span class="number">1</span>.is_none() {
+                        place.<span class="number">1 </span>= <span class="prelude-val">Some</span>(cb)
                     }
-                    <span class="comment">// if there is already something here, this means that our callback has been</span>
-                    <span class="comment">// deleted and replaced by a new one while `cb` was running, in which case we should</span>
-                    <span class="comment">// not put it back in place</span>
-                }
-            <span class="comment">// If self.callbacks[id] is None, this means that our callback has been deleted while running,</span>
-            <span class="comment">// in which case we should not put it back in place</span>
-            } <span class="kw">else</span> {
+                    <span class="comment">// if there is already something here, this means that our callback has been
+                    // deleted and replaced by a new one while `cb` was running, in which case we should
+                    // not put it back in place
+                </span>}
+            <span class="comment">// If self.callbacks[id] is None, this means that our callback has been deleted while running,
+            // in which case we should not put it back in place
+            </span>} <span class="kw">else </span>{
                 <span class="macro">panic!</span>(<span class="string">&quot;Received a readiness for a deregistered fd?!&quot;</span>);
             }
         }
@@ -180,9 +180,9 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_poll_fd</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">RawFd</span> {
-        <span class="self">self</span>.<span class="ident">epoll_fd</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_poll_fd(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RawFd {
+        <span class="self">self</span>.epoll_fd
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="wayland_server" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="wayland_server" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

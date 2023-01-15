@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.2/src/sys/epoll.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>epoll.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../nix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.3/src/sys/epoll.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>epoll.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../nix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -106,113 +106,113 @@
 <span id="106">106</span>
 <span id="107">107</span>
 <span id="108">108</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::Result</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errno::Errno</span>;
-<span class="kw">use</span> <span class="ident">libc</span>::{<span class="self">self</span>, <span class="ident">c_int</span>};
-<span class="kw">use</span> <span class="ident">std::os::unix::io::RawFd</span>;
-<span class="kw">use</span> <span class="ident">std::ptr</span>;
-<span class="kw">use</span> <span class="ident">std::mem</span>;
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::Result;
+<span class="kw">use </span><span class="kw">crate</span>::errno::Errno;
+<span class="kw">use </span>libc::{<span class="self">self</span>, c_int};
+<span class="kw">use </span>std::os::unix::io::RawFd;
+<span class="kw">use </span>std::ptr;
+<span class="kw">use </span>std::mem;
 
 <span class="macro">libc_bitflags!</span>(
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EpollFlags</span>: <span class="ident">c_int</span> {
-        <span class="ident">EPOLLIN</span>;
-        <span class="ident">EPOLLPRI</span>;
-        <span class="ident">EPOLLOUT</span>;
-        <span class="ident">EPOLLRDNORM</span>;
-        <span class="ident">EPOLLRDBAND</span>;
-        <span class="ident">EPOLLWRNORM</span>;
-        <span class="ident">EPOLLWRBAND</span>;
-        <span class="ident">EPOLLMSG</span>;
-        <span class="ident">EPOLLERR</span>;
-        <span class="ident">EPOLLHUP</span>;
-        <span class="ident">EPOLLRDHUP</span>;
-        <span class="ident">EPOLLEXCLUSIVE</span>;
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;mips&quot;</span>))]</span>
-        <span class="ident">EPOLLWAKEUP</span>;
-        <span class="ident">EPOLLONESHOT</span>;
-        <span class="ident">EPOLLET</span>;
+    <span class="kw">pub struct </span>EpollFlags: c_int {
+        EPOLLIN;
+        EPOLLPRI;
+        EPOLLOUT;
+        EPOLLRDNORM;
+        EPOLLRDBAND;
+        EPOLLWRNORM;
+        EPOLLWRBAND;
+        EPOLLMSG;
+        EPOLLERR;
+        EPOLLHUP;
+        EPOLLRDHUP;
+        EPOLLEXCLUSIVE;
+        <span class="attribute">#[cfg(not(target_arch = <span class="string">&quot;mips&quot;</span>))]
+        </span>EPOLLWAKEUP;
+        EPOLLONESHOT;
+        EPOLLET;
     }
 );
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">i32</span>)]</span>
-<span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">EpollOp</span> {
-    <span class="ident">EpollCtlAdd</span> <span class="op">=</span> <span class="ident">libc::EPOLL_CTL_ADD</span>,
-    <span class="ident">EpollCtlDel</span> <span class="op">=</span> <span class="ident">libc::EPOLL_CTL_DEL</span>,
-    <span class="ident">EpollCtlMod</span> <span class="op">=</span> <span class="ident">libc::EPOLL_CTL_MOD</span>,
+<span class="attribute">#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[repr(i32)]
+#[non_exhaustive]
+</span><span class="kw">pub enum </span>EpollOp {
+    EpollCtlAdd = libc::EPOLL_CTL_ADD,
+    EpollCtlDel = libc::EPOLL_CTL_DEL,
+    EpollCtlMod = libc::EPOLL_CTL_MOD,
 }
 
 <span class="macro">libc_bitflags!</span>{
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EpollCreateFlags</span>: <span class="ident">c_int</span> {
-        <span class="ident">EPOLL_CLOEXEC</span>;
+    <span class="kw">pub struct </span>EpollCreateFlags: c_int {
+        EPOLL_CLOEXEC;
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EpollEvent</span> {
-    <span class="ident">event</span>: <span class="ident">libc::epoll_event</span>,
+<span class="attribute">#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[repr(transparent)]
+</span><span class="kw">pub struct </span>EpollEvent {
+    event: libc::epoll_event,
 }
 
-<span class="kw">impl</span> <span class="ident">EpollEvent</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">events</span>: <span class="ident">EpollFlags</span>, <span class="ident">data</span>: <span class="ident">u64</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">EpollEvent</span> { <span class="ident">event</span>: <span class="ident">libc::epoll_event</span> { <span class="ident">events</span>: <span class="ident">events</span>.<span class="ident">bits</span>() <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">u64</span>: <span class="ident">data</span> } }
+<span class="kw">impl </span>EpollEvent {
+    <span class="kw">pub fn </span>new(events: EpollFlags, data: u64) -&gt; <span class="self">Self </span>{
+        EpollEvent { event: libc::epoll_event { events: events.bits() <span class="kw">as </span>u32, u64: data } }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">empty</span>() -&gt; <span class="self">Self</span> {
-        <span class="kw">unsafe</span> { <span class="ident">mem::zeroed</span>::<span class="op">&lt;</span><span class="ident">EpollEvent</span><span class="op">&gt;</span>() }
+    <span class="kw">pub fn </span>empty() -&gt; <span class="self">Self </span>{
+        <span class="kw">unsafe </span>{ mem::zeroed::&lt;EpollEvent&gt;() }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">events</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">EpollFlags</span> {
-        <span class="ident">EpollFlags::from_bits</span>(<span class="self">self</span>.<span class="ident">event</span>.<span class="ident">events</span> <span class="kw">as</span> <span class="ident">c_int</span>).<span class="ident">unwrap</span>()
+    <span class="kw">pub fn </span>events(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; EpollFlags {
+        EpollFlags::from_bits(<span class="self">self</span>.event.events <span class="kw">as </span>c_int).unwrap()
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u64</span> {
-        <span class="self">self</span>.<span class="ident">event</span>.<span class="ident">u64</span>
+    <span class="kw">pub fn </span>data(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
+        <span class="self">self</span>.event.u64
     }
 }
 
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">epoll_create</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">RawFd</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::epoll_create</span>(<span class="number">1024</span>) };
+<span class="attribute">#[inline]
+</span><span class="kw">pub fn </span>epoll_create() -&gt; <span class="prelude-ty">Result</span>&lt;RawFd&gt; {
+    <span class="kw">let </span>res = <span class="kw">unsafe </span>{ libc::epoll_create(<span class="number">1024</span>) };
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>)
+    Errno::result(res)
 }
 
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">epoll_create1</span>(<span class="ident">flags</span>: <span class="ident">EpollCreateFlags</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">RawFd</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::epoll_create1</span>(<span class="ident">flags</span>.<span class="ident">bits</span>()) };
+<span class="attribute">#[inline]
+</span><span class="kw">pub fn </span>epoll_create1(flags: EpollCreateFlags) -&gt; <span class="prelude-ty">Result</span>&lt;RawFd&gt; {
+    <span class="kw">let </span>res = <span class="kw">unsafe </span>{ libc::epoll_create1(flags.bits()) };
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>)
+    Errno::result(res)
 }
 
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">epoll_ctl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">epfd</span>: <span class="ident">RawFd</span>, <span class="ident">op</span>: <span class="ident">EpollOp</span>, <span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">event</span>: <span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">EpollEvent</span><span class="op">&gt;</span><span class="op">&gt;</span>
+<span class="attribute">#[inline]
+</span><span class="kw">pub fn </span>epoll_ctl&lt;<span class="lifetime">&#39;a</span>, T&gt;(epfd: RawFd, op: EpollOp, fd: RawFd, event: T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">where </span>T: Into&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>EpollEvent&gt;&gt;
 {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">event</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;mut</span> <span class="ident">EpollEvent</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">event</span>.<span class="ident">into</span>();
-    <span class="kw">if</span> <span class="ident">event</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">op</span> <span class="op">!</span><span class="op">=</span> <span class="ident">EpollOp::EpollCtlDel</span> {
-        <span class="prelude-val">Err</span>(<span class="ident">Errno::EINVAL</span>)
-    } <span class="kw">else</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">event</span>) <span class="op">=</span> <span class="ident">event</span> {
-                <span class="ident">libc::epoll_ctl</span>(<span class="ident">epfd</span>, <span class="ident">op</span> <span class="kw">as</span> <span class="ident">c_int</span>, <span class="ident">fd</span>, <span class="kw-2">&amp;mut</span> <span class="ident">event</span>.<span class="ident">event</span>)
-            } <span class="kw">else</span> {
-                <span class="ident">libc::epoll_ctl</span>(<span class="ident">epfd</span>, <span class="ident">op</span> <span class="kw">as</span> <span class="ident">c_int</span>, <span class="ident">fd</span>, <span class="ident">ptr::null_mut</span>())
+    <span class="kw">let </span><span class="kw-2">mut </span>event: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>EpollEvent&gt; = event.into();
+    <span class="kw">if </span>event.is_none() &amp;&amp; op != EpollOp::EpollCtlDel {
+        <span class="prelude-val">Err</span>(Errno::EINVAL)
+    } <span class="kw">else </span>{
+        <span class="kw">let </span>res = <span class="kw">unsafe </span>{
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>event) = event {
+                libc::epoll_ctl(epfd, op <span class="kw">as </span>c_int, fd, <span class="kw-2">&amp;mut </span>event.event)
+            } <span class="kw">else </span>{
+                libc::epoll_ctl(epfd, op <span class="kw">as </span>c_int, fd, ptr::null_mut())
             }
         };
-        <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+        Errno::result(res).map(drop)
     }
 }
 
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">epoll_wait</span>(<span class="ident">epfd</span>: <span class="ident">RawFd</span>, <span class="ident">events</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">EpollEvent</span>], <span class="ident">timeout_ms</span>: <span class="ident">isize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-        <span class="ident">libc::epoll_wait</span>(<span class="ident">epfd</span>, <span class="ident">events</span>.<span class="ident">as_mut_ptr</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">libc::epoll_event</span>, <span class="ident">events</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">c_int</span>, <span class="ident">timeout_ms</span> <span class="kw">as</span> <span class="ident">c_int</span>)
+<span class="attribute">#[inline]
+</span><span class="kw">pub fn </span>epoll_wait(epfd: RawFd, events: <span class="kw-2">&amp;mut </span>[EpollEvent], timeout_ms: isize) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+    <span class="kw">let </span>res = <span class="kw">unsafe </span>{
+        libc::epoll_wait(epfd, events.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>libc::epoll_event, events.len() <span class="kw">as </span>c_int, timeout_ms <span class="kw">as </span>c_int)
     };
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span> <span class="kw">as</span> <span class="ident">usize</span>)
+    Errno::result(res).map(|r| r <span class="kw">as </span>usize)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

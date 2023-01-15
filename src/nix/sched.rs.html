@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.2/src/sched.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sched.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../nix/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.3/src/sched.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sched.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../nix/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -292,299 +292,299 @@
 <span id="292">292</span>
 <span id="293">293</span>
 <span id="294">294</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Execution scheduling</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! See Also</span>
-<span class="doccomment">//! [sched.h](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sched.h.html)</span>
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Errno</span>, <span class="prelude-ty">Result</span>};
+</pre><pre class="rust"><code><span class="doccomment">//! Execution scheduling
+//!
+//! See Also
+//! [sched.h](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sched.h.html)
+</span><span class="kw">use crate</span>::{Errno, <span class="prelude-ty">Result</span>};
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::sched_linux_like</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(any(target_os = <span class="string">&quot;android&quot;</span>, target_os = <span class="string">&quot;linux&quot;</span>))]
+</span><span class="kw">pub use </span><span class="self">self</span>::sched_linux_like::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">mod</span> <span class="ident">sched_linux_like</span> {
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errno::Errno</span>;
-    <span class="kw">use</span> <span class="ident">libc</span>::{<span class="self">self</span>, <span class="ident">c_int</span>, <span class="ident">c_void</span>};
-    <span class="kw">use</span> <span class="ident">std::mem</span>;
-    <span class="kw">use</span> <span class="ident">std::option::Option</span>;
-    <span class="kw">use</span> <span class="ident">std::os::unix::io::RawFd</span>;
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::unistd::Pid</span>;
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::Result</span>;
+<span class="attribute">#[cfg(any(target_os = <span class="string">&quot;android&quot;</span>, target_os = <span class="string">&quot;linux&quot;</span>))]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">mod </span>sched_linux_like {
+    <span class="kw">use </span><span class="kw">crate</span>::errno::Errno;
+    <span class="kw">use </span>libc::{<span class="self">self</span>, c_int, c_void};
+    <span class="kw">use </span>std::mem;
+    <span class="kw">use </span>std::option::Option;
+    <span class="kw">use </span>std::os::unix::io::RawFd;
+    <span class="kw">use </span><span class="kw">crate</span>::unistd::Pid;
+    <span class="kw">use </span><span class="kw">crate</span>::Result;
 
-    <span class="comment">// For some functions taking with a parameter of type CloneFlags,</span>
-    <span class="comment">// only a subset of these flags have an effect.</span>
-    <span class="macro">libc_bitflags!</span> {
-        <span class="doccomment">/// Options for use with [`clone`]</span>
-        <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CloneFlags</span>: <span class="ident">c_int</span> {
-            <span class="doccomment">/// The calling process and the child process run in the same</span>
-            <span class="doccomment">/// memory space.</span>
-            <span class="ident">CLONE_VM</span>;
-            <span class="doccomment">/// The caller and the child process share the same  filesystem</span>
-            <span class="doccomment">/// information.</span>
-            <span class="ident">CLONE_FS</span>;
-            <span class="doccomment">/// The calling process and the child process share the same file</span>
-            <span class="doccomment">/// descriptor table.</span>
-            <span class="ident">CLONE_FILES</span>;
-            <span class="doccomment">/// The calling process and the child process share the same table</span>
-            <span class="doccomment">/// of signal handlers.</span>
-            <span class="ident">CLONE_SIGHAND</span>;
-            <span class="doccomment">/// If the calling process is being traced, then trace the child</span>
-            <span class="doccomment">/// also.</span>
-            <span class="ident">CLONE_PTRACE</span>;
-            <span class="doccomment">/// The execution of the calling process is suspended until the</span>
-            <span class="doccomment">/// child releases its virtual memory resources via a call to</span>
-            <span class="doccomment">/// execve(2) or _exit(2) (as with vfork(2)).</span>
-            <span class="ident">CLONE_VFORK</span>;
-            <span class="doccomment">/// The parent of the new child  (as returned by getppid(2))</span>
-            <span class="doccomment">/// will be the same as that of the calling process.</span>
-            <span class="ident">CLONE_PARENT</span>;
-            <span class="doccomment">/// The child is placed in the same thread group as the calling</span>
-            <span class="doccomment">/// process.</span>
-            <span class="ident">CLONE_THREAD</span>;
-            <span class="doccomment">/// The cloned child is started in a new mount namespace.</span>
-            <span class="ident">CLONE_NEWNS</span>;
-            <span class="doccomment">/// The child and the calling process share a single list of System</span>
-            <span class="doccomment">/// V semaphore adjustment values</span>
-            <span class="ident">CLONE_SYSVSEM</span>;
-            <span class="comment">// Not supported by Nix due to lack of varargs support in Rust FFI</span>
-            <span class="comment">// CLONE_SETTLS;</span>
-            <span class="comment">// Not supported by Nix due to lack of varargs support in Rust FFI</span>
-            <span class="comment">// CLONE_PARENT_SETTID;</span>
-            <span class="comment">// Not supported by Nix due to lack of varargs support in Rust FFI</span>
-            <span class="comment">// CLONE_CHILD_CLEARTID;</span>
-            <span class="doccomment">/// Unused since Linux 2.6.2</span>
-            <span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;0.23.0&quot;</span>, <span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;Deprecated by Linux 2.6.2&quot;</span>)]</span>
-            <span class="ident">CLONE_DETACHED</span>;
-            <span class="doccomment">/// A tracing process cannot force `CLONE_PTRACE` on this child</span>
-            <span class="doccomment">/// process.</span>
-            <span class="ident">CLONE_UNTRACED</span>;
-            <span class="comment">// Not supported by Nix due to lack of varargs support in Rust FFI</span>
-            <span class="comment">// CLONE_CHILD_SETTID;</span>
-            <span class="doccomment">/// Create the process in a new cgroup namespace.</span>
-            <span class="ident">CLONE_NEWCGROUP</span>;
-            <span class="doccomment">/// Create the process in a new UTS namespace.</span>
-            <span class="ident">CLONE_NEWUTS</span>;
-            <span class="doccomment">/// Create the process in a new IPC namespace.</span>
-            <span class="ident">CLONE_NEWIPC</span>;
-            <span class="doccomment">/// Create the process in a new user namespace.</span>
-            <span class="ident">CLONE_NEWUSER</span>;
-            <span class="doccomment">/// Create the process in a new PID namespace.</span>
-            <span class="ident">CLONE_NEWPID</span>;
-            <span class="doccomment">/// Create the process in a new network namespace.</span>
-            <span class="ident">CLONE_NEWNET</span>;
-            <span class="doccomment">/// The new process shares an I/O context with the calling process.</span>
-            <span class="ident">CLONE_IO</span>;
+    <span class="comment">// For some functions taking with a parameter of type CloneFlags,
+    // only a subset of these flags have an effect.
+    </span><span class="macro">libc_bitflags! </span>{
+        <span class="doccomment">/// Options for use with [`clone`]
+        </span><span class="kw">pub struct </span>CloneFlags: c_int {
+            <span class="doccomment">/// The calling process and the child process run in the same
+            /// memory space.
+            </span>CLONE_VM;
+            <span class="doccomment">/// The caller and the child process share the same  filesystem
+            /// information.
+            </span>CLONE_FS;
+            <span class="doccomment">/// The calling process and the child process share the same file
+            /// descriptor table.
+            </span>CLONE_FILES;
+            <span class="doccomment">/// The calling process and the child process share the same table
+            /// of signal handlers.
+            </span>CLONE_SIGHAND;
+            <span class="doccomment">/// If the calling process is being traced, then trace the child
+            /// also.
+            </span>CLONE_PTRACE;
+            <span class="doccomment">/// The execution of the calling process is suspended until the
+            /// child releases its virtual memory resources via a call to
+            /// execve(2) or _exit(2) (as with vfork(2)).
+            </span>CLONE_VFORK;
+            <span class="doccomment">/// The parent of the new child  (as returned by getppid(2))
+            /// will be the same as that of the calling process.
+            </span>CLONE_PARENT;
+            <span class="doccomment">/// The child is placed in the same thread group as the calling
+            /// process.
+            </span>CLONE_THREAD;
+            <span class="doccomment">/// The cloned child is started in a new mount namespace.
+            </span>CLONE_NEWNS;
+            <span class="doccomment">/// The child and the calling process share a single list of System
+            /// V semaphore adjustment values
+            </span>CLONE_SYSVSEM;
+            <span class="comment">// Not supported by Nix due to lack of varargs support in Rust FFI
+            // CLONE_SETTLS;
+            // Not supported by Nix due to lack of varargs support in Rust FFI
+            // CLONE_PARENT_SETTID;
+            // Not supported by Nix due to lack of varargs support in Rust FFI
+            // CLONE_CHILD_CLEARTID;
+            </span><span class="doccomment">/// Unused since Linux 2.6.2
+            </span><span class="attribute">#[deprecated(since = <span class="string">&quot;0.23.0&quot;</span>, note = <span class="string">&quot;Deprecated by Linux 2.6.2&quot;</span>)]
+            </span>CLONE_DETACHED;
+            <span class="doccomment">/// A tracing process cannot force `CLONE_PTRACE` on this child
+            /// process.
+            </span>CLONE_UNTRACED;
+            <span class="comment">// Not supported by Nix due to lack of varargs support in Rust FFI
+            // CLONE_CHILD_SETTID;
+            </span><span class="doccomment">/// Create the process in a new cgroup namespace.
+            </span>CLONE_NEWCGROUP;
+            <span class="doccomment">/// Create the process in a new UTS namespace.
+            </span>CLONE_NEWUTS;
+            <span class="doccomment">/// Create the process in a new IPC namespace.
+            </span>CLONE_NEWIPC;
+            <span class="doccomment">/// Create the process in a new user namespace.
+            </span>CLONE_NEWUSER;
+            <span class="doccomment">/// Create the process in a new PID namespace.
+            </span>CLONE_NEWPID;
+            <span class="doccomment">/// Create the process in a new network namespace.
+            </span>CLONE_NEWNET;
+            <span class="doccomment">/// The new process shares an I/O context with the calling process.
+            </span>CLONE_IO;
         }
     }
 
-    <span class="doccomment">/// Type for the function executed by [`clone`].</span>
-    <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CloneCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnMut</span>() -&gt; <span class="ident">isize</span> <span class="op">+</span> <span class="lifetime">&#39;a</span><span class="op">&gt;</span>;
+    <span class="doccomment">/// Type for the function executed by [`clone`].
+    </span><span class="kw">pub type </span>CloneCb&lt;<span class="lifetime">&#39;a</span>&gt; = Box&lt;<span class="kw">dyn </span>FnMut() -&gt; isize + <span class="lifetime">&#39;a</span>&gt;;
 
-    <span class="doccomment">/// `clone` create a child process</span>
-    <span class="doccomment">/// ([`clone(2)`](https://man7.org/linux/man-pages/man2/clone.2.html))</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// `stack` is a reference to an array which will hold the stack of the new</span>
-    <span class="doccomment">/// process.  Unlike when calling `clone(2)` from C, the provided stack</span>
-    <span class="doccomment">/// address need not be the highest address of the region.  Nix will take</span>
-    <span class="doccomment">/// care of that requirement.  The user only needs to provide a reference to</span>
-    <span class="doccomment">/// a normally allocated buffer.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clone</span>(
-        <span class="kw-2">mut</span> <span class="ident">cb</span>: <span class="ident">CloneCb</span>,
-        <span class="ident">stack</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>],
-        <span class="ident">flags</span>: <span class="ident">CloneFlags</span>,
-        <span class="ident">signal</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">c_int</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Pid</span><span class="op">&gt;</span> {
-        <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">callback</span>(<span class="ident">data</span>: <span class="kw-2">*mut</span> <span class="ident">CloneCb</span>) -&gt; <span class="ident">c_int</span> {
-            <span class="kw">let</span> <span class="ident">cb</span>: <span class="kw-2">&amp;mut</span> <span class="ident">CloneCb</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">data</span> };
-            (<span class="kw-2">*</span><span class="ident">cb</span>)() <span class="kw">as</span> <span class="ident">c_int</span>
+    <span class="doccomment">/// `clone` create a child process
+    /// ([`clone(2)`](https://man7.org/linux/man-pages/man2/clone.2.html))
+    ///
+    /// `stack` is a reference to an array which will hold the stack of the new
+    /// process.  Unlike when calling `clone(2)` from C, the provided stack
+    /// address need not be the highest address of the region.  Nix will take
+    /// care of that requirement.  The user only needs to provide a reference to
+    /// a normally allocated buffer.
+    </span><span class="kw">pub fn </span>clone(
+        <span class="kw-2">mut </span>cb: CloneCb,
+        stack: <span class="kw-2">&amp;mut </span>[u8],
+        flags: CloneFlags,
+        signal: <span class="prelude-ty">Option</span>&lt;c_int&gt;,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;Pid&gt; {
+        <span class="kw">extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>callback(data: <span class="kw-2">*mut </span>CloneCb) -&gt; c_int {
+            <span class="kw">let </span>cb: <span class="kw-2">&amp;mut </span>CloneCb = <span class="kw">unsafe </span>{ <span class="kw-2">&amp;mut *</span>data };
+            (<span class="kw-2">*</span>cb)() <span class="kw">as </span>c_int
         }
 
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">combined</span> <span class="op">=</span> <span class="ident">flags</span>.<span class="ident">bits</span>() <span class="op">|</span> <span class="ident">signal</span>.<span class="ident">unwrap_or</span>(<span class="number">0</span>);
-            <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">stack</span>.<span class="ident">as_mut_ptr</span>().<span class="ident">add</span>(<span class="ident">stack</span>.<span class="ident">len</span>());
-            <span class="kw">let</span> <span class="ident">ptr_aligned</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">sub</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">%</span> <span class="number">16</span>);
-            <span class="ident">libc::clone</span>(
-                <span class="ident">mem::transmute</span>(
-                    <span class="ident">callback</span> <span class="kw">as</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span>(<span class="kw-2">*mut</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnMut</span>() -&gt; <span class="ident">isize</span><span class="op">&gt;</span>) -&gt; <span class="ident">i32</span>,
+        <span class="kw">let </span>res = <span class="kw">unsafe </span>{
+            <span class="kw">let </span>combined = flags.bits() | signal.unwrap_or(<span class="number">0</span>);
+            <span class="kw">let </span>ptr = stack.as_mut_ptr().add(stack.len());
+            <span class="kw">let </span>ptr_aligned = ptr.sub(ptr <span class="kw">as </span>usize % <span class="number">16</span>);
+            libc::clone(
+                mem::transmute(
+                    callback <span class="kw">as extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn</span>(<span class="kw-2">*mut </span>Box&lt;<span class="kw">dyn </span>FnMut() -&gt; isize&gt;) -&gt; i32,
                 ),
-                <span class="ident">ptr_aligned</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>,
-                <span class="ident">combined</span>,
-                <span class="kw-2">&amp;mut</span> <span class="ident">cb</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="kw">_</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>,
+                ptr_aligned <span class="kw">as </span><span class="kw-2">*mut </span>c_void,
+                combined,
+                <span class="kw-2">&amp;mut </span>cb <span class="kw">as </span><span class="kw-2">*mut </span><span class="kw">_ as </span><span class="kw-2">*mut </span>c_void,
             )
         };
 
-        <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">Pid::from_raw</span>)
+        Errno::result(res).map(Pid::from_raw)
     }
 
-    <span class="doccomment">/// disassociate parts of the process execution context</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// See also [unshare(2)](https://man7.org/linux/man-pages/man2/unshare.2.html)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unshare</span>(<span class="ident">flags</span>: <span class="ident">CloneFlags</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::unshare</span>(<span class="ident">flags</span>.<span class="ident">bits</span>()) };
+    <span class="doccomment">/// disassociate parts of the process execution context
+    ///
+    /// See also [unshare(2)](https://man7.org/linux/man-pages/man2/unshare.2.html)
+    </span><span class="kw">pub fn </span>unshare(flags: CloneFlags) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">let </span>res = <span class="kw">unsafe </span>{ libc::unshare(flags.bits()) };
 
-        <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+        Errno::result(res).map(drop)
     }
 
-    <span class="doccomment">/// reassociate thread with a namespace</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// See also [setns(2)](https://man7.org/linux/man-pages/man2/setns.2.html)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">setns</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">nstype</span>: <span class="ident">CloneFlags</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::setns</span>(<span class="ident">fd</span>, <span class="ident">nstype</span>.<span class="ident">bits</span>()) };
+    <span class="doccomment">/// reassociate thread with a namespace
+    ///
+    /// See also [setns(2)](https://man7.org/linux/man-pages/man2/setns.2.html)
+    </span><span class="kw">pub fn </span>setns(fd: RawFd, nstype: CloneFlags) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">let </span>res = <span class="kw">unsafe </span>{ libc::setns(fd, nstype.bits()) };
 
-        <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+        Errno::result(res).map(drop)
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::sched_affinity</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(any(target_os = <span class="string">&quot;android&quot;</span>, target_os = <span class="string">&quot;dragonfly&quot;</span>, target_os = <span class="string">&quot;linux&quot;</span>))]
+</span><span class="kw">pub use </span><span class="self">self</span>::sched_affinity::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
-<span class="kw">mod</span> <span class="ident">sched_affinity</span> {
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errno::Errno</span>;
-    <span class="kw">use</span> <span class="ident">std::mem</span>;
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::unistd::Pid</span>;
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::Result</span>;
+<span class="attribute">#[cfg(any(target_os = <span class="string">&quot;android&quot;</span>, target_os = <span class="string">&quot;dragonfly&quot;</span>, target_os = <span class="string">&quot;linux&quot;</span>))]
+</span><span class="kw">mod </span>sched_affinity {
+    <span class="kw">use </span><span class="kw">crate</span>::errno::Errno;
+    <span class="kw">use </span>std::mem;
+    <span class="kw">use </span><span class="kw">crate</span>::unistd::Pid;
+    <span class="kw">use </span><span class="kw">crate</span>::Result;
 
-    <span class="doccomment">/// CpuSet represent a bit-mask of CPUs.</span>
-    <span class="doccomment">/// CpuSets are used by sched_setaffinity and</span>
-    <span class="doccomment">/// sched_getaffinity for example.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This is a wrapper around `libc::cpu_set_t`.</span>
-    <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">C</span>)]</span>
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CpuSet</span> {
-        <span class="ident">cpu_set</span>: <span class="ident">libc::cpu_set_t</span>,
+    <span class="doccomment">/// CpuSet represent a bit-mask of CPUs.
+    /// CpuSets are used by sched_setaffinity and
+    /// sched_getaffinity for example.
+    ///
+    /// This is a wrapper around `libc::cpu_set_t`.
+    </span><span class="attribute">#[repr(C)]
+    #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+    </span><span class="kw">pub struct </span>CpuSet {
+        cpu_set: libc::cpu_set_t,
     }
 
-    <span class="kw">impl</span> <span class="ident">CpuSet</span> {
-        <span class="doccomment">/// Create a new and empty CpuSet.</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">CpuSet</span> {
-            <span class="ident">CpuSet</span> {
-                <span class="ident">cpu_set</span>: <span class="kw">unsafe</span> { <span class="ident">mem::zeroed</span>() },
+    <span class="kw">impl </span>CpuSet {
+        <span class="doccomment">/// Create a new and empty CpuSet.
+        </span><span class="kw">pub fn </span>new() -&gt; CpuSet {
+            CpuSet {
+                cpu_set: <span class="kw">unsafe </span>{ mem::zeroed() },
             }
         }
 
-        <span class="doccomment">/// Test to see if a CPU is in the CpuSet.</span>
-        <span class="doccomment">/// `field` is the CPU id to test</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_set</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">field</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
-            <span class="kw">if</span> <span class="ident">field</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">CpuSet::count</span>() {
-                <span class="prelude-val">Err</span>(<span class="ident">Errno::EINVAL</span>)
-            } <span class="kw">else</span> {
-                <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span> { <span class="ident">libc::CPU_ISSET</span>(<span class="ident">field</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">cpu_set</span>) })
+        <span class="doccomment">/// Test to see if a CPU is in the CpuSet.
+        /// `field` is the CPU id to test
+        </span><span class="kw">pub fn </span>is_set(<span class="kw-2">&amp;</span><span class="self">self</span>, field: usize) -&gt; <span class="prelude-ty">Result</span>&lt;bool&gt; {
+            <span class="kw">if </span>field &gt;= CpuSet::count() {
+                <span class="prelude-val">Err</span>(Errno::EINVAL)
+            } <span class="kw">else </span>{
+                <span class="prelude-val">Ok</span>(<span class="kw">unsafe </span>{ libc::CPU_ISSET(field, <span class="kw-2">&amp;</span><span class="self">self</span>.cpu_set) })
             }
         }
 
-        <span class="doccomment">/// Add a CPU to CpuSet.</span>
-        <span class="doccomment">/// `field` is the CPU id to add</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">field</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-            <span class="kw">if</span> <span class="ident">field</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">CpuSet::count</span>() {
-                <span class="prelude-val">Err</span>(<span class="ident">Errno::EINVAL</span>)
-            } <span class="kw">else</span> {
-                <span class="kw">unsafe</span> { <span class="ident">libc::CPU_SET</span>(<span class="ident">field</span>, <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">cpu_set</span>); }
+        <span class="doccomment">/// Add a CPU to CpuSet.
+        /// `field` is the CPU id to add
+        </span><span class="kw">pub fn </span>set(<span class="kw-2">&amp;mut </span><span class="self">self</span>, field: usize) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+            <span class="kw">if </span>field &gt;= CpuSet::count() {
+                <span class="prelude-val">Err</span>(Errno::EINVAL)
+            } <span class="kw">else </span>{
+                <span class="kw">unsafe </span>{ libc::CPU_SET(field, <span class="kw-2">&amp;mut </span><span class="self">self</span>.cpu_set); }
                 <span class="prelude-val">Ok</span>(())
             }
         }
 
-        <span class="doccomment">/// Remove a CPU from CpuSet.</span>
-        <span class="doccomment">/// `field` is the CPU id to remove</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unset</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">field</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-            <span class="kw">if</span> <span class="ident">field</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">CpuSet::count</span>() {
-                <span class="prelude-val">Err</span>(<span class="ident">Errno::EINVAL</span>)
-            } <span class="kw">else</span> {
-                <span class="kw">unsafe</span> { <span class="ident">libc::CPU_CLR</span>(<span class="ident">field</span>, <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">cpu_set</span>);}
+        <span class="doccomment">/// Remove a CPU from CpuSet.
+        /// `field` is the CPU id to remove
+        </span><span class="kw">pub fn </span>unset(<span class="kw-2">&amp;mut </span><span class="self">self</span>, field: usize) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+            <span class="kw">if </span>field &gt;= CpuSet::count() {
+                <span class="prelude-val">Err</span>(Errno::EINVAL)
+            } <span class="kw">else </span>{
+                <span class="kw">unsafe </span>{ libc::CPU_CLR(field, <span class="kw-2">&amp;mut </span><span class="self">self</span>.cpu_set);}
                 <span class="prelude-val">Ok</span>(())
             }
         }
 
-        <span class="doccomment">/// Return the maximum number of CPU in CpuSet</span>
-        <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">count</span>() -&gt; <span class="ident">usize</span> {
-            <span class="number">8</span> <span class="op">*</span> <span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">libc::cpu_set_t</span><span class="op">&gt;</span>()
+        <span class="doccomment">/// Return the maximum number of CPU in CpuSet
+        </span><span class="kw">pub const fn </span>count() -&gt; usize {
+            <span class="number">8 </span>* mem::size_of::&lt;libc::cpu_set_t&gt;()
         }
     }
 
-    <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">CpuSet</span> {
-        <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-            <span class="ident"><span class="self">Self</span>::new</span>()
+    <span class="kw">impl </span>Default <span class="kw">for </span>CpuSet {
+        <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+            <span class="self">Self</span>::new()
         }
     }
 
-    <span class="doccomment">/// `sched_setaffinity` set a thread&#39;s CPU affinity mask</span>
-    <span class="doccomment">/// ([`sched_setaffinity(2)`](https://man7.org/linux/man-pages/man2/sched_setaffinity.2.html))</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// `pid` is the thread ID to update.</span>
-    <span class="doccomment">/// If pid is zero, then the calling thread is updated.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The `cpuset` argument specifies the set of CPUs on which the thread</span>
-    <span class="doccomment">/// will be eligible to run.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Example</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Binding the current thread to CPU 0 can be done as follows:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```rust,no_run</span>
-    <span class="doccomment">/// use nix::sched::{CpuSet, sched_setaffinity};</span>
-    <span class="doccomment">/// use nix::unistd::Pid;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut cpu_set = CpuSet::new();</span>
-    <span class="doccomment">/// cpu_set.set(0);</span>
-    <span class="doccomment">/// sched_setaffinity(Pid::from_raw(0), &amp;cpu_set);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sched_setaffinity</span>(<span class="ident">pid</span>: <span class="ident">Pid</span>, <span class="ident">cpuset</span>: <span class="kw-2">&amp;</span><span class="ident">CpuSet</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="ident">libc::sched_setaffinity</span>(
-                <span class="ident">pid</span>.<span class="ident">into</span>(),
-                <span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">CpuSet</span><span class="op">&gt;</span>() <span class="kw">as</span> <span class="ident">libc::size_t</span>,
-                <span class="kw-2">&amp;</span><span class="ident">cpuset</span>.<span class="ident">cpu_set</span>,
+    <span class="doccomment">/// `sched_setaffinity` set a thread&#39;s CPU affinity mask
+    /// ([`sched_setaffinity(2)`](https://man7.org/linux/man-pages/man2/sched_setaffinity.2.html))
+    ///
+    /// `pid` is the thread ID to update.
+    /// If pid is zero, then the calling thread is updated.
+    ///
+    /// The `cpuset` argument specifies the set of CPUs on which the thread
+    /// will be eligible to run.
+    ///
+    /// # Example
+    ///
+    /// Binding the current thread to CPU 0 can be done as follows:
+    ///
+    /// ```rust,no_run
+    /// use nix::sched::{CpuSet, sched_setaffinity};
+    /// use nix::unistd::Pid;
+    ///
+    /// let mut cpu_set = CpuSet::new();
+    /// cpu_set.set(0);
+    /// sched_setaffinity(Pid::from_raw(0), &amp;cpu_set);
+    /// ```
+    </span><span class="kw">pub fn </span>sched_setaffinity(pid: Pid, cpuset: <span class="kw-2">&amp;</span>CpuSet) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">let </span>res = <span class="kw">unsafe </span>{
+            libc::sched_setaffinity(
+                pid.into(),
+                mem::size_of::&lt;CpuSet&gt;() <span class="kw">as </span>libc::size_t,
+                <span class="kw-2">&amp;</span>cpuset.cpu_set,
             )
         };
 
-        <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+        Errno::result(res).map(drop)
     }
 
-    <span class="doccomment">/// `sched_getaffinity` get a thread&#39;s CPU affinity mask</span>
-    <span class="doccomment">/// ([`sched_getaffinity(2)`](https://man7.org/linux/man-pages/man2/sched_getaffinity.2.html))</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// `pid` is the thread ID to check.</span>
-    <span class="doccomment">/// If pid is zero, then the calling thread is checked.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Returned `cpuset` is the set of CPUs on which the thread</span>
-    <span class="doccomment">/// is eligible to run.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Example</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Checking if the current thread can run on CPU 0 can be done as follows:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```rust,no_run</span>
-    <span class="doccomment">/// use nix::sched::sched_getaffinity;</span>
-    <span class="doccomment">/// use nix::unistd::Pid;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let cpu_set = sched_getaffinity(Pid::from_raw(0)).unwrap();</span>
-    <span class="doccomment">/// if cpu_set.is_set(0).unwrap() {</span>
-    <span class="doccomment">///     println!(&quot;Current thread can run on CPU 0&quot;);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sched_getaffinity</span>(<span class="ident">pid</span>: <span class="ident">Pid</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">CpuSet</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cpuset</span> <span class="op">=</span> <span class="ident">CpuSet::new</span>();
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="ident">libc::sched_getaffinity</span>(
-                <span class="ident">pid</span>.<span class="ident">into</span>(),
-                <span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">CpuSet</span><span class="op">&gt;</span>() <span class="kw">as</span> <span class="ident">libc::size_t</span>,
-                <span class="kw-2">&amp;mut</span> <span class="ident">cpuset</span>.<span class="ident">cpu_set</span>,
+    <span class="doccomment">/// `sched_getaffinity` get a thread&#39;s CPU affinity mask
+    /// ([`sched_getaffinity(2)`](https://man7.org/linux/man-pages/man2/sched_getaffinity.2.html))
+    ///
+    /// `pid` is the thread ID to check.
+    /// If pid is zero, then the calling thread is checked.
+    ///
+    /// Returned `cpuset` is the set of CPUs on which the thread
+    /// is eligible to run.
+    ///
+    /// # Example
+    ///
+    /// Checking if the current thread can run on CPU 0 can be done as follows:
+    ///
+    /// ```rust,no_run
+    /// use nix::sched::sched_getaffinity;
+    /// use nix::unistd::Pid;
+    ///
+    /// let cpu_set = sched_getaffinity(Pid::from_raw(0)).unwrap();
+    /// if cpu_set.is_set(0).unwrap() {
+    ///     println!(&quot;Current thread can run on CPU 0&quot;);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>sched_getaffinity(pid: Pid) -&gt; <span class="prelude-ty">Result</span>&lt;CpuSet&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>cpuset = CpuSet::new();
+        <span class="kw">let </span>res = <span class="kw">unsafe </span>{
+            libc::sched_getaffinity(
+                pid.into(),
+                mem::size_of::&lt;CpuSet&gt;() <span class="kw">as </span>libc::size_t,
+                <span class="kw-2">&amp;mut </span>cpuset.cpu_set,
             )
         };
 
-        <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">and</span>(<span class="prelude-val">Ok</span>(<span class="ident">cpuset</span>))
+        Errno::result(res).and(<span class="prelude-val">Ok</span>(cpuset))
     }
 }
 
-<span class="doccomment">/// Explicitly yield the processor to other threads.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [Further reading](https://pubs.opengroup.org/onlinepubs/9699919799/functions/sched_yield.html)</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sched_yield</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::sched_yield</span>() };
+<span class="doccomment">/// Explicitly yield the processor to other threads.
+///
+/// [Further reading](https://pubs.opengroup.org/onlinepubs/9699919799/functions/sched_yield.html)
+</span><span class="kw">pub fn </span>sched_yield() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>res = <span class="kw">unsafe </span>{ libc::sched_yield() };
 
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+    Errno::result(res).map(drop)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

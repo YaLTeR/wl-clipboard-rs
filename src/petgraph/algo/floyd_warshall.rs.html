@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/petgraph-0.6.2/src/algo/floyd_warshall.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>floyd_warshall.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../petgraph/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../petgraph/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../petgraph/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/petgraph-0.6.2/src/algo/floyd_warshall.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>floyd_warshall.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../petgraph/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -130,137 +130,137 @@
 <span id="130">130</span>
 <span id="131">131</span>
 <span id="132">132</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">use</span> <span class="ident">std::hash::Hash</span>;
+<span class="kw">use </span>std::hash::Hash;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::algo</span>::{<span class="ident">BoundedMeasure</span>, <span class="ident">NegativeCycle</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::visit</span>::{<span class="ident">EdgeRef</span>, <span class="ident">IntoEdgeReferences</span>, <span class="ident">IntoNodeIdentifiers</span>, <span class="ident">NodeCompactIndexable</span>};
+<span class="kw">use </span><span class="kw">crate</span>::algo::{BoundedMeasure, NegativeCycle};
+<span class="kw">use </span><span class="kw">crate</span>::visit::{EdgeRef, IntoEdgeReferences, IntoNodeIdentifiers, NodeCompactIndexable};
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::type_complexity</span>, <span class="ident">clippy::needless_range_loop</span>)]</span>
-<span class="doccomment">/// \[Generic\] [Floyd–Warshall algorithm](https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm) is an algorithm for all pairs shortest path problem</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Compute shortest paths in a weighted graph with positive or negative edge weights (but with no negative cycles)</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Arguments</span>
-<span class="doccomment">/// * `graph`: graph with no negative cycle</span>
-<span class="doccomment">/// * `edge_cost`: closure that returns cost of a particular edge</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Returns</span>
-<span class="doccomment">/// * `Ok`: (if graph contains no negative cycle) a hashmap containing all pairs shortest paths</span>
-<span class="doccomment">/// * `Err`: if graph contains negative cycle.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```rust</span>
-<span class="doccomment">/// use petgraph::{prelude::*, Graph, Directed};</span>
-<span class="doccomment">/// use petgraph::algo::floyd_warshall;</span>
-<span class="doccomment">/// use std::collections::HashMap;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut graph: Graph&lt;(), (), Directed&gt; = Graph::new();</span>
-<span class="doccomment">/// let a = graph.add_node(());</span>
-<span class="doccomment">/// let b = graph.add_node(());</span>
-<span class="doccomment">/// let c = graph.add_node(());</span>
-<span class="doccomment">/// let d = graph.add_node(());</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// graph.extend_with_edges(&amp;[</span>
-<span class="doccomment">///    (a, b),</span>
-<span class="doccomment">///    (a, c),</span>
-<span class="doccomment">///    (a, d),</span>
-<span class="doccomment">///    (b, c),</span>
-<span class="doccomment">///    (b, d),</span>
-<span class="doccomment">///    (c, d)</span>
-<span class="doccomment">/// ]);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let weight_map: HashMap&lt;(NodeIndex, NodeIndex), i32&gt; = [</span>
-<span class="doccomment">///    ((a, a), 0), ((a, b), 1), ((a, c), 4), ((a, d), 10),</span>
-<span class="doccomment">///    ((b, b), 0), ((b, c), 2), ((b, d), 2),</span>
-<span class="doccomment">///    ((c, c), 0), ((c, d), 2)</span>
-<span class="doccomment">/// ].iter().cloned().collect();</span>
-<span class="doccomment">/// //     ----- b --------</span>
-<span class="doccomment">/// //    |      ^         | 2</span>
-<span class="doccomment">/// //    |    1 |    4    v</span>
-<span class="doccomment">/// //  2 |      a ------&gt; c</span>
-<span class="doccomment">/// //    |   10 |         | 2</span>
-<span class="doccomment">/// //    |      v         v</span>
-<span class="doccomment">/// //     ---&gt;  d &lt;-------</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let inf = std::i32::MAX;</span>
-<span class="doccomment">/// let expected_res: HashMap&lt;(NodeIndex, NodeIndex), i32&gt; = [</span>
-<span class="doccomment">///    ((a, a), 0), ((a, b), 1), ((a, c), 3), ((a, d), 3),</span>
-<span class="doccomment">///    ((b, a), inf), ((b, b), 0), ((b, c), 2), ((b, d), 2),</span>
-<span class="doccomment">///    ((c, a), inf), ((c, b), inf), ((c, c), 0), ((c, d), 2),</span>
-<span class="doccomment">///    ((d, a), inf), ((d, b), inf), ((d, c), inf), ((d, d), 0),</span>
-<span class="doccomment">/// ].iter().cloned().collect();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let res = floyd_warshall(&amp;graph, |edge| {</span>
-<span class="doccomment">///     if let Some(weight) = weight_map.get(&amp;(edge.source(), edge.target())) {</span>
-<span class="doccomment">///         *weight</span>
-<span class="doccomment">///     } else {</span>
-<span class="doccomment">///         inf</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">/// }).unwrap();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let nodes = [a, b, c, d];</span>
-<span class="doccomment">/// for node1 in &amp;nodes {</span>
-<span class="doccomment">///     for node2 in &amp;nodes {</span>
-<span class="doccomment">///         assert_eq!(res.get(&amp;(*node1, *node2)).unwrap(), expected_res.get(&amp;(*node1, *node2)).unwrap());</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">floyd_warshall</span><span class="op">&lt;</span><span class="ident">G</span>, <span class="ident">F</span>, <span class="ident">K</span><span class="op">&gt;</span>(
-    <span class="ident">graph</span>: <span class="ident">G</span>,
-    <span class="kw-2">mut</span> <span class="ident">edge_cost</span>: <span class="ident">F</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span>(<span class="ident">G::NodeId</span>, <span class="ident">G::NodeId</span>), <span class="ident">K</span><span class="op">&gt;</span>, <span class="ident">NegativeCycle</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">NodeCompactIndexable</span> <span class="op">+</span> <span class="ident">IntoEdgeReferences</span> <span class="op">+</span> <span class="ident">IntoNodeIdentifiers</span>,
-    <span class="ident">G::NodeId</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>,
-    <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">G::EdgeRef</span>) -&gt; <span class="ident">K</span>,
-    <span class="ident">K</span>: <span class="ident">BoundedMeasure</span> <span class="op">+</span> <span class="ident">Copy</span>,
+<span class="attribute">#[allow(clippy::type_complexity, clippy::needless_range_loop)]
+</span><span class="doccomment">/// \[Generic\] [Floyd–Warshall algorithm](https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm) is an algorithm for all pairs shortest path problem
+///
+/// Compute shortest paths in a weighted graph with positive or negative edge weights (but with no negative cycles)
+///
+/// # Arguments
+/// * `graph`: graph with no negative cycle
+/// * `edge_cost`: closure that returns cost of a particular edge
+///
+/// # Returns
+/// * `Ok`: (if graph contains no negative cycle) a hashmap containing all pairs shortest paths
+/// * `Err`: if graph contains negative cycle.
+///
+/// # Examples
+/// ```rust
+/// use petgraph::{prelude::*, Graph, Directed};
+/// use petgraph::algo::floyd_warshall;
+/// use std::collections::HashMap;
+///
+/// let mut graph: Graph&lt;(), (), Directed&gt; = Graph::new();
+/// let a = graph.add_node(());
+/// let b = graph.add_node(());
+/// let c = graph.add_node(());
+/// let d = graph.add_node(());
+///
+/// graph.extend_with_edges(&amp;[
+///    (a, b),
+///    (a, c),
+///    (a, d),
+///    (b, c),
+///    (b, d),
+///    (c, d)
+/// ]);
+///
+/// let weight_map: HashMap&lt;(NodeIndex, NodeIndex), i32&gt; = [
+///    ((a, a), 0), ((a, b), 1), ((a, c), 4), ((a, d), 10),
+///    ((b, b), 0), ((b, c), 2), ((b, d), 2),
+///    ((c, c), 0), ((c, d), 2)
+/// ].iter().cloned().collect();
+/// //     ----- b --------
+/// //    |      ^         | 2
+/// //    |    1 |    4    v
+/// //  2 |      a ------&gt; c
+/// //    |   10 |         | 2
+/// //    |      v         v
+/// //     ---&gt;  d &lt;-------
+///
+/// let inf = std::i32::MAX;
+/// let expected_res: HashMap&lt;(NodeIndex, NodeIndex), i32&gt; = [
+///    ((a, a), 0), ((a, b), 1), ((a, c), 3), ((a, d), 3),
+///    ((b, a), inf), ((b, b), 0), ((b, c), 2), ((b, d), 2),
+///    ((c, a), inf), ((c, b), inf), ((c, c), 0), ((c, d), 2),
+///    ((d, a), inf), ((d, b), inf), ((d, c), inf), ((d, d), 0),
+/// ].iter().cloned().collect();
+///
+///
+/// let res = floyd_warshall(&amp;graph, |edge| {
+///     if let Some(weight) = weight_map.get(&amp;(edge.source(), edge.target())) {
+///         *weight
+///     } else {
+///         inf
+///     }
+/// }).unwrap();
+///
+/// let nodes = [a, b, c, d];
+/// for node1 in &amp;nodes {
+///     for node2 in &amp;nodes {
+///         assert_eq!(res.get(&amp;(*node1, *node2)).unwrap(), expected_res.get(&amp;(*node1, *node2)).unwrap());
+///     }
+/// }
+/// ```
+</span><span class="kw">pub fn </span>floyd_warshall&lt;G, F, K&gt;(
+    graph: G,
+    <span class="kw-2">mut </span>edge_cost: F,
+) -&gt; <span class="prelude-ty">Result</span>&lt;HashMap&lt;(G::NodeId, G::NodeId), K&gt;, NegativeCycle&gt;
+<span class="kw">where
+    </span>G: NodeCompactIndexable + IntoEdgeReferences + IntoNodeIdentifiers,
+    G::NodeId: Eq + Hash,
+    F: FnMut(G::EdgeRef) -&gt; K,
+    K: BoundedMeasure + Copy,
 {
-    <span class="kw">let</span> <span class="ident">num_of_nodes</span> <span class="op">=</span> <span class="ident">graph</span>.<span class="ident">node_count</span>();
+    <span class="kw">let </span>num_of_nodes = graph.node_count();
 
-    <span class="comment">// |V|x|V| matrix</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dist</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="macro">vec!</span>[<span class="ident">K::max</span>(); <span class="ident">num_of_nodes</span>]; <span class="ident">num_of_nodes</span>];
+    <span class="comment">// |V|x|V| matrix
+    </span><span class="kw">let </span><span class="kw-2">mut </span>dist = <span class="macro">vec!</span>[<span class="macro">vec!</span>[K::max(); num_of_nodes]; num_of_nodes];
 
-    <span class="comment">// init distances of paths with no intermediate nodes</span>
-    <span class="kw">for</span> <span class="ident">edge</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">edge_references</span>() {
-        <span class="ident">dist</span>[<span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">edge</span>.<span class="ident">source</span>())][<span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">edge</span>.<span class="ident">target</span>())] <span class="op">=</span> <span class="ident">edge_cost</span>(<span class="ident">edge</span>);
+    <span class="comment">// init distances of paths with no intermediate nodes
+    </span><span class="kw">for </span>edge <span class="kw">in </span>graph.edge_references() {
+        dist[graph.to_index(edge.source())][graph.to_index(edge.target())] = edge_cost(edge);
     }
 
-    <span class="comment">// distance of each node to itself is 0(default value)</span>
-    <span class="kw">for</span> <span class="ident">node</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">node_identifiers</span>() {
-        <span class="ident">dist</span>[<span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">node</span>)][<span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">node</span>)] <span class="op">=</span> <span class="ident">K::default</span>();
+    <span class="comment">// distance of each node to itself is 0(default value)
+    </span><span class="kw">for </span>node <span class="kw">in </span>graph.node_identifiers() {
+        dist[graph.to_index(node)][graph.to_index(node)] = K::default();
     }
 
-    <span class="kw">for</span> <span class="ident">k</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">num_of_nodes</span> {
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">num_of_nodes</span> {
-            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">num_of_nodes</span> {
-                <span class="kw">let</span> (<span class="ident">result</span>, <span class="ident">overflow</span>) <span class="op">=</span> <span class="ident">dist</span>[<span class="ident">i</span>][<span class="ident">k</span>].<span class="ident">overflowing_add</span>(<span class="ident">dist</span>[<span class="ident">k</span>][<span class="ident">j</span>]);
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">overflow</span> <span class="op">&amp;&amp;</span> <span class="ident">dist</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">&gt;</span> <span class="ident">result</span> {
-                    <span class="ident">dist</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">=</span> <span class="ident">result</span>;
+    <span class="kw">for </span>k <span class="kw">in </span><span class="number">0</span>..num_of_nodes {
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..num_of_nodes {
+            <span class="kw">for </span>j <span class="kw">in </span><span class="number">0</span>..num_of_nodes {
+                <span class="kw">let </span>(result, overflow) = dist[i][k].overflowing_add(dist[k][j]);
+                <span class="kw">if </span>!overflow &amp;&amp; dist[i][j] &gt; result {
+                    dist[i][j] = result;
                 }
             }
         }
     }
 
-    <span class="comment">// value less than 0(default value) indicates a negative cycle</span>
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">num_of_nodes</span> {
-        <span class="kw">if</span> <span class="ident">dist</span>[<span class="ident">i</span>][<span class="ident">i</span>] <span class="op">&lt;</span> <span class="ident">K::default</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">NegativeCycle</span>(()));
+    <span class="comment">// value less than 0(default value) indicates a negative cycle
+    </span><span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..num_of_nodes {
+        <span class="kw">if </span>dist[i][i] &lt; K::default() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(NegativeCycle(()));
         }
     }
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">distance_map</span>: <span class="ident">HashMap</span><span class="op">&lt;</span>(<span class="ident">G::NodeId</span>, <span class="ident">G::NodeId</span>), <span class="ident">K</span><span class="op">&gt;</span> <span class="op">=</span>
-        <span class="ident">HashMap::with_capacity</span>(<span class="ident">num_of_nodes</span> <span class="op">*</span> <span class="ident">num_of_nodes</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>distance_map: HashMap&lt;(G::NodeId, G::NodeId), K&gt; =
+        HashMap::with_capacity(num_of_nodes * num_of_nodes);
 
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">num_of_nodes</span> {
-        <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">num_of_nodes</span> {
-            <span class="ident">distance_map</span>.<span class="ident">insert</span>((<span class="ident">graph</span>.<span class="ident">from_index</span>(<span class="ident">i</span>), <span class="ident">graph</span>.<span class="ident">from_index</span>(<span class="ident">j</span>)), <span class="ident">dist</span>[<span class="ident">i</span>][<span class="ident">j</span>]);
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..num_of_nodes {
+        <span class="kw">for </span>j <span class="kw">in </span><span class="number">0</span>..num_of_nodes {
+            distance_map.insert((graph.from_index(i), graph.from_index(j)), dist[i][j]);
         }
     }
 
-    <span class="prelude-val">Ok</span>(<span class="ident">distance_map</span>)
+    <span class="prelude-val">Ok</span>(distance_map)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="petgraph" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="petgraph" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

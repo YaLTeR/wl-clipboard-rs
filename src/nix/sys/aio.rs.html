@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.2/src/sys/aio.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>aio.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../nix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.3/src/sys/aio.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>aio.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../nix/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1127,1134 +1127,1134 @@
 <span id="1127">1127</span>
 <span id="1128">1128</span>
 <span id="1129">1129</span>
-</pre><pre class="rust"><code><span class="comment">// vim: tw=80</span>
-<span class="doccomment">//! POSIX Asynchronous I/O</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! The POSIX AIO interface is used for asynchronous I/O on files and disk-like</span>
-<span class="doccomment">//! devices.  It supports [`read`](struct.AioCb.html#method.read),</span>
-<span class="doccomment">//! [`write`](struct.AioCb.html#method.write), and</span>
-<span class="doccomment">//! [`fsync`](struct.AioCb.html#method.fsync) operations.  Completion</span>
-<span class="doccomment">//! notifications can optionally be delivered via</span>
-<span class="doccomment">//! [signals](../signal/enum.SigevNotify.html#variant.SigevSignal), via the</span>
-<span class="doccomment">//! [`aio_suspend`](fn.aio_suspend.html) function, or via polling.  Some</span>
-<span class="doccomment">//! platforms support other completion</span>
-<span class="doccomment">//! notifications, such as</span>
-<span class="doccomment">//! [kevent](../signal/enum.SigevNotify.html#variant.SigevKevent).</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Multiple operations may be submitted in a batch with</span>
-<span class="doccomment">//! [`lio_listio`](fn.lio_listio.html), though the standard does not guarantee</span>
-<span class="doccomment">//! that they will be executed atomically.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Outstanding operations may be cancelled with</span>
-<span class="doccomment">//! [`cancel`](struct.AioCb.html#method.cancel) or</span>
-<span class="doccomment">//! [`aio_cancel_all`](fn.aio_cancel_all.html), though the operating system may</span>
-<span class="doccomment">//! not support this for all filesystems and devices.</span>
+</pre><pre class="rust"><code><span class="comment">// vim: tw=80
+</span><span class="doccomment">//! POSIX Asynchronous I/O
+//!
+//! The POSIX AIO interface is used for asynchronous I/O on files and disk-like
+//! devices.  It supports [`read`](struct.AioCb.html#method.read),
+//! [`write`](struct.AioCb.html#method.write), and
+//! [`fsync`](struct.AioCb.html#method.fsync) operations.  Completion
+//! notifications can optionally be delivered via
+//! [signals](../signal/enum.SigevNotify.html#variant.SigevSignal), via the
+//! [`aio_suspend`](fn.aio_suspend.html) function, or via polling.  Some
+//! platforms support other completion
+//! notifications, such as
+//! [kevent](../signal/enum.SigevNotify.html#variant.SigevKevent).
+//!
+//! Multiple operations may be submitted in a batch with
+//! [`lio_listio`](fn.lio_listio.html), though the standard does not guarantee
+//! that they will be executed atomically.
+//!
+//! Outstanding operations may be cancelled with
+//! [`cancel`](struct.AioCb.html#method.cancel) or
+//! [`aio_cancel_all`](fn.aio_cancel_all.html), though the operating system may
+//! not support this for all filesystems and devices.
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::Result</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errno::Errno</span>;
-<span class="kw">use</span> <span class="ident">std::os::unix::io::RawFd</span>;
-<span class="kw">use</span> <span class="ident">libc</span>::{<span class="ident">c_void</span>, <span class="ident">off_t</span>, <span class="ident">size_t</span>};
-<span class="kw">use</span> <span class="ident">std::fmt</span>;
-<span class="kw">use</span> <span class="ident">std::fmt::Debug</span>;
-<span class="kw">use</span> <span class="ident">std::marker::PhantomData</span>;
-<span class="kw">use</span> <span class="ident">std::mem</span>;
-<span class="kw">use</span> <span class="ident">std::pin::Pin</span>;
-<span class="kw">use</span> <span class="ident">std::ptr</span>::{<span class="ident">null</span>, <span class="ident">null_mut</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::sys::signal</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">std::thread</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::sys::time::TimeSpec</span>;
+</span><span class="kw">use </span><span class="kw">crate</span>::Result;
+<span class="kw">use </span><span class="kw">crate</span>::errno::Errno;
+<span class="kw">use </span>std::os::unix::io::RawFd;
+<span class="kw">use </span>libc::{c_void, off_t, size_t};
+<span class="kw">use </span>std::fmt;
+<span class="kw">use </span>std::fmt::Debug;
+<span class="kw">use </span>std::marker::PhantomData;
+<span class="kw">use </span>std::mem;
+<span class="kw">use </span>std::pin::Pin;
+<span class="kw">use </span>std::ptr::{null, null_mut};
+<span class="kw">use </span><span class="kw">crate</span>::sys::signal::<span class="kw-2">*</span>;
+<span class="kw">use </span>std::thread;
+<span class="kw">use </span><span class="kw">crate</span>::sys::time::TimeSpec;
 
-<span class="macro">libc_enum!</span> {
-    <span class="doccomment">/// Mode for `AioCb::fsync`.  Controls whether only data or both data and</span>
-    <span class="doccomment">/// metadata are synced.</span>
-    <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">i32</span>)]</span>
-    <span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
-    <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">AioFsyncMode</span> {
-        <span class="doccomment">/// do it like `fsync`</span>
-        <span class="ident">O_SYNC</span>,
-        <span class="doccomment">/// on supported operating systems only, do it like `fdatasync`</span>
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
-                  <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
-                  <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
-                  <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>,
-                  <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>))]</span>
-        <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-        <span class="ident">O_DSYNC</span>
+<span class="macro">libc_enum! </span>{
+    <span class="doccomment">/// Mode for `AioCb::fsync`.  Controls whether only data or both data and
+    /// metadata are synced.
+    </span><span class="attribute">#[repr(i32)]
+    #[non_exhaustive]
+    </span><span class="kw">pub enum </span>AioFsyncMode {
+        <span class="doccomment">/// do it like `fsync`
+        </span>O_SYNC,
+        <span class="doccomment">/// on supported operating systems only, do it like `fdatasync`
+        </span><span class="attribute">#[cfg(any(target_os = <span class="string">&quot;ios&quot;</span>,
+                  target_os = <span class="string">&quot;linux&quot;</span>,
+                  target_os = <span class="string">&quot;macos&quot;</span>,
+                  target_os = <span class="string">&quot;netbsd&quot;</span>,
+                  target_os = <span class="string">&quot;openbsd&quot;</span>))]
+        #[cfg_attr(docsrs, doc(cfg(all())))]
+        </span>O_DSYNC
     }
 }
 
-<span class="macro">libc_enum!</span> {
-    <span class="doccomment">/// When used with [`lio_listio`](fn.lio_listio.html), determines whether a</span>
-    <span class="doccomment">/// given `aiocb` should be used for a read operation, a write operation, or</span>
-    <span class="doccomment">/// ignored.  Has no effect for any other aio functions.</span>
-    <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">i32</span>)]</span>
-    <span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
-    <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LioOpcode</span> {
-        <span class="doccomment">/// No operation</span>
-        <span class="ident">LIO_NOP</span>,
-        <span class="doccomment">/// Write data as if by a call to [`AioCb::write`]</span>
-        <span class="ident">LIO_WRITE</span>,
-        <span class="doccomment">/// Write data as if by a call to [`AioCb::read`]</span>
-        <span class="ident">LIO_READ</span>,
+<span class="macro">libc_enum! </span>{
+    <span class="doccomment">/// When used with [`lio_listio`](fn.lio_listio.html), determines whether a
+    /// given `aiocb` should be used for a read operation, a write operation, or
+    /// ignored.  Has no effect for any other aio functions.
+    </span><span class="attribute">#[repr(i32)]
+    #[non_exhaustive]
+    </span><span class="kw">pub enum </span>LioOpcode {
+        <span class="doccomment">/// No operation
+        </span>LIO_NOP,
+        <span class="doccomment">/// Write data as if by a call to [`AioCb::write`]
+        </span>LIO_WRITE,
+        <span class="doccomment">/// Write data as if by a call to [`AioCb::read`]
+        </span>LIO_READ,
     }
 }
 
-<span class="macro">libc_enum!</span> {
-    <span class="doccomment">/// Mode for [`lio_listio`](fn.lio_listio.html)</span>
-    <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">i32</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LioMode</span> {
-        <span class="doccomment">/// Requests that [`lio_listio`](fn.lio_listio.html) block until all</span>
-        <span class="doccomment">/// requested operations have been completed</span>
-        <span class="ident">LIO_WAIT</span>,
-        <span class="doccomment">/// Requests that [`lio_listio`](fn.lio_listio.html) return immediately</span>
-        <span class="ident">LIO_NOWAIT</span>,
+<span class="macro">libc_enum! </span>{
+    <span class="doccomment">/// Mode for [`lio_listio`](fn.lio_listio.html)
+    </span><span class="attribute">#[repr(i32)]
+    </span><span class="kw">pub enum </span>LioMode {
+        <span class="doccomment">/// Requests that [`lio_listio`](fn.lio_listio.html) block until all
+        /// requested operations have been completed
+        </span>LIO_WAIT,
+        <span class="doccomment">/// Requests that [`lio_listio`](fn.lio_listio.html) return immediately
+        </span>LIO_NOWAIT,
     }
 }
 
-<span class="doccomment">/// Return values for [`AioCb::cancel`](struct.AioCb.html#method.cancel) and</span>
-<span class="doccomment">/// [`aio_cancel_all`](fn.aio_cancel_all.html)</span>
-<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">i32</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">AioCancelStat</span> {
-    <span class="doccomment">/// All outstanding requests were canceled</span>
-    <span class="ident">AioCanceled</span> <span class="op">=</span> <span class="ident">libc::AIO_CANCELED</span>,
-    <span class="doccomment">/// Some requests were not canceled.  Their status should be checked with</span>
-    <span class="doccomment">/// `AioCb::error`</span>
-    <span class="ident">AioNotCanceled</span> <span class="op">=</span> <span class="ident">libc::AIO_NOTCANCELED</span>,
-    <span class="doccomment">/// All of the requests have already finished</span>
-    <span class="ident">AioAllDone</span> <span class="op">=</span> <span class="ident">libc::AIO_ALLDONE</span>,
+<span class="doccomment">/// Return values for [`AioCb::cancel`](struct.AioCb.html#method.cancel) and
+/// [`aio_cancel_all`](fn.aio_cancel_all.html)
+</span><span class="attribute">#[repr(i32)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+</span><span class="kw">pub enum </span>AioCancelStat {
+    <span class="doccomment">/// All outstanding requests were canceled
+    </span>AioCanceled = libc::AIO_CANCELED,
+    <span class="doccomment">/// Some requests were not canceled.  Their status should be checked with
+    /// `AioCb::error`
+    </span>AioNotCanceled = libc::AIO_NOTCANCELED,
+    <span class="doccomment">/// All of the requests have already finished
+    </span>AioAllDone = libc::AIO_ALLDONE,
 }
 
-<span class="doccomment">/// Newtype that adds Send and Sync to libc::aiocb, which contains raw pointers</span>
-<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
-<span class="kw">struct</span> <span class="ident">LibcAiocb</span>(<span class="ident">libc::aiocb</span>);
+<span class="doccomment">/// Newtype that adds Send and Sync to libc::aiocb, which contains raw pointers
+</span><span class="attribute">#[repr(transparent)]
+</span><span class="kw">struct </span>LibcAiocb(libc::aiocb);
 
-<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">LibcAiocb</span> {}
-<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Sync</span> <span class="kw">for</span> <span class="ident">LibcAiocb</span> {}
+<span class="kw">unsafe impl </span>Send <span class="kw">for </span>LibcAiocb {}
+<span class="kw">unsafe impl </span>Sync <span class="kw">for </span>LibcAiocb {}
 
-<span class="doccomment">/// AIO Control Block.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The basic structure used by all aio functions.  Each `AioCb` represents one</span>
-<span class="doccomment">/// I/O request.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="ident">aiocb</span>: <span class="ident">LibcAiocb</span>,
-    <span class="doccomment">/// Tracks whether the buffer pointed to by `libc::aiocb.aio_buf` is mutable</span>
-    <span class="ident">mutable</span>: <span class="ident">bool</span>,
-    <span class="doccomment">/// Could this `AioCb` potentially have any in-kernel state?</span>
-    <span class="ident">in_progress</span>: <span class="ident">bool</span>,
-    <span class="ident">_buffer</span>: <span class="ident">std::marker::PhantomData</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]<span class="op">&gt;</span>,
-    <span class="ident">_pin</span>: <span class="ident">std::marker::PhantomPinned</span>
+<span class="doccomment">/// AIO Control Block.
+///
+/// The basic structure used by all aio functions.  Each `AioCb` represents one
+/// I/O request.
+</span><span class="kw">pub struct </span>AioCb&lt;<span class="lifetime">&#39;a</span>&gt; {
+    aiocb: LibcAiocb,
+    <span class="doccomment">/// Tracks whether the buffer pointed to by `libc::aiocb.aio_buf` is mutable
+    </span>mutable: bool,
+    <span class="doccomment">/// Could this `AioCb` potentially have any in-kernel state?
+    </span>in_progress: bool,
+    _buffer: std::marker::PhantomData&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8]&gt;,
+    _pin: std::marker::PhantomPinned
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">AioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Returns the underlying file descriptor associated with the `AioCb`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fd</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">RawFd</span> {
-        <span class="self">self</span>.<span class="ident">aiocb</span>.<span class="number">0</span>.<span class="ident">aio_fildes</span>
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; AioCb&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// Returns the underlying file descriptor associated with the `AioCb`
+    </span><span class="kw">pub fn </span>fd(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RawFd {
+        <span class="self">self</span>.aiocb.<span class="number">0</span>.aio_fildes
     }
 
-    <span class="doccomment">/// Constructs a new `AioCb` with no associated buffer.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The resulting `AioCb` structure is suitable for use with `AioCb::fsync`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Parameters</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// * `fd`:           File descriptor.  Required for all aio functions.</span>
-    <span class="doccomment">/// * `prio`:         If POSIX Prioritized IO is supported, then the</span>
-    <span class="doccomment">///                   operation will be prioritized at the process&#39;s</span>
-    <span class="doccomment">///                   priority level minus `prio`.</span>
-    <span class="doccomment">/// * `sigev_notify`: Determines how you will be notified of event</span>
-    <span class="doccomment">///                    completion.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Create an `AioCb` from a raw file descriptor and use it for an</span>
-    <span class="doccomment">/// [`fsync`](#method.fsync) operation.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # use nix::errno::Errno;</span>
-    <span class="doccomment">/// # use nix::Error;</span>
-    <span class="doccomment">/// # use nix::sys::aio::*;</span>
-    <span class="doccomment">/// # use nix::sys::signal::SigevNotify::SigevNone;</span>
-    <span class="doccomment">/// # use std::{thread, time};</span>
-    <span class="doccomment">/// # use std::os::unix::io::AsRawFd;</span>
-    <span class="doccomment">/// # use tempfile::tempfile;</span>
-    <span class="doccomment">/// let f = tempfile().unwrap();</span>
-    <span class="doccomment">/// let mut aiocb = AioCb::from_fd( f.as_raw_fd(), 0, SigevNone);</span>
-    <span class="doccomment">/// aiocb.fsync(AioFsyncMode::O_SYNC).expect(&quot;aio_fsync failed early&quot;);</span>
-    <span class="doccomment">/// while (aiocb.error() == Err(Errno::EINPROGRESS)) {</span>
-    <span class="doccomment">///     thread::sleep(time::Duration::from_millis(10));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// aiocb.aio_return().expect(&quot;aio_fsync failed late&quot;);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_fd</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">prio</span>: <span class="ident">libc::c_int</span>,
-                    <span class="ident">sigev_notify</span>: <span class="ident">SigevNotify</span>) -&gt; <span class="ident">Pin</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">AioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">AioCb::common_init</span>(<span class="ident">fd</span>, <span class="ident">prio</span>, <span class="ident">sigev_notify</span>);
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_offset</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_nbytes</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_buf</span> <span class="op">=</span> <span class="ident">null_mut</span>();
+    <span class="doccomment">/// Constructs a new `AioCb` with no associated buffer.
+    ///
+    /// The resulting `AioCb` structure is suitable for use with `AioCb::fsync`.
+    ///
+    /// # Parameters
+    ///
+    /// * `fd`:           File descriptor.  Required for all aio functions.
+    /// * `prio`:         If POSIX Prioritized IO is supported, then the
+    ///                   operation will be prioritized at the process&#39;s
+    ///                   priority level minus `prio`.
+    /// * `sigev_notify`: Determines how you will be notified of event
+    ///                    completion.
+    ///
+    /// # Examples
+    ///
+    /// Create an `AioCb` from a raw file descriptor and use it for an
+    /// [`fsync`](#method.fsync) operation.
+    ///
+    /// ```
+    /// # use nix::errno::Errno;
+    /// # use nix::Error;
+    /// # use nix::sys::aio::*;
+    /// # use nix::sys::signal::SigevNotify::SigevNone;
+    /// # use std::{thread, time};
+    /// # use std::os::unix::io::AsRawFd;
+    /// # use tempfile::tempfile;
+    /// let f = tempfile().unwrap();
+    /// let mut aiocb = AioCb::from_fd( f.as_raw_fd(), 0, SigevNone);
+    /// aiocb.fsync(AioFsyncMode::O_SYNC).expect(&quot;aio_fsync failed early&quot;);
+    /// while (aiocb.error() == Err(Errno::EINPROGRESS)) {
+    ///     thread::sleep(time::Duration::from_millis(10));
+    /// }
+    /// aiocb.aio_return().expect(&quot;aio_fsync failed late&quot;);
+    /// ```
+    </span><span class="kw">pub fn </span>from_fd(fd: RawFd, prio: libc::c_int,
+                    sigev_notify: SigevNotify) -&gt; Pin&lt;Box&lt;AioCb&lt;<span class="lifetime">&#39;a</span>&gt;&gt;&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>a = AioCb::common_init(fd, prio, sigev_notify);
+        a.<span class="number">0</span>.aio_offset = <span class="number">0</span>;
+        a.<span class="number">0</span>.aio_nbytes = <span class="number">0</span>;
+        a.<span class="number">0</span>.aio_buf = null_mut();
 
-        <span class="ident">Box::pin</span>(<span class="ident">AioCb</span> {
-            <span class="ident">aiocb</span>: <span class="ident">a</span>,
-            <span class="ident">mutable</span>: <span class="bool-val">false</span>,
-            <span class="ident">in_progress</span>: <span class="bool-val">false</span>,
-            <span class="ident">_buffer</span>: <span class="ident">PhantomData</span>,
-            <span class="ident">_pin</span>: <span class="ident">std::marker::PhantomPinned</span>
+        Box::pin(AioCb {
+            aiocb: a,
+            mutable: <span class="bool-val">false</span>,
+            in_progress: <span class="bool-val">false</span>,
+            _buffer: PhantomData,
+            _pin: std::marker::PhantomPinned
         })
     }
 
-    <span class="comment">// Private helper</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>)))]</span>
-    <span class="kw">fn</span> <span class="ident">from_mut_slice_unpinned</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">offs</span>: <span class="ident">off_t</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> [<span class="ident">u8</span>],
-                          <span class="ident">prio</span>: <span class="ident">libc::c_int</span>, <span class="ident">sigev_notify</span>: <span class="ident">SigevNotify</span>,
-                          <span class="ident">opcode</span>: <span class="ident">LioOpcode</span>) -&gt; <span class="ident">AioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>
+    <span class="comment">// Private helper
+    </span><span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>)))]
+    </span><span class="kw">fn </span>from_mut_slice_unpinned(fd: RawFd, offs: off_t, buf: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>[u8],
+                          prio: libc::c_int, sigev_notify: SigevNotify,
+                          opcode: LioOpcode) -&gt; AioCb&lt;<span class="lifetime">&#39;a</span>&gt;
     {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">AioCb::common_init</span>(<span class="ident">fd</span>, <span class="ident">prio</span>, <span class="ident">sigev_notify</span>);
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_offset</span> <span class="op">=</span> <span class="ident">offs</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_nbytes</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">size_t</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_buf</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_lio_opcode</span> <span class="op">=</span> <span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">libc::c_int</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>a = AioCb::common_init(fd, prio, sigev_notify);
+        a.<span class="number">0</span>.aio_offset = offs;
+        a.<span class="number">0</span>.aio_nbytes = buf.len() <span class="kw">as </span>size_t;
+        a.<span class="number">0</span>.aio_buf = buf.as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_void;
+        a.<span class="number">0</span>.aio_lio_opcode = opcode <span class="kw">as </span>libc::c_int;
 
-        <span class="ident">AioCb</span> {
-            <span class="ident">aiocb</span>: <span class="ident">a</span>,
-            <span class="ident">mutable</span>: <span class="bool-val">true</span>,
-            <span class="ident">in_progress</span>: <span class="bool-val">false</span>,
-            <span class="ident">_buffer</span>: <span class="ident">PhantomData</span>,
-            <span class="ident">_pin</span>: <span class="ident">std::marker::PhantomPinned</span>
+        AioCb {
+            aiocb: a,
+            mutable: <span class="bool-val">true</span>,
+            in_progress: <span class="bool-val">false</span>,
+            _buffer: PhantomData,
+            _pin: std::marker::PhantomPinned
         }
     }
 
-    <span class="doccomment">/// Constructs a new `AioCb` from a mutable slice.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The resulting `AioCb` will be suitable for both read and write</span>
-    <span class="doccomment">/// operations, but only if the borrow checker can guarantee that the slice</span>
-    <span class="doccomment">/// will outlive the `AioCb`.  That will usually be the case if the `AioCb`</span>
-    <span class="doccomment">/// is stack-allocated.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Parameters</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// * `fd`:           File descriptor.  Required for all aio functions.</span>
-    <span class="doccomment">/// * `offs`:         File offset</span>
-    <span class="doccomment">/// * `buf`:          A memory buffer</span>
-    <span class="doccomment">/// * `prio`:         If POSIX Prioritized IO is supported, then the</span>
-    <span class="doccomment">///                   operation will be prioritized at the process&#39;s</span>
-    <span class="doccomment">///                   priority level minus `prio`</span>
-    <span class="doccomment">/// * `sigev_notify`: Determines how you will be notified of event</span>
-    <span class="doccomment">///                   completion.</span>
-    <span class="doccomment">/// * `opcode`:       This field is only used for `lio_listio`.  It</span>
-    <span class="doccomment">///                   determines which operation to use for this individual</span>
-    <span class="doccomment">///                   aiocb</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Create an `AioCb` from a mutable slice and read into it.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # use nix::errno::Errno;</span>
-    <span class="doccomment">/// # use nix::Error;</span>
-    <span class="doccomment">/// # use nix::sys::aio::*;</span>
-    <span class="doccomment">/// # use nix::sys::signal::SigevNotify;</span>
-    <span class="doccomment">/// # use std::{thread, time};</span>
-    <span class="doccomment">/// # use std::io::Write;</span>
-    <span class="doccomment">/// # use std::os::unix::io::AsRawFd;</span>
-    <span class="doccomment">/// # use tempfile::tempfile;</span>
-    <span class="doccomment">/// const INITIAL: &amp;[u8] = b&quot;abcdef123456&quot;;</span>
-    <span class="doccomment">/// const LEN: usize = 4;</span>
-    <span class="doccomment">/// let mut rbuf = vec![0; LEN];</span>
-    <span class="doccomment">/// let mut f = tempfile().unwrap();</span>
-    <span class="doccomment">/// f.write_all(INITIAL).unwrap();</span>
-    <span class="doccomment">/// {</span>
-    <span class="doccomment">///     let mut aiocb = AioCb::from_mut_slice( f.as_raw_fd(),</span>
-    <span class="doccomment">///         2,   //offset</span>
-    <span class="doccomment">///         &amp;mut rbuf,</span>
-    <span class="doccomment">///         0,   //priority</span>
-    <span class="doccomment">///         SigevNotify::SigevNone,</span>
-    <span class="doccomment">///         LioOpcode::LIO_NOP);</span>
-    <span class="doccomment">///     aiocb.read().unwrap();</span>
-    <span class="doccomment">///     while (aiocb.error() == Err(Errno::EINPROGRESS)) {</span>
-    <span class="doccomment">///         thread::sleep(time::Duration::from_millis(10));</span>
-    <span class="doccomment">///     }</span>
-    <span class="doccomment">///     assert_eq!(aiocb.aio_return().unwrap() as usize, LEN);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// assert_eq!(rbuf, b&quot;cdef&quot;);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_mut_slice</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">offs</span>: <span class="ident">off_t</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> [<span class="ident">u8</span>],
-                          <span class="ident">prio</span>: <span class="ident">libc::c_int</span>, <span class="ident">sigev_notify</span>: <span class="ident">SigevNotify</span>,
-                          <span class="ident">opcode</span>: <span class="ident">LioOpcode</span>) -&gt; <span class="ident">Pin</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">AioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">AioCb::common_init</span>(<span class="ident">fd</span>, <span class="ident">prio</span>, <span class="ident">sigev_notify</span>);
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_offset</span> <span class="op">=</span> <span class="ident">offs</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_nbytes</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">size_t</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_buf</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_lio_opcode</span> <span class="op">=</span> <span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">libc::c_int</span>;
+    <span class="doccomment">/// Constructs a new `AioCb` from a mutable slice.
+    ///
+    /// The resulting `AioCb` will be suitable for both read and write
+    /// operations, but only if the borrow checker can guarantee that the slice
+    /// will outlive the `AioCb`.  That will usually be the case if the `AioCb`
+    /// is stack-allocated.
+    ///
+    /// # Parameters
+    ///
+    /// * `fd`:           File descriptor.  Required for all aio functions.
+    /// * `offs`:         File offset
+    /// * `buf`:          A memory buffer
+    /// * `prio`:         If POSIX Prioritized IO is supported, then the
+    ///                   operation will be prioritized at the process&#39;s
+    ///                   priority level minus `prio`
+    /// * `sigev_notify`: Determines how you will be notified of event
+    ///                   completion.
+    /// * `opcode`:       This field is only used for `lio_listio`.  It
+    ///                   determines which operation to use for this individual
+    ///                   aiocb
+    ///
+    /// # Examples
+    ///
+    /// Create an `AioCb` from a mutable slice and read into it.
+    ///
+    /// ```
+    /// # use nix::errno::Errno;
+    /// # use nix::Error;
+    /// # use nix::sys::aio::*;
+    /// # use nix::sys::signal::SigevNotify;
+    /// # use std::{thread, time};
+    /// # use std::io::Write;
+    /// # use std::os::unix::io::AsRawFd;
+    /// # use tempfile::tempfile;
+    /// const INITIAL: &amp;[u8] = b&quot;abcdef123456&quot;;
+    /// const LEN: usize = 4;
+    /// let mut rbuf = vec![0; LEN];
+    /// let mut f = tempfile().unwrap();
+    /// f.write_all(INITIAL).unwrap();
+    /// {
+    ///     let mut aiocb = AioCb::from_mut_slice( f.as_raw_fd(),
+    ///         2,   //offset
+    ///         &amp;mut rbuf,
+    ///         0,   //priority
+    ///         SigevNotify::SigevNone,
+    ///         LioOpcode::LIO_NOP);
+    ///     aiocb.read().unwrap();
+    ///     while (aiocb.error() == Err(Errno::EINPROGRESS)) {
+    ///         thread::sleep(time::Duration::from_millis(10));
+    ///     }
+    ///     assert_eq!(aiocb.aio_return().unwrap() as usize, LEN);
+    /// }
+    /// assert_eq!(rbuf, b&quot;cdef&quot;);
+    /// ```
+    </span><span class="kw">pub fn </span>from_mut_slice(fd: RawFd, offs: off_t, buf: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>[u8],
+                          prio: libc::c_int, sigev_notify: SigevNotify,
+                          opcode: LioOpcode) -&gt; Pin&lt;Box&lt;AioCb&lt;<span class="lifetime">&#39;a</span>&gt;&gt;&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>a = AioCb::common_init(fd, prio, sigev_notify);
+        a.<span class="number">0</span>.aio_offset = offs;
+        a.<span class="number">0</span>.aio_nbytes = buf.len() <span class="kw">as </span>size_t;
+        a.<span class="number">0</span>.aio_buf = buf.as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_void;
+        a.<span class="number">0</span>.aio_lio_opcode = opcode <span class="kw">as </span>libc::c_int;
 
-        <span class="ident">Box::pin</span>(<span class="ident">AioCb</span> {
-            <span class="ident">aiocb</span>: <span class="ident">a</span>,
-            <span class="ident">mutable</span>: <span class="bool-val">true</span>,
-            <span class="ident">in_progress</span>: <span class="bool-val">false</span>,
-            <span class="ident">_buffer</span>: <span class="ident">PhantomData</span>,
-            <span class="ident">_pin</span>: <span class="ident">std::marker::PhantomPinned</span>
+        Box::pin(AioCb {
+            aiocb: a,
+            mutable: <span class="bool-val">true</span>,
+            in_progress: <span class="bool-val">false</span>,
+            _buffer: PhantomData,
+            _pin: std::marker::PhantomPinned
         })
     }
 
-    <span class="doccomment">/// Constructs a new `AioCb` from a mutable raw pointer</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Unlike `from_mut_slice`, this method returns a structure suitable for</span>
-    <span class="doccomment">/// placement on the heap.  It may be used for both reads and writes.  Due</span>
-    <span class="doccomment">/// to its unsafety, this method is not recommended.  It is most useful when</span>
-    <span class="doccomment">/// heap allocation is required.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Parameters</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// * `fd`:           File descriptor.  Required for all aio functions.</span>
-    <span class="doccomment">/// * `offs`:         File offset</span>
-    <span class="doccomment">/// * `buf`:          Pointer to the memory buffer</span>
-    <span class="doccomment">/// * `len`:          Length of the buffer pointed to by `buf`</span>
-    <span class="doccomment">/// * `prio`:         If POSIX Prioritized IO is supported, then the</span>
-    <span class="doccomment">///                   operation will be prioritized at the process&#39;s</span>
-    <span class="doccomment">///                   priority level minus `prio`</span>
-    <span class="doccomment">/// * `sigev_notify`: Determines how you will be notified of event</span>
-    <span class="doccomment">///                   completion.</span>
-    <span class="doccomment">/// * `opcode`:       This field is only used for `lio_listio`.  It</span>
-    <span class="doccomment">///                   determines which operation to use for this individual</span>
-    <span class="doccomment">///                   aiocb</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The caller must ensure that the storage pointed to by `buf` outlives the</span>
-    <span class="doccomment">/// `AioCb`.  The lifetime checker can&#39;t help here.</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_mut_ptr</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">offs</span>: <span class="ident">off_t</span>,
-                           <span class="ident">buf</span>: <span class="kw-2">*mut</span> <span class="ident">c_void</span>, <span class="ident">len</span>: <span class="ident">usize</span>,
-                           <span class="ident">prio</span>: <span class="ident">libc::c_int</span>, <span class="ident">sigev_notify</span>: <span class="ident">SigevNotify</span>,
-                           <span class="ident">opcode</span>: <span class="ident">LioOpcode</span>) -&gt; <span class="ident">Pin</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">AioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">AioCb::common_init</span>(<span class="ident">fd</span>, <span class="ident">prio</span>, <span class="ident">sigev_notify</span>);
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_offset</span> <span class="op">=</span> <span class="ident">offs</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_nbytes</span> <span class="op">=</span> <span class="ident">len</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_buf</span> <span class="op">=</span> <span class="ident">buf</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_lio_opcode</span> <span class="op">=</span> <span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">libc::c_int</span>;
+    <span class="doccomment">/// Constructs a new `AioCb` from a mutable raw pointer
+    ///
+    /// Unlike `from_mut_slice`, this method returns a structure suitable for
+    /// placement on the heap.  It may be used for both reads and writes.  Due
+    /// to its unsafety, this method is not recommended.  It is most useful when
+    /// heap allocation is required.
+    ///
+    /// # Parameters
+    ///
+    /// * `fd`:           File descriptor.  Required for all aio functions.
+    /// * `offs`:         File offset
+    /// * `buf`:          Pointer to the memory buffer
+    /// * `len`:          Length of the buffer pointed to by `buf`
+    /// * `prio`:         If POSIX Prioritized IO is supported, then the
+    ///                   operation will be prioritized at the process&#39;s
+    ///                   priority level minus `prio`
+    /// * `sigev_notify`: Determines how you will be notified of event
+    ///                   completion.
+    /// * `opcode`:       This field is only used for `lio_listio`.  It
+    ///                   determines which operation to use for this individual
+    ///                   aiocb
+    ///
+    /// # Safety
+    ///
+    /// The caller must ensure that the storage pointed to by `buf` outlives the
+    /// `AioCb`.  The lifetime checker can&#39;t help here.
+    </span><span class="kw">pub unsafe fn </span>from_mut_ptr(fd: RawFd, offs: off_t,
+                           buf: <span class="kw-2">*mut </span>c_void, len: usize,
+                           prio: libc::c_int, sigev_notify: SigevNotify,
+                           opcode: LioOpcode) -&gt; Pin&lt;Box&lt;AioCb&lt;<span class="lifetime">&#39;a</span>&gt;&gt;&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>a = AioCb::common_init(fd, prio, sigev_notify);
+        a.<span class="number">0</span>.aio_offset = offs;
+        a.<span class="number">0</span>.aio_nbytes = len;
+        a.<span class="number">0</span>.aio_buf = buf;
+        a.<span class="number">0</span>.aio_lio_opcode = opcode <span class="kw">as </span>libc::c_int;
 
-        <span class="ident">Box::pin</span>(<span class="ident">AioCb</span> {
-            <span class="ident">aiocb</span>: <span class="ident">a</span>,
-            <span class="ident">mutable</span>: <span class="bool-val">true</span>,
-            <span class="ident">in_progress</span>: <span class="bool-val">false</span>,
-            <span class="ident">_buffer</span>: <span class="ident">PhantomData</span>,
-            <span class="ident">_pin</span>: <span class="ident">std::marker::PhantomPinned</span>,
+        Box::pin(AioCb {
+            aiocb: a,
+            mutable: <span class="bool-val">true</span>,
+            in_progress: <span class="bool-val">false</span>,
+            _buffer: PhantomData,
+            _pin: std::marker::PhantomPinned,
         })
     }
 
-    <span class="doccomment">/// Constructs a new `AioCb` from a raw pointer.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Unlike `from_slice`, this method returns a structure suitable for</span>
-    <span class="doccomment">/// placement on the heap.  Due to its unsafety, this method is not</span>
-    <span class="doccomment">/// recommended.  It is most useful when heap allocation is required.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Parameters</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// * `fd`:           File descriptor.  Required for all aio functions.</span>
-    <span class="doccomment">/// * `offs`:         File offset</span>
-    <span class="doccomment">/// * `buf`:          Pointer to the memory buffer</span>
-    <span class="doccomment">/// * `len`:          Length of the buffer pointed to by `buf`</span>
-    <span class="doccomment">/// * `prio`:         If POSIX Prioritized IO is supported, then the</span>
-    <span class="doccomment">///                   operation will be prioritized at the process&#39;s</span>
-    <span class="doccomment">///                   priority level minus `prio`</span>
-    <span class="doccomment">/// * `sigev_notify`: Determines how you will be notified of event</span>
-    <span class="doccomment">///                   completion.</span>
-    <span class="doccomment">/// * `opcode`:       This field is only used for `lio_listio`.  It</span>
-    <span class="doccomment">///                   determines which operation to use for this individual</span>
-    <span class="doccomment">///                   aiocb</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The caller must ensure that the storage pointed to by `buf` outlives the</span>
-    <span class="doccomment">/// `AioCb`.  The lifetime checker can&#39;t help here.</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_ptr</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">offs</span>: <span class="ident">off_t</span>,
-                           <span class="ident">buf</span>: <span class="kw-2">*const</span> <span class="ident">c_void</span>, <span class="ident">len</span>: <span class="ident">usize</span>,
-                           <span class="ident">prio</span>: <span class="ident">libc::c_int</span>, <span class="ident">sigev_notify</span>: <span class="ident">SigevNotify</span>,
-                           <span class="ident">opcode</span>: <span class="ident">LioOpcode</span>) -&gt; <span class="ident">Pin</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">AioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">AioCb::common_init</span>(<span class="ident">fd</span>, <span class="ident">prio</span>, <span class="ident">sigev_notify</span>);
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_offset</span> <span class="op">=</span> <span class="ident">offs</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_nbytes</span> <span class="op">=</span> <span class="ident">len</span>;
-        <span class="comment">// casting a const ptr to a mutable ptr here is ok, because we set the</span>
-        <span class="comment">// AioCb&#39;s mutable field to false</span>
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_buf</span> <span class="op">=</span> <span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_lio_opcode</span> <span class="op">=</span> <span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">libc::c_int</span>;
+    <span class="doccomment">/// Constructs a new `AioCb` from a raw pointer.
+    ///
+    /// Unlike `from_slice`, this method returns a structure suitable for
+    /// placement on the heap.  Due to its unsafety, this method is not
+    /// recommended.  It is most useful when heap allocation is required.
+    ///
+    /// # Parameters
+    ///
+    /// * `fd`:           File descriptor.  Required for all aio functions.
+    /// * `offs`:         File offset
+    /// * `buf`:          Pointer to the memory buffer
+    /// * `len`:          Length of the buffer pointed to by `buf`
+    /// * `prio`:         If POSIX Prioritized IO is supported, then the
+    ///                   operation will be prioritized at the process&#39;s
+    ///                   priority level minus `prio`
+    /// * `sigev_notify`: Determines how you will be notified of event
+    ///                   completion.
+    /// * `opcode`:       This field is only used for `lio_listio`.  It
+    ///                   determines which operation to use for this individual
+    ///                   aiocb
+    ///
+    /// # Safety
+    ///
+    /// The caller must ensure that the storage pointed to by `buf` outlives the
+    /// `AioCb`.  The lifetime checker can&#39;t help here.
+    </span><span class="kw">pub unsafe fn </span>from_ptr(fd: RawFd, offs: off_t,
+                           buf: <span class="kw-2">*const </span>c_void, len: usize,
+                           prio: libc::c_int, sigev_notify: SigevNotify,
+                           opcode: LioOpcode) -&gt; Pin&lt;Box&lt;AioCb&lt;<span class="lifetime">&#39;a</span>&gt;&gt;&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>a = AioCb::common_init(fd, prio, sigev_notify);
+        a.<span class="number">0</span>.aio_offset = offs;
+        a.<span class="number">0</span>.aio_nbytes = len;
+        <span class="comment">// casting a const ptr to a mutable ptr here is ok, because we set the
+        // AioCb&#39;s mutable field to false
+        </span>a.<span class="number">0</span>.aio_buf = buf <span class="kw">as </span><span class="kw-2">*mut </span>c_void;
+        a.<span class="number">0</span>.aio_lio_opcode = opcode <span class="kw">as </span>libc::c_int;
 
-        <span class="ident">Box::pin</span>(<span class="ident">AioCb</span> {
-            <span class="ident">aiocb</span>: <span class="ident">a</span>,
-            <span class="ident">mutable</span>: <span class="bool-val">false</span>,
-            <span class="ident">in_progress</span>: <span class="bool-val">false</span>,
-            <span class="ident">_buffer</span>: <span class="ident">PhantomData</span>,
-            <span class="ident">_pin</span>: <span class="ident">std::marker::PhantomPinned</span>
+        Box::pin(AioCb {
+            aiocb: a,
+            mutable: <span class="bool-val">false</span>,
+            in_progress: <span class="bool-val">false</span>,
+            _buffer: PhantomData,
+            _pin: std::marker::PhantomPinned
         })
     }
 
-    <span class="comment">// Private helper</span>
-    <span class="kw">fn</span> <span class="ident">from_slice_unpinned</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">offs</span>: <span class="ident">off_t</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>],
-                           <span class="ident">prio</span>: <span class="ident">libc::c_int</span>, <span class="ident">sigev_notify</span>: <span class="ident">SigevNotify</span>,
-                           <span class="ident">opcode</span>: <span class="ident">LioOpcode</span>) -&gt; <span class="ident">AioCb</span>
+    <span class="comment">// Private helper
+    </span><span class="kw">fn </span>from_slice_unpinned(fd: RawFd, offs: off_t, buf: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8],
+                           prio: libc::c_int, sigev_notify: SigevNotify,
+                           opcode: LioOpcode) -&gt; AioCb
     {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">AioCb::common_init</span>(<span class="ident">fd</span>, <span class="ident">prio</span>, <span class="ident">sigev_notify</span>);
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_offset</span> <span class="op">=</span> <span class="ident">offs</span>;
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_nbytes</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">size_t</span>;
-        <span class="comment">// casting an immutable buffer to a mutable pointer looks unsafe,</span>
-        <span class="comment">// but technically its only unsafe to dereference it, not to create</span>
-        <span class="comment">// it.</span>
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_buf</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>;
-        <span class="macro">assert!</span>(<span class="ident">opcode</span> <span class="op">!</span><span class="op">=</span> <span class="ident">LioOpcode::LIO_READ</span>, <span class="string">&quot;Can&#39;t read into an immutable buffer&quot;</span>);
-        <span class="ident">a</span>.<span class="number">0</span>.<span class="ident">aio_lio_opcode</span> <span class="op">=</span> <span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">libc::c_int</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>a = AioCb::common_init(fd, prio, sigev_notify);
+        a.<span class="number">0</span>.aio_offset = offs;
+        a.<span class="number">0</span>.aio_nbytes = buf.len() <span class="kw">as </span>size_t;
+        <span class="comment">// casting an immutable buffer to a mutable pointer looks unsafe,
+        // but technically its only unsafe to dereference it, not to create
+        // it.
+        </span>a.<span class="number">0</span>.aio_buf = buf.as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_void;
+        <span class="macro">assert!</span>(opcode != LioOpcode::LIO_READ, <span class="string">&quot;Can&#39;t read into an immutable buffer&quot;</span>);
+        a.<span class="number">0</span>.aio_lio_opcode = opcode <span class="kw">as </span>libc::c_int;
 
-        <span class="ident">AioCb</span> {
-            <span class="ident">aiocb</span>: <span class="ident">a</span>,
-            <span class="ident">mutable</span>: <span class="bool-val">false</span>,
-            <span class="ident">in_progress</span>: <span class="bool-val">false</span>,
-            <span class="ident">_buffer</span>: <span class="ident">PhantomData</span>,
-            <span class="ident">_pin</span>: <span class="ident">std::marker::PhantomPinned</span>
+        AioCb {
+            aiocb: a,
+            mutable: <span class="bool-val">false</span>,
+            in_progress: <span class="bool-val">false</span>,
+            _buffer: PhantomData,
+            _pin: std::marker::PhantomPinned
         }
     }
 
-    <span class="doccomment">/// Like [`AioCb::from_mut_slice`], but works on constant slices rather than</span>
-    <span class="doccomment">/// mutable slices.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// An `AioCb` created this way cannot be used with `read`, and its</span>
-    <span class="doccomment">/// `LioOpcode` cannot be set to `LIO_READ`.  This method is useful when</span>
-    <span class="doccomment">/// writing a const buffer with `AioCb::write`, since `from_mut_slice` can&#39;t</span>
-    <span class="doccomment">/// work with const buffers.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Construct an `AioCb` from a slice and use it for writing.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # use nix::errno::Errno;</span>
-    <span class="doccomment">/// # use nix::Error;</span>
-    <span class="doccomment">/// # use nix::sys::aio::*;</span>
-    <span class="doccomment">/// # use nix::sys::signal::SigevNotify;</span>
-    <span class="doccomment">/// # use std::{thread, time};</span>
-    <span class="doccomment">/// # use std::os::unix::io::AsRawFd;</span>
-    <span class="doccomment">/// # use tempfile::tempfile;</span>
-    <span class="doccomment">/// const WBUF: &amp;[u8] = b&quot;abcdef123456&quot;;</span>
-    <span class="doccomment">/// let mut f = tempfile().unwrap();</span>
-    <span class="doccomment">/// let mut aiocb = AioCb::from_slice( f.as_raw_fd(),</span>
-    <span class="doccomment">///     2,   //offset</span>
-    <span class="doccomment">///     WBUF,</span>
-    <span class="doccomment">///     0,   //priority</span>
-    <span class="doccomment">///     SigevNotify::SigevNone,</span>
-    <span class="doccomment">///     LioOpcode::LIO_NOP);</span>
-    <span class="doccomment">/// aiocb.write().unwrap();</span>
-    <span class="doccomment">/// while (aiocb.error() == Err(Errno::EINPROGRESS)) {</span>
-    <span class="doccomment">///     thread::sleep(time::Duration::from_millis(10));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// assert_eq!(aiocb.aio_return().unwrap() as usize, WBUF.len());</span>
-    <span class="doccomment">/// ```</span>
-    <span class="comment">// Note: another solution to the problem of writing const buffers would be</span>
-    <span class="comment">// to genericize AioCb for both &amp;mut [u8] and &amp;[u8] buffers.  AioCb::read</span>
-    <span class="comment">// could take the former and AioCb::write could take the latter.  However,</span>
-    <span class="comment">// then lio_listio wouldn&#39;t work, because that function needs a slice of</span>
-    <span class="comment">// AioCb, and they must all be of the same type.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_slice</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">offs</span>: <span class="ident">off_t</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>],
-                      <span class="ident">prio</span>: <span class="ident">libc::c_int</span>, <span class="ident">sigev_notify</span>: <span class="ident">SigevNotify</span>,
-                      <span class="ident">opcode</span>: <span class="ident">LioOpcode</span>) -&gt; <span class="ident">Pin</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">AioCb</span><span class="op">&gt;</span><span class="op">&gt;</span>
+    <span class="doccomment">/// Like [`AioCb::from_mut_slice`], but works on constant slices rather than
+    /// mutable slices.
+    ///
+    /// An `AioCb` created this way cannot be used with `read`, and its
+    /// `LioOpcode` cannot be set to `LIO_READ`.  This method is useful when
+    /// writing a const buffer with `AioCb::write`, since `from_mut_slice` can&#39;t
+    /// work with const buffers.
+    ///
+    /// # Examples
+    ///
+    /// Construct an `AioCb` from a slice and use it for writing.
+    ///
+    /// ```
+    /// # use nix::errno::Errno;
+    /// # use nix::Error;
+    /// # use nix::sys::aio::*;
+    /// # use nix::sys::signal::SigevNotify;
+    /// # use std::{thread, time};
+    /// # use std::os::unix::io::AsRawFd;
+    /// # use tempfile::tempfile;
+    /// const WBUF: &amp;[u8] = b&quot;abcdef123456&quot;;
+    /// let mut f = tempfile().unwrap();
+    /// let mut aiocb = AioCb::from_slice( f.as_raw_fd(),
+    ///     2,   //offset
+    ///     WBUF,
+    ///     0,   //priority
+    ///     SigevNotify::SigevNone,
+    ///     LioOpcode::LIO_NOP);
+    /// aiocb.write().unwrap();
+    /// while (aiocb.error() == Err(Errno::EINPROGRESS)) {
+    ///     thread::sleep(time::Duration::from_millis(10));
+    /// }
+    /// assert_eq!(aiocb.aio_return().unwrap() as usize, WBUF.len());
+    /// ```
+    </span><span class="comment">// Note: another solution to the problem of writing const buffers would be
+    // to genericize AioCb for both &amp;mut [u8] and &amp;[u8] buffers.  AioCb::read
+    // could take the former and AioCb::write could take the latter.  However,
+    // then lio_listio wouldn&#39;t work, because that function needs a slice of
+    // AioCb, and they must all be of the same type.
+    </span><span class="kw">pub fn </span>from_slice(fd: RawFd, offs: off_t, buf: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8],
+                      prio: libc::c_int, sigev_notify: SigevNotify,
+                      opcode: LioOpcode) -&gt; Pin&lt;Box&lt;AioCb&gt;&gt;
     {
-        <span class="ident">Box::pin</span>(<span class="ident">AioCb::from_slice_unpinned</span>(<span class="ident">fd</span>, <span class="ident">offs</span>, <span class="ident">buf</span>, <span class="ident">prio</span>, <span class="ident">sigev_notify</span>,
-                                            <span class="ident">opcode</span>))
+        Box::pin(AioCb::from_slice_unpinned(fd, offs, buf, prio, sigev_notify,
+                                            opcode))
     }
 
-    <span class="kw">fn</span> <span class="ident">common_init</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">prio</span>: <span class="ident">libc::c_int</span>,
-                   <span class="ident">sigev_notify</span>: <span class="ident">SigevNotify</span>) -&gt; <span class="ident">LibcAiocb</span> {
-        <span class="comment">// Use mem::zeroed instead of explicitly zeroing each field, because the</span>
-        <span class="comment">// number and name of reserved fields is OS-dependent.  On some OSes,</span>
-        <span class="comment">// some reserved fields are used the kernel for state, and must be</span>
-        <span class="comment">// explicitly zeroed when allocated.</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">mem::zeroed</span>::<span class="op">&lt;</span><span class="ident">libc::aiocb</span><span class="op">&gt;</span>()};
-        <span class="ident">a</span>.<span class="ident">aio_fildes</span> <span class="op">=</span> <span class="ident">fd</span>;
-        <span class="ident">a</span>.<span class="ident">aio_reqprio</span> <span class="op">=</span> <span class="ident">prio</span>;
-        <span class="ident">a</span>.<span class="ident">aio_sigevent</span> <span class="op">=</span> <span class="ident">SigEvent::new</span>(<span class="ident">sigev_notify</span>).<span class="ident">sigevent</span>();
-        <span class="ident">LibcAiocb</span>(<span class="ident">a</span>)
+    <span class="kw">fn </span>common_init(fd: RawFd, prio: libc::c_int,
+                   sigev_notify: SigevNotify) -&gt; LibcAiocb {
+        <span class="comment">// Use mem::zeroed instead of explicitly zeroing each field, because the
+        // number and name of reserved fields is OS-dependent.  On some OSes,
+        // some reserved fields are used the kernel for state, and must be
+        // explicitly zeroed when allocated.
+        </span><span class="kw">let </span><span class="kw-2">mut </span>a = <span class="kw">unsafe </span>{ mem::zeroed::&lt;libc::aiocb&gt;()};
+        a.aio_fildes = fd;
+        a.aio_reqprio = prio;
+        a.aio_sigevent = SigEvent::new(sigev_notify).sigevent();
+        LibcAiocb(a)
     }
 
-    <span class="doccomment">/// Update the notification settings for an existing `aiocb`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_sigev_notify</span>(<span class="self">self</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Pin</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-                            <span class="ident">sigev_notify</span>: <span class="ident">SigevNotify</span>)
+    <span class="doccomment">/// Update the notification settings for an existing `aiocb`
+    </span><span class="kw">pub fn </span>set_sigev_notify(<span class="self">self</span>: <span class="kw-2">&amp;mut </span>Pin&lt;Box&lt;<span class="self">Self</span>&gt;&gt;,
+                            sigev_notify: SigevNotify)
     {
-        <span class="comment">// Safe because we don&#39;t move any of the data</span>
-        <span class="kw">let</span> <span class="ident">selfp</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="self">self</span>.<span class="ident">as_mut</span>().<span class="ident">get_unchecked_mut</span>()
+        <span class="comment">// Safe because we don&#39;t move any of the data
+        </span><span class="kw">let </span>selfp = <span class="kw">unsafe </span>{
+            <span class="self">self</span>.as_mut().get_unchecked_mut()
         };
-        <span class="ident">selfp</span>.<span class="ident">aiocb</span>.<span class="number">0</span>.<span class="ident">aio_sigevent</span> <span class="op">=</span> <span class="ident">SigEvent::new</span>(<span class="ident">sigev_notify</span>).<span class="ident">sigevent</span>();
+        selfp.aiocb.<span class="number">0</span>.aio_sigevent = SigEvent::new(sigev_notify).sigevent();
     }
 
-    <span class="doccomment">/// Cancels an outstanding AIO request.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The operating system is not required to implement cancellation for all</span>
-    <span class="doccomment">/// file and device types.  Even if it does, there is no guarantee that the</span>
-    <span class="doccomment">/// operation has not already completed.  So the caller must check the</span>
-    <span class="doccomment">/// result and handle operations that were not canceled or that have already</span>
-    <span class="doccomment">/// completed.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Cancel an outstanding aio operation.  Note that we must still call</span>
-    <span class="doccomment">/// `aio_return` to free resources, even though we don&#39;t care about the</span>
-    <span class="doccomment">/// result.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # use nix::errno::Errno;</span>
-    <span class="doccomment">/// # use nix::Error;</span>
-    <span class="doccomment">/// # use nix::sys::aio::*;</span>
-    <span class="doccomment">/// # use nix::sys::signal::SigevNotify;</span>
-    <span class="doccomment">/// # use std::{thread, time};</span>
-    <span class="doccomment">/// # use std::io::Write;</span>
-    <span class="doccomment">/// # use std::os::unix::io::AsRawFd;</span>
-    <span class="doccomment">/// # use tempfile::tempfile;</span>
-    <span class="doccomment">/// let wbuf = b&quot;CDEF&quot;;</span>
-    <span class="doccomment">/// let mut f = tempfile().unwrap();</span>
-    <span class="doccomment">/// let mut aiocb = AioCb::from_slice( f.as_raw_fd(),</span>
-    <span class="doccomment">///     2,   //offset</span>
-    <span class="doccomment">///     &amp;wbuf[..],</span>
-    <span class="doccomment">///     0,   //priority</span>
-    <span class="doccomment">///     SigevNotify::SigevNone,</span>
-    <span class="doccomment">///     LioOpcode::LIO_NOP);</span>
-    <span class="doccomment">/// aiocb.write().unwrap();</span>
-    <span class="doccomment">/// let cs = aiocb.cancel().unwrap();</span>
-    <span class="doccomment">/// if cs == AioCancelStat::AioNotCanceled {</span>
-    <span class="doccomment">///     while (aiocb.error() == Err(Errno::EINPROGRESS)) {</span>
-    <span class="doccomment">///         thread::sleep(time::Duration::from_millis(10));</span>
-    <span class="doccomment">///     }</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// // Must call `aio_return`, but ignore the result</span>
-    <span class="doccomment">/// let _ = aiocb.aio_return();</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # References</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [aio_cancel](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_cancel.html)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cancel</span>(<span class="self">self</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Pin</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">AioCancelStat</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">selfp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_mut</span>().<span class="ident">get_unchecked_mut</span>();
-            <span class="ident">libc::aio_cancel</span>(<span class="ident">selfp</span>.<span class="ident">aiocb</span>.<span class="number">0</span>.<span class="ident">aio_fildes</span>, <span class="kw-2">&amp;mut</span> <span class="ident">selfp</span>.<span class="ident">aiocb</span>.<span class="number">0</span>)
+    <span class="doccomment">/// Cancels an outstanding AIO request.
+    ///
+    /// The operating system is not required to implement cancellation for all
+    /// file and device types.  Even if it does, there is no guarantee that the
+    /// operation has not already completed.  So the caller must check the
+    /// result and handle operations that were not canceled or that have already
+    /// completed.
+    ///
+    /// # Examples
+    ///
+    /// Cancel an outstanding aio operation.  Note that we must still call
+    /// `aio_return` to free resources, even though we don&#39;t care about the
+    /// result.
+    ///
+    /// ```
+    /// # use nix::errno::Errno;
+    /// # use nix::Error;
+    /// # use nix::sys::aio::*;
+    /// # use nix::sys::signal::SigevNotify;
+    /// # use std::{thread, time};
+    /// # use std::io::Write;
+    /// # use std::os::unix::io::AsRawFd;
+    /// # use tempfile::tempfile;
+    /// let wbuf = b&quot;CDEF&quot;;
+    /// let mut f = tempfile().unwrap();
+    /// let mut aiocb = AioCb::from_slice( f.as_raw_fd(),
+    ///     2,   //offset
+    ///     &amp;wbuf[..],
+    ///     0,   //priority
+    ///     SigevNotify::SigevNone,
+    ///     LioOpcode::LIO_NOP);
+    /// aiocb.write().unwrap();
+    /// let cs = aiocb.cancel().unwrap();
+    /// if cs == AioCancelStat::AioNotCanceled {
+    ///     while (aiocb.error() == Err(Errno::EINPROGRESS)) {
+    ///         thread::sleep(time::Duration::from_millis(10));
+    ///     }
+    /// }
+    /// // Must call `aio_return`, but ignore the result
+    /// let _ = aiocb.aio_return();
+    /// ```
+    ///
+    /// # References
+    ///
+    /// [aio_cancel](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_cancel.html)
+    </span><span class="kw">pub fn </span>cancel(<span class="self">self</span>: <span class="kw-2">&amp;mut </span>Pin&lt;Box&lt;<span class="self">Self</span>&gt;&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;AioCancelStat&gt; {
+        <span class="kw">let </span>r = <span class="kw">unsafe </span>{
+            <span class="kw">let </span>selfp = <span class="self">self</span>.as_mut().get_unchecked_mut();
+            libc::aio_cancel(selfp.aiocb.<span class="number">0</span>.aio_fildes, <span class="kw-2">&amp;mut </span>selfp.aiocb.<span class="number">0</span>)
         };
-        <span class="kw">match</span> <span class="ident">r</span> {
-            <span class="ident">libc::AIO_CANCELED</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">AioCancelStat::AioCanceled</span>),
-            <span class="ident">libc::AIO_NOTCANCELED</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">AioCancelStat::AioNotCanceled</span>),
-            <span class="ident">libc::AIO_ALLDONE</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">AioCancelStat::AioAllDone</span>),
-            <span class="op">-</span><span class="number">1</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">Errno::last</span>()),
-            <span class="kw">_</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;unknown aio_cancel return value&quot;</span>)
+        <span class="kw">match </span>r {
+            libc::AIO_CANCELED =&gt; <span class="prelude-val">Ok</span>(AioCancelStat::AioCanceled),
+            libc::AIO_NOTCANCELED =&gt; <span class="prelude-val">Ok</span>(AioCancelStat::AioNotCanceled),
+            libc::AIO_ALLDONE =&gt; <span class="prelude-val">Ok</span>(AioCancelStat::AioAllDone),
+            -<span class="number">1 </span>=&gt; <span class="prelude-val">Err</span>(Errno::last()),
+            <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;unknown aio_cancel return value&quot;</span>)
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">error_unpinned</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="ident">libc::aio_error</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">aiocb</span>.<span class="number">0</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">libc::aiocb</span>)
+    <span class="kw">fn </span>error_unpinned(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">let </span>r = <span class="kw">unsafe </span>{
+            libc::aio_error(<span class="kw-2">&amp;mut </span><span class="self">self</span>.aiocb.<span class="number">0 </span><span class="kw">as </span><span class="kw-2">*mut </span>libc::aiocb)
         };
-        <span class="kw">match</span> <span class="ident">r</span> {
-            <span class="number">0</span> =&gt; <span class="prelude-val">Ok</span>(()),
-            <span class="ident">num</span> <span class="kw">if</span> <span class="ident">num</span> <span class="op">&gt;</span> <span class="number">0</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">Errno::from_i32</span>(<span class="ident">num</span>)),
-            <span class="op">-</span><span class="number">1</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">Errno::last</span>()),
-            <span class="ident">num</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;unknown aio_error return value {:?}&quot;</span>, <span class="ident">num</span>)
+        <span class="kw">match </span>r {
+            <span class="number">0 </span>=&gt; <span class="prelude-val">Ok</span>(()),
+            num <span class="kw">if </span>num &gt; <span class="number">0 </span>=&gt; <span class="prelude-val">Err</span>(Errno::from_i32(num)),
+            -<span class="number">1 </span>=&gt; <span class="prelude-val">Err</span>(Errno::last()),
+            num =&gt; <span class="macro">panic!</span>(<span class="string">&quot;unknown aio_error return value {:?}&quot;</span>, num)
         }
     }
 
-    <span class="doccomment">/// Retrieve error status of an asynchronous operation.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the request has not yet completed, returns `EINPROGRESS`.  Otherwise,</span>
-    <span class="doccomment">/// returns `Ok` or any other error.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Issue an aio operation and use `error` to poll for completion.  Polling</span>
-    <span class="doccomment">/// is an alternative to `aio_suspend`, used by most of the other examples.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # use nix::errno::Errno;</span>
-    <span class="doccomment">/// # use nix::Error;</span>
-    <span class="doccomment">/// # use nix::sys::aio::*;</span>
-    <span class="doccomment">/// # use nix::sys::signal::SigevNotify;</span>
-    <span class="doccomment">/// # use std::{thread, time};</span>
-    <span class="doccomment">/// # use std::os::unix::io::AsRawFd;</span>
-    <span class="doccomment">/// # use tempfile::tempfile;</span>
-    <span class="doccomment">/// const WBUF: &amp;[u8] = b&quot;abcdef123456&quot;;</span>
-    <span class="doccomment">/// let mut f = tempfile().unwrap();</span>
-    <span class="doccomment">/// let mut aiocb = AioCb::from_slice( f.as_raw_fd(),</span>
-    <span class="doccomment">///     2,   //offset</span>
-    <span class="doccomment">///     WBUF,</span>
-    <span class="doccomment">///     0,   //priority</span>
-    <span class="doccomment">///     SigevNotify::SigevNone,</span>
-    <span class="doccomment">///     LioOpcode::LIO_NOP);</span>
-    <span class="doccomment">/// aiocb.write().unwrap();</span>
-    <span class="doccomment">/// while (aiocb.error() == Err(Errno::EINPROGRESS)) {</span>
-    <span class="doccomment">///     thread::sleep(time::Duration::from_millis(10));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// assert_eq!(aiocb.aio_return().unwrap() as usize, WBUF.len());</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # References</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [aio_error](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_error.html)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">error</span>(<span class="self">self</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Pin</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="comment">// Safe because error_unpinned doesn&#39;t move the data</span>
-        <span class="kw">let</span> <span class="ident">selfp</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="self">self</span>.<span class="ident">as_mut</span>().<span class="ident">get_unchecked_mut</span>()
+    <span class="doccomment">/// Retrieve error status of an asynchronous operation.
+    ///
+    /// If the request has not yet completed, returns `EINPROGRESS`.  Otherwise,
+    /// returns `Ok` or any other error.
+    ///
+    /// # Examples
+    ///
+    /// Issue an aio operation and use `error` to poll for completion.  Polling
+    /// is an alternative to `aio_suspend`, used by most of the other examples.
+    ///
+    /// ```
+    /// # use nix::errno::Errno;
+    /// # use nix::Error;
+    /// # use nix::sys::aio::*;
+    /// # use nix::sys::signal::SigevNotify;
+    /// # use std::{thread, time};
+    /// # use std::os::unix::io::AsRawFd;
+    /// # use tempfile::tempfile;
+    /// const WBUF: &amp;[u8] = b&quot;abcdef123456&quot;;
+    /// let mut f = tempfile().unwrap();
+    /// let mut aiocb = AioCb::from_slice( f.as_raw_fd(),
+    ///     2,   //offset
+    ///     WBUF,
+    ///     0,   //priority
+    ///     SigevNotify::SigevNone,
+    ///     LioOpcode::LIO_NOP);
+    /// aiocb.write().unwrap();
+    /// while (aiocb.error() == Err(Errno::EINPROGRESS)) {
+    ///     thread::sleep(time::Duration::from_millis(10));
+    /// }
+    /// assert_eq!(aiocb.aio_return().unwrap() as usize, WBUF.len());
+    /// ```
+    ///
+    /// # References
+    ///
+    /// [aio_error](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_error.html)
+    </span><span class="kw">pub fn </span>error(<span class="self">self</span>: <span class="kw-2">&amp;mut </span>Pin&lt;Box&lt;<span class="self">Self</span>&gt;&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="comment">// Safe because error_unpinned doesn&#39;t move the data
+        </span><span class="kw">let </span>selfp = <span class="kw">unsafe </span>{
+            <span class="self">self</span>.as_mut().get_unchecked_mut()
         };
-        <span class="ident">selfp</span>.<span class="ident">error_unpinned</span>()
+        selfp.error_unpinned()
     }
 
-    <span class="doccomment">/// An asynchronous version of `fsync(2)`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # References</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [aio_fsync](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_fsync.html)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fsync</span>(<span class="self">self</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Pin</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">mode</span>: <span class="ident">AioFsyncMode</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="comment">// Safe because we don&#39;t move the libc::aiocb</span>
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">selfp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_mut</span>().<span class="ident">get_unchecked_mut</span>();
-            <span class="ident">Errno::result</span>({
-                <span class="kw">let</span> <span class="ident">p</span>: <span class="kw-2">*mut</span> <span class="ident">libc::aiocb</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">selfp</span>.<span class="ident">aiocb</span>.<span class="number">0</span>;
-                <span class="ident">libc::aio_fsync</span>(<span class="ident">mode</span> <span class="kw">as</span> <span class="ident">libc::c_int</span>, <span class="ident">p</span>)
-            }).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-                <span class="ident">selfp</span>.<span class="ident">in_progress</span> <span class="op">=</span> <span class="bool-val">true</span>;
+    <span class="doccomment">/// An asynchronous version of `fsync(2)`.
+    ///
+    /// # References
+    ///
+    /// [aio_fsync](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_fsync.html)
+    </span><span class="kw">pub fn </span>fsync(<span class="self">self</span>: <span class="kw-2">&amp;mut </span>Pin&lt;Box&lt;<span class="self">Self</span>&gt;&gt;, mode: AioFsyncMode) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="comment">// Safe because we don&#39;t move the libc::aiocb
+        </span><span class="kw">unsafe </span>{
+            <span class="kw">let </span>selfp = <span class="self">self</span>.as_mut().get_unchecked_mut();
+            Errno::result({
+                <span class="kw">let </span>p: <span class="kw-2">*mut </span>libc::aiocb = <span class="kw-2">&amp;mut </span>selfp.aiocb.<span class="number">0</span>;
+                libc::aio_fsync(mode <span class="kw">as </span>libc::c_int, p)
+            }).map(|<span class="kw">_</span>| {
+                selfp.in_progress = <span class="bool-val">true</span>;
             })
         }
     }
 
-    <span class="doccomment">/// Returns the `aiocb`&#39;s `LioOpcode` field</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the value cannot be represented as an `LioOpcode`, returns `None`</span>
-    <span class="doccomment">/// instead.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lio_opcode</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">LioOpcode</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">aiocb</span>.<span class="number">0</span>.<span class="ident">aio_lio_opcode</span> {
-            <span class="ident">libc::LIO_READ</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">LioOpcode::LIO_READ</span>),
-            <span class="ident">libc::LIO_WRITE</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">LioOpcode::LIO_WRITE</span>),
-            <span class="ident">libc::LIO_NOP</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">LioOpcode::LIO_NOP</span>),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>
-        }
+    <span class="doccomment">/// Returns the `aiocb`&#39;s `LioOpcode` field
+    ///
+    /// If the value cannot be represented as an `LioOpcode`, returns `None`
+    /// instead.
+    </span><span class="kw">pub fn </span>lio_opcode(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;LioOpcode&gt; {
+        <span class="kw">match </span><span class="self">self</span>.aiocb.<span class="number">0</span>.aio_lio_opcode {
+            libc::LIO_READ =&gt; <span class="prelude-val">Some</span>(LioOpcode::LIO_READ),
+            libc::LIO_WRITE =&gt; <span class="prelude-val">Some</span>(LioOpcode::LIO_WRITE),
+            libc::LIO_NOP =&gt; <span class="prelude-val">Some</span>(LioOpcode::LIO_NOP),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None
+        </span>}
     }
 
-    <span class="doccomment">/// Returns the requested length of the aio operation in bytes</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This method returns the *requested* length of the operation.  To get the</span>
-    <span class="doccomment">/// number of bytes actually read or written by a completed operation, use</span>
-    <span class="doccomment">/// `aio_return` instead.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nbytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">aiocb</span>.<span class="number">0</span>.<span class="ident">aio_nbytes</span>
+    <span class="doccomment">/// Returns the requested length of the aio operation in bytes
+    ///
+    /// This method returns the *requested* length of the operation.  To get the
+    /// number of bytes actually read or written by a completed operation, use
+    /// `aio_return` instead.
+    </span><span class="kw">pub fn </span>nbytes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="self">self</span>.aiocb.<span class="number">0</span>.aio_nbytes
     }
 
-    <span class="doccomment">/// Returns the file offset stored in the `AioCb`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">offset</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">off_t</span> {
-        <span class="self">self</span>.<span class="ident">aiocb</span>.<span class="number">0</span>.<span class="ident">aio_offset</span>
+    <span class="doccomment">/// Returns the file offset stored in the `AioCb`
+    </span><span class="kw">pub fn </span>offset(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; off_t {
+        <span class="self">self</span>.aiocb.<span class="number">0</span>.aio_offset
     }
 
-    <span class="doccomment">/// Returns the priority of the `AioCb`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">priority</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">libc::c_int</span> {
-        <span class="self">self</span>.<span class="ident">aiocb</span>.<span class="number">0</span>.<span class="ident">aio_reqprio</span>
+    <span class="doccomment">/// Returns the priority of the `AioCb`
+    </span><span class="kw">pub fn </span>priority(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; libc::c_int {
+        <span class="self">self</span>.aiocb.<span class="number">0</span>.aio_reqprio
     }
 
-    <span class="doccomment">/// Asynchronously reads from a file descriptor into a buffer</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # References</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [aio_read](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_read.html)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read</span>(<span class="self">self</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Pin</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="macro">assert!</span>(<span class="self">self</span>.<span class="ident">mutable</span>, <span class="string">&quot;Can&#39;t read into an immutable buffer&quot;</span>);
-        <span class="comment">// Safe because we don&#39;t move anything</span>
-        <span class="kw">let</span> <span class="ident">selfp</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="self">self</span>.<span class="ident">as_mut</span>().<span class="ident">get_unchecked_mut</span>()
+    <span class="doccomment">/// Asynchronously reads from a file descriptor into a buffer
+    ///
+    /// # References
+    ///
+    /// [aio_read](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_read.html)
+    </span><span class="kw">pub fn </span>read(<span class="self">self</span>: <span class="kw-2">&amp;mut </span>Pin&lt;Box&lt;<span class="self">Self</span>&gt;&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="macro">assert!</span>(<span class="self">self</span>.mutable, <span class="string">&quot;Can&#39;t read into an immutable buffer&quot;</span>);
+        <span class="comment">// Safe because we don&#39;t move anything
+        </span><span class="kw">let </span>selfp = <span class="kw">unsafe </span>{
+            <span class="self">self</span>.as_mut().get_unchecked_mut()
         };
-        <span class="ident">Errno::result</span>({
-            <span class="kw">let</span> <span class="ident">p</span>: <span class="kw-2">*mut</span> <span class="ident">libc::aiocb</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">selfp</span>.<span class="ident">aiocb</span>.<span class="number">0</span>;
-            <span class="kw">unsafe</span> { <span class="ident">libc::aio_read</span>(<span class="ident">p</span>) }
-        }).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-            <span class="ident">selfp</span>.<span class="ident">in_progress</span> <span class="op">=</span> <span class="bool-val">true</span>;
+        Errno::result({
+            <span class="kw">let </span>p: <span class="kw-2">*mut </span>libc::aiocb = <span class="kw-2">&amp;mut </span>selfp.aiocb.<span class="number">0</span>;
+            <span class="kw">unsafe </span>{ libc::aio_read(p) }
+        }).map(|<span class="kw">_</span>| {
+            selfp.in_progress = <span class="bool-val">true</span>;
         })
     }
 
-    <span class="doccomment">/// Returns the `SigEvent` stored in the `AioCb`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sigevent</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SigEvent</span> {
-        <span class="ident">SigEvent::from</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">aiocb</span>.<span class="number">0</span>.<span class="ident">aio_sigevent</span>)
+    <span class="doccomment">/// Returns the `SigEvent` stored in the `AioCb`
+    </span><span class="kw">pub fn </span>sigevent(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SigEvent {
+        SigEvent::from(<span class="kw-2">&amp;</span><span class="self">self</span>.aiocb.<span class="number">0</span>.aio_sigevent)
     }
 
-    <span class="kw">fn</span> <span class="ident">aio_return_unpinned</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">p</span>: <span class="kw-2">*mut</span> <span class="ident">libc::aiocb</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">aiocb</span>.<span class="number">0</span>;
-            <span class="self">self</span>.<span class="ident">in_progress</span> <span class="op">=</span> <span class="bool-val">false</span>;
-            <span class="ident">Errno::result</span>(<span class="ident">libc::aio_return</span>(<span class="ident">p</span>))
+    <span class="kw">fn </span>aio_return_unpinned(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;isize&gt; {
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>p: <span class="kw-2">*mut </span>libc::aiocb = <span class="kw-2">&amp;mut </span><span class="self">self</span>.aiocb.<span class="number">0</span>;
+            <span class="self">self</span>.in_progress = <span class="bool-val">false</span>;
+            Errno::result(libc::aio_return(p))
         }
     }
 
-    <span class="doccomment">/// Retrieve return status of an asynchronous operation.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Should only be called once for each `AioCb`, after `AioCb::error`</span>
-    <span class="doccomment">/// indicates that it has completed.  The result is the same as for the</span>
-    <span class="doccomment">/// synchronous `read(2)`, `write(2)`, of `fsync(2)` functions.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # References</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [aio_return](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_return.html)</span>
-    <span class="comment">// Note: this should be just `return`, but that&#39;s a reserved word</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">aio_return</span>(<span class="self">self</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Pin</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span> {
-        <span class="comment">// Safe because aio_return_unpinned does not move the data</span>
-        <span class="kw">let</span> <span class="ident">selfp</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="self">self</span>.<span class="ident">as_mut</span>().<span class="ident">get_unchecked_mut</span>()
+    <span class="doccomment">/// Retrieve return status of an asynchronous operation.
+    ///
+    /// Should only be called once for each `AioCb`, after `AioCb::error`
+    /// indicates that it has completed.  The result is the same as for the
+    /// synchronous `read(2)`, `write(2)`, of `fsync(2)` functions.
+    ///
+    /// # References
+    ///
+    /// [aio_return](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_return.html)
+    </span><span class="comment">// Note: this should be just `return`, but that&#39;s a reserved word
+    </span><span class="kw">pub fn </span>aio_return(<span class="self">self</span>: <span class="kw-2">&amp;mut </span>Pin&lt;Box&lt;<span class="self">Self</span>&gt;&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;isize&gt; {
+        <span class="comment">// Safe because aio_return_unpinned does not move the data
+        </span><span class="kw">let </span>selfp = <span class="kw">unsafe </span>{
+            <span class="self">self</span>.as_mut().get_unchecked_mut()
         };
-        <span class="ident">selfp</span>.<span class="ident">aio_return_unpinned</span>()
+        selfp.aio_return_unpinned()
     }
 
-    <span class="doccomment">/// Asynchronously writes from a buffer to a file descriptor</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # References</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [aio_write](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_write.html)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write</span>(<span class="self">self</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Pin</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="comment">// Safe because we don&#39;t move anything</span>
-        <span class="kw">let</span> <span class="ident">selfp</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="self">self</span>.<span class="ident">as_mut</span>().<span class="ident">get_unchecked_mut</span>()
+    <span class="doccomment">/// Asynchronously writes from a buffer to a file descriptor
+    ///
+    /// # References
+    ///
+    /// [aio_write](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_write.html)
+    </span><span class="kw">pub fn </span>write(<span class="self">self</span>: <span class="kw-2">&amp;mut </span>Pin&lt;Box&lt;<span class="self">Self</span>&gt;&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="comment">// Safe because we don&#39;t move anything
+        </span><span class="kw">let </span>selfp = <span class="kw">unsafe </span>{
+            <span class="self">self</span>.as_mut().get_unchecked_mut()
         };
-        <span class="ident">Errno::result</span>({
-            <span class="kw">let</span> <span class="ident">p</span>: <span class="kw-2">*mut</span> <span class="ident">libc::aiocb</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">selfp</span>.<span class="ident">aiocb</span>.<span class="number">0</span>;
-            <span class="kw">unsafe</span>{ <span class="ident">libc::aio_write</span>(<span class="ident">p</span>) }
-        }).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-            <span class="ident">selfp</span>.<span class="ident">in_progress</span> <span class="op">=</span> <span class="bool-val">true</span>;
+        Errno::result({
+            <span class="kw">let </span>p: <span class="kw-2">*mut </span>libc::aiocb = <span class="kw-2">&amp;mut </span>selfp.aiocb.<span class="number">0</span>;
+            <span class="kw">unsafe</span>{ libc::aio_write(p) }
+        }).map(|<span class="kw">_</span>| {
+            selfp.in_progress = <span class="bool-val">true</span>;
         })
     }
 }
 
-<span class="doccomment">/// Cancels outstanding AIO requests for a given file descriptor.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Issue an aio operation, then cancel all outstanding operations on that file</span>
-<span class="doccomment">/// descriptor.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// # use nix::errno::Errno;</span>
-<span class="doccomment">/// # use nix::Error;</span>
-<span class="doccomment">/// # use nix::sys::aio::*;</span>
-<span class="doccomment">/// # use nix::sys::signal::SigevNotify;</span>
-<span class="doccomment">/// # use std::{thread, time};</span>
-<span class="doccomment">/// # use std::io::Write;</span>
-<span class="doccomment">/// # use std::os::unix::io::AsRawFd;</span>
-<span class="doccomment">/// # use tempfile::tempfile;</span>
-<span class="doccomment">/// let wbuf = b&quot;CDEF&quot;;</span>
-<span class="doccomment">/// let mut f = tempfile().unwrap();</span>
-<span class="doccomment">/// let mut aiocb = AioCb::from_slice( f.as_raw_fd(),</span>
-<span class="doccomment">///     2,   //offset</span>
-<span class="doccomment">///     &amp;wbuf[..],</span>
-<span class="doccomment">///     0,   //priority</span>
-<span class="doccomment">///     SigevNotify::SigevNone,</span>
-<span class="doccomment">///     LioOpcode::LIO_NOP);</span>
-<span class="doccomment">/// aiocb.write().unwrap();</span>
-<span class="doccomment">/// let cs = aio_cancel_all(f.as_raw_fd()).unwrap();</span>
-<span class="doccomment">/// if cs == AioCancelStat::AioNotCanceled {</span>
-<span class="doccomment">///     while (aiocb.error() == Err(Errno::EINPROGRESS)) {</span>
-<span class="doccomment">///         thread::sleep(time::Duration::from_millis(10));</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// // Must call `aio_return`, but ignore the result</span>
-<span class="doccomment">/// let _ = aiocb.aio_return();</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`aio_cancel`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_cancel.html)</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">aio_cancel_all</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">AioCancelStat</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="kw">unsafe</span> { <span class="ident">libc::aio_cancel</span>(<span class="ident">fd</span>, <span class="ident">null_mut</span>()) } {
-        <span class="ident">libc::AIO_CANCELED</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">AioCancelStat::AioCanceled</span>),
-        <span class="ident">libc::AIO_NOTCANCELED</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">AioCancelStat::AioNotCanceled</span>),
-        <span class="ident">libc::AIO_ALLDONE</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">AioCancelStat::AioAllDone</span>),
-        <span class="op">-</span><span class="number">1</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">Errno::last</span>()),
-        <span class="kw">_</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;unknown aio_cancel return value&quot;</span>)
+<span class="doccomment">/// Cancels outstanding AIO requests for a given file descriptor.
+///
+/// # Examples
+///
+/// Issue an aio operation, then cancel all outstanding operations on that file
+/// descriptor.
+///
+/// ```
+/// # use nix::errno::Errno;
+/// # use nix::Error;
+/// # use nix::sys::aio::*;
+/// # use nix::sys::signal::SigevNotify;
+/// # use std::{thread, time};
+/// # use std::io::Write;
+/// # use std::os::unix::io::AsRawFd;
+/// # use tempfile::tempfile;
+/// let wbuf = b&quot;CDEF&quot;;
+/// let mut f = tempfile().unwrap();
+/// let mut aiocb = AioCb::from_slice( f.as_raw_fd(),
+///     2,   //offset
+///     &amp;wbuf[..],
+///     0,   //priority
+///     SigevNotify::SigevNone,
+///     LioOpcode::LIO_NOP);
+/// aiocb.write().unwrap();
+/// let cs = aio_cancel_all(f.as_raw_fd()).unwrap();
+/// if cs == AioCancelStat::AioNotCanceled {
+///     while (aiocb.error() == Err(Errno::EINPROGRESS)) {
+///         thread::sleep(time::Duration::from_millis(10));
+///     }
+/// }
+/// // Must call `aio_return`, but ignore the result
+/// let _ = aiocb.aio_return();
+/// ```
+///
+/// # References
+///
+/// [`aio_cancel`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_cancel.html)
+</span><span class="kw">pub fn </span>aio_cancel_all(fd: RawFd) -&gt; <span class="prelude-ty">Result</span>&lt;AioCancelStat&gt; {
+    <span class="kw">match unsafe </span>{ libc::aio_cancel(fd, null_mut()) } {
+        libc::AIO_CANCELED =&gt; <span class="prelude-val">Ok</span>(AioCancelStat::AioCanceled),
+        libc::AIO_NOTCANCELED =&gt; <span class="prelude-val">Ok</span>(AioCancelStat::AioNotCanceled),
+        libc::AIO_ALLDONE =&gt; <span class="prelude-val">Ok</span>(AioCancelStat::AioAllDone),
+        -<span class="number">1 </span>=&gt; <span class="prelude-val">Err</span>(Errno::last()),
+        <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;unknown aio_cancel return value&quot;</span>)
     }
 }
 
-<span class="doccomment">/// Suspends the calling process until at least one of the specified `AioCb`s</span>
-<span class="doccomment">/// has completed, a signal is delivered, or the timeout has passed.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// If `timeout` is `None`, `aio_suspend` will block indefinitely.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Use `aio_suspend` to block until an aio operation completes.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// # use nix::sys::aio::*;</span>
-<span class="doccomment">/// # use nix::sys::signal::SigevNotify;</span>
-<span class="doccomment">/// # use std::os::unix::io::AsRawFd;</span>
-<span class="doccomment">/// # use tempfile::tempfile;</span>
-<span class="doccomment">/// const WBUF: &amp;[u8] = b&quot;abcdef123456&quot;;</span>
-<span class="doccomment">/// let mut f = tempfile().unwrap();</span>
-<span class="doccomment">/// let mut aiocb = AioCb::from_slice( f.as_raw_fd(),</span>
-<span class="doccomment">///     2,   //offset</span>
-<span class="doccomment">///     WBUF,</span>
-<span class="doccomment">///     0,   //priority</span>
-<span class="doccomment">///     SigevNotify::SigevNone,</span>
-<span class="doccomment">///     LioOpcode::LIO_NOP);</span>
-<span class="doccomment">/// aiocb.write().unwrap();</span>
-<span class="doccomment">/// aio_suspend(&amp;[aiocb.as_ref()], None).expect(&quot;aio_suspend failed&quot;);</span>
-<span class="doccomment">/// assert_eq!(aiocb.aio_return().unwrap() as usize, WBUF.len());</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`aio_suspend`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_suspend.html)</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">aio_suspend</span>(<span class="ident">list</span>: <span class="kw-2">&amp;</span>[<span class="ident">Pin</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">AioCb</span><span class="op">&gt;</span>], <span class="ident">timeout</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TimeSpec</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">plist</span> <span class="op">=</span> <span class="ident">list</span> <span class="kw">as</span> <span class="kw-2">*const</span> [<span class="ident">Pin</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">AioCb</span><span class="op">&gt;</span>] <span class="kw">as</span> <span class="kw-2">*const</span> [<span class="kw-2">*const</span> <span class="ident">libc::aiocb</span>];
-    <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">plist</span> <span class="kw">as</span> <span class="kw-2">*const</span> <span class="kw-2">*const</span> <span class="ident">libc::aiocb</span>;
-    <span class="kw">let</span> <span class="ident">timep</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">timeout</span> {
-        <span class="prelude-val">None</span>    =&gt; <span class="ident">null</span>::<span class="op">&lt;</span><span class="ident">libc::timespec</span><span class="op">&gt;</span>(),
-        <span class="prelude-val">Some</span>(<span class="ident">x</span>) =&gt; <span class="ident">x</span>.<span class="ident">as_ref</span>() <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">libc::timespec</span>
+<span class="doccomment">/// Suspends the calling process until at least one of the specified `AioCb`s
+/// has completed, a signal is delivered, or the timeout has passed.
+///
+/// If `timeout` is `None`, `aio_suspend` will block indefinitely.
+///
+/// # Examples
+///
+/// Use `aio_suspend` to block until an aio operation completes.
+///
+/// ```
+/// # use nix::sys::aio::*;
+/// # use nix::sys::signal::SigevNotify;
+/// # use std::os::unix::io::AsRawFd;
+/// # use tempfile::tempfile;
+/// const WBUF: &amp;[u8] = b&quot;abcdef123456&quot;;
+/// let mut f = tempfile().unwrap();
+/// let mut aiocb = AioCb::from_slice( f.as_raw_fd(),
+///     2,   //offset
+///     WBUF,
+///     0,   //priority
+///     SigevNotify::SigevNone,
+///     LioOpcode::LIO_NOP);
+/// aiocb.write().unwrap();
+/// aio_suspend(&amp;[aiocb.as_ref()], None).expect(&quot;aio_suspend failed&quot;);
+/// assert_eq!(aiocb.aio_return().unwrap() as usize, WBUF.len());
+/// ```
+/// # References
+///
+/// [`aio_suspend`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/aio_suspend.html)
+</span><span class="kw">pub fn </span>aio_suspend(list: <span class="kw-2">&amp;</span>[Pin&lt;<span class="kw-2">&amp;</span>AioCb&gt;], timeout: <span class="prelude-ty">Option</span>&lt;TimeSpec&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>plist = list <span class="kw">as </span><span class="kw-2">*const </span>[Pin&lt;<span class="kw-2">&amp;</span>AioCb&gt;] <span class="kw">as </span><span class="kw-2">*const </span>[<span class="kw-2">*const </span>libc::aiocb];
+    <span class="kw">let </span>p = plist <span class="kw">as </span><span class="kw-2">*const *const </span>libc::aiocb;
+    <span class="kw">let </span>timep = <span class="kw">match </span>timeout {
+        <span class="prelude-val">None    </span>=&gt; null::&lt;libc::timespec&gt;(),
+        <span class="prelude-val">Some</span>(x) =&gt; x.as_ref() <span class="kw">as </span><span class="kw-2">*const </span>libc::timespec
     };
-    <span class="ident">Errno::result</span>(<span class="kw">unsafe</span> {
-        <span class="ident">libc::aio_suspend</span>(<span class="ident">p</span>, <span class="ident">list</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">timep</span>)
-    }).<span class="ident">map</span>(<span class="ident">drop</span>)
+    Errno::result(<span class="kw">unsafe </span>{
+        libc::aio_suspend(p, list.len() <span class="kw">as </span>i32, timep)
+    }).map(drop)
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">AioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="ident">fmt</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;AioCb&quot;</span>)
-            .<span class="ident">field</span>(<span class="string">&quot;aiocb&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">aiocb</span>.<span class="number">0</span>)
-            .<span class="ident">field</span>(<span class="string">&quot;mutable&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">mutable</span>)
-            .<span class="ident">field</span>(<span class="string">&quot;in_progress&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">in_progress</span>)
-            .<span class="ident">finish</span>()
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Debug <span class="kw">for </span>AioCb&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+        fmt.debug_struct(<span class="string">&quot;AioCb&quot;</span>)
+            .field(<span class="string">&quot;aiocb&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.aiocb.<span class="number">0</span>)
+            .field(<span class="string">&quot;mutable&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.mutable)
+            .field(<span class="string">&quot;in_progress&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.in_progress)
+            .finish()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">AioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// If the `AioCb` has no remaining state in the kernel, just drop it.</span>
-    <span class="doccomment">/// Otherwise, dropping constitutes a resource leak, which is an error</span>
-    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="macro">assert!</span>(<span class="ident">thread::panicking</span>() <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">in_progress</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Drop <span class="kw">for </span>AioCb&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// If the `AioCb` has no remaining state in the kernel, just drop it.
+    /// Otherwise, dropping constitutes a resource leak, which is an error
+    </span><span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="macro">assert!</span>(thread::panicking() || !<span class="self">self</span>.in_progress,
                 <span class="string">&quot;Dropped an in-progress AioCb&quot;</span>);
     }
 }
 
-<span class="doccomment">/// LIO Control Block.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The basic structure used to issue multiple AIO operations simultaneously.</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>)))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// A collection of [`AioCb`]s.  All of these will be issued simultaneously</span>
-    <span class="doccomment">/// by the [`listio`] method.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`AioCb`]: struct.AioCb.html</span>
-    <span class="doccomment">/// [`listio`]: #method.listio</span>
-    <span class="comment">// Their locations in memory must be fixed once they are passed to the</span>
-    <span class="comment">// kernel.  So this field must be non-public so the user can&#39;t swap.</span>
-    <span class="ident">aiocbs</span>: <span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">AioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>]<span class="op">&gt;</span>,
+<span class="doccomment">/// LIO Control Block.
+///
+/// The basic structure used to issue multiple AIO operations simultaneously.
+</span><span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>)))]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">pub struct </span>LioCb&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// A collection of [`AioCb`]s.  All of these will be issued simultaneously
+    /// by the [`listio`] method.
+    ///
+    /// [`AioCb`]: struct.AioCb.html
+    /// [`listio`]: #method.listio
+    </span><span class="comment">// Their locations in memory must be fixed once they are passed to the
+    // kernel.  So this field must be non-public so the user can&#39;t swap.
+    </span>aiocbs: Box&lt;[AioCb&lt;<span class="lifetime">&#39;a</span>&gt;]&gt;,
 
-    <span class="doccomment">/// The actual list passed to `libc::lio_listio`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// It must live for as long as any of the operations are still being</span>
-    <span class="doccomment">/// processesed, because the aio subsystem uses its address as a unique</span>
-    <span class="doccomment">/// identifier.</span>
-    <span class="ident">list</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">*mut</span> <span class="ident">libc::aiocb</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The actual list passed to `libc::lio_listio`.
+    ///
+    /// It must live for as long as any of the operations are still being
+    /// processesed, because the aio subsystem uses its address as a unique
+    /// identifier.
+    </span>list: Vec&lt;<span class="kw-2">*mut </span>libc::aiocb&gt;,
 
-    <span class="doccomment">/// A partial set of results.  This field will get populated by</span>
-    <span class="doccomment">/// `listio_resubmit` when an `LioCb` is resubmitted after an error</span>
-    <span class="ident">results</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
+    <span class="doccomment">/// A partial set of results.  This field will get populated by
+    /// `listio_resubmit` when an `LioCb` is resubmitted after an error
+    </span>results: Vec&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;isize&gt;&gt;&gt;
 }
 
-<span class="doccomment">/// LioCb can&#39;t automatically impl Send and Sync just because of the raw</span>
-<span class="doccomment">/// pointers in list.  But that&#39;s stupid.  There&#39;s no reason that raw pointers</span>
-<span class="doccomment">/// should automatically be non-Send</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>)))]</span>
-<span class="kw">unsafe</span> <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">LioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {}
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>)))]</span>
-<span class="kw">unsafe</span> <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Sync</span> <span class="kw">for</span> <span class="ident">LioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {}
+<span class="doccomment">/// LioCb can&#39;t automatically impl Send and Sync just because of the raw
+/// pointers in list.  But that&#39;s stupid.  There&#39;s no reason that raw pointers
+/// should automatically be non-Send
+</span><span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>)))]
+</span><span class="kw">unsafe impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Send <span class="kw">for </span>LioCb&lt;<span class="lifetime">&#39;a</span>&gt; {}
+<span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>)))]
+</span><span class="kw">unsafe impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Sync <span class="kw">for </span>LioCb&lt;<span class="lifetime">&#39;a</span>&gt; {}
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>)))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">LioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Are no [`AioCb`]s contained?</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">aiocbs</span>.<span class="ident">is_empty</span>()
+<span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>)))]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; LioCb&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// Are no [`AioCb`]s contained?
+    </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.aiocbs.is_empty()
     }
 
-    <span class="doccomment">/// Return the number of individual [`AioCb`]s contained.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">aiocbs</span>.<span class="ident">len</span>()
+    <span class="doccomment">/// Return the number of individual [`AioCb`]s contained.
+    </span><span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="self">self</span>.aiocbs.len()
     }
 
-    <span class="doccomment">/// Submits multiple asynchronous I/O requests with a single system call.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// They are not guaranteed to complete atomically, and the order in which</span>
-    <span class="doccomment">/// the requests are carried out is not specified.  Reads, writes, and</span>
-    <span class="doccomment">/// fsyncs may be freely mixed.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This function is useful for reducing the context-switch overhead of</span>
-    <span class="doccomment">/// submitting many AIO operations.  It can also be used with</span>
-    <span class="doccomment">/// `LioMode::LIO_WAIT` to block on the result of several independent</span>
-    <span class="doccomment">/// operations.  Used that way, it is often useful in programs that</span>
-    <span class="doccomment">/// otherwise make little use of AIO.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Use `listio` to submit an aio operation and wait for its completion.  In</span>
-    <span class="doccomment">/// this case, there is no need to use [`aio_suspend`] to wait or</span>
-    <span class="doccomment">/// [`AioCb::error`] to poll.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # use nix::sys::aio::*;</span>
-    <span class="doccomment">/// # use nix::sys::signal::SigevNotify;</span>
-    <span class="doccomment">/// # use std::os::unix::io::AsRawFd;</span>
-    <span class="doccomment">/// # use tempfile::tempfile;</span>
-    <span class="doccomment">/// const WBUF: &amp;[u8] = b&quot;abcdef123456&quot;;</span>
-    <span class="doccomment">/// let mut f = tempfile().unwrap();</span>
-    <span class="doccomment">/// let mut liocb = LioCbBuilder::with_capacity(1)</span>
-    <span class="doccomment">///     .emplace_slice(</span>
-    <span class="doccomment">///         f.as_raw_fd(),</span>
-    <span class="doccomment">///         2,   //offset</span>
-    <span class="doccomment">///         WBUF,</span>
-    <span class="doccomment">///         0,   //priority</span>
-    <span class="doccomment">///         SigevNotify::SigevNone,</span>
-    <span class="doccomment">///         LioOpcode::LIO_WRITE</span>
-    <span class="doccomment">///     ).finish();</span>
-    <span class="doccomment">/// liocb.listio(LioMode::LIO_WAIT,</span>
-    <span class="doccomment">///              SigevNotify::SigevNone).unwrap();</span>
-    <span class="doccomment">/// assert_eq!(liocb.aio_return(0).unwrap() as usize, WBUF.len());</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # References</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`lio_listio`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/lio_listio.html)</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`aio_suspend`]: fn.aio_suspend.html</span>
-    <span class="doccomment">/// [`AioCb::error`]: struct.AioCb.html#method.error</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">listio</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">mode</span>: <span class="ident">LioMode</span>,
-                  <span class="ident">sigev_notify</span>: <span class="ident">SigevNotify</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">sigev</span> <span class="op">=</span> <span class="ident">SigEvent::new</span>(<span class="ident">sigev_notify</span>);
-        <span class="kw">let</span> <span class="ident">sigevp</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">sigev</span>.<span class="ident">sigevent</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">libc::sigevent</span>;
-        <span class="self">self</span>.<span class="ident">list</span>.<span class="ident">clear</span>();
-        <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">aiocbs</span>.<span class="ident">iter_mut</span>() {
-            <span class="ident">a</span>.<span class="ident">in_progress</span> <span class="op">=</span> <span class="bool-val">true</span>;
-            <span class="self">self</span>.<span class="ident">list</span>.<span class="ident">push</span>(<span class="ident">a</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">AioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>
-                             <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">libc::aiocb</span>);
+    <span class="doccomment">/// Submits multiple asynchronous I/O requests with a single system call.
+    ///
+    /// They are not guaranteed to complete atomically, and the order in which
+    /// the requests are carried out is not specified.  Reads, writes, and
+    /// fsyncs may be freely mixed.
+    ///
+    /// This function is useful for reducing the context-switch overhead of
+    /// submitting many AIO operations.  It can also be used with
+    /// `LioMode::LIO_WAIT` to block on the result of several independent
+    /// operations.  Used that way, it is often useful in programs that
+    /// otherwise make little use of AIO.
+    ///
+    /// # Examples
+    ///
+    /// Use `listio` to submit an aio operation and wait for its completion.  In
+    /// this case, there is no need to use [`aio_suspend`] to wait or
+    /// [`AioCb::error`] to poll.
+    ///
+    /// ```
+    /// # use nix::sys::aio::*;
+    /// # use nix::sys::signal::SigevNotify;
+    /// # use std::os::unix::io::AsRawFd;
+    /// # use tempfile::tempfile;
+    /// const WBUF: &amp;[u8] = b&quot;abcdef123456&quot;;
+    /// let mut f = tempfile().unwrap();
+    /// let mut liocb = LioCbBuilder::with_capacity(1)
+    ///     .emplace_slice(
+    ///         f.as_raw_fd(),
+    ///         2,   //offset
+    ///         WBUF,
+    ///         0,   //priority
+    ///         SigevNotify::SigevNone,
+    ///         LioOpcode::LIO_WRITE
+    ///     ).finish();
+    /// liocb.listio(LioMode::LIO_WAIT,
+    ///              SigevNotify::SigevNone).unwrap();
+    /// assert_eq!(liocb.aio_return(0).unwrap() as usize, WBUF.len());
+    /// ```
+    ///
+    /// # References
+    ///
+    /// [`lio_listio`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/lio_listio.html)
+    ///
+    /// [`aio_suspend`]: fn.aio_suspend.html
+    /// [`AioCb::error`]: struct.AioCb.html#method.error
+    </span><span class="kw">pub fn </span>listio(<span class="kw-2">&amp;mut </span><span class="self">self</span>, mode: LioMode,
+                  sigev_notify: SigevNotify) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">let </span>sigev = SigEvent::new(sigev_notify);
+        <span class="kw">let </span>sigevp = <span class="kw-2">&amp;mut </span>sigev.sigevent() <span class="kw">as </span><span class="kw-2">*mut </span>libc::sigevent;
+        <span class="self">self</span>.list.clear();
+        <span class="kw">for </span>a <span class="kw">in </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.aiocbs.iter_mut() {
+            a.in_progress = <span class="bool-val">true</span>;
+            <span class="self">self</span>.list.push(a <span class="kw">as </span><span class="kw-2">*mut </span>AioCb&lt;<span class="lifetime">&#39;a</span>&gt;
+                             <span class="kw">as </span><span class="kw-2">*mut </span>libc::aiocb);
         }
-        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">list</span>.<span class="ident">as_ptr</span>();
-        <span class="ident">Errno::result</span>(<span class="kw">unsafe</span> {
-            <span class="ident">libc::lio_listio</span>(<span class="ident">mode</span> <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">p</span>, <span class="self">self</span>.<span class="ident">list</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">sigevp</span>)
-        }).<span class="ident">map</span>(<span class="ident">drop</span>)
+        <span class="kw">let </span>p = <span class="self">self</span>.list.as_ptr();
+        Errno::result(<span class="kw">unsafe </span>{
+            libc::lio_listio(mode <span class="kw">as </span>i32, p, <span class="self">self</span>.list.len() <span class="kw">as </span>i32, sigevp)
+        }).map(drop)
     }
 
-    <span class="doccomment">/// Resubmits any incomplete operations with [`lio_listio`].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Sometimes, due to system resource limitations, an `lio_listio` call will</span>
-    <span class="doccomment">/// return `EIO`, or `EAGAIN`.  Or, if a signal is received, it may return</span>
-    <span class="doccomment">/// `EINTR`.  In any of these cases, only a subset of its constituent</span>
-    <span class="doccomment">/// operations will actually have been initiated.  `listio_resubmit` will</span>
-    <span class="doccomment">/// resubmit any operations that are still uninitiated.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// After calling `listio_resubmit`, results should be collected by</span>
-    <span class="doccomment">/// [`LioCb::aio_return`].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```no_run</span>
-    <span class="doccomment">/// # use nix::Error;</span>
-    <span class="doccomment">/// # use nix::errno::Errno;</span>
-    <span class="doccomment">/// # use nix::sys::aio::*;</span>
-    <span class="doccomment">/// # use nix::sys::signal::SigevNotify;</span>
-    <span class="doccomment">/// # use std::os::unix::io::AsRawFd;</span>
-    <span class="doccomment">/// # use std::{thread, time};</span>
-    <span class="doccomment">/// # use tempfile::tempfile;</span>
-    <span class="doccomment">/// const WBUF: &amp;[u8] = b&quot;abcdef123456&quot;;</span>
-    <span class="doccomment">/// let mut f = tempfile().unwrap();</span>
-    <span class="doccomment">/// let mut liocb = LioCbBuilder::with_capacity(1)</span>
-    <span class="doccomment">///     .emplace_slice(</span>
-    <span class="doccomment">///         f.as_raw_fd(),</span>
-    <span class="doccomment">///         2,   //offset</span>
-    <span class="doccomment">///         WBUF,</span>
-    <span class="doccomment">///         0,   //priority</span>
-    <span class="doccomment">///         SigevNotify::SigevNone,</span>
-    <span class="doccomment">///         LioOpcode::LIO_WRITE</span>
-    <span class="doccomment">///     ).finish();</span>
-    <span class="doccomment">/// let mut err = liocb.listio(LioMode::LIO_WAIT, SigevNotify::SigevNone);</span>
-    <span class="doccomment">/// while err == Err(Errno::EIO) ||</span>
-    <span class="doccomment">///       err == Err(Errno::EAGAIN) {</span>
-    <span class="doccomment">///     thread::sleep(time::Duration::from_millis(10));</span>
-    <span class="doccomment">///     err = liocb.listio_resubmit(LioMode::LIO_WAIT, SigevNotify::SigevNone);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// assert_eq!(liocb.aio_return(0).unwrap() as usize, WBUF.len());</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # References</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`lio_listio`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/lio_listio.html)</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`lio_listio`]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/lio_listio.html</span>
-    <span class="doccomment">/// [`LioCb::aio_return`]: struct.LioCb.html#method.aio_return</span>
-    <span class="comment">// Note: the addresses of any EINPROGRESS or EOK aiocbs _must_ not be</span>
-    <span class="comment">// changed by this method, because the kernel relies on their addresses</span>
-    <span class="comment">// being stable.</span>
-    <span class="comment">// Note: aiocbs that are Ok(()) must be finalized by aio_return, or else the</span>
-    <span class="comment">// sigev_notify will immediately refire.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">listio_resubmit</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">mode</span>:<span class="ident">LioMode</span>,
-                           <span class="ident">sigev_notify</span>: <span class="ident">SigevNotify</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">sigev</span> <span class="op">=</span> <span class="ident">SigEvent::new</span>(<span class="ident">sigev_notify</span>);
-        <span class="kw">let</span> <span class="ident">sigevp</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">sigev</span>.<span class="ident">sigevent</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">libc::sigevent</span>;
-        <span class="self">self</span>.<span class="ident">list</span>.<span class="ident">clear</span>();
+    <span class="doccomment">/// Resubmits any incomplete operations with [`lio_listio`].
+    ///
+    /// Sometimes, due to system resource limitations, an `lio_listio` call will
+    /// return `EIO`, or `EAGAIN`.  Or, if a signal is received, it may return
+    /// `EINTR`.  In any of these cases, only a subset of its constituent
+    /// operations will actually have been initiated.  `listio_resubmit` will
+    /// resubmit any operations that are still uninitiated.
+    ///
+    /// After calling `listio_resubmit`, results should be collected by
+    /// [`LioCb::aio_return`].
+    ///
+    /// # Examples
+    /// ```no_run
+    /// # use nix::Error;
+    /// # use nix::errno::Errno;
+    /// # use nix::sys::aio::*;
+    /// # use nix::sys::signal::SigevNotify;
+    /// # use std::os::unix::io::AsRawFd;
+    /// # use std::{thread, time};
+    /// # use tempfile::tempfile;
+    /// const WBUF: &amp;[u8] = b&quot;abcdef123456&quot;;
+    /// let mut f = tempfile().unwrap();
+    /// let mut liocb = LioCbBuilder::with_capacity(1)
+    ///     .emplace_slice(
+    ///         f.as_raw_fd(),
+    ///         2,   //offset
+    ///         WBUF,
+    ///         0,   //priority
+    ///         SigevNotify::SigevNone,
+    ///         LioOpcode::LIO_WRITE
+    ///     ).finish();
+    /// let mut err = liocb.listio(LioMode::LIO_WAIT, SigevNotify::SigevNone);
+    /// while err == Err(Errno::EIO) ||
+    ///       err == Err(Errno::EAGAIN) {
+    ///     thread::sleep(time::Duration::from_millis(10));
+    ///     err = liocb.listio_resubmit(LioMode::LIO_WAIT, SigevNotify::SigevNone);
+    /// }
+    /// assert_eq!(liocb.aio_return(0).unwrap() as usize, WBUF.len());
+    /// ```
+    ///
+    /// # References
+    ///
+    /// [`lio_listio`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/lio_listio.html)
+    ///
+    /// [`lio_listio`]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/lio_listio.html
+    /// [`LioCb::aio_return`]: struct.LioCb.html#method.aio_return
+    </span><span class="comment">// Note: the addresses of any EINPROGRESS or EOK aiocbs _must_ not be
+    // changed by this method, because the kernel relies on their addresses
+    // being stable.
+    // Note: aiocbs that are Ok(()) must be finalized by aio_return, or else the
+    // sigev_notify will immediately refire.
+    </span><span class="kw">pub fn </span>listio_resubmit(<span class="kw-2">&amp;mut </span><span class="self">self</span>, mode:LioMode,
+                           sigev_notify: SigevNotify) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">let </span>sigev = SigEvent::new(sigev_notify);
+        <span class="kw">let </span>sigevp = <span class="kw-2">&amp;mut </span>sigev.sigevent() <span class="kw">as </span><span class="kw-2">*mut </span>libc::sigevent;
+        <span class="self">self</span>.list.clear();
 
-        <span class="kw">while</span> <span class="self">self</span>.<span class="ident">results</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">aiocbs</span>.<span class="ident">len</span>() {
-            <span class="self">self</span>.<span class="ident">results</span>.<span class="ident">push</span>(<span class="prelude-val">None</span>);
+        <span class="kw">while </span><span class="self">self</span>.results.len() &lt; <span class="self">self</span>.aiocbs.len() {
+            <span class="self">self</span>.results.push(<span class="prelude-val">None</span>);
         }
 
-        <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">a</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">aiocbs</span>.<span class="ident">iter_mut</span>().<span class="ident">enumerate</span>() {
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">results</span>[<span class="ident">i</span>].<span class="ident">is_some</span>() {
-                <span class="comment">// Already collected final status for this operation</span>
-                <span class="kw">continue</span>;
+        <span class="kw">for </span>(i, a) <span class="kw">in </span><span class="self">self</span>.aiocbs.iter_mut().enumerate() {
+            <span class="kw">if </span><span class="self">self</span>.results[i].is_some() {
+                <span class="comment">// Already collected final status for this operation
+                </span><span class="kw">continue</span>;
             }
-            <span class="kw">match</span> <span class="ident">a</span>.<span class="ident">error_unpinned</span>() {
+            <span class="kw">match </span>a.error_unpinned() {
                 <span class="prelude-val">Ok</span>(()) =&gt; {
-                    <span class="comment">// aiocb is complete; collect its status and don&#39;t resubmit</span>
-                    <span class="self">self</span>.<span class="ident">results</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">a</span>.<span class="ident">aio_return_unpinned</span>());
+                    <span class="comment">// aiocb is complete; collect its status and don&#39;t resubmit
+                    </span><span class="self">self</span>.results[i] = <span class="prelude-val">Some</span>(a.aio_return_unpinned());
                 },
-                <span class="prelude-val">Err</span>(<span class="ident">Errno::EAGAIN</span>) =&gt; {
-                    <span class="self">self</span>.<span class="ident">list</span>.<span class="ident">push</span>(<span class="ident">a</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">AioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">libc::aiocb</span>);
+                <span class="prelude-val">Err</span>(Errno::EAGAIN) =&gt; {
+                    <span class="self">self</span>.list.push(a <span class="kw">as </span><span class="kw-2">*mut </span>AioCb&lt;<span class="lifetime">&#39;a</span>&gt; <span class="kw">as </span><span class="kw-2">*mut </span>libc::aiocb);
                 },
-                <span class="prelude-val">Err</span>(<span class="ident">Errno::EINPROGRESS</span>) =&gt; {
-                    <span class="comment">// aiocb is was successfully queued; no need to do anything</span>
-                },
-                <span class="prelude-val">Err</span>(<span class="ident">Errno::EINVAL</span>) =&gt; <span class="macro">panic!</span>(
+                <span class="prelude-val">Err</span>(Errno::EINPROGRESS) =&gt; {
+                    <span class="comment">// aiocb is was successfully queued; no need to do anything
+                </span>},
+                <span class="prelude-val">Err</span>(Errno::EINVAL) =&gt; <span class="macro">panic!</span>(
                     <span class="string">&quot;AioCb was never submitted, or already finalized&quot;</span>),
-                <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>()
+                <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>()
             }
         }
-        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">list</span>.<span class="ident">as_ptr</span>();
-        <span class="ident">Errno::result</span>(<span class="kw">unsafe</span> {
-            <span class="ident">libc::lio_listio</span>(<span class="ident">mode</span> <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">p</span>, <span class="self">self</span>.<span class="ident">list</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">sigevp</span>)
-        }).<span class="ident">map</span>(<span class="ident">drop</span>)
+        <span class="kw">let </span>p = <span class="self">self</span>.list.as_ptr();
+        Errno::result(<span class="kw">unsafe </span>{
+            libc::lio_listio(mode <span class="kw">as </span>i32, p, <span class="self">self</span>.list.len() <span class="kw">as </span>i32, sigevp)
+        }).map(drop)
     }
 
-    <span class="doccomment">/// Collect final status for an individual `AioCb` submitted as part of an</span>
-    <span class="doccomment">/// `LioCb`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This is just like [`AioCb::aio_return`], except it takes into account</span>
-    <span class="doccomment">/// operations that were restarted by [`LioCb::listio_resubmit`]</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`AioCb::aio_return`]: struct.AioCb.html#method.aio_return</span>
-    <span class="doccomment">/// [`LioCb::listio_resubmit`]: #method.listio_resubmit</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">aio_return</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">results</span>.<span class="ident">len</span>() <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">results</span>[<span class="ident">i</span>].<span class="ident">is_none</span>() {
-            <span class="self">self</span>.<span class="ident">aiocbs</span>[<span class="ident">i</span>].<span class="ident">aio_return_unpinned</span>()
-        } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">results</span>[<span class="ident">i</span>].<span class="ident">unwrap</span>()
+    <span class="doccomment">/// Collect final status for an individual `AioCb` submitted as part of an
+    /// `LioCb`.
+    ///
+    /// This is just like [`AioCb::aio_return`], except it takes into account
+    /// operations that were restarted by [`LioCb::listio_resubmit`]
+    ///
+    /// [`AioCb::aio_return`]: struct.AioCb.html#method.aio_return
+    /// [`LioCb::listio_resubmit`]: #method.listio_resubmit
+    </span><span class="kw">pub fn </span>aio_return(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Result</span>&lt;isize&gt; {
+        <span class="kw">if </span>i &gt;= <span class="self">self</span>.results.len() || <span class="self">self</span>.results[i].is_none() {
+            <span class="self">self</span>.aiocbs[i].aio_return_unpinned()
+        } <span class="kw">else </span>{
+            <span class="self">self</span>.results[i].unwrap()
         }
     }
 
-    <span class="doccomment">/// Retrieve error status of an individual `AioCb` submitted as part of an</span>
-    <span class="doccomment">/// `LioCb`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This is just like [`AioCb::error`], except it takes into account</span>
-    <span class="doccomment">/// operations that were restarted by [`LioCb::listio_resubmit`]</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`AioCb::error`]: struct.AioCb.html#method.error</span>
-    <span class="doccomment">/// [`LioCb::listio_resubmit`]: #method.listio_resubmit</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">error</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">results</span>.<span class="ident">len</span>() <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">results</span>[<span class="ident">i</span>].<span class="ident">is_none</span>() {
-            <span class="self">self</span>.<span class="ident">aiocbs</span>[<span class="ident">i</span>].<span class="ident">error_unpinned</span>()
-        } <span class="kw">else</span> {
+    <span class="doccomment">/// Retrieve error status of an individual `AioCb` submitted as part of an
+    /// `LioCb`.
+    ///
+    /// This is just like [`AioCb::error`], except it takes into account
+    /// operations that were restarted by [`LioCb::listio_resubmit`]
+    ///
+    /// [`AioCb::error`]: struct.AioCb.html#method.error
+    /// [`LioCb::listio_resubmit`]: #method.listio_resubmit
+    </span><span class="kw">pub fn </span>error(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">if </span>i &gt;= <span class="self">self</span>.results.len() || <span class="self">self</span>.results[i].is_none() {
+            <span class="self">self</span>.aiocbs[i].error_unpinned()
+        } <span class="kw">else </span>{
             <span class="prelude-val">Ok</span>(())
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>)))]</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">LioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="ident">fmt</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;LioCb&quot;</span>)
-            .<span class="ident">field</span>(<span class="string">&quot;aiocbs&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">aiocbs</span>)
-            .<span class="ident">finish</span>()
+<span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>)))]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Debug <span class="kw">for </span>LioCb&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+        fmt.debug_struct(<span class="string">&quot;LioCb&quot;</span>)
+            .field(<span class="string">&quot;aiocbs&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.aiocbs)
+            .finish()
     }
 }
 
-<span class="doccomment">/// Used to construct `LioCb`</span>
-<span class="comment">// This must be a separate class from LioCb due to pinning constraints.  LioCb</span>
-<span class="comment">// must use a boxed slice of AioCbs so they will have stable storage, but</span>
-<span class="comment">// LioCbBuilder must use a Vec to make construction possible when the final size</span>
-<span class="comment">// is unknown.</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>)))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LioCbBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// A collection of [`AioCb`]s.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`AioCb`]: struct.AioCb.html</span>
-    <span class="kw">pub</span> <span class="ident">aiocbs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">AioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Used to construct `LioCb`
+</span><span class="comment">// This must be a separate class from LioCb due to pinning constraints.  LioCb
+// must use a boxed slice of AioCbs so they will have stable storage, but
+// LioCbBuilder must use a Vec to make construction possible when the final size
+// is unknown.
+</span><span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>)))]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+#[derive(Debug)]
+</span><span class="kw">pub struct </span>LioCbBuilder&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// A collection of [`AioCb`]s.
+    ///
+    /// [`AioCb`]: struct.AioCb.html
+    </span><span class="kw">pub </span>aiocbs: Vec&lt;AioCb&lt;<span class="lifetime">&#39;a</span>&gt;&gt;,
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>)))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">LioCbBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Initialize an empty `LioCb`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_capacity</span>(<span class="ident">capacity</span>: <span class="ident">usize</span>) -&gt; <span class="ident">LioCbBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-        <span class="ident">LioCbBuilder</span> {
-            <span class="ident">aiocbs</span>: <span class="ident">Vec::with_capacity</span>(<span class="ident">capacity</span>),
+<span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>)))]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; LioCbBuilder&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// Initialize an empty `LioCb`
+    </span><span class="kw">pub fn </span>with_capacity(capacity: usize) -&gt; LioCbBuilder&lt;<span class="lifetime">&#39;a</span>&gt; {
+        LioCbBuilder {
+            aiocbs: Vec::with_capacity(capacity),
         }
     }
 
-    <span class="doccomment">/// Add a new operation on an immutable slice to the [`LioCb`] under</span>
-    <span class="doccomment">/// construction.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Arguments are the same as for [`AioCb::from_slice`]</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`LioCb`]: struct.LioCb.html</span>
-    <span class="doccomment">/// [`AioCb::from_slice`]: struct.AioCb.html#method.from_slice</span>
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">emplace_slice</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">offs</span>: <span class="ident">off_t</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>],
-                         <span class="ident">prio</span>: <span class="ident">libc::c_int</span>, <span class="ident">sigev_notify</span>: <span class="ident">SigevNotify</span>,
-                         <span class="ident">opcode</span>: <span class="ident">LioOpcode</span>) -&gt; <span class="self">Self</span>
-    {
-        <span class="self">self</span>.<span class="ident">aiocbs</span>.<span class="ident">push</span>(<span class="ident">AioCb::from_slice_unpinned</span>(<span class="ident">fd</span>, <span class="ident">offs</span>, <span class="ident">buf</span>, <span class="ident">prio</span>,
-                                                    <span class="ident">sigev_notify</span>, <span class="ident">opcode</span>));
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Add a new operation on an immutable slice to the [`LioCb`] under
+    /// construction.
+    ///
+    /// Arguments are the same as for [`AioCb::from_slice`]
+    ///
+    /// [`LioCb`]: struct.LioCb.html
+    /// [`AioCb::from_slice`]: struct.AioCb.html#method.from_slice
+    </span><span class="attribute">#[must_use]
+    </span><span class="kw">pub fn </span>emplace_slice(<span class="kw-2">mut </span><span class="self">self</span>, fd: RawFd, offs: off_t, buf: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8],
+                         prio: libc::c_int, sigev_notify: SigevNotify,
+                         opcode: LioOpcode) -&gt; <span class="self">Self
+    </span>{
+        <span class="self">self</span>.aiocbs.push(AioCb::from_slice_unpinned(fd, offs, buf, prio,
+                                                    sigev_notify, opcode));
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Add a new operation on a mutable slice to the [`LioCb`] under</span>
-    <span class="doccomment">/// construction.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Arguments are the same as for [`AioCb::from_mut_slice`]</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`LioCb`]: struct.LioCb.html</span>
-    <span class="doccomment">/// [`AioCb::from_mut_slice`]: struct.AioCb.html#method.from_mut_slice</span>
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">emplace_mut_slice</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">offs</span>: <span class="ident">off_t</span>,
-                             <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> [<span class="ident">u8</span>], <span class="ident">prio</span>: <span class="ident">libc::c_int</span>,
-                             <span class="ident">sigev_notify</span>: <span class="ident">SigevNotify</span>, <span class="ident">opcode</span>: <span class="ident">LioOpcode</span>)
-        -&gt; <span class="self">Self</span>
-    {
-        <span class="self">self</span>.<span class="ident">aiocbs</span>.<span class="ident">push</span>(<span class="ident">AioCb::from_mut_slice_unpinned</span>(<span class="ident">fd</span>, <span class="ident">offs</span>, <span class="ident">buf</span>, <span class="ident">prio</span>,
-                                                        <span class="ident">sigev_notify</span>, <span class="ident">opcode</span>));
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Add a new operation on a mutable slice to the [`LioCb`] under
+    /// construction.
+    ///
+    /// Arguments are the same as for [`AioCb::from_mut_slice`]
+    ///
+    /// [`LioCb`]: struct.LioCb.html
+    /// [`AioCb::from_mut_slice`]: struct.AioCb.html#method.from_mut_slice
+    </span><span class="attribute">#[must_use]
+    </span><span class="kw">pub fn </span>emplace_mut_slice(<span class="kw-2">mut </span><span class="self">self</span>, fd: RawFd, offs: off_t,
+                             buf: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>[u8], prio: libc::c_int,
+                             sigev_notify: SigevNotify, opcode: LioOpcode)
+        -&gt; <span class="self">Self
+    </span>{
+        <span class="self">self</span>.aiocbs.push(AioCb::from_mut_slice_unpinned(fd, offs, buf, prio,
+                                                        sigev_notify, opcode));
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Finalize this [`LioCb`].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Afterwards it will be possible to issue the operations with</span>
-    <span class="doccomment">/// [`LioCb::listio`].  Conversely, it will no longer be possible to add new</span>
-    <span class="doccomment">/// operations with [`LioCbBuilder::emplace_slice`] or</span>
-    <span class="doccomment">/// [`LioCbBuilder::emplace_mut_slice`].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`LioCb::listio`]: struct.LioCb.html#method.listio</span>
-    <span class="doccomment">/// [`LioCb::from_mut_slice`]: struct.LioCb.html#method.from_mut_slice</span>
-    <span class="doccomment">/// [`LioCb::from_slice`]: struct.LioCb.html#method.from_slice</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">finish</span>(<span class="self">self</span>) -&gt; <span class="ident">LioCb</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">aiocbs</span>.<span class="ident">len</span>();
-        <span class="ident">LioCb</span> {
-            <span class="ident">aiocbs</span>: <span class="self">self</span>.<span class="ident">aiocbs</span>.<span class="ident">into</span>(),
-            <span class="ident">list</span>: <span class="ident">Vec::with_capacity</span>(<span class="ident">len</span>),
-            <span class="ident">results</span>: <span class="ident">Vec::with_capacity</span>(<span class="ident">len</span>)
+    <span class="doccomment">/// Finalize this [`LioCb`].
+    ///
+    /// Afterwards it will be possible to issue the operations with
+    /// [`LioCb::listio`].  Conversely, it will no longer be possible to add new
+    /// operations with [`LioCbBuilder::emplace_slice`] or
+    /// [`LioCbBuilder::emplace_mut_slice`].
+    ///
+    /// [`LioCb::listio`]: struct.LioCb.html#method.listio
+    /// [`LioCb::from_mut_slice`]: struct.LioCb.html#method.from_mut_slice
+    /// [`LioCb::from_slice`]: struct.LioCb.html#method.from_slice
+    </span><span class="kw">pub fn </span>finish(<span class="self">self</span>) -&gt; LioCb&lt;<span class="lifetime">&#39;a</span>&gt; {
+        <span class="kw">let </span>len = <span class="self">self</span>.aiocbs.len();
+        LioCb {
+            aiocbs: <span class="self">self</span>.aiocbs.into(),
+            list: Vec::with_capacity(len),
+            results: Vec::with_capacity(len)
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>)))]</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">t</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>)))]
+#[cfg(test)]
+</span><span class="kw">mod </span>t {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="comment">// It&#39;s important that `LioCb` be `UnPin`.  The tokio-file crate relies on</span>
-    <span class="comment">// it.</span>
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">liocb_is_unpin</span>() {
-        <span class="kw">use</span> <span class="ident">assert_impl::assert_impl</span>;
+    <span class="comment">// It&#39;s important that `LioCb` be `UnPin`.  The tokio-file crate relies on
+    // it.
+    </span><span class="attribute">#[test]
+    </span><span class="kw">fn </span>liocb_is_unpin() {
+        <span class="kw">use </span>assert_impl::assert_impl;
 
-        <span class="macro">assert_impl!</span>(<span class="ident">Unpin</span>: <span class="ident">LioCb</span>);
+        <span class="macro">assert_impl!</span>(Unpin: LioCb);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

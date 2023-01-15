@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/paste.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>paste.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wl_clipboard_rs/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../wl_clipboard_rs/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../wl_clipboard_rs/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/paste.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>paste.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../wl_clipboard_rs/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -327,334 +327,334 @@
 <span id="327">327</span>
 <span id="328">328</span>
 <span id="329">329</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Getting the offered MIME types and the clipboard contents.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Getting the offered MIME types and the clipboard contents.
 
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">cell</span>::{<span class="ident">Cell</span>, <span class="ident">RefCell</span>},
-    <span class="ident">collections::HashSet</span>,
-    <span class="ident">ffi::OsString</span>,
-    <span class="ident">io</span>, <span class="ident">mem</span>,
-    <span class="ident">os::unix::io::AsRawFd</span>,
-    <span class="ident">rc::Rc</span>,
+</span><span class="kw">use </span>std::{
+    cell::{Cell, RefCell},
+    collections::HashSet,
+    ffi::OsString,
+    io, mem,
+    os::unix::io::AsRawFd,
+    rc::Rc,
 };
 
-<span class="kw">use</span> <span class="ident">os_pipe</span>::{<span class="ident">pipe</span>, <span class="ident">PipeReader</span>};
-<span class="kw">use</span> <span class="ident">wayland_client</span>::{<span class="ident">ConnectError</span>, <span class="ident">EventQueue</span>};
-<span class="kw">use</span> <span class="ident">wayland_protocols::wlr::unstable::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1</span>;
+<span class="kw">use </span>os_pipe::{pipe, PipeReader};
+<span class="kw">use </span>wayland_client::{ConnectError, EventQueue};
+<span class="kw">use </span>wayland_protocols::wlr::unstable::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">common</span>::{<span class="self">self</span>, <span class="ident">initialize</span>, <span class="ident">CommonData</span>},
-    <span class="ident">handlers</span>::{<span class="ident">data_device_handler</span>, <span class="ident">DataDeviceHandler</span>},
-    <span class="ident">seat_data::SeatData</span>,
-    <span class="ident">utils::is_text</span>,
+<span class="kw">use crate</span>::{
+    common::{<span class="self">self</span>, initialize, CommonData},
+    handlers::{data_device_handler, DataDeviceHandler},
+    seat_data::SeatData,
+    utils::is_text,
 };
 
-<span class="doccomment">/// The clipboard to operate on.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ClipboardType</span> {
-    <span class="doccomment">/// The regular clipboard.</span>
-    <span class="ident">Regular</span>,
-    <span class="doccomment">/// The &quot;primary&quot; clipboard.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Working with the &quot;primary&quot; clipboard requires the compositor to support the data-control</span>
-    <span class="doccomment">/// protocol of version 2 or above.</span>
-    <span class="ident">Primary</span>,
+<span class="doccomment">/// The clipboard to operate on.
+</span><span class="attribute">#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+</span><span class="kw">pub enum </span>ClipboardType {
+    <span class="doccomment">/// The regular clipboard.
+    </span>Regular,
+    <span class="doccomment">/// The &quot;primary&quot; clipboard.
+    ///
+    /// Working with the &quot;primary&quot; clipboard requires the compositor to support the data-control
+    /// protocol of version 2 or above.
+    </span>Primary,
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">ClipboardType</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">ClipboardType::Regular</span>
+<span class="kw">impl </span>Default <span class="kw">for </span>ClipboardType {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        ClipboardType::Regular
     }
 }
 
-<span class="doccomment">/// MIME types that can be requested from the clipboard.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">MimeType</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Request any available MIME type.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If multiple MIME types are offered, the requested MIME type is unspecified and depends on</span>
-    <span class="doccomment">/// the order they are received from the Wayland compositor. However, plain text formats are</span>
-    <span class="doccomment">/// prioritized, so if a plain text format is available among others then it will be requested.</span>
-    <span class="ident">Any</span>,
-    <span class="doccomment">/// Request a plain text MIME type.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This will request one of the multiple common plain text MIME types. It will prioritize MIME</span>
-    <span class="doccomment">/// types known to return UTF-8 text.</span>
-    <span class="ident">Text</span>,
-    <span class="doccomment">/// Request the given MIME type, and if it&#39;s not available fall back to `MimeType::Text`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Example use-case: pasting `text/html` should try `text/html` first, but if it&#39;s not</span>
-    <span class="doccomment">/// available, any other plain text format will do fine too.</span>
-    <span class="ident">TextWithPriority</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>),
-    <span class="doccomment">/// Request a specific MIME type.</span>
-    <span class="ident">Specific</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>),
+<span class="doccomment">/// MIME types that can be requested from the clipboard.
+</span><span class="attribute">#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+</span><span class="kw">pub enum </span>MimeType&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// Request any available MIME type.
+    ///
+    /// If multiple MIME types are offered, the requested MIME type is unspecified and depends on
+    /// the order they are received from the Wayland compositor. However, plain text formats are
+    /// prioritized, so if a plain text format is available among others then it will be requested.
+    </span>Any,
+    <span class="doccomment">/// Request a plain text MIME type.
+    ///
+    /// This will request one of the multiple common plain text MIME types. It will prioritize MIME
+    /// types known to return UTF-8 text.
+    </span>Text,
+    <span class="doccomment">/// Request the given MIME type, and if it&#39;s not available fall back to `MimeType::Text`.
+    ///
+    /// Example use-case: pasting `text/html` should try `text/html` first, but if it&#39;s not
+    /// available, any other plain text format will do fine too.
+    </span>TextWithPriority(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str),
+    <span class="doccomment">/// Request a specific MIME type.
+    </span>Specific(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str),
 }
 
-<span class="doccomment">/// Seat to operate on.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Seat</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Operate on one of the existing seats depending on the order returned by the compositor.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This is perfectly fine when only a single seat is present, so for most configurations.</span>
-    <span class="ident">Unspecified</span>,
-    <span class="doccomment">/// Operate on a seat with the given name.</span>
-    <span class="ident">Specific</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>),
+<span class="doccomment">/// Seat to operate on.
+</span><span class="attribute">#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+</span><span class="kw">pub enum </span>Seat&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// Operate on one of the existing seats depending on the order returned by the compositor.
+    ///
+    /// This is perfectly fine when only a single seat is present, so for most configurations.
+    </span>Unspecified,
+    <span class="doccomment">/// Operate on a seat with the given name.
+    </span>Specific(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str),
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Seat</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">Seat::Unspecified</span>
+<span class="kw">impl </span>Default <span class="kw">for </span>Seat&lt;<span class="lifetime">&#39;_</span>&gt; {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        Seat::Unspecified
     }
 }
 
-<span class="doccomment">/// Errors that can occur for pasting and listing MIME types.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// You may want to ignore some of these errors (rather than show an error message), like</span>
-<span class="doccomment">/// `NoSeats`, `ClipboardEmpty` or `NoMimeType` as they are essentially equivalent to an empty</span>
-<span class="doccomment">/// clipboard.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">thiserror::Error</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Error</span> {
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;There are no seats&quot;</span>)]</span>
-    <span class="ident">NoSeats</span>,
+<span class="doccomment">/// Errors that can occur for pasting and listing MIME types.
+///
+/// You may want to ignore some of these errors (rather than show an error message), like
+/// `NoSeats`, `ClipboardEmpty` or `NoMimeType` as they are essentially equivalent to an empty
+/// clipboard.
+</span><span class="attribute">#[derive(thiserror::Error, Debug)]
+</span><span class="kw">pub enum </span>Error {
+    <span class="attribute">#[error(<span class="string">&quot;There are no seats&quot;</span>)]
+    </span>NoSeats,
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;The clipboard of the requested seat is empty&quot;</span>)]</span>
-    <span class="ident">ClipboardEmpty</span>,
+    <span class="attribute">#[error(<span class="string">&quot;The clipboard of the requested seat is empty&quot;</span>)]
+    </span>ClipboardEmpty,
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;No suitable type of content copied&quot;</span>)]</span>
-    <span class="ident">NoMimeType</span>,
+    <span class="attribute">#[error(<span class="string">&quot;No suitable type of content copied&quot;</span>)]
+    </span>NoMimeType,
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t connect to the Wayland compositor&quot;</span>)]</span>
-    <span class="ident">WaylandConnection</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">ConnectError</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t connect to the Wayland compositor&quot;</span>)]
+    </span>WaylandConnection(<span class="attribute">#[source] </span>ConnectError),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Wayland compositor communication error&quot;</span>)]</span>
-    <span class="ident">WaylandCommunication</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Wayland compositor communication error&quot;</span>)]
+    </span>WaylandCommunication(<span class="attribute">#[source] </span>io::Error),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;A required Wayland protocol ({} version {}) is not supported by the compositor&quot;</span>,
-            <span class="ident">name</span>,
-            <span class="ident">version</span>)]</span>
-    <span class="ident">MissingProtocol</span> { <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">version</span>: <span class="ident">u32</span> },
+    <span class="attribute">#[error(<span class="string">&quot;A required Wayland protocol ({} version {}) is not supported by the compositor&quot;</span>,
+            name,
+            version)]
+    </span>MissingProtocol { name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, version: u32 },
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;The compositor does not support primary selection&quot;</span>)]</span>
-    <span class="ident">PrimarySelectionUnsupported</span>,
+    <span class="attribute">#[error(<span class="string">&quot;The compositor does not support primary selection&quot;</span>)]
+    </span>PrimarySelectionUnsupported,
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;The requested seat was not found&quot;</span>)]</span>
-    <span class="ident">SeatNotFound</span>,
+    <span class="attribute">#[error(<span class="string">&quot;The requested seat was not found&quot;</span>)]
+    </span>SeatNotFound,
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t create a pipe for content transfer&quot;</span>)]</span>
-    <span class="ident">PipeCreation</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t create a pipe for content transfer&quot;</span>)]
+    </span>PipeCreation(<span class="attribute">#[source] </span>io::Error),
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">common::Error</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">x</span>: <span class="ident">common::Error</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">use</span> <span class="ident">common::Error</span>::<span class="kw-2">*</span>;
+<span class="kw">impl </span>From&lt;common::Error&gt; <span class="kw">for </span>Error {
+    <span class="kw">fn </span>from(x: common::Error) -&gt; <span class="self">Self </span>{
+        <span class="kw">use </span>common::Error::<span class="kw-2">*</span>;
 
-        <span class="kw">match</span> <span class="ident">x</span> {
-            <span class="ident">WaylandConnection</span>(<span class="ident">err</span>) =&gt; <span class="ident">Error::WaylandConnection</span>(<span class="ident">err</span>),
-            <span class="ident">WaylandCommunication</span>(<span class="ident">err</span>) =&gt; <span class="ident">Error::WaylandCommunication</span>(<span class="ident">err</span>),
-            <span class="ident">MissingProtocol</span> { <span class="ident">name</span>, <span class="ident">version</span> } =&gt; <span class="ident">Error::MissingProtocol</span> { <span class="ident">name</span>, <span class="ident">version</span> },
+        <span class="kw">match </span>x {
+            WaylandConnection(err) =&gt; Error::WaylandConnection(err),
+            WaylandCommunication(err) =&gt; Error::WaylandCommunication(err),
+            MissingProtocol { name, version } =&gt; Error::MissingProtocol { name, version },
         }
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_offer</span>(<span class="ident">primary</span>: <span class="ident">bool</span>,
-             <span class="ident">seat</span>: <span class="ident">Seat</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
-             <span class="ident">socket_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">OsString</span><span class="op">&gt;</span>)
-             -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">EventQueue</span>, <span class="ident">ZwlrDataControlOfferV1</span>), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">CommonData</span> { <span class="kw-2">mut</span> <span class="ident">queue</span>,
-                     <span class="ident">clipboard_manager</span>,
-                     <span class="ident">seats</span>, } <span class="op">=</span> <span class="ident">initialize</span>(<span class="ident">primary</span>, <span class="ident">socket_name</span>)<span class="question-mark">?</span>;
+<span class="kw">fn </span>get_offer(primary: bool,
+             seat: Seat&lt;<span class="lifetime">&#39;_</span>&gt;,
+             socket_name: <span class="prelude-ty">Option</span>&lt;OsString&gt;)
+             -&gt; <span class="prelude-ty">Result</span>&lt;(EventQueue, ZwlrDataControlOfferV1), Error&gt; {
+    <span class="kw">let </span>CommonData { <span class="kw-2">mut </span>queue,
+                     clipboard_manager,
+                     seats, } = initialize(primary, socket_name)<span class="question-mark">?</span>;
 
-    <span class="comment">// Check if there are no seats.</span>
-    <span class="kw">if</span> <span class="ident">seats</span>.<span class="ident">borrow_mut</span>().<span class="ident">is_empty</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::NoSeats</span>);
+    <span class="comment">// Check if there are no seats.
+    </span><span class="kw">if </span>seats.borrow_mut().is_empty() {
+        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::NoSeats);
     }
 
-    <span class="kw">let</span> <span class="ident">supports_primary</span> <span class="op">=</span> <span class="ident">Rc::new</span>(<span class="ident">Cell::new</span>(<span class="bool-val">false</span>));
+    <span class="kw">let </span>supports_primary = Rc::new(Cell::new(<span class="bool-val">false</span>));
 
-    <span class="comment">// Go through the seats and get their data devices.</span>
-    <span class="kw">for</span> <span class="ident">seat</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">seats</span>.<span class="ident">borrow_mut</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">handler</span> <span class="op">=</span> <span class="ident">DataDeviceHandler::new</span>(<span class="ident">seat</span>.<span class="ident">detach</span>(), <span class="ident">primary</span>, <span class="ident">supports_primary</span>.<span class="ident">clone</span>());
-        <span class="kw">let</span> <span class="ident">device</span> <span class="op">=</span> <span class="ident">clipboard_manager</span>.<span class="ident">get_data_device</span>(<span class="ident">seat</span>);
-        <span class="ident">device</span>.<span class="ident">quick_assign</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">data_device</span>, <span class="ident">event</span>, <span class="ident">dispatch_data</span><span class="op">|</span> {
-                  <span class="ident">data_device_handler</span>(<span class="kw-2">&amp;mut</span> <span class="ident">handler</span>, <span class="ident">data_device</span>, <span class="ident">event</span>, <span class="ident">dispatch_data</span>)
+    <span class="comment">// Go through the seats and get their data devices.
+    </span><span class="kw">for </span>seat <span class="kw">in </span><span class="kw-2">&amp;*</span>seats.borrow_mut() {
+        <span class="kw">let </span><span class="kw-2">mut </span>handler = DataDeviceHandler::new(seat.detach(), primary, supports_primary.clone());
+        <span class="kw">let </span>device = clipboard_manager.get_data_device(seat);
+        device.quick_assign(<span class="kw">move </span>|data_device, event, dispatch_data| {
+                  data_device_handler(<span class="kw-2">&amp;mut </span>handler, data_device, event, dispatch_data)
               });
     }
 
-    <span class="comment">// Retrieve all seat names and offers.</span>
-    <span class="ident">queue</span>.<span class="ident">sync_roundtrip</span>(<span class="kw-2">&amp;mut</span> (), <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {})
-         .<span class="ident">map_err</span>(<span class="ident">Error::WaylandCommunication</span>)<span class="question-mark">?</span>;
+    <span class="comment">// Retrieve all seat names and offers.
+    </span>queue.sync_roundtrip(<span class="kw-2">&amp;mut </span>(), |<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>| {})
+         .map_err(Error::WaylandCommunication)<span class="question-mark">?</span>;
 
-    <span class="comment">// Check if the compositor supports primary selection.</span>
-    <span class="kw">if</span> <span class="ident">primary</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">supports_primary</span>.<span class="ident">get</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::PrimarySelectionUnsupported</span>);
+    <span class="comment">// Check if the compositor supports primary selection.
+    </span><span class="kw">if </span>primary &amp;&amp; !supports_primary.get() {
+        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::PrimarySelectionUnsupported);
     }
 
-    <span class="comment">// Figure out which offer we&#39;re interested in.</span>
-    <span class="kw">let</span> <span class="ident">offer</span> <span class="op">=</span> <span class="ident">seats</span>.<span class="ident">borrow_mut</span>()
-                     .<span class="ident">iter</span>()
-                     .<span class="ident">map</span>(<span class="op">|</span><span class="ident">seat</span><span class="op">|</span> <span class="ident">seat</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">SeatData</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>().<span class="ident">borrow</span>())
-                     .<span class="ident">find_map</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> {
-                         <span class="kw">let</span> <span class="ident">SeatData</span> { <span class="ident">name</span>, <span class="ident">offer</span>, .. } <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">data</span>;
-                         <span class="kw">match</span> <span class="ident">seat</span> {
-                             <span class="ident">Seat::Unspecified</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">offer</span>.<span class="ident">clone</span>()),
-                             <span class="ident">Seat::Specific</span>(<span class="ident">desired_name</span>) =&gt; {
-                                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">name</span> {
-                                     <span class="kw">if</span> <span class="ident">name</span> <span class="op">==</span> <span class="ident">desired_name</span> {
-                                         <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">offer</span>.<span class="ident">clone</span>());
+    <span class="comment">// Figure out which offer we&#39;re interested in.
+    </span><span class="kw">let </span>offer = seats.borrow_mut()
+                     .iter()
+                     .map(|seat| seat.as_ref().user_data().get::&lt;RefCell&lt;SeatData&gt;&gt;().unwrap().borrow())
+                     .find_map(|data| {
+                         <span class="kw">let </span>SeatData { name, offer, .. } = <span class="kw-2">&amp;*</span>data;
+                         <span class="kw">match </span>seat {
+                             Seat::Unspecified =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>(offer.clone()),
+                             Seat::Specific(desired_name) =&gt; {
+                                 <span class="kw">if let </span><span class="prelude-val">Some</span>(name) = name {
+                                     <span class="kw">if </span>name == desired_name {
+                                         <span class="kw">return </span><span class="prelude-val">Some</span>(offer.clone());
                                      }
                                  }
                              }
                          }
 
-                         <span class="prelude-val">None</span>
-                     });
+                         <span class="prelude-val">None
+                     </span>});
 
-    <span class="comment">// Check if we found any seat.</span>
-    <span class="kw">if</span> <span class="ident">offer</span>.<span class="ident">is_none</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::SeatNotFound</span>);
+    <span class="comment">// Check if we found any seat.
+    </span><span class="kw">if </span>offer.is_none() {
+        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::SeatNotFound);
     }
 
-    <span class="ident">offer</span>.<span class="ident">unwrap</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> (<span class="ident">queue</span>, <span class="ident">x</span>)).<span class="ident">ok_or</span>(<span class="ident">Error::ClipboardEmpty</span>)
+    offer.unwrap().map(|x| (queue, x)).ok_or(Error::ClipboardEmpty)
 }
 
-<span class="doccomment">/// Retrieves the offered MIME types.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// If `seat` is `None`, uses an unspecified seat (it depends on the order returned by the</span>
-<span class="doccomment">/// compositor). This is perfectly fine when only a single seat is present, so for most</span>
-<span class="doccomment">/// configurations.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// # extern crate wl_clipboard_rs;</span>
-<span class="doccomment">/// # use wl_clipboard_rs::paste::Error;</span>
-<span class="doccomment">/// # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
-<span class="doccomment">/// use wl_clipboard_rs::{paste::{get_mime_types, ClipboardType, Seat}};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mime_types = get_mime_types(ClipboardType::Regular, Seat::Unspecified)?;</span>
-<span class="doccomment">/// for mime_type in mime_types {</span>
-<span class="doccomment">///     println!(&quot;{}&quot;, mime_type);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// # Ok(())</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_mime_types</span>(<span class="ident">clipboard</span>: <span class="ident">ClipboardType</span>, <span class="ident">seat</span>: <span class="ident">Seat</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="ident">get_mime_types_internal</span>(<span class="ident">clipboard</span>, <span class="ident">seat</span>, <span class="prelude-val">None</span>)
+<span class="doccomment">/// Retrieves the offered MIME types.
+///
+/// If `seat` is `None`, uses an unspecified seat (it depends on the order returned by the
+/// compositor). This is perfectly fine when only a single seat is present, so for most
+/// configurations.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # use wl_clipboard_rs::paste::Error;
+/// # fn foo() -&gt; Result&lt;(), Error&gt; {
+/// use wl_clipboard_rs::{paste::{get_mime_types, ClipboardType, Seat}};
+///
+/// let mime_types = get_mime_types(ClipboardType::Regular, Seat::Unspecified)?;
+/// for mime_type in mime_types {
+///     println!(&quot;{}&quot;, mime_type);
+/// }
+/// # Ok(())
+/// # }
+/// ```
+</span><span class="attribute">#[inline]
+</span><span class="kw">pub fn </span>get_mime_types(clipboard: ClipboardType, seat: Seat&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;HashSet&lt;String&gt;, Error&gt; {
+    get_mime_types_internal(clipboard, seat, <span class="prelude-val">None</span>)
 }
 
-<span class="comment">// The internal function accepts the socket name, used for tests.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_mime_types_internal</span>(<span class="ident">clipboard</span>: <span class="ident">ClipboardType</span>,
-                                      <span class="ident">seat</span>: <span class="ident">Seat</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
-                                      <span class="ident">socket_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">OsString</span><span class="op">&gt;</span>)
-                                      -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">primary</span> <span class="op">=</span> <span class="ident">clipboard</span> <span class="op">==</span> <span class="ident">ClipboardType::Primary</span>;
-    <span class="kw">let</span> (<span class="kw">_</span>, <span class="ident">offer</span>) <span class="op">=</span> <span class="ident">get_offer</span>(<span class="ident">primary</span>, <span class="ident">seat</span>, <span class="ident">socket_name</span>)<span class="question-mark">?</span>;
+<span class="comment">// The internal function accepts the socket name, used for tests.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_mime_types_internal(clipboard: ClipboardType,
+                                      seat: Seat&lt;<span class="lifetime">&#39;_</span>&gt;,
+                                      socket_name: <span class="prelude-ty">Option</span>&lt;OsString&gt;)
+                                      -&gt; <span class="prelude-ty">Result</span>&lt;HashSet&lt;String&gt;, Error&gt; {
+    <span class="kw">let </span>primary = clipboard == ClipboardType::Primary;
+    <span class="kw">let </span>(<span class="kw">_</span>, offer) = get_offer(primary, seat, socket_name)<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mime_types</span> <span class="op">=</span> <span class="ident">offer</span>.<span class="ident">as_ref</span>()
-                              .<span class="ident">user_data</span>()
-                              .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-                              .<span class="ident">unwrap</span>()
-                              .<span class="ident">borrow_mut</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>mime_types = offer.as_ref()
+                              .user_data()
+                              .get::&lt;RefCell&lt;HashSet&lt;String&gt;&gt;&gt;()
+                              .unwrap()
+                              .borrow_mut();
 
-    <span class="kw">let</span> <span class="ident">empty_hash_set</span> <span class="op">=</span> <span class="ident">HashSet::new</span>();
-    <span class="prelude-val">Ok</span>(<span class="ident">mem::replace</span>(<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">mime_types</span>, <span class="ident">empty_hash_set</span>))
+    <span class="kw">let </span>empty_hash_set = HashSet::new();
+    <span class="prelude-val">Ok</span>(mem::replace(<span class="kw-2">&amp;mut *</span>mime_types, empty_hash_set))
 }
 
-<span class="doccomment">/// Retrieves the clipboard contents.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This function returns a tuple of the reading end of a pipe containing the clipboard contents</span>
-<span class="doccomment">/// and the actual MIME type of the contents.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// If `seat` is `None`, uses an unspecified seat (it depends on the order returned by the</span>
-<span class="doccomment">/// compositor). This is perfectly fine when only a single seat is present, so for most</span>
-<span class="doccomment">/// configurations.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// # extern crate wl_clipboard_rs;</span>
-<span class="doccomment">/// # fn foo() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {</span>
-<span class="doccomment">/// use std::io::Read;</span>
-<span class="doccomment">/// use wl_clipboard_rs::{paste::{get_contents, ClipboardType, Error, MimeType, Seat}};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let result = get_contents(ClipboardType::Regular, Seat::Unspecified, MimeType::Any);</span>
-<span class="doccomment">/// match result {</span>
-<span class="doccomment">///     Ok((mut pipe, mime_type)) =&gt; {</span>
-<span class="doccomment">///         println!(&quot;Got data of the {} MIME type&quot;, &amp;mime_type);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///         let mut contents = vec![];</span>
-<span class="doccomment">///         pipe.read_to_end(&amp;mut contents)?;</span>
-<span class="doccomment">///         println!(&quot;Read {} bytes of data&quot;, contents.len());</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     Err(Error::NoSeats) | Err(Error::ClipboardEmpty) | Err(Error::NoMimeType) =&gt; {</span>
-<span class="doccomment">///         // The clipboard is empty, nothing to worry about.</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     Err(err) =&gt; Err(err)?</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// # Ok(())</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_contents</span>(<span class="ident">clipboard</span>: <span class="ident">ClipboardType</span>,
-                    <span class="ident">seat</span>: <span class="ident">Seat</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
-                    <span class="ident">mime_type</span>: <span class="ident">MimeType</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>)
-                    -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">PipeReader</span>, <span class="ident">String</span>), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="ident">get_contents_internal</span>(<span class="ident">clipboard</span>, <span class="ident">seat</span>, <span class="ident">mime_type</span>, <span class="prelude-val">None</span>)
+<span class="doccomment">/// Retrieves the clipboard contents.
+///
+/// This function returns a tuple of the reading end of a pipe containing the clipboard contents
+/// and the actual MIME type of the contents.
+///
+/// If `seat` is `None`, uses an unspecified seat (it depends on the order returned by the
+/// compositor). This is perfectly fine when only a single seat is present, so for most
+/// configurations.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # fn foo() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+/// use std::io::Read;
+/// use wl_clipboard_rs::{paste::{get_contents, ClipboardType, Error, MimeType, Seat}};
+///
+/// let result = get_contents(ClipboardType::Regular, Seat::Unspecified, MimeType::Any);
+/// match result {
+///     Ok((mut pipe, mime_type)) =&gt; {
+///         println!(&quot;Got data of the {} MIME type&quot;, &amp;mime_type);
+///
+///         let mut contents = vec![];
+///         pipe.read_to_end(&amp;mut contents)?;
+///         println!(&quot;Read {} bytes of data&quot;, contents.len());
+///     }
+///
+///     Err(Error::NoSeats) | Err(Error::ClipboardEmpty) | Err(Error::NoMimeType) =&gt; {
+///         // The clipboard is empty, nothing to worry about.
+///     }
+///
+///     Err(err) =&gt; Err(err)?
+/// }
+/// # Ok(())
+/// # }
+/// ```
+</span><span class="attribute">#[inline]
+</span><span class="kw">pub fn </span>get_contents(clipboard: ClipboardType,
+                    seat: Seat&lt;<span class="lifetime">&#39;_</span>&gt;,
+                    mime_type: MimeType&lt;<span class="lifetime">&#39;_</span>&gt;)
+                    -&gt; <span class="prelude-ty">Result</span>&lt;(PipeReader, String), Error&gt; {
+    get_contents_internal(clipboard, seat, mime_type, <span class="prelude-val">None</span>)
 }
 
-<span class="comment">// The internal function accepts the socket name, used for tests.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_contents_internal</span>(<span class="ident">clipboard</span>: <span class="ident">ClipboardType</span>,
-                                    <span class="ident">seat</span>: <span class="ident">Seat</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
-                                    <span class="ident">mime_type</span>: <span class="ident">MimeType</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
-                                    <span class="ident">socket_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">OsString</span><span class="op">&gt;</span>)
-                                    -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">PipeReader</span>, <span class="ident">String</span>), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">primary</span> <span class="op">=</span> <span class="ident">clipboard</span> <span class="op">==</span> <span class="ident">ClipboardType::Primary</span>;
-    <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">queue</span>, <span class="ident">offer</span>) <span class="op">=</span> <span class="ident">get_offer</span>(<span class="ident">primary</span>, <span class="ident">seat</span>, <span class="ident">socket_name</span>)<span class="question-mark">?</span>;
+<span class="comment">// The internal function accepts the socket name, used for tests.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_contents_internal(clipboard: ClipboardType,
+                                    seat: Seat&lt;<span class="lifetime">&#39;_</span>&gt;,
+                                    mime_type: MimeType&lt;<span class="lifetime">&#39;_</span>&gt;,
+                                    socket_name: <span class="prelude-ty">Option</span>&lt;OsString&gt;)
+                                    -&gt; <span class="prelude-ty">Result</span>&lt;(PipeReader, String), Error&gt; {
+    <span class="kw">let </span>primary = clipboard == ClipboardType::Primary;
+    <span class="kw">let </span>(<span class="kw-2">mut </span>queue, offer) = get_offer(primary, seat, socket_name)<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mime_types</span> <span class="op">=</span> <span class="ident">offer</span>.<span class="ident">as_ref</span>()
-                              .<span class="ident">user_data</span>()
-                              .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-                              .<span class="ident">unwrap</span>()
-                              .<span class="ident">borrow_mut</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>mime_types = offer.as_ref()
+                              .user_data()
+                              .get::&lt;RefCell&lt;HashSet&lt;String&gt;&gt;&gt;()
+                              .unwrap()
+                              .borrow_mut();
 
-    <span class="comment">// Find the desired MIME type.</span>
-    <span class="kw">let</span> <span class="ident">mime_type</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">mime_type</span> {
-        <span class="ident">MimeType::Any</span> =&gt; <span class="ident">mime_types</span>.<span class="ident">take</span>(<span class="string">&quot;text/plain;charset=utf-8&quot;</span>)
-                                   .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">mime_types</span>.<span class="ident">take</span>(<span class="string">&quot;UTF8_STRING&quot;</span>))
-                                   .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">mime_types</span>.<span class="ident">iter</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">is_text</span>(<span class="ident">x</span>)).<span class="ident">cloned</span>())
-                                   .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">mime_types</span>.<span class="ident">drain</span>().<span class="ident">next</span>()),
-        <span class="ident">MimeType::Text</span> =&gt; <span class="ident">mime_types</span>.<span class="ident">take</span>(<span class="string">&quot;text/plain;charset=utf-8&quot;</span>)
-                                    .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">mime_types</span>.<span class="ident">take</span>(<span class="string">&quot;UTF8_STRING&quot;</span>))
-                                    .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">mime_types</span>.<span class="ident">drain</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">is_text</span>(<span class="ident">x</span>))),
-        <span class="ident">MimeType::TextWithPriority</span>(<span class="ident">priority</span>) =&gt; <span class="ident">mime_types</span>.<span class="ident">take</span>(<span class="ident">priority</span>)
-                                                          .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">mime_types</span>.<span class="ident">take</span>(<span class="string">&quot;text/plain;charset=utf-8&quot;</span>))
-                                                          .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">mime_types</span>.<span class="ident">take</span>(<span class="string">&quot;UTF8_STRING&quot;</span>))
-                                                          .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">mime_types</span>.<span class="ident">drain</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">is_text</span>(<span class="ident">x</span>))),
-        <span class="ident">MimeType::Specific</span>(<span class="ident">mime_type</span>) =&gt; <span class="ident">mime_types</span>.<span class="ident">take</span>(<span class="ident">mime_type</span>),
+    <span class="comment">// Find the desired MIME type.
+    </span><span class="kw">let </span>mime_type = <span class="kw">match </span>mime_type {
+        MimeType::Any =&gt; mime_types.take(<span class="string">&quot;text/plain;charset=utf-8&quot;</span>)
+                                   .or_else(|| mime_types.take(<span class="string">&quot;UTF8_STRING&quot;</span>))
+                                   .or_else(|| mime_types.iter().find(|x| is_text(x)).cloned())
+                                   .or_else(|| mime_types.drain().next()),
+        MimeType::Text =&gt; mime_types.take(<span class="string">&quot;text/plain;charset=utf-8&quot;</span>)
+                                    .or_else(|| mime_types.take(<span class="string">&quot;UTF8_STRING&quot;</span>))
+                                    .or_else(|| mime_types.drain().find(|x| is_text(x))),
+        MimeType::TextWithPriority(priority) =&gt; mime_types.take(priority)
+                                                          .or_else(|| mime_types.take(<span class="string">&quot;text/plain;charset=utf-8&quot;</span>))
+                                                          .or_else(|| mime_types.take(<span class="string">&quot;UTF8_STRING&quot;</span>))
+                                                          .or_else(|| mime_types.drain().find(|x| is_text(x))),
+        MimeType::Specific(mime_type) =&gt; mime_types.take(mime_type),
     };
 
-    <span class="comment">// Check if a suitable MIME type is copied.</span>
-    <span class="kw">if</span> <span class="ident">mime_type</span>.<span class="ident">is_none</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::NoMimeType</span>);
+    <span class="comment">// Check if a suitable MIME type is copied.
+    </span><span class="kw">if </span>mime_type.is_none() {
+        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::NoMimeType);
     }
 
-    <span class="kw">let</span> <span class="ident">mime_type</span> <span class="op">=</span> <span class="ident">mime_type</span>.<span class="ident">unwrap</span>();
+    <span class="kw">let </span>mime_type = mime_type.unwrap();
 
-    <span class="comment">// Create a pipe for content transfer.</span>
-    <span class="kw">let</span> (<span class="ident">read</span>, <span class="ident">write</span>) <span class="op">=</span> <span class="ident">pipe</span>().<span class="ident">map_err</span>(<span class="ident">Error::PipeCreation</span>)<span class="question-mark">?</span>;
+    <span class="comment">// Create a pipe for content transfer.
+    </span><span class="kw">let </span>(read, write) = pipe().map_err(Error::PipeCreation)<span class="question-mark">?</span>;
 
-    <span class="comment">// Start the transfer.</span>
-    <span class="ident">offer</span>.<span class="ident">receive</span>(<span class="ident">mime_type</span>.<span class="ident">clone</span>(), <span class="ident">write</span>.<span class="ident">as_raw_fd</span>());
-    <span class="ident">drop</span>(<span class="ident">write</span>);
-    <span class="ident">queue</span>.<span class="ident">sync_roundtrip</span>(<span class="kw-2">&amp;mut</span> (), <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {})
-         .<span class="ident">map_err</span>(<span class="ident">Error::WaylandCommunication</span>)<span class="question-mark">?</span>;
+    <span class="comment">// Start the transfer.
+    </span>offer.receive(mime_type.clone(), write.as_raw_fd());
+    drop(write);
+    queue.sync_roundtrip(<span class="kw-2">&amp;mut </span>(), |<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>| {})
+         .map_err(Error::WaylandCommunication)<span class="question-mark">?</span>;
 
-    <span class="prelude-val">Ok</span>((<span class="ident">read</span>, <span class="ident">mime_type</span>))
+    <span class="prelude-val">Ok</span>((read, mime_type))
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wl_clipboard_rs" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wl_clipboard_rs" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

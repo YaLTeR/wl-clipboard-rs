@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/petgraph-0.6.2/src/algo/matching.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>matching.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../petgraph/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../petgraph/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../petgraph/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/petgraph-0.6.2/src/algo/matching.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>matching.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../petgraph/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -609,616 +609,616 @@
 <span id="609">609</span>
 <span id="610">610</span>
 <span id="611">611</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections::VecDeque</span>;
-<span class="kw">use</span> <span class="ident">std::hash::Hash</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>std::collections::VecDeque;
+<span class="kw">use </span>std::hash::Hash;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::visit</span>::{
-    <span class="ident">EdgeRef</span>, <span class="ident">GraphBase</span>, <span class="ident">IntoEdges</span>, <span class="ident">IntoNeighbors</span>, <span class="ident">IntoNodeIdentifiers</span>, <span class="ident">NodeCount</span>, <span class="ident">NodeIndexable</span>,
-    <span class="ident">VisitMap</span>, <span class="ident">Visitable</span>,
+<span class="kw">use </span><span class="kw">crate</span>::visit::{
+    EdgeRef, GraphBase, IntoEdges, IntoNeighbors, IntoNodeIdentifiers, NodeCount, NodeIndexable,
+    VisitMap, Visitable,
 };
 
-<span class="doccomment">/// Computed</span>
-<span class="doccomment">/// [*matching*](https://en.wikipedia.org/wiki/Matching_(graph_theory)#Definitions)</span>
-<span class="doccomment">/// of the graph.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Matching</span><span class="op">&lt;</span><span class="ident">G</span>: <span class="ident">GraphBase</span><span class="op">&gt;</span> {
-    <span class="ident">graph</span>: <span class="ident">G</span>,
-    <span class="ident">mate</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">G::NodeId</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">n_edges</span>: <span class="ident">usize</span>,
+<span class="doccomment">/// Computed
+/// [*matching*](https://en.wikipedia.org/wiki/Matching_(graph_theory)#Definitions)
+/// of the graph.
+</span><span class="kw">pub struct </span>Matching&lt;G: GraphBase&gt; {
+    graph: G,
+    mate: Vec&lt;<span class="prelude-ty">Option</span>&lt;G::NodeId&gt;&gt;,
+    n_edges: usize,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span> <span class="ident">Matching</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">GraphBase</span>,
+<span class="kw">impl</span>&lt;G&gt; Matching&lt;G&gt;
+<span class="kw">where
+    </span>G: GraphBase,
 {
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">graph</span>: <span class="ident">G</span>, <span class="ident">mate</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">G::NodeId</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">n_edges</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">graph</span>,
-            <span class="ident">mate</span>,
-            <span class="ident">n_edges</span>,
+    <span class="kw">fn </span>new(graph: G, mate: Vec&lt;<span class="prelude-ty">Option</span>&lt;G::NodeId&gt;&gt;, n_edges: usize) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            graph,
+            mate,
+            n_edges,
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span> <span class="ident">Matching</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">NodeIndexable</span>,
+<span class="kw">impl</span>&lt;G&gt; Matching&lt;G&gt;
+<span class="kw">where
+    </span>G: NodeIndexable,
 {
-    <span class="doccomment">/// Gets the matched counterpart of given node, if there is any.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Returns `None` if the node is not matched or does not exist.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node</span>: <span class="ident">G::NodeId</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">G::NodeId</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">mate</span>.<span class="ident">get</span>(<span class="self">self</span>.<span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">node</span>)).<span class="ident">and_then</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">id</span><span class="op">|</span> <span class="ident">id</span>)
+    <span class="doccomment">/// Gets the matched counterpart of given node, if there is any.
+    ///
+    /// Returns `None` if the node is not matched or does not exist.
+    </span><span class="kw">pub fn </span>mate(<span class="kw-2">&amp;</span><span class="self">self</span>, node: G::NodeId) -&gt; <span class="prelude-ty">Option</span>&lt;G::NodeId&gt; {
+        <span class="self">self</span>.mate.get(<span class="self">self</span>.graph.to_index(node)).and_then(|<span class="kw-2">&amp;</span>id| id)
     }
 
-    <span class="doccomment">/// Iterates over all edges from the matching.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// An edge is represented by its endpoints. The graph is considered</span>
-    <span class="doccomment">/// undirected and every pair of matched nodes is reported only once.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">edges</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">MatchedEdges</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">G</span><span class="op">&gt;</span> {
-        <span class="ident">MatchedEdges</span> {
-            <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">graph</span>,
-            <span class="ident">mate</span>: <span class="self">self</span>.<span class="ident">mate</span>.<span class="ident">as_slice</span>(),
-            <span class="ident">current</span>: <span class="number">0</span>,
+    <span class="doccomment">/// Iterates over all edges from the matching.
+    ///
+    /// An edge is represented by its endpoints. The graph is considered
+    /// undirected and every pair of matched nodes is reported only once.
+    </span><span class="kw">pub fn </span>edges(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; MatchedEdges&lt;<span class="lifetime">&#39;_</span>, G&gt; {
+        MatchedEdges {
+            graph: <span class="kw-2">&amp;</span><span class="self">self</span>.graph,
+            mate: <span class="self">self</span>.mate.as_slice(),
+            current: <span class="number">0</span>,
         }
     }
 
-    <span class="doccomment">/// Iterates over all nodes from the matching.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">MatchedNodes</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">G</span><span class="op">&gt;</span> {
-        <span class="ident">MatchedNodes</span> {
-            <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">graph</span>,
-            <span class="ident">mate</span>: <span class="self">self</span>.<span class="ident">mate</span>.<span class="ident">as_slice</span>(),
-            <span class="ident">current</span>: <span class="number">0</span>,
+    <span class="doccomment">/// Iterates over all nodes from the matching.
+    </span><span class="kw">pub fn </span>nodes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; MatchedNodes&lt;<span class="lifetime">&#39;_</span>, G&gt; {
+        MatchedNodes {
+            graph: <span class="kw-2">&amp;</span><span class="self">self</span>.graph,
+            mate: <span class="self">self</span>.mate.as_slice(),
+            current: <span class="number">0</span>,
         }
     }
 
-    <span class="doccomment">/// Returns `true` if given edge is in the matching, or `false` otherwise.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If any of the the nodes does not exist, `false` is returned.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">contains_edge</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">a</span>: <span class="ident">G::NodeId</span>, <span class="ident">b</span>: <span class="ident">G::NodeId</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">mate</span>(<span class="ident">a</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">mate</span>) =&gt; <span class="ident">mate</span> <span class="op">==</span> <span class="ident">b</span>,
-            <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
+    <span class="doccomment">/// Returns `true` if given edge is in the matching, or `false` otherwise.
+    ///
+    /// If any of the the nodes does not exist, `false` is returned.
+    </span><span class="kw">pub fn </span>contains_edge(<span class="kw-2">&amp;</span><span class="self">self</span>, a: G::NodeId, b: G::NodeId) -&gt; bool {
+        <span class="kw">match </span><span class="self">self</span>.mate(a) {
+            <span class="prelude-val">Some</span>(mate) =&gt; mate == b,
+            <span class="prelude-val">None </span>=&gt; <span class="bool-val">false</span>,
         }
     }
 
-    <span class="doccomment">/// Returns `true` if given node is in the matching, or `false` otherwise.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the node does not exist, `false` is returned.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">contains_node</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node</span>: <span class="ident">G::NodeId</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">mate</span>(<span class="ident">node</span>).<span class="ident">is_some</span>()
+    <span class="doccomment">/// Returns `true` if given node is in the matching, or `false` otherwise.
+    ///
+    /// If the node does not exist, `false` is returned.
+    </span><span class="kw">pub fn </span>contains_node(<span class="kw-2">&amp;</span><span class="self">self</span>, node: G::NodeId) -&gt; bool {
+        <span class="self">self</span>.mate(node).is_some()
     }
 
-    <span class="doccomment">/// Gets the number of matched **edges**.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">n_edges</span>
+    <span class="doccomment">/// Gets the number of matched **edges**.
+    </span><span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="self">self</span>.n_edges
     }
 
-    <span class="doccomment">/// Returns `true` if the number of matched **edges** is 0.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span>
-    }
+    <span class="doccomment">/// Returns `true` if the number of matched **edges** is 0.
+    </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.len() == <span class="number">0
+    </span>}
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span> <span class="ident">Matching</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">NodeCount</span>,
+<span class="kw">impl</span>&lt;G&gt; Matching&lt;G&gt;
+<span class="kw">where
+    </span>G: NodeCount,
 {
-    <span class="doccomment">/// Returns `true` if the matching is perfect.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// A matching is</span>
-    <span class="doccomment">/// [*perfect*](https://en.wikipedia.org/wiki/Matching_(graph_theory)#Definitions)</span>
-    <span class="doccomment">/// if every node in the graph is incident to an edge from the matching.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_perfect</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">let</span> <span class="ident">n_nodes</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">graph</span>.<span class="ident">node_count</span>();
-        <span class="ident">n_nodes</span> <span class="op">%</span> <span class="number">2</span> <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">n_edges</span> <span class="op">==</span> <span class="ident">n_nodes</span> <span class="op">/</span> <span class="number">2</span>
+    <span class="doccomment">/// Returns `true` if the matching is perfect.
+    ///
+    /// A matching is
+    /// [*perfect*](https://en.wikipedia.org/wiki/Matching_(graph_theory)#Definitions)
+    /// if every node in the graph is incident to an edge from the matching.
+    </span><span class="kw">pub fn </span>is_perfect(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">let </span>n_nodes = <span class="self">self</span>.graph.node_count();
+        n_nodes % <span class="number">2 </span>== <span class="number">0 </span>&amp;&amp; <span class="self">self</span>.n_edges == n_nodes / <span class="number">2
+    </span>}
+}
+
+<span class="kw">trait </span>WithDummy: NodeIndexable {
+    <span class="kw">fn </span>dummy_idx(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize;
+    <span class="kw">fn </span>node_bound_with_dummy(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize;
+    <span class="doccomment">/// Convert `i` to a node index, returns None for the dummy node
+    </span><span class="kw">fn </span>try_from_index(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::NodeId&gt;;
+}
+
+<span class="kw">impl</span>&lt;G: NodeIndexable&gt; WithDummy <span class="kw">for </span>G {
+    <span class="kw">fn </span>dummy_idx(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="comment">// Gabow numbers the vertices from 1 to n, and uses 0 as the dummy
+        // vertex. Our vertex indices are zero-based and so we use the node
+        // bound as the dummy node.
+        </span><span class="self">self</span>.node_bound()
+    }
+
+    <span class="kw">fn </span>node_bound_with_dummy(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="self">self</span>.node_bound() + <span class="number">1
+    </span>}
+
+    <span class="kw">fn </span>try_from_index(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::NodeId&gt; {
+        <span class="kw">if </span>i != <span class="self">self</span>.dummy_idx() {
+            <span class="prelude-val">Some</span>(<span class="self">self</span>.from_index(i))
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 }
 
-<span class="kw">trait</span> <span class="ident">WithDummy</span>: <span class="ident">NodeIndexable</span> {
-    <span class="kw">fn</span> <span class="ident">dummy_idx</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span>;
-    <span class="kw">fn</span> <span class="ident">node_bound_with_dummy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span>;
-    <span class="doccomment">/// Convert `i` to a node index, returns None for the dummy node</span>
-    <span class="kw">fn</span> <span class="ident">try_from_index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::NodeId</span><span class="op">&gt;</span>;
+<span class="kw">pub struct </span>MatchedNodes&lt;<span class="lifetime">&#39;a</span>, G: GraphBase&gt; {
+    graph: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>G,
+    mate: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[<span class="prelude-ty">Option</span>&lt;G::NodeId&gt;],
+    current: usize,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span>: <span class="ident">NodeIndexable</span><span class="op">&gt;</span> <span class="ident">WithDummy</span> <span class="kw">for</span> <span class="ident">G</span> {
-    <span class="kw">fn</span> <span class="ident">dummy_idx</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="comment">// Gabow numbers the vertices from 1 to n, and uses 0 as the dummy</span>
-        <span class="comment">// vertex. Our vertex indices are zero-based and so we use the node</span>
-        <span class="comment">// bound as the dummy node.</span>
-        <span class="self">self</span>.<span class="ident">node_bound</span>()
-    }
-
-    <span class="kw">fn</span> <span class="ident">node_bound_with_dummy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">node_bound</span>() <span class="op">+</span> <span class="number">1</span>
-    }
-
-    <span class="kw">fn</span> <span class="ident">try_from_index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::NodeId</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">!</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">dummy_idx</span>() {
-            <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">from_index</span>(<span class="ident">i</span>))
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
-        }
-    }
-}
-
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MatchedNodes</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">G</span>: <span class="ident">GraphBase</span><span class="op">&gt;</span> {
-    <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">G</span>,
-    <span class="ident">mate</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">G::NodeId</span><span class="op">&gt;</span>],
-    <span class="ident">current</span>: <span class="ident">usize</span>,
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">MatchedNodes</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">G</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">NodeIndexable</span>,
+<span class="kw">impl</span>&lt;G&gt; Iterator <span class="kw">for </span>MatchedNodes&lt;<span class="lifetime">&#39;_</span>, G&gt;
+<span class="kw">where
+    </span>G: NodeIndexable,
 {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">G::NodeId</span>;
+    <span class="kw">type </span>Item = G::NodeId;
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="kw">while</span> <span class="self">self</span>.<span class="ident">current</span> <span class="op">!</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">mate</span>.<span class="ident">len</span>() {
-            <span class="kw">let</span> <span class="ident">current</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">current</span>;
-            <span class="self">self</span>.<span class="ident">current</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="kw">while </span><span class="self">self</span>.current != <span class="self">self</span>.mate.len() {
+            <span class="kw">let </span>current = <span class="self">self</span>.current;
+            <span class="self">self</span>.current += <span class="number">1</span>;
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mate</span>[<span class="ident">current</span>].<span class="ident">is_some</span>() {
-                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">graph</span>.<span class="ident">from_index</span>(<span class="ident">current</span>));
+            <span class="kw">if </span><span class="self">self</span>.mate[current].is_some() {
+                <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="self">self</span>.graph.from_index(current));
             }
         }
 
-        <span class="prelude-val">None</span>
-    }
+        <span class="prelude-val">None
+    </span>}
 }
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MatchedEdges</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">G</span>: <span class="ident">GraphBase</span><span class="op">&gt;</span> {
-    <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">G</span>,
-    <span class="ident">mate</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">G::NodeId</span><span class="op">&gt;</span>],
-    <span class="ident">current</span>: <span class="ident">usize</span>,
+<span class="kw">pub struct </span>MatchedEdges&lt;<span class="lifetime">&#39;a</span>, G: GraphBase&gt; {
+    graph: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>G,
+    mate: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[<span class="prelude-ty">Option</span>&lt;G::NodeId&gt;],
+    current: usize,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">MatchedEdges</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">G</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">NodeIndexable</span>,
+<span class="kw">impl</span>&lt;G&gt; Iterator <span class="kw">for </span>MatchedEdges&lt;<span class="lifetime">&#39;_</span>, G&gt;
+<span class="kw">where
+    </span>G: NodeIndexable,
 {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> (<span class="ident">G::NodeId</span>, <span class="ident">G::NodeId</span>);
+    <span class="kw">type </span>Item = (G::NodeId, G::NodeId);
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="kw">while</span> <span class="self">self</span>.<span class="ident">current</span> <span class="op">!</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">mate</span>.<span class="ident">len</span>() {
-            <span class="kw">let</span> <span class="ident">current</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">current</span>;
-            <span class="self">self</span>.<span class="ident">current</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="kw">while </span><span class="self">self</span>.current != <span class="self">self</span>.mate.len() {
+            <span class="kw">let </span>current = <span class="self">self</span>.current;
+            <span class="self">self</span>.current += <span class="number">1</span>;
 
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">mate</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">mate</span>[<span class="ident">current</span>] {
-                <span class="comment">// Check if the mate is a node after the current one. If not, then</span>
-                <span class="comment">// do not report that edge since it has been already reported (the</span>
-                <span class="comment">// graph is considered undirected).</span>
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">mate</span>) <span class="op">&gt;</span> <span class="ident">current</span> {
-                    <span class="kw">let</span> <span class="ident">this</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">graph</span>.<span class="ident">from_index</span>(<span class="ident">current</span>);
-                    <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="ident">this</span>, <span class="ident">mate</span>));
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(mate) = <span class="self">self</span>.mate[current] {
+                <span class="comment">// Check if the mate is a node after the current one. If not, then
+                // do not report that edge since it has been already reported (the
+                // graph is considered undirected).
+                </span><span class="kw">if </span><span class="self">self</span>.graph.to_index(mate) &gt; current {
+                    <span class="kw">let </span>this = <span class="self">self</span>.graph.from_index(current);
+                    <span class="kw">return </span><span class="prelude-val">Some</span>((this, mate));
                 }
             }
         }
 
-        <span class="prelude-val">None</span>
-    }
+        <span class="prelude-val">None
+    </span>}
 }
 
-<span class="doccomment">/// \[Generic\] Compute a</span>
-<span class="doccomment">/// [*matching*](https://en.wikipedia.org/wiki/Matching_(graph_theory)) using a</span>
-<span class="doccomment">/// greedy heuristic.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The input graph is treated as if undirected. The underlying heuristic is</span>
-<span class="doccomment">/// unspecified, but is guaranteed to be bounded by *O(|V| + |E|)*. No</span>
-<span class="doccomment">/// guarantees about the output are given other than that it is a valid</span>
-<span class="doccomment">/// matching.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// If you require a maximum matching, use [`maximum_matching`][1] function</span>
-<span class="doccomment">/// instead.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [1]: fn.maximum_matching.html</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">greedy_matching</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span>(<span class="ident">graph</span>: <span class="ident">G</span>) -&gt; <span class="ident">Matching</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">Visitable</span> <span class="op">+</span> <span class="ident">IntoNodeIdentifiers</span> <span class="op">+</span> <span class="ident">NodeIndexable</span> <span class="op">+</span> <span class="ident">IntoNeighbors</span>,
-    <span class="ident">G::NodeId</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>,
-    <span class="ident">G::EdgeId</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>,
+<span class="doccomment">/// \[Generic\] Compute a
+/// [*matching*](https://en.wikipedia.org/wiki/Matching_(graph_theory)) using a
+/// greedy heuristic.
+///
+/// The input graph is treated as if undirected. The underlying heuristic is
+/// unspecified, but is guaranteed to be bounded by *O(|V| + |E|)*. No
+/// guarantees about the output are given other than that it is a valid
+/// matching.
+///
+/// If you require a maximum matching, use [`maximum_matching`][1] function
+/// instead.
+///
+/// [1]: fn.maximum_matching.html
+</span><span class="kw">pub fn </span>greedy_matching&lt;G&gt;(graph: G) -&gt; Matching&lt;G&gt;
+<span class="kw">where
+    </span>G: Visitable + IntoNodeIdentifiers + NodeIndexable + IntoNeighbors,
+    G::NodeId: Eq + Hash,
+    G::EdgeId: Eq + Hash,
 {
-    <span class="kw">let</span> (<span class="ident">mates</span>, <span class="ident">n_edges</span>) <span class="op">=</span> <span class="ident">greedy_matching_inner</span>(<span class="kw-2">&amp;</span><span class="ident">graph</span>);
-    <span class="ident">Matching::new</span>(<span class="ident">graph</span>, <span class="ident">mates</span>, <span class="ident">n_edges</span>)
+    <span class="kw">let </span>(mates, n_edges) = greedy_matching_inner(<span class="kw-2">&amp;</span>graph);
+    Matching::new(graph, mates, n_edges)
 }
 
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">fn</span> <span class="ident">greedy_matching_inner</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span>(<span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">G</span>) -&gt; (<span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">G::NodeId</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">usize</span>)
-<span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">Visitable</span> <span class="op">+</span> <span class="ident">IntoNodeIdentifiers</span> <span class="op">+</span> <span class="ident">NodeIndexable</span> <span class="op">+</span> <span class="ident">IntoNeighbors</span>,
+<span class="attribute">#[inline]
+</span><span class="kw">fn </span>greedy_matching_inner&lt;G&gt;(graph: <span class="kw-2">&amp;</span>G) -&gt; (Vec&lt;<span class="prelude-ty">Option</span>&lt;G::NodeId&gt;&gt;, usize)
+<span class="kw">where
+    </span>G: Visitable + IntoNodeIdentifiers + NodeIndexable + IntoNeighbors,
 {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mate</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">graph</span>.<span class="ident">node_bound</span>()];
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">n_edges</span> <span class="op">=</span> <span class="number">0</span>;
-    <span class="kw">let</span> <span class="ident">visited</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">graph</span>.<span class="ident">visit_map</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>mate = <span class="macro">vec!</span>[<span class="prelude-val">None</span>; graph.node_bound()];
+    <span class="kw">let </span><span class="kw-2">mut </span>n_edges = <span class="number">0</span>;
+    <span class="kw">let </span>visited = <span class="kw-2">&amp;mut </span>graph.visit_map();
 
-    <span class="kw">for</span> <span class="ident">start</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">node_identifiers</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">last</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">start</span>);
+    <span class="kw">for </span>start <span class="kw">in </span>graph.node_identifiers() {
+        <span class="kw">let </span><span class="kw-2">mut </span>last = <span class="prelude-val">Some</span>(start);
 
-        <span class="comment">// Function non_backtracking_dfs does not expand the node if it has been</span>
-        <span class="comment">// already visited.</span>
-        <span class="ident">non_backtracking_dfs</span>(<span class="ident">graph</span>, <span class="ident">start</span>, <span class="ident">visited</span>, <span class="op">|</span><span class="ident">next</span><span class="op">|</span> {
-            <span class="comment">// Alternate matched and unmatched edges.</span>
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">pred</span>) <span class="op">=</span> <span class="ident">last</span>.<span class="ident">take</span>() {
-                <span class="ident">mate</span>[<span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">pred</span>)] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">next</span>);
-                <span class="ident">mate</span>[<span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">next</span>)] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">pred</span>);
-                <span class="ident">n_edges</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            } <span class="kw">else</span> {
-                <span class="ident">last</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">next</span>);
+        <span class="comment">// Function non_backtracking_dfs does not expand the node if it has been
+        // already visited.
+        </span>non_backtracking_dfs(graph, start, visited, |next| {
+            <span class="comment">// Alternate matched and unmatched edges.
+            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(pred) = last.take() {
+                mate[graph.to_index(pred)] = <span class="prelude-val">Some</span>(next);
+                mate[graph.to_index(next)] = <span class="prelude-val">Some</span>(pred);
+                n_edges += <span class="number">1</span>;
+            } <span class="kw">else </span>{
+                last = <span class="prelude-val">Some</span>(next);
             }
         });
     }
 
-    (<span class="ident">mate</span>, <span class="ident">n_edges</span>)
+    (mate, n_edges)
 }
 
-<span class="kw">fn</span> <span class="ident">non_backtracking_dfs</span><span class="op">&lt;</span><span class="ident">G</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">G</span>, <span class="ident">source</span>: <span class="ident">G::NodeId</span>, <span class="ident">visited</span>: <span class="kw-2">&amp;mut</span> <span class="ident">G::Map</span>, <span class="kw-2">mut</span> <span class="ident">visitor</span>: <span class="ident">F</span>)
-<span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">Visitable</span> <span class="op">+</span> <span class="ident">IntoNeighbors</span>,
-    <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">G::NodeId</span>),
+<span class="kw">fn </span>non_backtracking_dfs&lt;G, F&gt;(graph: <span class="kw-2">&amp;</span>G, source: G::NodeId, visited: <span class="kw-2">&amp;mut </span>G::Map, <span class="kw-2">mut </span>visitor: F)
+<span class="kw">where
+    </span>G: Visitable + IntoNeighbors,
+    F: FnMut(G::NodeId),
 {
-    <span class="kw">if</span> <span class="ident">visited</span>.<span class="ident">visit</span>(<span class="ident">source</span>) {
-        <span class="kw">for</span> <span class="ident">target</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">neighbors</span>(<span class="ident">source</span>) {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">visited</span>.<span class="ident">is_visited</span>(<span class="kw-2">&amp;</span><span class="ident">target</span>) {
-                <span class="ident">visitor</span>(<span class="ident">target</span>);
-                <span class="ident">non_backtracking_dfs</span>(<span class="ident">graph</span>, <span class="ident">target</span>, <span class="ident">visited</span>, <span class="ident">visitor</span>);
+    <span class="kw">if </span>visited.visit(source) {
+        <span class="kw">for </span>target <span class="kw">in </span>graph.neighbors(source) {
+            <span class="kw">if </span>!visited.is_visited(<span class="kw-2">&amp;</span>target) {
+                visitor(target);
+                non_backtracking_dfs(graph, target, visited, visitor);
 
-                <span class="comment">// Non-backtracking traversal, stop iterating over the</span>
-                <span class="comment">// neighbors.</span>
-                <span class="kw">break</span>;
+                <span class="comment">// Non-backtracking traversal, stop iterating over the
+                // neighbors.
+                </span><span class="kw">break</span>;
             }
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">enum</span> <span class="ident">Label</span><span class="op">&lt;</span><span class="ident">G</span>: <span class="ident">GraphBase</span><span class="op">&gt;</span> {
+<span class="attribute">#[derive(Clone, Copy)]
+</span><span class="kw">enum </span>Label&lt;G: GraphBase&gt; {
     <span class="prelude-val">None</span>,
-    <span class="ident">Start</span>,
-    <span class="comment">// If node v is outer node, then label(v) = w is another outer node on path</span>
-    <span class="comment">// from v to start u.</span>
-    <span class="ident">Vertex</span>(<span class="ident">G::NodeId</span>),
-    <span class="comment">// If node v is outer node, then label(v) = (r, s) are two outer vertices</span>
-    <span class="comment">// (connected by an edge)</span>
-    <span class="ident">Edge</span>(<span class="ident">G::EdgeId</span>, [<span class="ident">G::NodeId</span>; <span class="number">2</span>]),
-    <span class="comment">// Flag is a special label used in searching for the join vertex of two</span>
-    <span class="comment">// paths.</span>
-    <span class="ident">Flag</span>(<span class="ident">G::EdgeId</span>),
+    Start,
+    <span class="comment">// If node v is outer node, then label(v) = w is another outer node on path
+    // from v to start u.
+    </span>Vertex(G::NodeId),
+    <span class="comment">// If node v is outer node, then label(v) = (r, s) are two outer vertices
+    // (connected by an edge)
+    </span>Edge(G::EdgeId, [G::NodeId; <span class="number">2</span>]),
+    <span class="comment">// Flag is a special label used in searching for the join vertex of two
+    // paths.
+    </span>Flag(G::EdgeId),
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span>: <span class="ident">GraphBase</span><span class="op">&gt;</span> <span class="ident">Label</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">is_outer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span> <span class="op">!</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Label::None</span>
-            <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="kw">match</span> <span class="self">self</span> {
-                <span class="ident">Label::Flag</span>(<span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
-                <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
+<span class="kw">impl</span>&lt;G: GraphBase&gt; Label&lt;G&gt; {
+    <span class="kw">fn </span>is_outer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self </span>!= <span class="kw-2">&amp;</span>Label::None
+            &amp;&amp; !<span class="kw">match </span><span class="self">self </span>{
+                Label::Flag(<span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
+                <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
             }
     }
 
-    <span class="kw">fn</span> <span class="ident">is_inner</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="op">!</span><span class="self">self</span>.<span class="ident">is_outer</span>()
+    <span class="kw">fn </span>is_inner(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        !<span class="self">self</span>.is_outer()
     }
 
-    <span class="kw">fn</span> <span class="ident">to_vertex</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">G::NodeId</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">Label::Vertex</span>(<span class="ident">v</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">v</span>),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+    <span class="kw">fn </span>to_vertex(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;G::NodeId&gt; {
+        <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
+            Label::Vertex(v) =&gt; <span class="prelude-val">Some</span>(v),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">is_flagged</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">edge</span>: <span class="ident">G::EdgeId</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Label::Flag</span>(<span class="ident">flag</span>) <span class="kw">if</span> <span class="ident">flag</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">edge</span> =&gt; <span class="bool-val">true</span>,
-            <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
-        }
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span>: <span class="ident">GraphBase</span><span class="op">&gt;</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Label</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">Label::None</span>
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span>: <span class="ident">GraphBase</span><span class="op">&gt;</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Label</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">match</span> (<span class="self">self</span>, <span class="ident">other</span>) {
-            (<span class="ident">Label::None</span>, <span class="ident">Label::None</span>) =&gt; <span class="bool-val">true</span>,
-            (<span class="ident">Label::Start</span>, <span class="ident">Label::Start</span>) =&gt; <span class="bool-val">true</span>,
-            (<span class="ident">Label::Vertex</span>(<span class="ident">v1</span>), <span class="ident">Label::Vertex</span>(<span class="ident">v2</span>)) =&gt; <span class="ident">v1</span> <span class="op">==</span> <span class="ident">v2</span>,
-            (<span class="ident">Label::Edge</span>(<span class="ident">e1</span>, <span class="kw">_</span>), <span class="ident">Label::Edge</span>(<span class="ident">e2</span>, <span class="kw">_</span>)) =&gt; <span class="ident">e1</span> <span class="op">==</span> <span class="ident">e2</span>,
-            (<span class="ident">Label::Flag</span>(<span class="ident">e1</span>), <span class="ident">Label::Flag</span>(<span class="ident">e2</span>)) =&gt; <span class="ident">e1</span> <span class="op">==</span> <span class="ident">e2</span>,
-            <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
+    <span class="kw">fn </span>is_flagged(<span class="kw-2">&amp;</span><span class="self">self</span>, edge: G::EdgeId) -&gt; bool {
+        <span class="kw">match </span><span class="self">self </span>{
+            Label::Flag(flag) <span class="kw">if </span>flag == <span class="kw-2">&amp;</span>edge =&gt; <span class="bool-val">true</span>,
+            <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
         }
     }
 }
 
-<span class="doccomment">/// \[Generic\] Compute the [*maximum</span>
-<span class="doccomment">/// matching*](https://en.wikipedia.org/wiki/Matching_(graph_theory)) using</span>
-<span class="doccomment">/// [Gabow&#39;s algorithm][1].</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [1]: https://dl.acm.org/doi/10.1145/321941.321942</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The input graph is treated as if undirected. The algorithm runs in</span>
-<span class="doccomment">/// *O(|V|³)*. An algorithm with a better time complexity might be used in the</span>
-<span class="doccomment">/// future.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// **Panics** if `g.node_bound()` is `std::usize::MAX`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use petgraph::prelude::*;</span>
-<span class="doccomment">/// use petgraph::algo::maximum_matching;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// // The example graph:</span>
-<span class="doccomment">/// //</span>
-<span class="doccomment">/// //    +-- b ---- d ---- f</span>
-<span class="doccomment">/// //   /    |      |</span>
-<span class="doccomment">/// //  a     |      |</span>
-<span class="doccomment">/// //   \    |      |</span>
-<span class="doccomment">/// //    +-- c ---- e</span>
-<span class="doccomment">/// //</span>
-<span class="doccomment">/// // Maximum matching: { (a, b), (c, e), (d, f) }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut graph: UnGraph&lt;(), ()&gt; = UnGraph::new_undirected();</span>
-<span class="doccomment">/// let a = graph.add_node(());</span>
-<span class="doccomment">/// let b = graph.add_node(());</span>
-<span class="doccomment">/// let c = graph.add_node(());</span>
-<span class="doccomment">/// let d = graph.add_node(());</span>
-<span class="doccomment">/// let e = graph.add_node(());</span>
-<span class="doccomment">/// let f = graph.add_node(());</span>
-<span class="doccomment">/// graph.extend_with_edges(&amp;[(a, b), (a, c), (b, c), (b, d), (c, e), (d, e), (d, f)]);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let matching = maximum_matching(&amp;graph);</span>
-<span class="doccomment">/// assert!(matching.contains_edge(a, b));</span>
-<span class="doccomment">/// assert!(matching.contains_edge(c, e));</span>
-<span class="doccomment">/// assert_eq!(matching.mate(d), Some(f));</span>
-<span class="doccomment">/// assert_eq!(matching.mate(f), Some(d));</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">maximum_matching</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span>(<span class="ident">graph</span>: <span class="ident">G</span>) -&gt; <span class="ident">Matching</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">Visitable</span> <span class="op">+</span> <span class="ident">NodeIndexable</span> <span class="op">+</span> <span class="ident">IntoNodeIdentifiers</span> <span class="op">+</span> <span class="ident">IntoEdges</span>,
+<span class="kw">impl</span>&lt;G: GraphBase&gt; Default <span class="kw">for </span>Label&lt;G&gt; {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        Label::None
+    }
+}
+
+<span class="kw">impl</span>&lt;G: GraphBase&gt; PartialEq <span class="kw">for </span>Label&lt;G&gt; {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="kw">match </span>(<span class="self">self</span>, other) {
+            (Label::None, Label::None) =&gt; <span class="bool-val">true</span>,
+            (Label::Start, Label::Start) =&gt; <span class="bool-val">true</span>,
+            (Label::Vertex(v1), Label::Vertex(v2)) =&gt; v1 == v2,
+            (Label::Edge(e1, <span class="kw">_</span>), Label::Edge(e2, <span class="kw">_</span>)) =&gt; e1 == e2,
+            (Label::Flag(e1), Label::Flag(e2)) =&gt; e1 == e2,
+            <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
+        }
+    }
+}
+
+<span class="doccomment">/// \[Generic\] Compute the [*maximum
+/// matching*](https://en.wikipedia.org/wiki/Matching_(graph_theory)) using
+/// [Gabow&#39;s algorithm][1].
+///
+/// [1]: https://dl.acm.org/doi/10.1145/321941.321942
+///
+/// The input graph is treated as if undirected. The algorithm runs in
+/// *O(|V|³)*. An algorithm with a better time complexity might be used in the
+/// future.
+///
+/// **Panics** if `g.node_bound()` is `std::usize::MAX`.
+///
+/// # Examples
+///
+/// ```
+/// use petgraph::prelude::*;
+/// use petgraph::algo::maximum_matching;
+///
+/// // The example graph:
+/// //
+/// //    +-- b ---- d ---- f
+/// //   /    |      |
+/// //  a     |      |
+/// //   \    |      |
+/// //    +-- c ---- e
+/// //
+/// // Maximum matching: { (a, b), (c, e), (d, f) }
+///
+/// let mut graph: UnGraph&lt;(), ()&gt; = UnGraph::new_undirected();
+/// let a = graph.add_node(());
+/// let b = graph.add_node(());
+/// let c = graph.add_node(());
+/// let d = graph.add_node(());
+/// let e = graph.add_node(());
+/// let f = graph.add_node(());
+/// graph.extend_with_edges(&amp;[(a, b), (a, c), (b, c), (b, d), (c, e), (d, e), (d, f)]);
+///
+/// let matching = maximum_matching(&amp;graph);
+/// assert!(matching.contains_edge(a, b));
+/// assert!(matching.contains_edge(c, e));
+/// assert_eq!(matching.mate(d), Some(f));
+/// assert_eq!(matching.mate(f), Some(d));
+/// ```
+</span><span class="kw">pub fn </span>maximum_matching&lt;G&gt;(graph: G) -&gt; Matching&lt;G&gt;
+<span class="kw">where
+    </span>G: Visitable + NodeIndexable + IntoNodeIdentifiers + IntoEdges,
 {
-    <span class="comment">// The dummy identifier needs an unused index</span>
-    <span class="macro">assert_ne!</span>(
-        <span class="ident">graph</span>.<span class="ident">node_bound</span>(),
-        <span class="ident">std::usize::MAX</span>,
-        <span class="string">&quot;The input graph capacity should be strictly less than std::usize::MAX.&quot;</span>
-    );
+    <span class="comment">// The dummy identifier needs an unused index
+    </span><span class="macro">assert_ne!</span>(
+        graph.node_bound(),
+        std::usize::MAX,
+        <span class="string">&quot;The input graph capacity should be strictly less than std::usize::MAX.&quot;
+    </span>);
 
-    <span class="comment">// Greedy algorithm should create a fairly good initial matching. The hope</span>
-    <span class="comment">// is that it speeds up the computation by doing les work in the complex</span>
-    <span class="comment">// algorithm.</span>
-    <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">mate</span>, <span class="kw-2">mut</span> <span class="ident">n_edges</span>) <span class="op">=</span> <span class="ident">greedy_matching_inner</span>(<span class="kw-2">&amp;</span><span class="ident">graph</span>);
+    <span class="comment">// Greedy algorithm should create a fairly good initial matching. The hope
+    // is that it speeds up the computation by doing les work in the complex
+    // algorithm.
+    </span><span class="kw">let </span>(<span class="kw-2">mut </span>mate, <span class="kw-2">mut </span>n_edges) = greedy_matching_inner(<span class="kw-2">&amp;</span>graph);
 
-    <span class="comment">// Gabow&#39;s algorithm uses a dummy node in the mate array.</span>
-    <span class="ident">mate</span>.<span class="ident">push</span>(<span class="prelude-val">None</span>);
-    <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">graph</span>.<span class="ident">node_bound</span>() <span class="op">+</span> <span class="number">1</span>;
-    <span class="macro">debug_assert_eq!</span>(<span class="ident">mate</span>.<span class="ident">len</span>(), <span class="ident">len</span>);
+    <span class="comment">// Gabow&#39;s algorithm uses a dummy node in the mate array.
+    </span>mate.push(<span class="prelude-val">None</span>);
+    <span class="kw">let </span>len = graph.node_bound() + <span class="number">1</span>;
+    <span class="macro">debug_assert_eq!</span>(mate.len(), len);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">label</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Label</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">Label::None</span>; <span class="ident">len</span>];
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">first_inner</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">std::usize::MAX</span>; <span class="ident">len</span>];
-    <span class="kw">let</span> <span class="ident">visited</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">graph</span>.<span class="ident">visit_map</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>label: Vec&lt;Label&lt;G&gt;&gt; = <span class="macro">vec!</span>[Label::None; len];
+    <span class="kw">let </span><span class="kw-2">mut </span>first_inner = <span class="macro">vec!</span>[std::usize::MAX; len];
+    <span class="kw">let </span>visited = <span class="kw-2">&amp;mut </span>graph.visit_map();
 
-    <span class="kw">for</span> <span class="ident">start</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">graph</span>.<span class="ident">node_bound</span>() {
-        <span class="kw">if</span> <span class="ident">mate</span>[<span class="ident">start</span>].<span class="ident">is_some</span>() {
-            <span class="comment">// The vertex is already matched. A start must be a free vertex.</span>
-            <span class="kw">continue</span>;
+    <span class="kw">for </span>start <span class="kw">in </span><span class="number">0</span>..graph.node_bound() {
+        <span class="kw">if </span>mate[start].is_some() {
+            <span class="comment">// The vertex is already matched. A start must be a free vertex.
+            </span><span class="kw">continue</span>;
         }
 
-        <span class="comment">// Begin search from the node.</span>
-        <span class="ident">label</span>[<span class="ident">start</span>] <span class="op">=</span> <span class="ident">Label::Start</span>;
-        <span class="ident">first_inner</span>[<span class="ident">start</span>] <span class="op">=</span> <span class="ident">graph</span>.<span class="ident">dummy_idx</span>();
-        <span class="ident">graph</span>.<span class="ident">reset_map</span>(<span class="ident">visited</span>);
+        <span class="comment">// Begin search from the node.
+        </span>label[start] = Label::Start;
+        first_inner[start] = graph.dummy_idx();
+        graph.reset_map(visited);
 
-        <span class="comment">// start is never a dummy index</span>
-        <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">graph</span>.<span class="ident">from_index</span>(<span class="ident">start</span>);
+        <span class="comment">// start is never a dummy index
+        </span><span class="kw">let </span>start = graph.from_index(start);
 
-        <span class="comment">// Queue will contain outer vertices that should be processed next. The</span>
-        <span class="comment">// start vertex is considered an outer vertex.</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">queue</span> <span class="op">=</span> <span class="ident">VecDeque::new</span>();
-        <span class="ident">queue</span>.<span class="ident">push_back</span>(<span class="ident">start</span>);
-        <span class="comment">// Mark the start vertex so it is not processed repeatedly.</span>
-        <span class="ident">visited</span>.<span class="ident">visit</span>(<span class="ident">start</span>);
+        <span class="comment">// Queue will contain outer vertices that should be processed next. The
+        // start vertex is considered an outer vertex.
+        </span><span class="kw">let </span><span class="kw-2">mut </span>queue = VecDeque::new();
+        queue.push_back(start);
+        <span class="comment">// Mark the start vertex so it is not processed repeatedly.
+        </span>visited.visit(start);
 
-        <span class="lifetime">&#39;search</span>: <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">outer_vertex</span>) <span class="op">=</span> <span class="ident">queue</span>.<span class="ident">pop_front</span>() {
-            <span class="kw">for</span> <span class="ident">edge</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">edges</span>(<span class="ident">outer_vertex</span>) {
-                <span class="kw">if</span> <span class="ident">edge</span>.<span class="ident">source</span>() <span class="op">==</span> <span class="ident">edge</span>.<span class="ident">target</span>() {
-                    <span class="comment">// Ignore self-loops.</span>
-                    <span class="kw">continue</span>;
+        <span class="lifetime">&#39;search</span>: <span class="kw">while let </span><span class="prelude-val">Some</span>(outer_vertex) = queue.pop_front() {
+            <span class="kw">for </span>edge <span class="kw">in </span>graph.edges(outer_vertex) {
+                <span class="kw">if </span>edge.source() == edge.target() {
+                    <span class="comment">// Ignore self-loops.
+                    </span><span class="kw">continue</span>;
                 }
 
-                <span class="kw">let</span> <span class="ident">other_vertex</span> <span class="op">=</span> <span class="ident">edge</span>.<span class="ident">target</span>();
-                <span class="kw">let</span> <span class="ident">other_idx</span> <span class="op">=</span> <span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">other_vertex</span>);
+                <span class="kw">let </span>other_vertex = edge.target();
+                <span class="kw">let </span>other_idx = graph.to_index(other_vertex);
 
-                <span class="kw">if</span> <span class="ident">mate</span>[<span class="ident">other_idx</span>].<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">other_vertex</span> <span class="op">!</span><span class="op">=</span> <span class="ident">start</span> {
-                    <span class="comment">// An augmenting path was found. Augment the matching. If</span>
-                    <span class="comment">// `other` is actually the start node, then the augmentation</span>
-                    <span class="comment">// must not be performed, because the start vertex would be</span>
-                    <span class="comment">// incident to two edges, which violates the matching</span>
-                    <span class="comment">// property.</span>
-                    <span class="ident">mate</span>[<span class="ident">other_idx</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">outer_vertex</span>);
-                    <span class="ident">augment_path</span>(<span class="kw-2">&amp;</span><span class="ident">graph</span>, <span class="ident">outer_vertex</span>, <span class="ident">other_vertex</span>, <span class="kw-2">&amp;mut</span> <span class="ident">mate</span>, <span class="kw-2">&amp;</span><span class="ident">label</span>);
-                    <span class="ident">n_edges</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+                <span class="kw">if </span>mate[other_idx].is_none() &amp;&amp; other_vertex != start {
+                    <span class="comment">// An augmenting path was found. Augment the matching. If
+                    // `other` is actually the start node, then the augmentation
+                    // must not be performed, because the start vertex would be
+                    // incident to two edges, which violates the matching
+                    // property.
+                    </span>mate[other_idx] = <span class="prelude-val">Some</span>(outer_vertex);
+                    augment_path(<span class="kw-2">&amp;</span>graph, outer_vertex, other_vertex, <span class="kw-2">&amp;mut </span>mate, <span class="kw-2">&amp;</span>label);
+                    n_edges += <span class="number">1</span>;
 
-                    <span class="comment">// The path is augmented, so the start is no longer free</span>
-                    <span class="comment">// vertex. We need to begin with a new start.</span>
-                    <span class="kw">break</span> <span class="lifetime">&#39;search</span>;
-                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">label</span>[<span class="ident">other_idx</span>].<span class="ident">is_outer</span>() {
-                    <span class="comment">// The `other` is an outer vertex (a label has been set to</span>
-                    <span class="comment">// it). An odd cycle (blossom) was found. Assign this edge</span>
-                    <span class="comment">// as a label to all inner vertices in paths P(outer) and</span>
-                    <span class="comment">// P(other).</span>
-                    <span class="ident">find_join</span>(
-                        <span class="kw-2">&amp;</span><span class="ident">graph</span>,
-                        <span class="ident">edge</span>,
-                        <span class="kw-2">&amp;</span><span class="ident">mate</span>,
-                        <span class="kw-2">&amp;mut</span> <span class="ident">label</span>,
-                        <span class="kw-2">&amp;mut</span> <span class="ident">first_inner</span>,
-                        <span class="op">|</span><span class="ident">labeled</span><span class="op">|</span> {
-                            <span class="kw">if</span> <span class="ident">visited</span>.<span class="ident">visit</span>(<span class="ident">labeled</span>) {
-                                <span class="ident">queue</span>.<span class="ident">push_back</span>(<span class="ident">labeled</span>);
+                    <span class="comment">// The path is augmented, so the start is no longer free
+                    // vertex. We need to begin with a new start.
+                    </span><span class="kw">break </span><span class="lifetime">&#39;search</span>;
+                } <span class="kw">else if </span>label[other_idx].is_outer() {
+                    <span class="comment">// The `other` is an outer vertex (a label has been set to
+                    // it). An odd cycle (blossom) was found. Assign this edge
+                    // as a label to all inner vertices in paths P(outer) and
+                    // P(other).
+                    </span>find_join(
+                        <span class="kw-2">&amp;</span>graph,
+                        edge,
+                        <span class="kw-2">&amp;</span>mate,
+                        <span class="kw-2">&amp;mut </span>label,
+                        <span class="kw-2">&amp;mut </span>first_inner,
+                        |labeled| {
+                            <span class="kw">if </span>visited.visit(labeled) {
+                                queue.push_back(labeled);
                             }
                         },
                     );
-                } <span class="kw">else</span> {
-                    <span class="kw">let</span> <span class="ident">mate_vertex</span> <span class="op">=</span> <span class="ident">mate</span>[<span class="ident">other_idx</span>];
-                    <span class="kw">let</span> <span class="ident">mate_idx</span> <span class="op">=</span> <span class="ident">mate_vertex</span>.<span class="ident">map_or</span>(<span class="ident">graph</span>.<span class="ident">dummy_idx</span>(), <span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">id</span>));
+                } <span class="kw">else </span>{
+                    <span class="kw">let </span>mate_vertex = mate[other_idx];
+                    <span class="kw">let </span>mate_idx = mate_vertex.map_or(graph.dummy_idx(), |id| graph.to_index(id));
 
-                    <span class="kw">if</span> <span class="ident">label</span>[<span class="ident">mate_idx</span>].<span class="ident">is_inner</span>() {
-                        <span class="comment">// Mate of `other` vertex is inner (no label has been</span>
-                        <span class="comment">// set to it so far). But it actually is an outer vertex</span>
-                        <span class="comment">// (it is on a path to the start vertex that begins with</span>
-                        <span class="comment">// a matched edge, since it is a mate of `other`).</span>
-                        <span class="comment">// Assign the label of this mate to the `outer` vertex,</span>
-                        <span class="comment">// so the path for it can be reconstructed using `mate`</span>
-                        <span class="comment">// and this label.</span>
-                        <span class="ident">label</span>[<span class="ident">mate_idx</span>] <span class="op">=</span> <span class="ident">Label::Vertex</span>(<span class="ident">outer_vertex</span>);
-                        <span class="ident">first_inner</span>[<span class="ident">mate_idx</span>] <span class="op">=</span> <span class="ident">other_idx</span>;
+                    <span class="kw">if </span>label[mate_idx].is_inner() {
+                        <span class="comment">// Mate of `other` vertex is inner (no label has been
+                        // set to it so far). But it actually is an outer vertex
+                        // (it is on a path to the start vertex that begins with
+                        // a matched edge, since it is a mate of `other`).
+                        // Assign the label of this mate to the `outer` vertex,
+                        // so the path for it can be reconstructed using `mate`
+                        // and this label.
+                        </span>label[mate_idx] = Label::Vertex(outer_vertex);
+                        first_inner[mate_idx] = other_idx;
                     }
 
-                    <span class="comment">// Add the vertex to the queue only if it&#39;s not the dummy and this is its first</span>
-                    <span class="comment">// discovery.</span>
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">mate_vertex</span>) <span class="op">=</span> <span class="ident">mate_vertex</span> {
-                        <span class="kw">if</span> <span class="ident">visited</span>.<span class="ident">visit</span>(<span class="ident">mate_vertex</span>) {
-                            <span class="ident">queue</span>.<span class="ident">push_back</span>(<span class="ident">mate_vertex</span>);
+                    <span class="comment">// Add the vertex to the queue only if it&#39;s not the dummy and this is its first
+                    // discovery.
+                    </span><span class="kw">if let </span><span class="prelude-val">Some</span>(mate_vertex) = mate_vertex {
+                        <span class="kw">if </span>visited.visit(mate_vertex) {
+                            queue.push_back(mate_vertex);
                         }
                     }
                 }
             }
         }
 
-        <span class="comment">// Reset the labels. All vertices are inner for the next search.</span>
-        <span class="kw">for</span> <span class="ident">lbl</span> <span class="kw">in</span> <span class="ident">label</span>.<span class="ident">iter_mut</span>() {
-            <span class="kw-2">*</span><span class="ident">lbl</span> <span class="op">=</span> <span class="ident">Label::None</span>;
+        <span class="comment">// Reset the labels. All vertices are inner for the next search.
+        </span><span class="kw">for </span>lbl <span class="kw">in </span>label.iter_mut() {
+            <span class="kw-2">*</span>lbl = Label::None;
         }
     }
 
-    <span class="comment">// Discard the dummy node.</span>
-    <span class="ident">mate</span>.<span class="ident">pop</span>();
+    <span class="comment">// Discard the dummy node.
+    </span>mate.pop();
 
-    <span class="ident">Matching::new</span>(<span class="ident">graph</span>, <span class="ident">mate</span>, <span class="ident">n_edges</span>)
+    Matching::new(graph, mate, n_edges)
 }
 
-<span class="kw">fn</span> <span class="ident">find_join</span><span class="op">&lt;</span><span class="ident">G</span>, <span class="ident">F</span><span class="op">&gt;</span>(
-    <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">G</span>,
-    <span class="ident">edge</span>: <span class="ident">G::EdgeRef</span>,
-    <span class="ident">mate</span>: <span class="kw-2">&amp;</span>[<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">G::NodeId</span><span class="op">&gt;</span>],
-    <span class="ident">label</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Label</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">first_inner</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="kw-2">mut</span> <span class="ident">visitor</span>: <span class="ident">F</span>,
-) <span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">IntoEdges</span> <span class="op">+</span> <span class="ident">NodeIndexable</span> <span class="op">+</span> <span class="ident">Visitable</span>,
-    <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">G::NodeId</span>),
+<span class="kw">fn </span>find_join&lt;G, F&gt;(
+    graph: <span class="kw-2">&amp;</span>G,
+    edge: G::EdgeRef,
+    mate: <span class="kw-2">&amp;</span>[<span class="prelude-ty">Option</span>&lt;G::NodeId&gt;],
+    label: <span class="kw-2">&amp;mut </span>Vec&lt;Label&lt;G&gt;&gt;,
+    first_inner: <span class="kw-2">&amp;mut </span>Vec&lt;usize&gt;,
+    <span class="kw-2">mut </span>visitor: F,
+) <span class="kw">where
+    </span>G: IntoEdges + NodeIndexable + Visitable,
+    F: FnMut(G::NodeId),
 {
-    <span class="comment">// Simultaneously traverse the inner vertices on paths P(source) and</span>
-    <span class="comment">// P(target) to find a join vertex - an inner vertex that is shared by these</span>
-    <span class="comment">// paths.</span>
-    <span class="kw">let</span> <span class="ident">source</span> <span class="op">=</span> <span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">edge</span>.<span class="ident">source</span>());
-    <span class="kw">let</span> <span class="ident">target</span> <span class="op">=</span> <span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">edge</span>.<span class="ident">target</span>());
+    <span class="comment">// Simultaneously traverse the inner vertices on paths P(source) and
+    // P(target) to find a join vertex - an inner vertex that is shared by these
+    // paths.
+    </span><span class="kw">let </span>source = graph.to_index(edge.source());
+    <span class="kw">let </span>target = graph.to_index(edge.target());
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">left</span> <span class="op">=</span> <span class="ident">first_inner</span>[<span class="ident">source</span>];
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">right</span> <span class="op">=</span> <span class="ident">first_inner</span>[<span class="ident">target</span>];
+    <span class="kw">let </span><span class="kw-2">mut </span>left = first_inner[source];
+    <span class="kw">let </span><span class="kw-2">mut </span>right = first_inner[target];
 
-    <span class="kw">if</span> <span class="ident">left</span> <span class="op">==</span> <span class="ident">right</span> {
-        <span class="comment">// No vertices can be labeled, since both paths already refer to a</span>
-        <span class="comment">// common vertex - the join.</span>
-        <span class="kw">return</span>;
+    <span class="kw">if </span>left == right {
+        <span class="comment">// No vertices can be labeled, since both paths already refer to a
+        // common vertex - the join.
+        </span><span class="kw">return</span>;
     }
 
-    <span class="comment">// Flag the (first) inner vertices. This ensures that they are assigned the</span>
-    <span class="comment">// join as their first inner vertex.</span>
-    <span class="kw">let</span> <span class="ident">flag</span> <span class="op">=</span> <span class="ident">Label::Flag</span>(<span class="ident">edge</span>.<span class="ident">id</span>());
-    <span class="ident">label</span>[<span class="ident">left</span>] <span class="op">=</span> <span class="ident">flag</span>;
-    <span class="ident">label</span>[<span class="ident">right</span>] <span class="op">=</span> <span class="ident">flag</span>;
+    <span class="comment">// Flag the (first) inner vertices. This ensures that they are assigned the
+    // join as their first inner vertex.
+    </span><span class="kw">let </span>flag = Label::Flag(edge.id());
+    label[left] = flag;
+    label[right] = flag;
 
-    <span class="comment">// Find the join.</span>
-    <span class="kw">let</span> <span class="ident">join</span> <span class="op">=</span> <span class="kw">loop</span> {
-        <span class="comment">// Swap the sides. Do not swap if the right side is already finished.</span>
-        <span class="kw">if</span> <span class="ident">right</span> <span class="op">!</span><span class="op">=</span> <span class="ident">graph</span>.<span class="ident">dummy_idx</span>() {
-            <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">left</span>, <span class="kw-2">&amp;mut</span> <span class="ident">right</span>);
+    <span class="comment">// Find the join.
+    </span><span class="kw">let </span>join = <span class="kw">loop </span>{
+        <span class="comment">// Swap the sides. Do not swap if the right side is already finished.
+        </span><span class="kw">if </span>right != graph.dummy_idx() {
+            std::mem::swap(<span class="kw-2">&amp;mut </span>left, <span class="kw-2">&amp;mut </span>right);
         }
 
-        <span class="comment">// Set left to the next inner vertex in P(source) or P(target).</span>
-        <span class="comment">// The unwraps are safe because left is not the dummy node.</span>
-        <span class="kw">let</span> <span class="ident">left_mate</span> <span class="op">=</span> <span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">mate</span>[<span class="ident">left</span>].<span class="ident">unwrap</span>());
-        <span class="kw">let</span> <span class="ident">next_inner</span> <span class="op">=</span> <span class="ident">label</span>[<span class="ident">left_mate</span>].<span class="ident">to_vertex</span>().<span class="ident">unwrap</span>();
-        <span class="ident">left</span> <span class="op">=</span> <span class="ident">first_inner</span>[<span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">next_inner</span>)];
+        <span class="comment">// Set left to the next inner vertex in P(source) or P(target).
+        // The unwraps are safe because left is not the dummy node.
+        </span><span class="kw">let </span>left_mate = graph.to_index(mate[left].unwrap());
+        <span class="kw">let </span>next_inner = label[left_mate].to_vertex().unwrap();
+        left = first_inner[graph.to_index(next_inner)];
 
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">label</span>[<span class="ident">left</span>].<span class="ident">is_flagged</span>(<span class="ident">edge</span>.<span class="ident">id</span>()) {
-            <span class="comment">// The inner vertex is not flagged yet, so flag it.</span>
-            <span class="ident">label</span>[<span class="ident">left</span>] <span class="op">=</span> <span class="ident">flag</span>;
-        } <span class="kw">else</span> {
-            <span class="comment">// The inner vertex is already flagged. It means that the other side</span>
-            <span class="comment">// had to visit it already. Therefore it is the join vertex.</span>
-            <span class="kw">break</span> <span class="ident">left</span>;
+        <span class="kw">if </span>!label[left].is_flagged(edge.id()) {
+            <span class="comment">// The inner vertex is not flagged yet, so flag it.
+            </span>label[left] = flag;
+        } <span class="kw">else </span>{
+            <span class="comment">// The inner vertex is already flagged. It means that the other side
+            // had to visit it already. Therefore it is the join vertex.
+            </span><span class="kw">break </span>left;
         }
     };
 
-    <span class="comment">// Label all inner vertices on P(source) and P(target) with the found join.</span>
-    <span class="kw">for</span> <span class="ident">endpoint</span> <span class="kw">in</span> [<span class="ident">source</span>, <span class="ident">target</span>].<span class="ident">iter</span>().<span class="ident">copied</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner</span> <span class="op">=</span> <span class="ident">first_inner</span>[<span class="ident">endpoint</span>];
-        <span class="kw">while</span> <span class="ident">inner</span> <span class="op">!</span><span class="op">=</span> <span class="ident">join</span> {
-            <span class="comment">// Notify the caller about labeling a vertex.</span>
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ix</span>) <span class="op">=</span> <span class="ident">graph</span>.<span class="ident">try_from_index</span>(<span class="ident">inner</span>) {
-                <span class="ident">visitor</span>(<span class="ident">ix</span>);
+    <span class="comment">// Label all inner vertices on P(source) and P(target) with the found join.
+    </span><span class="kw">for </span>endpoint <span class="kw">in </span>[source, target].iter().copied() {
+        <span class="kw">let </span><span class="kw-2">mut </span>inner = first_inner[endpoint];
+        <span class="kw">while </span>inner != join {
+            <span class="comment">// Notify the caller about labeling a vertex.
+            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(ix) = graph.try_from_index(inner) {
+                visitor(ix);
             }
 
-            <span class="ident">label</span>[<span class="ident">inner</span>] <span class="op">=</span> <span class="ident">Label::Edge</span>(<span class="ident">edge</span>.<span class="ident">id</span>(), [<span class="ident">edge</span>.<span class="ident">source</span>(), <span class="ident">edge</span>.<span class="ident">target</span>()]);
-            <span class="ident">first_inner</span>[<span class="ident">inner</span>] <span class="op">=</span> <span class="ident">join</span>;
-            <span class="kw">let</span> <span class="ident">inner_mate</span> <span class="op">=</span> <span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">mate</span>[<span class="ident">inner</span>].<span class="ident">unwrap</span>());
-            <span class="kw">let</span> <span class="ident">next_inner</span> <span class="op">=</span> <span class="ident">label</span>[<span class="ident">inner_mate</span>].<span class="ident">to_vertex</span>().<span class="ident">unwrap</span>();
-            <span class="ident">inner</span> <span class="op">=</span> <span class="ident">first_inner</span>[<span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">next_inner</span>)];
+            label[inner] = Label::Edge(edge.id(), [edge.source(), edge.target()]);
+            first_inner[inner] = join;
+            <span class="kw">let </span>inner_mate = graph.to_index(mate[inner].unwrap());
+            <span class="kw">let </span>next_inner = label[inner_mate].to_vertex().unwrap();
+            inner = first_inner[graph.to_index(next_inner)];
         }
     }
 
-    <span class="kw">for</span> (<span class="ident">vertex_idx</span>, <span class="ident">vertex_label</span>) <span class="kw">in</span> <span class="ident">label</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-        <span class="comment">// To all outer vertices that are on paths P(source) and P(target) until</span>
-        <span class="comment">// the join, se the join as their first inner vertex.</span>
-        <span class="kw">if</span> <span class="ident">vertex_idx</span> <span class="op">!</span><span class="op">=</span> <span class="ident">graph</span>.<span class="ident">dummy_idx</span>()
-            <span class="op">&amp;&amp;</span> <span class="ident">vertex_label</span>.<span class="ident">is_outer</span>()
-            <span class="op">&amp;&amp;</span> <span class="ident">label</span>[<span class="ident">first_inner</span>[<span class="ident">vertex_idx</span>]].<span class="ident">is_outer</span>()
+    <span class="kw">for </span>(vertex_idx, vertex_label) <span class="kw">in </span>label.iter().enumerate() {
+        <span class="comment">// To all outer vertices that are on paths P(source) and P(target) until
+        // the join, se the join as their first inner vertex.
+        </span><span class="kw">if </span>vertex_idx != graph.dummy_idx()
+            &amp;&amp; vertex_label.is_outer()
+            &amp;&amp; label[first_inner[vertex_idx]].is_outer()
         {
-            <span class="ident">first_inner</span>[<span class="ident">vertex_idx</span>] <span class="op">=</span> <span class="ident">join</span>;
+            first_inner[vertex_idx] = join;
         }
     }
 }
 
-<span class="kw">fn</span> <span class="ident">augment_path</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span>(
-    <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">G</span>,
-    <span class="ident">outer</span>: <span class="ident">G::NodeId</span>,
-    <span class="ident">other</span>: <span class="ident">G::NodeId</span>,
-    <span class="ident">mate</span>: <span class="kw-2">&amp;mut</span> [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">G::NodeId</span><span class="op">&gt;</span>],
-    <span class="ident">label</span>: <span class="kw-2">&amp;</span>[<span class="ident">Label</span><span class="op">&lt;</span><span class="ident">G</span><span class="op">&gt;</span>],
-) <span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">NodeIndexable</span>,
+<span class="kw">fn </span>augment_path&lt;G&gt;(
+    graph: <span class="kw-2">&amp;</span>G,
+    outer: G::NodeId,
+    other: G::NodeId,
+    mate: <span class="kw-2">&amp;mut </span>[<span class="prelude-ty">Option</span>&lt;G::NodeId&gt;],
+    label: <span class="kw-2">&amp;</span>[Label&lt;G&gt;],
+) <span class="kw">where
+    </span>G: NodeIndexable,
 {
-    <span class="kw">let</span> <span class="ident">outer_idx</span> <span class="op">=</span> <span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">outer</span>);
+    <span class="kw">let </span>outer_idx = graph.to_index(outer);
 
-    <span class="kw">let</span> <span class="ident">temp</span> <span class="op">=</span> <span class="ident">mate</span>[<span class="ident">outer_idx</span>];
-    <span class="kw">let</span> <span class="ident">temp_idx</span> <span class="op">=</span> <span class="ident">temp</span>.<span class="ident">map_or</span>(<span class="ident">graph</span>.<span class="ident">dummy_idx</span>(), <span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">id</span>));
-    <span class="ident">mate</span>[<span class="ident">outer_idx</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">other</span>);
+    <span class="kw">let </span>temp = mate[outer_idx];
+    <span class="kw">let </span>temp_idx = temp.map_or(graph.dummy_idx(), |id| graph.to_index(id));
+    mate[outer_idx] = <span class="prelude-val">Some</span>(other);
 
-    <span class="kw">if</span> <span class="ident">mate</span>[<span class="ident">temp_idx</span>] <span class="op">!</span><span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">outer</span>) {
-        <span class="comment">// We are at the end of the path and so the entire path is completely</span>
-        <span class="comment">// rematched/augmented.</span>
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Label::Vertex</span>(<span class="ident">vertex</span>) <span class="op">=</span> <span class="ident">label</span>[<span class="ident">outer_idx</span>] {
-        <span class="comment">// The outer vertex has a vertex label which refers to another outer</span>
-        <span class="comment">// vertex on the path. So we set this another outer node as the mate for</span>
-        <span class="comment">// the previous mate of the outer node.</span>
-        <span class="ident">mate</span>[<span class="ident">temp_idx</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">vertex</span>);
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">temp</span>) <span class="op">=</span> <span class="ident">temp</span> {
-            <span class="ident">augment_path</span>(<span class="ident">graph</span>, <span class="ident">vertex</span>, <span class="ident">temp</span>, <span class="ident">mate</span>, <span class="ident">label</span>);
+    <span class="kw">if </span>mate[temp_idx] != <span class="prelude-val">Some</span>(outer) {
+        <span class="comment">// We are at the end of the path and so the entire path is completely
+        // rematched/augmented.
+    </span>} <span class="kw">else if let </span>Label::Vertex(vertex) = label[outer_idx] {
+        <span class="comment">// The outer vertex has a vertex label which refers to another outer
+        // vertex on the path. So we set this another outer node as the mate for
+        // the previous mate of the outer node.
+        </span>mate[temp_idx] = <span class="prelude-val">Some</span>(vertex);
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(temp) = temp {
+            augment_path(graph, vertex, temp, mate, label);
         }
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Label::Edge</span>(<span class="kw">_</span>, [<span class="ident">source</span>, <span class="ident">target</span>]) <span class="op">=</span> <span class="ident">label</span>[<span class="ident">outer_idx</span>] {
-        <span class="comment">// The outer vertex has an edge label which refers to an edge in a</span>
-        <span class="comment">// blossom. We need to augment both directions along the blossom.</span>
-        <span class="ident">augment_path</span>(<span class="ident">graph</span>, <span class="ident">source</span>, <span class="ident">target</span>, <span class="ident">mate</span>, <span class="ident">label</span>);
-        <span class="ident">augment_path</span>(<span class="ident">graph</span>, <span class="ident">target</span>, <span class="ident">source</span>, <span class="ident">mate</span>, <span class="ident">label</span>);
-    } <span class="kw">else</span> {
+    } <span class="kw">else if let </span>Label::Edge(<span class="kw">_</span>, [source, target]) = label[outer_idx] {
+        <span class="comment">// The outer vertex has an edge label which refers to an edge in a
+        // blossom. We need to augment both directions along the blossom.
+        </span>augment_path(graph, source, target, mate, label);
+        augment_path(graph, target, source, mate, label);
+    } <span class="kw">else </span>{
         <span class="macro">panic!</span>(<span class="string">&quot;Unexpected label when augmenting path&quot;</span>);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="petgraph" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="petgraph" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-server-0.29.5/src/resource.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>resource.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wayland_server/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../wayland_server/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../wayland_server/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-server-0.29.5/src/resource.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>resource.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../wayland_server/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -372,379 +372,379 @@
 <span id="372">372</span>
 <span id="373">373</span>
 <span id="374">374</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Debug</span>, <span class="ident">Formatter</span>};
+</pre><pre class="rust"><code><span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug, Formatter};
 
-<span class="kw">use</span> <span class="ident">wayland_commons::user_data::UserData</span>;
-<span class="kw">use</span> <span class="ident">wayland_commons</span>::{<span class="ident">Interface</span>, <span class="ident">MessageGroup</span>};
+<span class="kw">use </span>wayland_commons::user_data::UserData;
+<span class="kw">use </span>wayland_commons::{Interface, MessageGroup};
 
-<span class="kw">use</span> <span class="ident">wayland_sys::server</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>wayland_sys::server::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::imp::ResourceInner</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Client</span>, <span class="ident">Filter</span>};
+<span class="kw">use </span><span class="kw">crate</span>::imp::ResourceInner;
+<span class="kw">use crate</span>::{Client, Filter};
 
-<span class="doccomment">/// An handle to a wayland resource</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This represents a wayland object instantiated in a client</span>
-<span class="doccomment">/// session. Several handles to the same object can exist at a given</span>
-<span class="doccomment">/// time, and cloning them won&#39;t create a new protocol object, only</span>
-<span class="doccomment">/// clone the handle. The lifetime of the protocol object is **not**</span>
-<span class="doccomment">/// tied to the lifetime of these handles, but rather to sending or</span>
-<span class="doccomment">/// receiving destroying messages.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// These handles are notably used to send events to the associated client,</span>
-<span class="doccomment">/// via the `send` method, although you&#39;re encouraged to use methods on the</span>
-<span class="doccomment">/// corresponding Rust objects instead. To convert a `Resource&lt;I&gt;` into the</span>
-<span class="doccomment">/// `I` Rust object, use the `.into()` method.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> {
-    <span class="ident">_i</span>: <span class="ident">::std::marker::PhantomData</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">I</span><span class="op">&gt;</span>,
-    <span class="ident">inner</span>: <span class="ident">ResourceInner</span>,
+<span class="doccomment">/// An handle to a wayland resource
+///
+/// This represents a wayland object instantiated in a client
+/// session. Several handles to the same object can exist at a given
+/// time, and cloning them won&#39;t create a new protocol object, only
+/// clone the handle. The lifetime of the protocol object is **not**
+/// tied to the lifetime of these handles, but rather to sending or
+/// receiving destroying messages.
+///
+/// These handles are notably used to send events to the associated client,
+/// via the `send` method, although you&#39;re encouraged to use methods on the
+/// corresponding Rust objects instead. To convert a `Resource&lt;I&gt;` into the
+/// `I` Rust object, use the `.into()` method.
+</span><span class="kw">pub struct </span>Resource&lt;I: Interface&gt; {
+    _i: ::std::marker::PhantomData&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>I&gt;,
+    inner: ResourceInner,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">equals</span>(<span class="ident">other</span>)
+<span class="kw">impl</span>&lt;I: Interface + From&lt;Resource&lt;I&gt;&gt; + AsRef&lt;Resource&lt;I&gt;&gt;&gt; PartialEq <span class="kw">for </span>Resource&lt;I&gt; {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Resource&lt;I&gt;) -&gt; bool {
+        <span class="self">self</span>.equals(other)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {}
+<span class="kw">impl</span>&lt;I: Interface + From&lt;Resource&lt;I&gt;&gt; + AsRef&lt;Resource&lt;I&gt;&gt;&gt; Eq <span class="kw">for </span>Resource&lt;I&gt; {}
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;I&gt; Resource&lt;I&gt;
+<span class="kw">where
+    </span>I: Interface + From&lt;Resource&lt;I&gt;&gt; + AsRef&lt;Resource&lt;I&gt;&gt;,
 {
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">wrap</span>(<span class="ident">inner</span>: <span class="ident">ResourceInner</span>) -&gt; <span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-        <span class="ident">Resource</span> { <span class="ident">_i</span>: <span class="ident">::std::marker::PhantomData</span>, <span class="ident">inner</span> }
+    <span class="attribute">#[allow(dead_code)]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>wrap(inner: ResourceInner) -&gt; Resource&lt;I&gt; {
+        Resource { _i: ::std::marker::PhantomData, inner }
     }
 
-    <span class="doccomment">/// Send an event through this object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The event will be send to the client associated to this object.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">I::Event</span>) {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>)]</span>
-        {
-            <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_external</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_alive</span>() {
+    <span class="doccomment">/// Send an event through this object
+    ///
+    /// The event will be send to the client associated to this object.
+    </span><span class="kw">pub fn </span>send(<span class="kw-2">&amp;</span><span class="self">self</span>, msg: I::Event) {
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;use_system_lib&quot;</span>)]
+        </span>{
+            <span class="kw">if </span>!<span class="self">self</span>.is_external() &amp;&amp; !<span class="self">self</span>.is_alive() {
                 <span class="kw">return</span>;
             }
         }
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>))]</span>
-        {
-            <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_alive</span>() {
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;use_system_lib&quot;</span>))]
+        </span>{
+            <span class="kw">if </span>!<span class="self">self</span>.is_alive() {
                 <span class="kw">return</span>;
             }
         }
-        <span class="kw">if</span> <span class="ident">msg</span>.<span class="ident">since</span>() <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">version</span>() {
-            <span class="kw">let</span> <span class="ident">opcode</span> <span class="op">=</span> <span class="ident">msg</span>.<span class="ident">opcode</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">if </span>msg.since() &gt; <span class="self">self</span>.version() {
+            <span class="kw">let </span>opcode = msg.opcode() <span class="kw">as </span>usize;
             <span class="macro">panic!</span>(
                 <span class="string">&quot;Cannot send event {} which requires version &gt;= {} on resource {}@{} which is version {}.&quot;</span>,
-                <span class="ident">I::Event::MESSAGES</span>[<span class="ident">opcode</span>].<span class="ident">name</span>,
-                <span class="ident">msg</span>.<span class="ident">since</span>(),
-                <span class="ident">I::NAME</span>,
-                <span class="self">self</span>.<span class="ident">id</span>(),
-                <span class="self">self</span>.<span class="ident">version</span>()
+                I::Event::MESSAGES[opcode].name,
+                msg.since(),
+                I::NAME,
+                <span class="self">self</span>.id(),
+                <span class="self">self</span>.version()
             );
         }
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">send</span>::<span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>(<span class="ident">msg</span>)
+        <span class="self">self</span>.inner.send::&lt;I&gt;(msg)
     }
 
-    <span class="doccomment">/// Check if the object associated with this resource is still alive</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Will return `false` if the object has been destroyed.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// WHen using the `use_system_lib` feature, if this object was created</span>
-    <span class="doccomment">/// from a raw pointer the crate cannot track its lifetime, and this</span>
-    <span class="doccomment">/// method will always return `true`. You are responsible for only using</span>
-    <span class="doccomment">/// it while it is still alive.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_alive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">is_alive</span>()
+    <span class="doccomment">/// Check if the object associated with this resource is still alive
+    ///
+    /// Will return `false` if the object has been destroyed.
+    ///
+    /// WHen using the `use_system_lib` feature, if this object was created
+    /// from a raw pointer the crate cannot track its lifetime, and this
+    /// method will always return `true`. You are responsible for only using
+    /// it while it is still alive.
+    </span><span class="kw">pub fn </span>is_alive(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.inner.is_alive()
     }
 
-    <span class="doccomment">/// Retrieve the interface version of this wayland object instance</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Returns 0 on dead objects</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">version</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">version</span>()
+    <span class="doccomment">/// Retrieve the interface version of this wayland object instance
+    ///
+    /// Returns 0 on dead objects
+    </span><span class="kw">pub fn </span>version(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="self">self</span>.inner.version()
     }
 
-    <span class="doccomment">/// Check if the other resource refers to the same underlying wayland object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// You can also use the `PartialEq` trait.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">equals</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">equals</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">inner</span>)
+    <span class="doccomment">/// Check if the other resource refers to the same underlying wayland object
+    ///
+    /// You can also use the `PartialEq` trait.
+    </span><span class="kw">pub fn </span>equals(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Resource&lt;I&gt;) -&gt; bool {
+        <span class="self">self</span>.inner.equals(<span class="kw-2">&amp;</span>other.inner)
     }
 
-    <span class="doccomment">/// Check if this resource and the other belong to the same client</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Always return false if either of them is dead</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">same_client_as</span><span class="op">&lt;</span><span class="ident">II</span>: <span class="ident">Interface</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">II</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">same_client_as</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">inner</span>)
+    <span class="doccomment">/// Check if this resource and the other belong to the same client
+    ///
+    /// Always return false if either of them is dead
+    </span><span class="kw">pub fn </span>same_client_as&lt;II: Interface&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Resource&lt;II&gt;) -&gt; bool {
+        <span class="self">self</span>.inner.same_client_as(<span class="kw-2">&amp;</span>other.inner)
     }
 
-    <span class="doccomment">/// Posts a protocol error to this resource</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The error code can be obtained from the various `Error` enums of the protocols.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// An error is fatal to the client that caused it.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">post_error</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">error_code</span>: <span class="ident">u32</span>, <span class="ident">msg</span>: <span class="ident">String</span>) {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">post_error</span>(<span class="ident">error_code</span>, <span class="ident">msg</span>)
+    <span class="doccomment">/// Posts a protocol error to this resource
+    ///
+    /// The error code can be obtained from the various `Error` enums of the protocols.
+    ///
+    /// An error is fatal to the client that caused it.
+    </span><span class="kw">pub fn </span>post_error(<span class="kw-2">&amp;</span><span class="self">self</span>, error_code: u32, msg: String) {
+        <span class="self">self</span>.inner.post_error(error_code, msg)
     }
 
-    <span class="doccomment">/// Access the UserData associated to this object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Each wayland object has an associated UserData, that can store</span>
-    <span class="doccomment">/// a payload of arbitrary type and is shared by all proxies of this</span>
-    <span class="doccomment">/// object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// See UserData documentation for more details.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">user_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">UserData</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">user_data</span>()
+    <span class="doccomment">/// Access the UserData associated to this object
+    ///
+    /// Each wayland object has an associated UserData, that can store
+    /// a payload of arbitrary type and is shared by all proxies of this
+    /// object.
+    ///
+    /// See UserData documentation for more details.
+    </span><span class="kw">pub fn </span>user_data(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>UserData {
+        <span class="self">self</span>.inner.user_data()
     }
 
-    <span class="doccomment">/// Retrieve an handle to the client associated with this resource</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Returns `None` if the resource is no longer alive.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">client</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Client</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">client</span>().<span class="ident">map</span>(<span class="ident">Client::make</span>)
+    <span class="doccomment">/// Retrieve an handle to the client associated with this resource
+    ///
+    /// Returns `None` if the resource is no longer alive.
+    </span><span class="kw">pub fn </span>client(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Client&gt; {
+        <span class="self">self</span>.inner.client().map(Client::make)
     }
 
-    <span class="doccomment">/// Retrieve the object id of this wayland object</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">id</span>()
+    <span class="doccomment">/// Retrieve the object id of this wayland object
+    </span><span class="kw">pub fn </span>id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="self">self</span>.inner.id()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;I&gt; Resource&lt;I&gt;
+<span class="kw">where
+    </span>I: Interface + From&lt;Resource&lt;I&gt;&gt; + AsRef&lt;Resource&lt;I&gt;&gt;,
 {
-    <span class="doccomment">/// Check whether this resource is managed by the library or not</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// See `from_c_ptr` for details.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// NOTE: This method will panic if called while the `use_system_lib` feature is not</span>
-    <span class="doccomment">/// activated</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_external</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>)]</span>
-        {
-            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">is_external</span>()
+    <span class="doccomment">/// Check whether this resource is managed by the library or not
+    ///
+    /// See `from_c_ptr` for details.
+    ///
+    /// NOTE: This method will panic if called while the `use_system_lib` feature is not
+    /// activated
+    </span><span class="kw">pub fn </span>is_external(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;use_system_lib&quot;</span>)]
+        </span>{
+            <span class="self">self</span>.inner.is_external()
         }
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>))]</span>
-        {
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;use_system_lib&quot;</span>))]
+        </span>{
             <span class="macro">panic!</span>(
-                <span class="string">&quot;[wayland-server] C interfacing methods are not available without the `use_system_lib` feature&quot;</span>
-            );
+                <span class="string">&quot;[wayland-server] C interfacing methods are not available without the `use_system_lib` feature&quot;
+            </span>);
         }
     }
 
-    <span class="doccomment">/// Get a raw pointer to the underlying wayland object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Retrieve a pointer to the object from the `libwayland-server.so` library.</span>
-    <span class="doccomment">/// You will mostly need it to interface with C libraries needing access</span>
-    <span class="doccomment">/// to wayland objects (to initialize an opengl context for example).</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// NOTE: This method will panic if called while the `use_system_lib` feature is not</span>
-    <span class="doccomment">/// activated</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">c_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wl_resource</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>)]</span>
-        {
-            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">c_ptr</span>()
+    <span class="doccomment">/// Get a raw pointer to the underlying wayland object
+    ///
+    /// Retrieve a pointer to the object from the `libwayland-server.so` library.
+    /// You will mostly need it to interface with C libraries needing access
+    /// to wayland objects (to initialize an opengl context for example).
+    ///
+    /// NOTE: This method will panic if called while the `use_system_lib` feature is not
+    /// activated
+    </span><span class="kw">pub fn </span>c_ptr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut </span>wl_resource {
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;use_system_lib&quot;</span>)]
+        </span>{
+            <span class="self">self</span>.inner.c_ptr()
         }
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>))]</span>
-        {
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;use_system_lib&quot;</span>))]
+        </span>{
             <span class="macro">panic!</span>(
-                <span class="string">&quot;[wayland-server] C interfacing methods are not available without the `use_system_lib` feature&quot;</span>
-            );
+                <span class="string">&quot;[wayland-server] C interfacing methods are not available without the `use_system_lib` feature&quot;
+            </span>);
         }
     }
 
-    <span class="doccomment">/// Create a `Resource` instance from a C pointer</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Create a `Resource` from a raw pointer to a wayland object from the</span>
-    <span class="doccomment">/// C library.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the pointer was previously obtained by the `c_ptr()` method, this</span>
-    <span class="doccomment">/// constructs a new resource handle for the same object just like the</span>
-    <span class="doccomment">/// `clone()` method would have.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the object was created by some other C library you are interfacing</span>
-    <span class="doccomment">/// with, it will be created in an &quot;unmanaged&quot; state: wayland-server will</span>
-    <span class="doccomment">/// treat it as foreign, and as such most of the safeties will be absent.</span>
-    <span class="doccomment">/// Notably the lifetime of the object can&#39;t be tracked, so the `alive()`</span>
-    <span class="doccomment">/// method will always return `false` and you are responsible of not using</span>
-    <span class="doccomment">/// an object past its destruction (as this would cause a protocol error).</span>
-    <span class="doccomment">/// You will also be unable to associate any user data pointer to this object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// In order to handle protocol races, invoking it with a NULL pointer will</span>
-    <span class="doccomment">/// create an already-dead object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// NOTE: This method will panic if called while the `use_system_lib` feature is not</span>
-    <span class="doccomment">/// activated</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The provided pointer must be a valid pointer to a wayland object from</span>
-    <span class="doccomment">/// `libwayland-client` associated to the correct interface.</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_c_ptr</span>(<span class="ident">_ptr</span>: <span class="kw-2">*mut</span> <span class="ident">wl_resource</span>) -&gt; <span class="self">Self</span>
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Create a `Resource` instance from a C pointer
+    ///
+    /// Create a `Resource` from a raw pointer to a wayland object from the
+    /// C library.
+    ///
+    /// If the pointer was previously obtained by the `c_ptr()` method, this
+    /// constructs a new resource handle for the same object just like the
+    /// `clone()` method would have.
+    ///
+    /// If the object was created by some other C library you are interfacing
+    /// with, it will be created in an &quot;unmanaged&quot; state: wayland-server will
+    /// treat it as foreign, and as such most of the safeties will be absent.
+    /// Notably the lifetime of the object can&#39;t be tracked, so the `alive()`
+    /// method will always return `false` and you are responsible of not using
+    /// an object past its destruction (as this would cause a protocol error).
+    /// You will also be unable to associate any user data pointer to this object.
+    ///
+    /// In order to handle protocol races, invoking it with a NULL pointer will
+    /// create an already-dead object.
+    ///
+    /// NOTE: This method will panic if called while the `use_system_lib` feature is not
+    /// activated
+    ///
+    /// # Safety
+    ///
+    /// The provided pointer must be a valid pointer to a wayland object from
+    /// `libwayland-client` associated to the correct interface.
+    </span><span class="kw">pub unsafe fn </span>from_c_ptr(_ptr: <span class="kw-2">*mut </span>wl_resource) -&gt; <span class="self">Self
+    </span><span class="kw">where
+        </span>I: From&lt;Resource&lt;I&gt;&gt;,
     {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>)]</span>
-        {
-            <span class="ident">Resource</span> { <span class="ident">_i</span>: <span class="ident">::std::marker::PhantomData</span>, <span class="ident">inner</span>: <span class="ident">ResourceInner::from_c_ptr</span>::<span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>(<span class="ident">_ptr</span>) }
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;use_system_lib&quot;</span>)]
+        </span>{
+            Resource { _i: ::std::marker::PhantomData, inner: ResourceInner::from_c_ptr::&lt;I&gt;(_ptr) }
         }
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>))]</span>
-        {
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;use_system_lib&quot;</span>))]
+        </span>{
             <span class="macro">panic!</span>(
-                <span class="string">&quot;[wayland-server] C interfacing methods are not available without the `use_system_lib` feature&quot;</span>
-            );
+                <span class="string">&quot;[wayland-server] C interfacing methods are not available without the `use_system_lib` feature&quot;
+            </span>);
         }
     }
 
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="comment">// This method is for scanner-generated use only</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">make_child_for</span><span class="op">&lt;</span><span class="ident">J</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">J</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">J</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>(
+    <span class="attribute">#[doc(hidden)]
+    </span><span class="comment">// This method is for scanner-generated use only
+    </span><span class="kw">pub unsafe fn </span>make_child_for&lt;J: Interface + From&lt;Resource&lt;J&gt;&gt; + AsRef&lt;Resource&lt;J&gt;&gt;&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">_id</span>: <span class="ident">u32</span>,
-    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Main</span><span class="op">&lt;</span><span class="ident">J</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>)]</span>
-        {
-            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">make_child_for</span>::<span class="op">&lt;</span><span class="ident">J</span><span class="op">&gt;</span>(<span class="ident">_id</span>).<span class="ident">map</span>(<span class="ident">Main::wrap</span>)
+        _id: u32,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;Main&lt;J&gt;&gt; {
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;use_system_lib&quot;</span>)]
+        </span>{
+            <span class="self">self</span>.inner.make_child_for::&lt;J&gt;(_id).map(Main::wrap)
         }
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>))]</span>
-        {
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;use_system_lib&quot;</span>))]
+        </span>{
             <span class="macro">panic!</span>(
-                <span class="string">&quot;[wayland-server] C interfacing methods are not available without the `use_system_lib` feature&quot;</span>
-            );
+                <span class="string">&quot;[wayland-server] C interfacing methods are not available without the `use_system_lib` feature&quot;
+            </span>);
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-        <span class="ident">Resource</span> { <span class="ident">_i</span>: <span class="ident">::std::marker::PhantomData</span>, <span class="ident">inner</span>: <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">clone</span>() }
+<span class="kw">impl</span>&lt;I: Interface&gt; Clone <span class="kw">for </span>Resource&lt;I&gt; {
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Resource&lt;I&gt; {
+        Resource { _i: ::std::marker::PhantomData, inner: <span class="self">self</span>.inner.clone() }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}@{}&quot;</span>, <span class="ident">I::NAME</span>, <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">id</span>())
+<span class="kw">impl</span>&lt;I: Interface&gt; Debug <span class="kw">for </span>Resource&lt;I&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;{}@{}&quot;</span>, I::NAME, <span class="self">self</span>.inner.id())
     }
 }
 
-<span class="doccomment">/// A main handle to a proxy</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="ident">inner</span>: <span class="ident">I</span>,
-    <span class="ident">_nonsend</span>: <span class="ident">std::marker::PhantomData</span><span class="op">&lt;</span><span class="kw-2">*mut</span> ()<span class="op">&gt;</span>,
+<span class="doccomment">/// A main handle to a proxy
+</span><span class="attribute">#[derive(Clone, PartialEq)]
+</span><span class="kw">pub struct </span>Main&lt;I: Interface + AsRef&lt;Resource&lt;I&gt;&gt; + From&lt;Resource&lt;I&gt;&gt;&gt; {
+    inner: I,
+    _nonsend: std::marker::PhantomData&lt;<span class="kw-2">*mut </span>()&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;I: Interface&gt; Main&lt;I&gt;
+<span class="kw">where
+    </span>I: AsRef&lt;Resource&lt;I&gt;&gt; + From&lt;Resource&lt;I&gt;&gt;,
 {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">wrap</span>(<span class="ident">inner</span>: <span class="ident">ResourceInner</span>) -&gt; <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-        <span class="ident">Main</span> {
-            <span class="ident">inner</span>: <span class="ident">Resource</span> { <span class="ident">_i</span>: <span class="ident">std::marker::PhantomData</span>, <span class="ident">inner</span> }.<span class="ident">into</span>(),
-            <span class="ident">_nonsend</span>: <span class="ident">std::marker::PhantomData</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>wrap(inner: ResourceInner) -&gt; Main&lt;I&gt; {
+        Main {
+            inner: Resource { _i: std::marker::PhantomData, inner }.into(),
+            _nonsend: std::marker::PhantomData,
         }
     }
 
-    <span class="doccomment">/// Assign this object to given filter</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// All future requests received by this object will be delivered to this</span>
-    <span class="doccomment">/// filter.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// An object that is not assigned to any filter will see trigger a protocol</span>
-    <span class="doccomment">/// error and kill its client signalling a server bug if it receives a request.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Message type of the filter should verify</span>
-    <span class="doccomment">/// `E: From&lt;(Main&lt;I&gt;, I::Request)&gt;`. See the `request_enum!` macro provided</span>
-    <span class="doccomment">/// in this library to easily generate appropriate types.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">assign</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">filter</span>: <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>)
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-        <span class="ident">E</span>: <span class="ident">From</span><span class="op">&lt;</span>(<span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">I::Request</span>)<span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">I::Request</span>: <span class="ident">MessageGroup</span><span class="op">&lt;</span><span class="ident">Map</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::ResourceMap</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Assign this object to given filter
+    ///
+    /// All future requests received by this object will be delivered to this
+    /// filter.
+    ///
+    /// An object that is not assigned to any filter will see trigger a protocol
+    /// error and kill its client signalling a server bug if it receives a request.
+    ///
+    /// Message type of the filter should verify
+    /// `E: From&lt;(Main&lt;I&gt;, I::Request)&gt;`. See the `request_enum!` macro provided
+    /// in this library to easily generate appropriate types.
+    </span><span class="kw">pub fn </span>assign&lt;E&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, filter: Filter&lt;E&gt;)
+    <span class="kw">where
+        </span>I: AsRef&lt;Resource&lt;I&gt;&gt; + From&lt;Resource&lt;I&gt;&gt;,
+        E: From&lt;(Main&lt;I&gt;, I::Request)&gt; + <span class="lifetime">&#39;static</span>,
+        I::Request: MessageGroup&lt;Map = <span class="kw">crate</span>::ResourceMap&gt;,
     {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">as_ref</span>().<span class="ident">inner</span>.<span class="ident">assign</span>(<span class="ident">filter</span>);
+        <span class="self">self</span>.inner.as_ref().inner.assign(filter);
     }
 
-    <span class="doccomment">/// Shorthand for assigning a closure to an object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Behaves similarly as `assign(..)`, but is a shorthand if</span>
-    <span class="doccomment">/// you want to assign this object to its own filter. In which</span>
-    <span class="doccomment">/// case you just need to provide the appropriate closure, of</span>
-    <span class="doccomment">/// type `FnMut(Main&lt;I&gt;, I::Event)`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">quick_assign</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>)
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">I::Request</span>, <span class="ident"><span class="kw">crate</span>::DispatchData</span>) <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">I::Request</span>: <span class="ident">MessageGroup</span><span class="op">&lt;</span><span class="ident">Map</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::ResourceMap</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Shorthand for assigning a closure to an object
+    ///
+    /// Behaves similarly as `assign(..)`, but is a shorthand if
+    /// you want to assign this object to its own filter. In which
+    /// case you just need to provide the appropriate closure, of
+    /// type `FnMut(Main&lt;I&gt;, I::Event)`.
+    </span><span class="kw">pub fn </span>quick_assign&lt;F&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>f: F)
+    <span class="kw">where
+        </span>I: Interface + AsRef&lt;Resource&lt;I&gt;&gt; + From&lt;Resource&lt;I&gt;&gt;,
+        F: FnMut(Main&lt;I&gt;, I::Request, <span class="kw">crate</span>::DispatchData) + <span class="lifetime">&#39;static</span>,
+        I::Request: MessageGroup&lt;Map = <span class="kw">crate</span>::ResourceMap&gt;,
     {
-        <span class="self">self</span>.<span class="ident">assign</span>(<span class="ident">Filter::new</span>(<span class="kw">move</span> <span class="op">|</span>(<span class="ident">proxy</span>, <span class="ident">event</span>), <span class="kw">_</span>, <span class="ident">data</span><span class="op">|</span> <span class="ident">f</span>(<span class="ident">proxy</span>, <span class="ident">event</span>, <span class="ident">data</span>)))
+        <span class="self">self</span>.assign(Filter::new(<span class="kw">move </span>|(proxy, event), <span class="kw">_</span>, data| f(proxy, event, data)))
     }
 
-    <span class="doccomment">/// Assign a destructor to this object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The filter will be called upon destruction of this object</span>
-    <span class="doccomment">/// with a payload of type `Resource&lt;I&gt;`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">assign_destructor</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">filter</span>: <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>)
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-        <span class="ident">E</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    <span class="doccomment">/// Assign a destructor to this object
+    ///
+    /// The filter will be called upon destruction of this object
+    /// with a payload of type `Resource&lt;I&gt;`.
+    </span><span class="kw">pub fn </span>assign_destructor&lt;E&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, filter: Filter&lt;E&gt;)
+    <span class="kw">where
+        </span>I: AsRef&lt;Resource&lt;I&gt;&gt; + From&lt;Resource&lt;I&gt;&gt;,
+        E: From&lt;Resource&lt;I&gt;&gt; + <span class="lifetime">&#39;static</span>,
     {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">as_ref</span>().<span class="ident">inner</span>.<span class="ident">assign_destructor</span>(<span class="ident">filter</span>)
+        <span class="self">self</span>.inner.as_ref().inner.assign_destructor(filter)
     }
 
-    <span class="doccomment">/// Create a `Main` instance from a C pointer to a new object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Create a `Main` from a raw pointer to a wayland object from the</span>
-    <span class="doccomment">/// C library by taking control of it.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// In order to handle protocol races, invoking it with a NULL pointer will</span>
-    <span class="doccomment">/// create an already-dead object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// NOTE: This method will panic if called while the `use_system_lib` feature is not</span>
-    <span class="doccomment">/// activated</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The provided pointer must be a valid pointer to a wayland object from</span>
-    <span class="doccomment">/// `libwayland-client` associated to the correct interface.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// You must ensure that this object was newly created and have never been user nor</span>
-    <span class="doccomment">/// had any listener associated.</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">init_from_c_ptr</span>(<span class="ident">_ptr</span>: <span class="kw-2">*mut</span> <span class="ident">wl_resource</span>) -&gt; <span class="self">Self</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>)]</span>
-        {
-            <span class="ident">Main::wrap</span>(<span class="ident">ResourceInner::init_from_c_ptr</span>::<span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>(<span class="ident">_ptr</span>))
+    <span class="doccomment">/// Create a `Main` instance from a C pointer to a new object
+    ///
+    /// Create a `Main` from a raw pointer to a wayland object from the
+    /// C library by taking control of it.
+    ///
+    /// In order to handle protocol races, invoking it with a NULL pointer will
+    /// create an already-dead object.
+    ///
+    /// NOTE: This method will panic if called while the `use_system_lib` feature is not
+    /// activated
+    ///
+    /// # Safety
+    ///
+    /// The provided pointer must be a valid pointer to a wayland object from
+    /// `libwayland-client` associated to the correct interface.
+    ///
+    /// You must ensure that this object was newly created and have never been user nor
+    /// had any listener associated.
+    </span><span class="kw">pub unsafe fn </span>init_from_c_ptr(_ptr: <span class="kw-2">*mut </span>wl_resource) -&gt; <span class="self">Self </span>{
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;use_system_lib&quot;</span>)]
+        </span>{
+            Main::wrap(ResourceInner::init_from_c_ptr::&lt;I&gt;(_ptr))
         }
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>))]</span>
-        {
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;use_system_lib&quot;</span>))]
+        </span>{
             <span class="macro">panic!</span>(
-                <span class="string">&quot;[wayland-server] C interfacing methods are not available without the `use_system_lib` feature&quot;</span>
-            );
+                <span class="string">&quot;[wayland-server] C interfacing methods are not available without the `use_system_lib` feature&quot;
+            </span>);
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="ident">std::ops::Deref</span> <span class="kw">for</span> <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;I&gt; std::ops::Deref <span class="kw">for </span>Main&lt;I&gt;
+<span class="kw">where
+    </span>I: Interface + AsRef&lt;Resource&lt;I&gt;&gt; + From&lt;Resource&lt;I&gt;&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">I</span>;
-    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">I</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>
+    <span class="kw">type </span>Target = I;
+    <span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>I {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.inner
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">Debug</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;I: Interface&gt; Debug <span class="kw">for </span>Main&lt;I&gt;
+<span class="kw">where
+    </span>I: Debug + AsRef&lt;Resource&lt;I&gt;&gt; + From&lt;Resource&lt;I&gt;&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}[MAIN]&quot;</span>, <span class="self">self</span>.<span class="ident">inner</span>)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;{:?}[MAIN]&quot;</span>, <span class="self">self</span>.inner)
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_server" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_server" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

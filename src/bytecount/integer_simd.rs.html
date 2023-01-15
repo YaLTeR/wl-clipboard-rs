@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/bytecount-0.6.3/src/integer_simd.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>integer_simd.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../bytecount/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../bytecount/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../bytecount/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/bytecount-0.6.3/src/integer_simd.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>integer_simd.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../bytecount/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -109,116 +109,116 @@
 <span id="109">109</span>
 <span id="110">110</span>
 <span id="111">111</span>
-</pre><pre class="rust"><code><span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;runtime-dispatch-simd&quot;</span>))]</span>
-<span class="kw">use</span> <span class="ident">core</span>::{<span class="ident">mem</span>, <span class="ident">ptr</span>, <span class="ident">usize</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;runtime-dispatch-simd&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">mem</span>, <span class="ident">ptr</span>, <span class="ident">usize</span>};
+</pre><pre class="rust"><code><span class="attribute">#[cfg(not(feature = <span class="string">&quot;runtime-dispatch-simd&quot;</span>))]
+</span><span class="kw">use </span>core::{mem, ptr, usize};
+<span class="attribute">#[cfg(feature = <span class="string">&quot;runtime-dispatch-simd&quot;</span>)]
+</span><span class="kw">use </span>std::{mem, ptr, usize};
 
-<span class="kw">fn</span> <span class="ident">splat</span>(<span class="ident">byte</span>: <span class="ident">u8</span>) -&gt; <span class="ident">usize</span> {
-    <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="ident">usize::MAX</span> <span class="op">/</span> <span class="number">0xFF</span>;
-    <span class="ident">lo</span> <span class="op">*</span> <span class="ident">byte</span> <span class="kw">as</span> <span class="ident">usize</span>
+<span class="kw">fn </span>splat(byte: u8) -&gt; usize {
+    <span class="kw">let </span>lo = usize::MAX / <span class="number">0xFF</span>;
+    lo * byte <span class="kw">as </span>usize
 }
 
-<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">usize_load_unchecked</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">offset</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output</span> <span class="op">=</span> <span class="number">0</span>;
-    <span class="ident">ptr::copy_nonoverlapping</span>(
-        <span class="ident">bytes</span>.<span class="ident">as_ptr</span>().<span class="ident">add</span>(<span class="ident">offset</span>),
-        <span class="kw-2">&amp;mut</span> <span class="ident">output</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">usize</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">u8</span>,
-        <span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>()
+<span class="kw">unsafe fn </span>usize_load_unchecked(bytes: <span class="kw-2">&amp;</span>[u8], offset: usize) -&gt; usize {
+    <span class="kw">let </span><span class="kw-2">mut </span>output = <span class="number">0</span>;
+    ptr::copy_nonoverlapping(
+        bytes.as_ptr().add(offset),
+        <span class="kw-2">&amp;mut </span>output <span class="kw">as </span><span class="kw-2">*mut </span>usize <span class="kw">as </span><span class="kw-2">*mut </span>u8,
+        mem::size_of::&lt;usize&gt;()
     );
-    <span class="ident">output</span>
+    output
 }
 
-<span class="kw">fn</span> <span class="ident">bytewise_equal</span>(<span class="ident">lhs</span>: <span class="ident">usize</span>, <span class="ident">rhs</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-    <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="ident">usize::MAX</span> <span class="op">/</span> <span class="number">0xFF</span>;
-    <span class="kw">let</span> <span class="ident">hi</span> <span class="op">=</span> <span class="ident">lo</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">7</span>;
+<span class="kw">fn </span>bytewise_equal(lhs: usize, rhs: usize) -&gt; usize {
+    <span class="kw">let </span>lo = usize::MAX / <span class="number">0xFF</span>;
+    <span class="kw">let </span>hi = lo &lt;&lt; <span class="number">7</span>;
 
-    <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">lhs</span> <span class="op">^</span> <span class="ident">rhs</span>;
-    <span class="op">!</span>((((<span class="ident">x</span> <span class="op">&amp;</span> <span class="op">!</span><span class="ident">hi</span>) <span class="op">+</span> <span class="op">!</span><span class="ident">hi</span>) <span class="op">|</span> <span class="ident">x</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">7</span>) <span class="op">&amp;</span> <span class="ident">lo</span>
+    <span class="kw">let </span>x = lhs ^ rhs;
+    !((((x &amp; !hi) + !hi) | x) &gt;&gt; <span class="number">7</span>) &amp; lo
 }
 
-<span class="kw">fn</span> <span class="ident">sum_usize</span>(<span class="ident">values</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-    <span class="kw">let</span> <span class="ident">every_other_byte_lo</span> <span class="op">=</span> <span class="ident">usize::MAX</span> <span class="op">/</span> <span class="number">0xFFFF</span>;
-    <span class="kw">let</span> <span class="ident">every_other_byte</span> <span class="op">=</span> <span class="ident">every_other_byte_lo</span> <span class="op">*</span> <span class="number">0xFF</span>;
+<span class="kw">fn </span>sum_usize(values: usize) -&gt; usize {
+    <span class="kw">let </span>every_other_byte_lo = usize::MAX / <span class="number">0xFFFF</span>;
+    <span class="kw">let </span>every_other_byte = every_other_byte_lo * <span class="number">0xFF</span>;
 
-    <span class="comment">// Pairwise reduction to avoid overflow on next step.</span>
-    <span class="kw">let</span> <span class="ident">pair_sum</span>: <span class="ident">usize</span> <span class="op">=</span> (<span class="ident">values</span> <span class="op">&amp;</span> <span class="ident">every_other_byte</span>) <span class="op">+</span> ((<span class="ident">values</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">8</span>) <span class="op">&amp;</span> <span class="ident">every_other_byte</span>);
+    <span class="comment">// Pairwise reduction to avoid overflow on next step.
+    </span><span class="kw">let </span>pair_sum: usize = (values &amp; every_other_byte) + ((values &gt;&gt; <span class="number">8</span>) &amp; every_other_byte);
 
-    <span class="comment">// Multiplication results in top two bytes holding sum.</span>
-    <span class="ident">pair_sum</span>.<span class="ident">wrapping_mul</span>(<span class="ident">every_other_byte_lo</span>) <span class="op">&gt;</span><span class="op">&gt;</span> ((<span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>() <span class="op">-</span> <span class="number">2</span>) <span class="op">*</span> <span class="number">8</span>)
+    <span class="comment">// Multiplication results in top two bytes holding sum.
+    </span>pair_sum.wrapping_mul(every_other_byte_lo) &gt;&gt; ((mem::size_of::&lt;usize&gt;() - <span class="number">2</span>) * <span class="number">8</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">is_leading_utf8_byte</span>(<span class="ident">values</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-    <span class="comment">// a leading UTF-8 byte is one which does not start with the bits 10.</span>
-    ((<span class="op">!</span><span class="ident">values</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">7</span>) <span class="op">|</span> (<span class="ident">values</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">6</span>)) <span class="op">&amp;</span> <span class="ident">splat</span>(<span class="number">1</span>)
+<span class="kw">fn </span>is_leading_utf8_byte(values: usize) -&gt; usize {
+    <span class="comment">// a leading UTF-8 byte is one which does not start with the bits 10.
+    </span>((!values &gt;&gt; <span class="number">7</span>) | (values &gt;&gt; <span class="number">6</span>)) &amp; splat(<span class="number">1</span>)
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">chunk_count</span>(<span class="ident">haystack</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">needle</span>: <span class="ident">u8</span>) -&gt; <span class="ident">usize</span> {
-    <span class="kw">let</span> <span class="ident">chunksize</span> <span class="op">=</span> <span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>();
-    <span class="macro">assert!</span>(<span class="ident">haystack</span>.<span class="ident">len</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="ident">chunksize</span>);
+<span class="kw">pub fn </span>chunk_count(haystack: <span class="kw-2">&amp;</span>[u8], needle: u8) -&gt; usize {
+    <span class="kw">let </span>chunksize = mem::size_of::&lt;usize&gt;();
+    <span class="macro">assert!</span>(haystack.len() &gt;= chunksize);
 
-    <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">offset</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">count</span> <span class="op">=</span> <span class="number">0</span>;
+    <span class="kw">unsafe </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>offset = <span class="number">0</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>count = <span class="number">0</span>;
 
-        <span class="kw">let</span> <span class="ident">needles</span> <span class="op">=</span> <span class="ident">splat</span>(<span class="ident">needle</span>);
+        <span class="kw">let </span>needles = splat(needle);
 
-        <span class="comment">// 2040</span>
-        <span class="kw">while</span> <span class="ident">haystack</span>.<span class="ident">len</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="ident">offset</span> <span class="op">+</span> <span class="ident">chunksize</span> <span class="op">*</span> <span class="number">255</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">counts</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">255</span> {
-                <span class="ident">counts</span> <span class="op">+</span><span class="op">=</span> <span class="ident">bytewise_equal</span>(<span class="ident">usize_load_unchecked</span>(<span class="ident">haystack</span>, <span class="ident">offset</span>), <span class="ident">needles</span>);
-                <span class="ident">offset</span> <span class="op">+</span><span class="op">=</span> <span class="ident">chunksize</span>;
+        <span class="comment">// 2040
+        </span><span class="kw">while </span>haystack.len() &gt;= offset + chunksize * <span class="number">255 </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>counts = <span class="number">0</span>;
+            <span class="kw">for _ in </span><span class="number">0</span>..<span class="number">255 </span>{
+                counts += bytewise_equal(usize_load_unchecked(haystack, offset), needles);
+                offset += chunksize;
             }
-            <span class="ident">count</span> <span class="op">+</span><span class="op">=</span> <span class="ident">sum_usize</span>(<span class="ident">counts</span>);
+            count += sum_usize(counts);
         }
 
-        <span class="comment">// 8</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">counts</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..(<span class="ident">haystack</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">offset</span>) <span class="op">/</span> <span class="ident">chunksize</span> {
-            <span class="ident">counts</span> <span class="op">+</span><span class="op">=</span> <span class="ident">bytewise_equal</span>(<span class="ident">usize_load_unchecked</span>(<span class="ident">haystack</span>, <span class="ident">offset</span> <span class="op">+</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">chunksize</span>), <span class="ident">needles</span>);
+        <span class="comment">// 8
+        </span><span class="kw">let </span><span class="kw-2">mut </span>counts = <span class="number">0</span>;
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..(haystack.len() - offset) / chunksize {
+            counts += bytewise_equal(usize_load_unchecked(haystack, offset + i * chunksize), needles);
         }
-        <span class="kw">if</span> <span class="ident">haystack</span>.<span class="ident">len</span>() <span class="op">%</span> <span class="number">8</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> <span class="ident">usize::from_le</span>(<span class="op">!</span>(<span class="op">!</span><span class="number">0</span> <span class="op">&gt;</span><span class="op">&gt;</span> ((<span class="ident">haystack</span>.<span class="ident">len</span>() <span class="op">%</span> <span class="ident">chunksize</span>) <span class="op">*</span> <span class="number">8</span>)));
-            <span class="ident">counts</span> <span class="op">+</span><span class="op">=</span> <span class="ident">bytewise_equal</span>(<span class="ident">usize_load_unchecked</span>(<span class="ident">haystack</span>, <span class="ident">haystack</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">chunksize</span>), <span class="ident">needles</span>) <span class="op">&amp;</span> <span class="ident">mask</span>;
+        <span class="kw">if </span>haystack.len() % <span class="number">8 </span>!= <span class="number">0 </span>{
+            <span class="kw">let </span>mask = usize::from_le(!(!<span class="number">0 </span>&gt;&gt; ((haystack.len() % chunksize) * <span class="number">8</span>)));
+            counts += bytewise_equal(usize_load_unchecked(haystack, haystack.len() - chunksize), needles) &amp; mask;
         }
-        <span class="ident">count</span> <span class="op">+</span><span class="op">=</span> <span class="ident">sum_usize</span>(<span class="ident">counts</span>);
+        count += sum_usize(counts);
 
-        <span class="ident">count</span>
+        count
     }
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">chunk_num_chars</span>(<span class="ident">utf8_chars</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="ident">usize</span> {
-    <span class="kw">let</span> <span class="ident">chunksize</span> <span class="op">=</span> <span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>();
-    <span class="macro">assert!</span>(<span class="ident">utf8_chars</span>.<span class="ident">len</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="ident">chunksize</span>);
+<span class="kw">pub fn </span>chunk_num_chars(utf8_chars: <span class="kw-2">&amp;</span>[u8]) -&gt; usize {
+    <span class="kw">let </span>chunksize = mem::size_of::&lt;usize&gt;();
+    <span class="macro">assert!</span>(utf8_chars.len() &gt;= chunksize);
 
-    <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">offset</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">count</span> <span class="op">=</span> <span class="number">0</span>;
+    <span class="kw">unsafe </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>offset = <span class="number">0</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>count = <span class="number">0</span>;
 
-        <span class="comment">// 2040</span>
-        <span class="kw">while</span> <span class="ident">utf8_chars</span>.<span class="ident">len</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="ident">offset</span> <span class="op">+</span> <span class="ident">chunksize</span> <span class="op">*</span> <span class="number">255</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">counts</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">255</span> {
-                <span class="ident">counts</span> <span class="op">+</span><span class="op">=</span> <span class="ident">is_leading_utf8_byte</span>(<span class="ident">usize_load_unchecked</span>(<span class="ident">utf8_chars</span>, <span class="ident">offset</span>));
-                <span class="ident">offset</span> <span class="op">+</span><span class="op">=</span> <span class="ident">chunksize</span>;
+        <span class="comment">// 2040
+        </span><span class="kw">while </span>utf8_chars.len() &gt;= offset + chunksize * <span class="number">255 </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>counts = <span class="number">0</span>;
+            <span class="kw">for _ in </span><span class="number">0</span>..<span class="number">255 </span>{
+                counts += is_leading_utf8_byte(usize_load_unchecked(utf8_chars, offset));
+                offset += chunksize;
             }
-            <span class="ident">count</span> <span class="op">+</span><span class="op">=</span> <span class="ident">sum_usize</span>(<span class="ident">counts</span>);
+            count += sum_usize(counts);
         }
 
-        <span class="comment">// 8</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">counts</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..(<span class="ident">utf8_chars</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">offset</span>) <span class="op">/</span> <span class="ident">chunksize</span> {
-            <span class="ident">counts</span> <span class="op">+</span><span class="op">=</span> <span class="ident">is_leading_utf8_byte</span>(<span class="ident">usize_load_unchecked</span>(<span class="ident">utf8_chars</span>, <span class="ident">offset</span> <span class="op">+</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">chunksize</span>));
+        <span class="comment">// 8
+        </span><span class="kw">let </span><span class="kw-2">mut </span>counts = <span class="number">0</span>;
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..(utf8_chars.len() - offset) / chunksize {
+            counts += is_leading_utf8_byte(usize_load_unchecked(utf8_chars, offset + i * chunksize));
         }
-        <span class="kw">if</span> <span class="ident">utf8_chars</span>.<span class="ident">len</span>() <span class="op">%</span> <span class="number">8</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> <span class="ident">usize::from_le</span>(<span class="op">!</span>(<span class="op">!</span><span class="number">0</span> <span class="op">&gt;</span><span class="op">&gt;</span> ((<span class="ident">utf8_chars</span>.<span class="ident">len</span>() <span class="op">%</span> <span class="ident">chunksize</span>) <span class="op">*</span> <span class="number">8</span>)));
-            <span class="ident">counts</span> <span class="op">+</span><span class="op">=</span> <span class="ident">is_leading_utf8_byte</span>(<span class="ident">usize_load_unchecked</span>(<span class="ident">utf8_chars</span>, <span class="ident">utf8_chars</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">chunksize</span>)) <span class="op">&amp;</span> <span class="ident">mask</span>;
+        <span class="kw">if </span>utf8_chars.len() % <span class="number">8 </span>!= <span class="number">0 </span>{
+            <span class="kw">let </span>mask = usize::from_le(!(!<span class="number">0 </span>&gt;&gt; ((utf8_chars.len() % chunksize) * <span class="number">8</span>)));
+            counts += is_leading_utf8_byte(usize_load_unchecked(utf8_chars, utf8_chars.len() - chunksize)) &amp; mask;
         }
-        <span class="ident">count</span> <span class="op">+</span><span class="op">=</span> <span class="ident">sum_usize</span>(<span class="ident">counts</span>);
+        count += sum_usize(counts);
 
-        <span class="ident">count</span>
+        count
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bytecount" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bytecount" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

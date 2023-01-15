@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/petgraph-0.6.2/src/algo/tred.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>tred.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../petgraph/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../petgraph/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../petgraph/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/petgraph-0.6.2/src/algo/tred.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>tred.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../petgraph/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -159,166 +159,166 @@
 <span id="159">159</span>
 <span id="160">160</span>
 <span id="161">161</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Compute the transitive reduction and closure of a directed acyclic graph</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ## Transitive reduction and closure</span>
-<span class="doccomment">//! The *transitive closure* of a graph **G = (V, E)** is the graph **Gc = (V, Ec)**</span>
-<span class="doccomment">//! such that **(i, j)** belongs to **Ec** if and only if there is a path connecting</span>
-<span class="doccomment">//! **i** to **j** in **G**. The *transitive reduction* of **G** is the graph **Gr</span>
-<span class="doccomment">//! = (V, Er)** such that **Er** is minimal wrt. inclusion in **E** and the transitive</span>
-<span class="doccomment">//! closure of **Gr** is the same as that of **G**.</span>
-<span class="doccomment">//! The transitive reduction is well-defined for acyclic graphs only.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Compute the transitive reduction and closure of a directed acyclic graph
+//!
+//! ## Transitive reduction and closure
+//! The *transitive closure* of a graph **G = (V, E)** is the graph **Gc = (V, Ec)**
+//! such that **(i, j)** belongs to **Ec** if and only if there is a path connecting
+//! **i** to **j** in **G**. The *transitive reduction* of **G** is the graph **Gr
+//! = (V, Er)** such that **Er** is minimal wrt. inclusion in **E** and the transitive
+//! closure of **Gr** is the same as that of **G**.
+//! The transitive reduction is well-defined for acyclic graphs only.
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::adj</span>::{<span class="ident">List</span>, <span class="ident">UnweightedList</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::graph::IndexType</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::visit</span>::{
-    <span class="ident">GraphBase</span>, <span class="ident">IntoNeighbors</span>, <span class="ident">IntoNeighborsDirected</span>, <span class="ident">NodeCompactIndexable</span>, <span class="ident">NodeCount</span>,
+</span><span class="kw">use </span><span class="kw">crate</span>::adj::{List, UnweightedList};
+<span class="kw">use </span><span class="kw">crate</span>::graph::IndexType;
+<span class="kw">use </span><span class="kw">crate</span>::visit::{
+    GraphBase, IntoNeighbors, IntoNeighborsDirected, NodeCompactIndexable, NodeCount,
 };
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::Direction</span>;
-<span class="kw">use</span> <span class="ident">fixedbitset::FixedBitSet</span>;
+<span class="kw">use </span><span class="kw">crate</span>::Direction;
+<span class="kw">use </span>fixedbitset::FixedBitSet;
 
-<span class="doccomment">/// Creates a representation of the same graph respecting topological order for use in `tred::dag_transitive_reduction_closure`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `toposort` must be a topological order on the node indices of `g` (for example obtained</span>
-<span class="doccomment">/// from [`toposort`]).</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`toposort`]: ../fn.toposort.html</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Returns a pair of a graph `res` and the reciprocal of the topological sort `revmap`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `res` is the same graph as `g` with the following differences:</span>
-<span class="doccomment">/// * Node and edge weights are stripped,</span>
-<span class="doccomment">/// * Node indices are replaced by the corresponding rank in `toposort`,</span>
-<span class="doccomment">/// * Iterating on the neighbors of a node respects topological order.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `revmap` is handy to get back to map indices in `g` to indices in `res`.</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use petgraph::prelude::*;</span>
-<span class="doccomment">/// use petgraph::graph::DefaultIx;</span>
-<span class="doccomment">/// use petgraph::visit::IntoNeighbors;</span>
-<span class="doccomment">/// use petgraph::algo::tred::dag_to_toposorted_adjacency_list;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut g = Graph::&lt;&amp;str, (), Directed, DefaultIx&gt;::new();</span>
-<span class="doccomment">/// let second = g.add_node(&quot;second child&quot;);</span>
-<span class="doccomment">/// let top = g.add_node(&quot;top&quot;);</span>
-<span class="doccomment">/// let first = g.add_node(&quot;first child&quot;);</span>
-<span class="doccomment">/// g.extend_with_edges(&amp;[(top, second), (top, first), (first, second)]);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let toposort = vec![top, first, second];</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let (res, revmap) = dag_to_toposorted_adjacency_list(&amp;g, &amp;toposort);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// // let&#39;s compute the children of top in topological order</span>
-<span class="doccomment">/// let children: Vec&lt;NodeIndex&gt; = res</span>
-<span class="doccomment">///     .neighbors(revmap[top.index()])</span>
-<span class="doccomment">///     .map(|ix: NodeIndex| toposort[ix.index()])</span>
-<span class="doccomment">///     .collect();</span>
-<span class="doccomment">/// assert_eq!(children, vec![first, second])</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Runtime: **O(|V| + |E|)**.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Space complexity: **O(|V| + |E|)**.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dag_to_toposorted_adjacency_list</span><span class="op">&lt;</span><span class="ident">G</span>, <span class="ident">Ix</span>: <span class="ident">IndexType</span><span class="op">&gt;</span>(
-    <span class="ident">g</span>: <span class="ident">G</span>,
-    <span class="ident">toposort</span>: <span class="kw-2">&amp;</span>[<span class="ident">G::NodeId</span>],
-) -&gt; (<span class="ident">UnweightedList</span><span class="op">&lt;</span><span class="ident">Ix</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Ix</span><span class="op">&gt;</span>)
-<span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">GraphBase</span> <span class="op">+</span> <span class="ident">IntoNeighborsDirected</span> <span class="op">+</span> <span class="ident">NodeCompactIndexable</span> <span class="op">+</span> <span class="ident">NodeCount</span>,
-    <span class="ident">G::NodeId</span>: <span class="ident">IndexType</span>,
+<span class="doccomment">/// Creates a representation of the same graph respecting topological order for use in `tred::dag_transitive_reduction_closure`.
+///
+/// `toposort` must be a topological order on the node indices of `g` (for example obtained
+/// from [`toposort`]).
+///
+/// [`toposort`]: ../fn.toposort.html
+///
+/// Returns a pair of a graph `res` and the reciprocal of the topological sort `revmap`.
+///
+/// `res` is the same graph as `g` with the following differences:
+/// * Node and edge weights are stripped,
+/// * Node indices are replaced by the corresponding rank in `toposort`,
+/// * Iterating on the neighbors of a node respects topological order.
+///
+/// `revmap` is handy to get back to map indices in `g` to indices in `res`.
+/// ```
+/// use petgraph::prelude::*;
+/// use petgraph::graph::DefaultIx;
+/// use petgraph::visit::IntoNeighbors;
+/// use petgraph::algo::tred::dag_to_toposorted_adjacency_list;
+///
+/// let mut g = Graph::&lt;&amp;str, (), Directed, DefaultIx&gt;::new();
+/// let second = g.add_node(&quot;second child&quot;);
+/// let top = g.add_node(&quot;top&quot;);
+/// let first = g.add_node(&quot;first child&quot;);
+/// g.extend_with_edges(&amp;[(top, second), (top, first), (first, second)]);
+///
+/// let toposort = vec![top, first, second];
+///
+/// let (res, revmap) = dag_to_toposorted_adjacency_list(&amp;g, &amp;toposort);
+///
+/// // let&#39;s compute the children of top in topological order
+/// let children: Vec&lt;NodeIndex&gt; = res
+///     .neighbors(revmap[top.index()])
+///     .map(|ix: NodeIndex| toposort[ix.index()])
+///     .collect();
+/// assert_eq!(children, vec![first, second])
+/// ```
+///
+/// Runtime: **O(|V| + |E|)**.
+///
+/// Space complexity: **O(|V| + |E|)**.
+</span><span class="kw">pub fn </span>dag_to_toposorted_adjacency_list&lt;G, Ix: IndexType&gt;(
+    g: G,
+    toposort: <span class="kw-2">&amp;</span>[G::NodeId],
+) -&gt; (UnweightedList&lt;Ix&gt;, Vec&lt;Ix&gt;)
+<span class="kw">where
+    </span>G: GraphBase + IntoNeighborsDirected + NodeCompactIndexable + NodeCount,
+    G::NodeId: IndexType,
 {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">List::with_capacity</span>(<span class="ident">g</span>.<span class="ident">node_count</span>());
-    <span class="comment">// map from old node index to rank in toposort</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">revmap</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">Ix::default</span>(); <span class="ident">g</span>.<span class="ident">node_bound</span>()];
-    <span class="kw">for</span> (<span class="ident">ix</span>, <span class="kw-2">&amp;</span><span class="ident">old_ix</span>) <span class="kw">in</span> <span class="ident">toposort</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-        <span class="kw">let</span> <span class="ident">ix</span> <span class="op">=</span> <span class="ident">Ix::new</span>(<span class="ident">ix</span>);
-        <span class="ident">revmap</span>[<span class="ident">old_ix</span>.<span class="ident">index</span>()] <span class="op">=</span> <span class="ident">ix</span>;
-        <span class="kw">let</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">g</span>.<span class="ident">neighbors_directed</span>(<span class="ident">old_ix</span>, <span class="ident">Direction::Incoming</span>);
-        <span class="kw">let</span> <span class="ident">new_ix</span>: <span class="ident">Ix</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">add_node_with_capacity</span>(<span class="ident">iter</span>.<span class="ident">size_hint</span>().<span class="number">0</span>);
-        <span class="macro">debug_assert_eq!</span>(<span class="ident">new_ix</span>.<span class="ident">index</span>(), <span class="ident">ix</span>.<span class="ident">index</span>());
-        <span class="kw">for</span> <span class="ident">old_pre</span> <span class="kw">in</span> <span class="ident">iter</span> {
-            <span class="kw">let</span> <span class="ident">pre</span>: <span class="ident">Ix</span> <span class="op">=</span> <span class="ident">revmap</span>[<span class="ident">old_pre</span>.<span class="ident">index</span>()];
-            <span class="ident">res</span>.<span class="ident">add_edge</span>(<span class="ident">pre</span>, <span class="ident">ix</span>, ());
+    <span class="kw">let </span><span class="kw-2">mut </span>res = List::with_capacity(g.node_count());
+    <span class="comment">// map from old node index to rank in toposort
+    </span><span class="kw">let </span><span class="kw-2">mut </span>revmap = <span class="macro">vec!</span>[Ix::default(); g.node_bound()];
+    <span class="kw">for </span>(ix, <span class="kw-2">&amp;</span>old_ix) <span class="kw">in </span>toposort.iter().enumerate() {
+        <span class="kw">let </span>ix = Ix::new(ix);
+        revmap[old_ix.index()] = ix;
+        <span class="kw">let </span>iter = g.neighbors_directed(old_ix, Direction::Incoming);
+        <span class="kw">let </span>new_ix: Ix = res.add_node_with_capacity(iter.size_hint().<span class="number">0</span>);
+        <span class="macro">debug_assert_eq!</span>(new_ix.index(), ix.index());
+        <span class="kw">for </span>old_pre <span class="kw">in </span>iter {
+            <span class="kw">let </span>pre: Ix = revmap[old_pre.index()];
+            res.add_edge(pre, ix, ());
         }
     }
-    (<span class="ident">res</span>, <span class="ident">revmap</span>)
+    (res, revmap)
 }
 
-<span class="doccomment">/// Computes the transitive reduction and closure of a DAG.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The algorithm implemented here comes from [On the calculation of</span>
-<span class="doccomment">/// transitive reduction-closure of</span>
-<span class="doccomment">/// orders](https://www.sciencedirect.com/science/article/pii/0012365X9390164O) by Habib, Morvan</span>
-<span class="doccomment">/// and Rampon.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The input graph must be in a very specific format: an adjacency</span>
-<span class="doccomment">/// list such that:</span>
-<span class="doccomment">/// * Node indices are a toposort, and</span>
-<span class="doccomment">/// * The neighbors of all nodes are stored in topological order.</span>
-<span class="doccomment">/// To get such a representation, use the function [`dag_to_toposorted_adjacency_list`].</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`dag_to_toposorted_adjacency_list`]: ./fn.dag_to_toposorted_adjacency_list.html</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The output is the pair of the transitive reduction and the transitive closure.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Runtime complexity: **O(|V| + \sum_{(x, y) \in Er} d(y))** where **d(y)**</span>
-<span class="doccomment">/// denotes the outgoing degree of **y** in the transitive closure of **G**.</span>
-<span class="doccomment">/// This is still **O(|V|³)** in the worst case like the naive algorithm but</span>
-<span class="doccomment">/// should perform better for some classes of graphs.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Space complexity: **O(|E|)**.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dag_transitive_reduction_closure</span><span class="op">&lt;</span><span class="ident">E</span>, <span class="ident">Ix</span>: <span class="ident">IndexType</span><span class="op">&gt;</span>(
-    <span class="ident">g</span>: <span class="kw-2">&amp;</span><span class="ident">List</span><span class="op">&lt;</span><span class="ident">E</span>, <span class="ident">Ix</span><span class="op">&gt;</span>,
-) -&gt; (<span class="ident">UnweightedList</span><span class="op">&lt;</span><span class="ident">Ix</span><span class="op">&gt;</span>, <span class="ident">UnweightedList</span><span class="op">&lt;</span><span class="ident">Ix</span><span class="op">&gt;</span>) {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tred</span> <span class="op">=</span> <span class="ident">List::with_capacity</span>(<span class="ident">g</span>.<span class="ident">node_count</span>());
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tclos</span> <span class="op">=</span> <span class="ident">List::with_capacity</span>(<span class="ident">g</span>.<span class="ident">node_count</span>());
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mark</span> <span class="op">=</span> <span class="ident">FixedBitSet::with_capacity</span>(<span class="ident">g</span>.<span class="ident">node_count</span>());
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">g</span>.<span class="ident">node_indices</span>() {
-        <span class="ident">tred</span>.<span class="ident">add_node</span>();
-        <span class="ident">tclos</span>.<span class="ident">add_node_with_capacity</span>(<span class="ident">g</span>.<span class="ident">neighbors</span>(<span class="ident">i</span>).<span class="ident">len</span>());
+<span class="doccomment">/// Computes the transitive reduction and closure of a DAG.
+///
+/// The algorithm implemented here comes from [On the calculation of
+/// transitive reduction-closure of
+/// orders](https://www.sciencedirect.com/science/article/pii/0012365X9390164O) by Habib, Morvan
+/// and Rampon.
+///
+/// The input graph must be in a very specific format: an adjacency
+/// list such that:
+/// * Node indices are a toposort, and
+/// * The neighbors of all nodes are stored in topological order.
+/// To get such a representation, use the function [`dag_to_toposorted_adjacency_list`].
+///
+/// [`dag_to_toposorted_adjacency_list`]: ./fn.dag_to_toposorted_adjacency_list.html
+///
+/// The output is the pair of the transitive reduction and the transitive closure.
+///
+/// Runtime complexity: **O(|V| + \sum_{(x, y) \in Er} d(y))** where **d(y)**
+/// denotes the outgoing degree of **y** in the transitive closure of **G**.
+/// This is still **O(|V|³)** in the worst case like the naive algorithm but
+/// should perform better for some classes of graphs.
+///
+/// Space complexity: **O(|E|)**.
+</span><span class="kw">pub fn </span>dag_transitive_reduction_closure&lt;E, Ix: IndexType&gt;(
+    g: <span class="kw-2">&amp;</span>List&lt;E, Ix&gt;,
+) -&gt; (UnweightedList&lt;Ix&gt;, UnweightedList&lt;Ix&gt;) {
+    <span class="kw">let </span><span class="kw-2">mut </span>tred = List::with_capacity(g.node_count());
+    <span class="kw">let </span><span class="kw-2">mut </span>tclos = List::with_capacity(g.node_count());
+    <span class="kw">let </span><span class="kw-2">mut </span>mark = FixedBitSet::with_capacity(g.node_count());
+    <span class="kw">for </span>i <span class="kw">in </span>g.node_indices() {
+        tred.add_node();
+        tclos.add_node_with_capacity(g.neighbors(i).len());
     }
-    <span class="comment">// the algorithm relies on this iterator being toposorted</span>
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">g</span>.<span class="ident">node_indices</span>().<span class="ident">rev</span>() {
-        <span class="comment">// the algorighm relies on this iterator being toposorted</span>
-        <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">g</span>.<span class="ident">neighbors</span>(<span class="ident">i</span>) {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">mark</span>[<span class="ident">x</span>.<span class="ident">index</span>()] {
-                <span class="ident">tred</span>.<span class="ident">add_edge</span>(<span class="ident">i</span>, <span class="ident">x</span>, ());
-                <span class="ident">tclos</span>.<span class="ident">add_edge</span>(<span class="ident">i</span>, <span class="ident">x</span>, ());
-                <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="ident">tclos</span>.<span class="ident">edge_indices_from</span>(<span class="ident">x</span>) {
-                    <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> <span class="ident">tclos</span>.<span class="ident">edge_endpoints</span>(<span class="ident">e</span>).<span class="ident">unwrap</span>().<span class="number">1</span>;
-                    <span class="kw">if</span> <span class="op">!</span><span class="ident">mark</span>[<span class="ident">y</span>.<span class="ident">index</span>()] {
-                        <span class="ident">mark</span>.<span class="ident">insert</span>(<span class="ident">y</span>.<span class="ident">index</span>());
-                        <span class="ident">tclos</span>.<span class="ident">add_edge</span>(<span class="ident">i</span>, <span class="ident">y</span>, ());
+    <span class="comment">// the algorithm relies on this iterator being toposorted
+    </span><span class="kw">for </span>i <span class="kw">in </span>g.node_indices().rev() {
+        <span class="comment">// the algorighm relies on this iterator being toposorted
+        </span><span class="kw">for </span>x <span class="kw">in </span>g.neighbors(i) {
+            <span class="kw">if </span>!mark[x.index()] {
+                tred.add_edge(i, x, ());
+                tclos.add_edge(i, x, ());
+                <span class="kw">for </span>e <span class="kw">in </span>tclos.edge_indices_from(x) {
+                    <span class="kw">let </span>y = tclos.edge_endpoints(e).unwrap().<span class="number">1</span>;
+                    <span class="kw">if </span>!mark[y.index()] {
+                        mark.insert(y.index());
+                        tclos.add_edge(i, y, ());
                     }
                 }
             }
         }
-        <span class="kw">for</span> <span class="ident">y</span> <span class="kw">in</span> <span class="ident">tclos</span>.<span class="ident">neighbors</span>(<span class="ident">i</span>) {
-            <span class="ident">mark</span>.<span class="ident">set</span>(<span class="ident">y</span>.<span class="ident">index</span>(), <span class="bool-val">false</span>);
+        <span class="kw">for </span>y <span class="kw">in </span>tclos.neighbors(i) {
+            mark.set(y.index(), <span class="bool-val">false</span>);
         }
     }
-    (<span class="ident">tred</span>, <span class="ident">tclos</span>)
+    (tred, tclos)
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_easy_tred</span>() {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">input</span> <span class="op">=</span> <span class="ident">List::new</span>();
-    <span class="kw">let</span> <span class="ident">a</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">add_node</span>();
-    <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">add_node</span>();
-    <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">add_node</span>();
-    <span class="ident">input</span>.<span class="ident">add_edge</span>(<span class="ident">a</span>, <span class="ident">b</span>, ());
-    <span class="ident">input</span>.<span class="ident">add_edge</span>(<span class="ident">a</span>, <span class="ident">c</span>, ());
-    <span class="ident">input</span>.<span class="ident">add_edge</span>(<span class="ident">b</span>, <span class="ident">c</span>, ());
-    <span class="kw">let</span> (<span class="ident">tred</span>, <span class="ident">tclos</span>) <span class="op">=</span> <span class="ident">dag_transitive_reduction_closure</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>);
-    <span class="macro">assert_eq!</span>(<span class="ident">tred</span>.<span class="ident">node_count</span>(), <span class="number">3</span>);
-    <span class="macro">assert_eq!</span>(<span class="ident">tclos</span>.<span class="ident">node_count</span>(), <span class="number">3</span>);
-    <span class="macro">assert!</span>(<span class="ident">tred</span>.<span class="ident">find_edge</span>(<span class="ident">a</span>, <span class="ident">b</span>).<span class="ident">is_some</span>());
-    <span class="macro">assert!</span>(<span class="ident">tred</span>.<span class="ident">find_edge</span>(<span class="ident">b</span>, <span class="ident">c</span>).<span class="ident">is_some</span>());
-    <span class="macro">assert!</span>(<span class="ident">tred</span>.<span class="ident">find_edge</span>(<span class="ident">a</span>, <span class="ident">c</span>).<span class="ident">is_none</span>());
-    <span class="macro">assert!</span>(<span class="ident">tclos</span>.<span class="ident">find_edge</span>(<span class="ident">a</span>, <span class="ident">b</span>).<span class="ident">is_some</span>());
-    <span class="macro">assert!</span>(<span class="ident">tclos</span>.<span class="ident">find_edge</span>(<span class="ident">b</span>, <span class="ident">c</span>).<span class="ident">is_some</span>());
-    <span class="macro">assert!</span>(<span class="ident">tclos</span>.<span class="ident">find_edge</span>(<span class="ident">a</span>, <span class="ident">c</span>).<span class="ident">is_some</span>());
+<span class="attribute">#[cfg(test)]
+#[test]
+</span><span class="kw">fn </span>test_easy_tred() {
+    <span class="kw">let </span><span class="kw-2">mut </span>input = List::new();
+    <span class="kw">let </span>a: u8 = input.add_node();
+    <span class="kw">let </span>b = input.add_node();
+    <span class="kw">let </span>c = input.add_node();
+    input.add_edge(a, b, ());
+    input.add_edge(a, c, ());
+    input.add_edge(b, c, ());
+    <span class="kw">let </span>(tred, tclos) = dag_transitive_reduction_closure(<span class="kw-2">&amp;</span>input);
+    <span class="macro">assert_eq!</span>(tred.node_count(), <span class="number">3</span>);
+    <span class="macro">assert_eq!</span>(tclos.node_count(), <span class="number">3</span>);
+    <span class="macro">assert!</span>(tred.find_edge(a, b).is_some());
+    <span class="macro">assert!</span>(tred.find_edge(b, c).is_some());
+    <span class="macro">assert!</span>(tred.find_edge(a, c).is_none());
+    <span class="macro">assert!</span>(tclos.find_edge(a, b).is_some());
+    <span class="macro">assert!</span>(tclos.find_edge(b, c).is_some());
+    <span class="macro">assert!</span>(tclos.find_edge(a, c).is_some());
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="petgraph" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="petgraph" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

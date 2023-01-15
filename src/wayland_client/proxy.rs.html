@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-client-0.29.5/src/proxy.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>proxy.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wayland_client/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../wayland_client/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../wayland_client/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-client-0.29.5/src/proxy.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>proxy.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../wayland_client/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -439,446 +439,446 @@
 <span id="439">439</span>
 <span id="440">440</span>
 <span id="441">441</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Debug</span>, <span class="ident">Formatter</span>};
-<span class="kw">use</span> <span class="ident">std::ops::Deref</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug, Formatter};
+<span class="kw">use </span>std::ops::Deref;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::AnonymousObject</span>;
-<span class="kw">use</span> <span class="ident">wayland_commons::user_data::UserData</span>;
-<span class="kw">use</span> <span class="ident">wayland_commons::Interface</span>;
+<span class="kw">use </span><span class="kw">super</span>::AnonymousObject;
+<span class="kw">use </span>wayland_commons::user_data::UserData;
+<span class="kw">use </span>wayland_commons::Interface;
 
-<span class="kw">use</span> <span class="ident">wayland_sys::client</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>wayland_sys::client::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::event_queue::QueueToken</span>;
+<span class="kw">use </span><span class="kw">crate</span>::event_queue::QueueToken;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::imp::ProxyInner</span>;
+<span class="kw">use </span><span class="kw">crate</span>::imp::ProxyInner;
 
-<span class="kw">use</span> <span class="ident">wayland_commons</span>::{<span class="ident">filter::Filter</span>, <span class="ident">MessageGroup</span>};
+<span class="kw">use </span>wayland_commons::{filter::Filter, MessageGroup};
 
-<span class="doccomment">/// An handle to a wayland proxy</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This represents a wayland object instantiated in your client</span>
-<span class="doccomment">/// session. Several handles to the same object can exist at a given</span>
-<span class="doccomment">/// time, and cloning them won&#39;t create a new protocol object, only</span>
-<span class="doccomment">/// clone the handle. The lifetime of the protocol object is **not**</span>
-<span class="doccomment">/// tied to the lifetime of these handles, but rather to sending or</span>
-<span class="doccomment">/// receiving destroying messages.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// These handles are notably used to send requests to the server. To do this</span>
-<span class="doccomment">/// you need to convert them to the corresponding Rust object (using `.into()`)</span>
-<span class="doccomment">/// and use methods on the Rust object.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This handle is the most conservative one: it can be sent between threads,</span>
-<span class="doccomment">/// but you cannot send any message that would create a new object using it.</span>
-<span class="doccomment">/// You must attach it to a event queue, that will host the newly created objects.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> {
-    <span class="ident">_i</span>: <span class="ident">::std::marker::PhantomData</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">I</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">inner</span>: <span class="ident">ProxyInner</span>,
+<span class="doccomment">/// An handle to a wayland proxy
+///
+/// This represents a wayland object instantiated in your client
+/// session. Several handles to the same object can exist at a given
+/// time, and cloning them won&#39;t create a new protocol object, only
+/// clone the handle. The lifetime of the protocol object is **not**
+/// tied to the lifetime of these handles, but rather to sending or
+/// receiving destroying messages.
+///
+/// These handles are notably used to send requests to the server. To do this
+/// you need to convert them to the corresponding Rust object (using `.into()`)
+/// and use methods on the Rust object.
+///
+/// This handle is the most conservative one: it can be sent between threads,
+/// but you cannot send any message that would create a new object using it.
+/// You must attach it to a event queue, that will host the newly created objects.
+</span><span class="kw">pub struct </span>Proxy&lt;I: Interface&gt; {
+    _i: ::std::marker::PhantomData&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>I&gt;,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) inner: ProxyInner,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cloned</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">clone</span>();
-        <span class="comment">// an owned Proxy must always be detached</span>
-        <span class="ident">cloned</span>.<span class="ident">detach</span>();
-        <span class="ident">Proxy</span> { <span class="ident">_i</span>: <span class="ident">::std::marker::PhantomData</span>, <span class="ident">inner</span>: <span class="ident">cloned</span> }
+<span class="kw">impl</span>&lt;I: Interface&gt; Clone <span class="kw">for </span>Proxy&lt;I&gt; {
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Proxy&lt;I&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>cloned = <span class="self">self</span>.inner.clone();
+        <span class="comment">// an owned Proxy must always be detached
+        </span>cloned.detach();
+        Proxy { _i: ::std::marker::PhantomData, inner: cloned }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;I: Interface&gt; PartialEq <span class="kw">for </span>Proxy&lt;I&gt;
+<span class="kw">where
+    </span>I: AsRef&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">equals</span>(<span class="ident">other</span>)
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Proxy&lt;I&gt;) -&gt; bool {
+        <span class="self">self</span>.equals(other)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}@{}&quot;</span>, <span class="ident">I::NAME</span>, <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">id</span>())
+<span class="kw">impl</span>&lt;I: Interface&gt; Debug <span class="kw">for </span>Proxy&lt;I&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;{}@{}&quot;</span>, I::NAME, <span class="self">self</span>.inner.id())
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">I</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> {}
+<span class="kw">impl</span>&lt;I: Interface&gt; Eq <span class="kw">for </span>Proxy&lt;I&gt; <span class="kw">where </span>I: AsRef&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt; {}
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;I: Interface&gt; Proxy&lt;I&gt;
+<span class="kw">where
+    </span>I: AsRef&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt;,
 {
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">wrap</span>(<span class="ident">inner</span>: <span class="ident">ProxyInner</span>) -&gt; <span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-        <span class="ident">Proxy</span> { <span class="ident">_i</span>: <span class="ident">::std::marker::PhantomData</span>, <span class="ident">inner</span> }
+    <span class="attribute">#[allow(dead_code)]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>wrap(inner: ProxyInner) -&gt; Proxy&lt;I&gt; {
+        Proxy { _i: ::std::marker::PhantomData, inner }
     }
 
-    <span class="doccomment">/// Send a request creating an object through this object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// **Warning:** This method is mostly intended to be used by code generated</span>
-    <span class="doccomment">/// by `wayland-scanner`, and you should probably never need to use it directly,</span>
-    <span class="doccomment">/// but rather use the appropriate methods on the Rust object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This is the generic method to send requests.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send</span><span class="op">&lt;</span><span class="ident">J</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">I::Request</span>, <span class="ident">version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Main</span><span class="op">&lt;</span><span class="ident">J</span><span class="op">&gt;</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">J</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">J</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">J</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Send a request creating an object through this object
+    ///
+    /// **Warning:** This method is mostly intended to be used by code generated
+    /// by `wayland-scanner`, and you should probably never need to use it directly,
+    /// but rather use the appropriate methods on the Rust object.
+    ///
+    /// This is the generic method to send requests.
+    </span><span class="kw">pub fn </span>send&lt;J&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, msg: I::Request, version: <span class="prelude-ty">Option</span>&lt;u32&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;Main&lt;J&gt;&gt;
+    <span class="kw">where
+        </span>J: Interface + AsRef&lt;Proxy&lt;J&gt;&gt; + From&lt;Proxy&lt;J&gt;&gt;,
     {
-        <span class="kw">if</span> <span class="ident">msg</span>.<span class="ident">since</span>() <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">version</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">version</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="kw">let</span> <span class="ident">opcode</span> <span class="op">=</span> <span class="ident">msg</span>.<span class="ident">opcode</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">if </span>msg.since() &gt; <span class="self">self</span>.version() &amp;&amp; <span class="self">self</span>.version() &gt; <span class="number">0 </span>{
+            <span class="kw">let </span>opcode = msg.opcode() <span class="kw">as </span>usize;
             <span class="macro">panic!</span>(
                 <span class="string">&quot;Cannot send request {} which requires version &gt;= {} on proxy {}@{} which is version {}.&quot;</span>,
-                <span class="ident">I::Request::MESSAGES</span>[<span class="ident">opcode</span>].<span class="ident">name</span>,
-                <span class="ident">msg</span>.<span class="ident">since</span>(),
-                <span class="ident">I::NAME</span>,
-                <span class="self">self</span>.<span class="ident">id</span>(),
-                <span class="self">self</span>.<span class="ident">version</span>()
+                I::Request::MESSAGES[opcode].name,
+                msg.since(),
+                I::NAME,
+                <span class="self">self</span>.id(),
+                <span class="self">self</span>.version()
             );
         }
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">send</span>::<span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">J</span><span class="op">&gt;</span>(<span class="ident">msg</span>, <span class="ident">version</span>).<span class="ident">map</span>(<span class="ident">Main::wrap</span>)
+        <span class="self">self</span>.inner.send::&lt;I, J&gt;(msg, version).map(Main::wrap)
     }
 
-    <span class="doccomment">/// Check if the object associated with this proxy is still alive</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Will return `false` if the object has been destroyed.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the object is not managed by this library (if it was created from a raw</span>
-    <span class="doccomment">/// pointer from some other library your program interfaces with), this will always</span>
-    <span class="doccomment">/// returns `true`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_alive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">is_alive</span>()
+    <span class="doccomment">/// Check if the object associated with this proxy is still alive
+    ///
+    /// Will return `false` if the object has been destroyed.
+    ///
+    /// If the object is not managed by this library (if it was created from a raw
+    /// pointer from some other library your program interfaces with), this will always
+    /// returns `true`.
+    </span><span class="kw">pub fn </span>is_alive(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.inner.is_alive()
     }
 
-    <span class="doccomment">/// Retrieve the interface version of this wayland object instance</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Returns 0 on dead objects</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">version</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">version</span>()
+    <span class="doccomment">/// Retrieve the interface version of this wayland object instance
+    ///
+    /// Returns 0 on dead objects
+    </span><span class="kw">pub fn </span>version(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="self">self</span>.inner.version()
     }
 
-    <span class="doccomment">/// Retrieve the object id of this wayland object</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">id</span>()
+    <span class="doccomment">/// Retrieve the object id of this wayland object
+    </span><span class="kw">pub fn </span>id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="self">self</span>.inner.id()
     }
 
-    <span class="doccomment">/// Access the UserData associated to this object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Each wayland object has an associated UserData, that can store</span>
-    <span class="doccomment">/// a payload of arbitrary type and is shared by all proxies of this</span>
-    <span class="doccomment">/// object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// See [`UserData`](struct.UserData.html) documentation for more details.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">user_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">UserData</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">user_data</span>()
+    <span class="doccomment">/// Access the UserData associated to this object
+    ///
+    /// Each wayland object has an associated UserData, that can store
+    /// a payload of arbitrary type and is shared by all proxies of this
+    /// object.
+    ///
+    /// See [`UserData`](struct.UserData.html) documentation for more details.
+    </span><span class="kw">pub fn </span>user_data(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>UserData {
+        <span class="self">self</span>.inner.user_data()
     }
 
-    <span class="doccomment">/// Check if the other proxy refers to the same underlying wayland object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// You can also use the `PartialEq` implementation.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">equals</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">equals</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">inner</span>)
+    <span class="doccomment">/// Check if the other proxy refers to the same underlying wayland object
+    ///
+    /// You can also use the `PartialEq` implementation.
+    </span><span class="kw">pub fn </span>equals(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Proxy&lt;I&gt;) -&gt; bool {
+        <span class="self">self</span>.inner.equals(<span class="kw-2">&amp;</span>other.inner)
     }
 
-    <span class="doccomment">/// Attach this proxy to the event queue represented by this token</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Once a proxy is attached, you can use it to send requests that</span>
-    <span class="doccomment">/// create new objects. These new objects will be handled by the</span>
-    <span class="doccomment">/// event queue represented by the provided token.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This does not impact the events received by this object, which</span>
-    <span class="doccomment">/// are still handled by their original event queue.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">attach</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">token</span>: <span class="ident">QueueToken</span>) -&gt; <span class="ident">Attached</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">other</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>();
-        <span class="ident">other</span>.<span class="ident">inner</span>.<span class="ident">attach</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>.<span class="ident">inner</span>);
-        <span class="ident">Attached</span> { <span class="ident">inner</span>: <span class="ident">other</span>.<span class="ident">into</span>(), <span class="ident">_s</span>: <span class="ident">std::marker::PhantomData</span> }
+    <span class="doccomment">/// Attach this proxy to the event queue represented by this token
+    ///
+    /// Once a proxy is attached, you can use it to send requests that
+    /// create new objects. These new objects will be handled by the
+    /// event queue represented by the provided token.
+    ///
+    /// This does not impact the events received by this object, which
+    /// are still handled by their original event queue.
+    </span><span class="kw">pub fn </span>attach(<span class="kw-2">&amp;</span><span class="self">self</span>, token: QueueToken) -&gt; Attached&lt;I&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>other = <span class="self">self</span>.clone();
+        other.inner.attach(<span class="kw-2">&amp;</span>token.inner);
+        Attached { inner: other.into(), _s: std::marker::PhantomData }
     }
 
-    <span class="doccomment">/// Erase the actual type of this proxy</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">anonymize</span>(<span class="self">self</span>) -&gt; <span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">AnonymousObject</span><span class="op">&gt;</span> {
-        <span class="ident">Proxy</span> { <span class="ident">_i</span>: <span class="ident">::std::marker::PhantomData</span>, <span class="ident">inner</span>: <span class="self">self</span>.<span class="ident">inner</span> }
+    <span class="doccomment">/// Erase the actual type of this proxy
+    </span><span class="kw">pub fn </span>anonymize(<span class="self">self</span>) -&gt; Proxy&lt;AnonymousObject&gt; {
+        Proxy { _i: ::std::marker::PhantomData, inner: <span class="self">self</span>.inner }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">AnonymousObject</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Attempt to recover the typed variant of an anonymous proxy</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deanonymize</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">is_interface</span>::<span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>() {
-            <span class="prelude-val">Ok</span>(<span class="ident">Proxy</span> { <span class="ident">inner</span>: <span class="self">self</span>.<span class="ident">inner</span>, <span class="ident">_i</span>: <span class="ident">::std::marker::PhantomData</span> })
-        } <span class="kw">else</span> {
+<span class="kw">impl </span>Proxy&lt;AnonymousObject&gt; {
+    <span class="doccomment">/// Attempt to recover the typed variant of an anonymous proxy
+    </span><span class="kw">pub fn </span>deanonymize&lt;I: Interface&gt;(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Proxy&lt;I&gt;, <span class="self">Self</span>&gt; {
+        <span class="kw">if </span><span class="self">self</span>.inner.is_interface::&lt;I&gt;() {
+            <span class="prelude-val">Ok</span>(Proxy { inner: <span class="self">self</span>.inner, _i: ::std::marker::PhantomData })
+        } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(<span class="self">self</span>)
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Attached</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}[ATTACHED]&quot;</span>, <span class="self">self</span>.<span class="ident">inner</span>)
+<span class="kw">impl</span>&lt;I: Interface + Debug&gt; Debug <span class="kw">for </span>Attached&lt;I&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;{:?}[ATTACHED]&quot;</span>, <span class="self">self</span>.inner)
     }
 }
 
-<span class="doccomment">/// A handle to a proxy that has been attached to an event queue</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// As opposed to `Proxy`, you can use it to send requests</span>
-<span class="doccomment">/// that create new objects. The created objects will be handled</span>
-<span class="doccomment">/// by the event queue this proxy has been attached to.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Attached</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> {
-    <span class="comment">// AttachedProxy is *not* send/sync</span>
-    <span class="ident">_s</span>: <span class="ident">::std::marker::PhantomData</span><span class="op">&lt;</span><span class="kw-2">*mut</span> ()<span class="op">&gt;</span>,
-    <span class="ident">inner</span>: <span class="ident">I</span>,
+<span class="doccomment">/// A handle to a proxy that has been attached to an event queue
+///
+/// As opposed to `Proxy`, you can use it to send requests
+/// that create new objects. The created objects will be handled
+/// by the event queue this proxy has been attached to.
+</span><span class="attribute">#[derive(PartialEq)]
+</span><span class="kw">pub struct </span>Attached&lt;I: Interface&gt; {
+    <span class="comment">// AttachedProxy is *not* send/sync
+    </span>_s: ::std::marker::PhantomData&lt;<span class="kw-2">*mut </span>()&gt;,
+    inner: I,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Attached</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;I: Interface&gt; Attached&lt;I&gt;
+<span class="kw">where
+    </span>I: Into&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt; + AsRef&lt;Proxy&lt;I&gt;&gt;,
 {
-    <span class="doccomment">/// Create a non-attached handle from this one</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">detach</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">I</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">as_ref</span>().<span class="ident">clone</span>().<span class="ident">into</span>()
+    <span class="doccomment">/// Create a non-attached handle from this one
+    </span><span class="kw">pub fn </span>detach(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; I {
+        <span class="self">self</span>.inner.as_ref().clone().into()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">Attached</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">I</span>;
+<span class="kw">impl</span>&lt;I: Interface&gt; Deref <span class="kw">for </span>Attached&lt;I&gt; {
+    <span class="kw">type </span>Target = I;
 
-    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">I</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>
+    <span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>I {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.inner
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Attached</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;I: Interface&gt; Clone <span class="kw">for </span>Attached&lt;I&gt;
+<span class="kw">where
+    </span>I: AsRef&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Attached</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">cloned</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">as_ref</span>().<span class="ident">inner</span>.<span class="ident">clone</span>();
-        <span class="ident">Attached</span> {
-            <span class="ident">inner</span>: <span class="ident">Proxy</span> { <span class="ident">_i</span>: <span class="ident">std::marker::PhantomData</span>, <span class="ident">inner</span>: <span class="ident">cloned</span> }.<span class="ident">into</span>(),
-            <span class="ident">_s</span>: <span class="ident">std::marker::PhantomData</span>,
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Attached&lt;I&gt; {
+        <span class="kw">let </span>cloned = <span class="self">self</span>.inner.as_ref().inner.clone();
+        Attached {
+            inner: Proxy { _i: std::marker::PhantomData, inner: cloned }.into(),
+            _s: std::marker::PhantomData,
         }
     }
 }
 
-<span class="doccomment">/// A main handle to a proxy</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This handle allows the same control as an `Attached` handle,</span>
-<span class="doccomment">/// but additionnaly can be used to assign the proxy to a `Filter`,</span>
-<span class="doccomment">/// in order to process its events.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="ident">inner</span>: <span class="ident">Attached</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>,
+<span class="doccomment">/// A main handle to a proxy
+///
+/// This handle allows the same control as an `Attached` handle,
+/// but additionnaly can be used to assign the proxy to a `Filter`,
+/// in order to process its events.
+</span><span class="attribute">#[derive(Clone, PartialEq)]
+</span><span class="kw">pub struct </span>Main&lt;I: Interface + AsRef&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt;&gt; {
+    inner: Attached&lt;I&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;I: Interface&gt; Main&lt;I&gt;
+<span class="kw">where
+    </span>I: AsRef&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt;,
 {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">wrap</span>(<span class="ident">inner</span>: <span class="ident">ProxyInner</span>) -&gt; <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-        <span class="ident">Main</span> {
-            <span class="ident">inner</span>: <span class="ident">Attached</span> {
-                <span class="ident">inner</span>: <span class="ident">Proxy</span> { <span class="ident">_i</span>: <span class="ident">std::marker::PhantomData</span>, <span class="ident">inner</span> }.<span class="ident">into</span>(),
-                <span class="ident">_s</span>: <span class="ident">std::marker::PhantomData</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>wrap(inner: ProxyInner) -&gt; Main&lt;I&gt; {
+        Main {
+            inner: Attached {
+                inner: Proxy { _i: std::marker::PhantomData, inner }.into(),
+                _s: std::marker::PhantomData,
             },
         }
     }
 
-    <span class="doccomment">/// Assign this object to given filter</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// All future event received by this object will be delivered to this</span>
-    <span class="doccomment">/// filter.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// An object that is not assigned to any filter will see its events</span>
-    <span class="doccomment">/// delivered to the fallback callback of its event queue.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Event message type of the filter should verify</span>
-    <span class="doccomment">/// `E: From&lt;(Main&lt;I&gt;, I::Event)&gt;`. See the `event_enum!` macro provided</span>
-    <span class="doccomment">/// in this library to easily generate appropriate types.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">assign</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">filter</span>: <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>)
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">Sync</span>,
-        <span class="ident">E</span>: <span class="ident">From</span><span class="op">&lt;</span>(<span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">I::Event</span>)<span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">I::Event</span>: <span class="ident">MessageGroup</span><span class="op">&lt;</span><span class="ident">Map</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::ProxyMap</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Assign this object to given filter
+    ///
+    /// All future event received by this object will be delivered to this
+    /// filter.
+    ///
+    /// An object that is not assigned to any filter will see its events
+    /// delivered to the fallback callback of its event queue.
+    ///
+    /// Event message type of the filter should verify
+    /// `E: From&lt;(Main&lt;I&gt;, I::Event)&gt;`. See the `event_enum!` macro provided
+    /// in this library to easily generate appropriate types.
+    </span><span class="kw">pub fn </span>assign&lt;E&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, filter: Filter&lt;E&gt;)
+    <span class="kw">where
+        </span>I: Sync,
+        E: From&lt;(Main&lt;I&gt;, I::Event)&gt; + <span class="lifetime">&#39;static</span>,
+        I::Event: MessageGroup&lt;Map = <span class="kw">crate</span>::ProxyMap&gt;,
     {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">inner</span>.<span class="ident">as_ref</span>().<span class="ident">inner</span>.<span class="ident">assign</span>(<span class="ident">filter</span>);
+        <span class="self">self</span>.inner.inner.as_ref().inner.assign(filter);
     }
 
-    <span class="doccomment">/// Shorthand for assigning a closure to an object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Behaves similarly as `assign(..)`, but is a shorthand if</span>
-    <span class="doccomment">/// you want to assign this object to its own filter. In which</span>
-    <span class="doccomment">/// case you just need to provide the appropriate closure, of</span>
-    <span class="doccomment">/// type `FnMut(Main&lt;I&gt;, I::Event)`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">quick_assign</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>)
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Sync</span>,
-        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">I::Event</span>, <span class="ident"><span class="kw">crate</span>::DispatchData</span>) <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">I::Event</span>: <span class="ident">MessageGroup</span><span class="op">&lt;</span><span class="ident">Map</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::ProxyMap</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Shorthand for assigning a closure to an object
+    ///
+    /// Behaves similarly as `assign(..)`, but is a shorthand if
+    /// you want to assign this object to its own filter. In which
+    /// case you just need to provide the appropriate closure, of
+    /// type `FnMut(Main&lt;I&gt;, I::Event)`.
+    </span><span class="kw">pub fn </span>quick_assign&lt;F&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>f: F)
+    <span class="kw">where
+        </span>I: Interface + AsRef&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt; + Sync,
+        F: FnMut(Main&lt;I&gt;, I::Event, <span class="kw">crate</span>::DispatchData) + <span class="lifetime">&#39;static</span>,
+        I::Event: MessageGroup&lt;Map = <span class="kw">crate</span>::ProxyMap&gt;,
     {
-        <span class="self">self</span>.<span class="ident">assign</span>(<span class="ident">Filter::new</span>(<span class="kw">move</span> <span class="op">|</span>(<span class="ident">proxy</span>, <span class="ident">event</span>), <span class="kw">_</span>, <span class="ident">data</span><span class="op">|</span> <span class="ident">f</span>(<span class="ident">proxy</span>, <span class="ident">event</span>, <span class="ident">data</span>)))
+        <span class="self">self</span>.assign(Filter::new(<span class="kw">move </span>|(proxy, event), <span class="kw">_</span>, data| f(proxy, event, data)))
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">AnonymousObject</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Attempt to recover the typed variant of an anonymous proxy</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deanonymize</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>(
+<span class="kw">impl </span>Main&lt;AnonymousObject&gt; {
+    <span class="doccomment">/// Attempt to recover the typed variant of an anonymous proxy
+    </span><span class="kw">pub fn </span>deanonymize&lt;I: Interface + AsRef&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt;&gt;(
         <span class="self">self</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">as_ref</span>().<span class="ident">inner</span>.<span class="ident">is_interface</span>::<span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>() {
-            <span class="prelude-val">Ok</span>(<span class="ident">Main</span> {
-                <span class="ident">inner</span>: <span class="ident">Attached</span> {
-                    <span class="ident">inner</span>: <span class="ident">Proxy</span> { <span class="ident">_i</span>: <span class="ident">std::marker::PhantomData</span>, <span class="ident">inner</span>: <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">inner</span>.<span class="number">0</span>.<span class="ident">inner</span> }
-                        .<span class="ident">into</span>(),
-                    <span class="ident">_s</span>: <span class="ident">std::marker::PhantomData</span>,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;Main&lt;I&gt;, <span class="self">Self</span>&gt; {
+        <span class="kw">if </span><span class="self">self</span>.inner.as_ref().inner.is_interface::&lt;I&gt;() {
+            <span class="prelude-val">Ok</span>(Main {
+                inner: Attached {
+                    inner: Proxy { _i: std::marker::PhantomData, inner: <span class="self">self</span>.inner.inner.<span class="number">0</span>.inner }
+                        .into(),
+                    _s: std::marker::PhantomData,
                 },
             })
-        } <span class="kw">else</span> {
+        } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(<span class="self">self</span>)
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;I: Interface&gt; Deref <span class="kw">for </span>Main&lt;I&gt;
+<span class="kw">where
+    </span>I: AsRef&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">Attached</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>;
+    <span class="kw">type </span>Target = Attached&lt;I&gt;;
 
-    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Attached</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>
+    <span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Attached&lt;I&gt; {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.inner
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Attached</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;I: Interface&gt; From&lt;Main&lt;I&gt;&gt; <span class="kw">for </span>Attached&lt;I&gt;
+<span class="kw">where
+    </span>I: AsRef&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">main</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>) -&gt; <span class="ident">Attached</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-        <span class="ident">main</span>.<span class="ident">inner</span>
+    <span class="kw">fn </span>from(main: Main&lt;I&gt;) -&gt; Attached&lt;I&gt; {
+        main.inner
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">Debug</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;I: Interface&gt; Debug <span class="kw">for </span>Main&lt;I&gt;
+<span class="kw">where
+    </span>I: Debug + AsRef&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}[MAIN]&quot;</span>, <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">inner</span>)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;{:?}[MAIN]&quot;</span>, <span class="self">self</span>.inner.inner)
     }
 }
 
 <span class="comment">/*
  * C-interfacing stuff
- */</span>
+ */
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span> <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+</span><span class="kw">impl</span>&lt;I: Interface&gt; Main&lt;I&gt;
+<span class="kw">where
+    </span>I: AsRef&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt;,
 {
-    <span class="doccomment">/// Create a `Main` instance from a C pointer</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Create a `Main` from a raw pointer to a wayland object from the</span>
-    <span class="doccomment">/// C library.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// In order to handle protocol races, invoking it with a NULL pointer will</span>
-    <span class="doccomment">/// create an already-dead object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// NOTE: This method will panic if called while the `use_system_lib` feature is</span>
-    <span class="doccomment">/// not activated.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This will take control of the underlying proxy &amp; manage it. To be safe</span>
-    <span class="doccomment">/// you must ensure that:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - The provided proxy has not already been used in any way (it was just created)</span>
-    <span class="doccomment">/// - This is called from the same thread as the one hosting the event queue</span>
-    <span class="doccomment">///   handling this proxy</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_c_ptr</span>(<span class="ident">_ptr</span>: <span class="kw-2">*mut</span> <span class="ident">wl_proxy</span>) -&gt; <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>)]</span>
-        {
-            <span class="ident">Main::wrap</span>(<span class="ident">ProxyInner::init_from_c_ptr</span>::<span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>(<span class="ident">_ptr</span>))
+    <span class="doccomment">/// Create a `Main` instance from a C pointer
+    ///
+    /// Create a `Main` from a raw pointer to a wayland object from the
+    /// C library.
+    ///
+    /// In order to handle protocol races, invoking it with a NULL pointer will
+    /// create an already-dead object.
+    ///
+    /// NOTE: This method will panic if called while the `use_system_lib` feature is
+    /// not activated.
+    ///
+    /// # Safety
+    ///
+    /// This will take control of the underlying proxy &amp; manage it. To be safe
+    /// you must ensure that:
+    ///
+    /// - The provided proxy has not already been used in any way (it was just created)
+    /// - This is called from the same thread as the one hosting the event queue
+    ///   handling this proxy
+    </span><span class="kw">pub unsafe fn </span>from_c_ptr(_ptr: <span class="kw-2">*mut </span>wl_proxy) -&gt; Main&lt;I&gt; {
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;use_system_lib&quot;</span>)]
+        </span>{
+            Main::wrap(ProxyInner::init_from_c_ptr::&lt;I&gt;(_ptr))
         }
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>))]</span>
-        {
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;use_system_lib&quot;</span>))]
+        </span>{
             <span class="macro">panic!</span>(<span class="string">&quot;[wayland-client] C interfacing methods can only be used with the `use_system_lib` cargo feature.&quot;</span>)
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Check whether this proxy is managed by the library or not</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// See `from_c_ptr` for details.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// NOTE: This method will panic if called while the `use_system_lib` feature is</span>
-    <span class="doccomment">/// not activated.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_external</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>)]</span>
-        {
-            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">is_external</span>()
+<span class="kw">impl</span>&lt;I: Interface + AsRef&lt;Proxy&lt;I&gt;&gt; + From&lt;Proxy&lt;I&gt;&gt;&gt; Proxy&lt;I&gt; {
+    <span class="doccomment">/// Check whether this proxy is managed by the library or not
+    ///
+    /// See `from_c_ptr` for details.
+    ///
+    /// NOTE: This method will panic if called while the `use_system_lib` feature is
+    /// not activated.
+    </span><span class="kw">pub fn </span>is_external(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;use_system_lib&quot;</span>)]
+        </span>{
+            <span class="self">self</span>.inner.is_external()
         }
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>))]</span>
-        {
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;use_system_lib&quot;</span>))]
+        </span>{
             <span class="macro">panic!</span>(<span class="string">&quot;[wayland-client] C interfacing methods can only be used with the `use_system_lib` cargo feature.&quot;</span>)
         }
     }
 
-    <span class="doccomment">/// Get a raw pointer to the underlying wayland object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Retrieve a pointer to the object from the `libwayland-client.so` library.</span>
-    <span class="doccomment">/// You will mostly need it to interface with C libraries needing access</span>
-    <span class="doccomment">/// to wayland objects (to initialize an opengl context for example).</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// NOTE: This method will panic if called while the `use_system_lib` feature is</span>
-    <span class="doccomment">/// not activated.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">c_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wl_proxy</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>)]</span>
-        {
-            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">c_ptr</span>()
+    <span class="doccomment">/// Get a raw pointer to the underlying wayland object
+    ///
+    /// Retrieve a pointer to the object from the `libwayland-client.so` library.
+    /// You will mostly need it to interface with C libraries needing access
+    /// to wayland objects (to initialize an opengl context for example).
+    ///
+    /// NOTE: This method will panic if called while the `use_system_lib` feature is
+    /// not activated.
+    </span><span class="kw">pub fn </span>c_ptr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut </span>wl_proxy {
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;use_system_lib&quot;</span>)]
+        </span>{
+            <span class="self">self</span>.inner.c_ptr()
         }
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>))]</span>
-        {
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;use_system_lib&quot;</span>))]
+        </span>{
             <span class="macro">panic!</span>(<span class="string">&quot;[wayland-client] C interfacing methods can only be used with the `use_system_lib` cargo feature.&quot;</span>)
         }
     }
 
-    <span class="doccomment">/// Create a `Proxy` instance from a C pointer</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Create a `Proxy` from a raw pointer to a wayland object from the</span>
-    <span class="doccomment">/// C library.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the pointer was previously obtained by the `c_ptr()` method, this</span>
-    <span class="doccomment">/// constructs a new proxy for the same object just like the `clone()`</span>
-    <span class="doccomment">/// method would have.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the object was created by some other C library you are interfacing</span>
-    <span class="doccomment">/// with, it will be created in an &quot;unmanaged&quot; state: wayland-client will</span>
-    <span class="doccomment">/// treat it as foreign, and as such most of the safeties will be absent.</span>
-    <span class="doccomment">/// Notably the lifetime of the object can&#39;t be tracked, so the `alive()`</span>
-    <span class="doccomment">/// method will always return `true` and you are responsible of not using</span>
-    <span class="doccomment">/// an object past its destruction (as this would cause a protocol error).</span>
-    <span class="doccomment">/// You will also be unable to associate any user data value to this object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// In order to handle protocol races, invoking it with a NULL pointer will</span>
-    <span class="doccomment">/// create an already-dead object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// NOTE: This method will panic if called while the `use_system_lib` feature is</span>
-    <span class="doccomment">/// not activated.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The provided pointer must point to a valid wayland object from `libwayland-client`</span>
-    <span class="doccomment">/// with the correct interface.</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_c_ptr</span>(<span class="ident">_ptr</span>: <span class="kw-2">*mut</span> <span class="ident">wl_proxy</span>) -&gt; <span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Create a `Proxy` instance from a C pointer
+    ///
+    /// Create a `Proxy` from a raw pointer to a wayland object from the
+    /// C library.
+    ///
+    /// If the pointer was previously obtained by the `c_ptr()` method, this
+    /// constructs a new proxy for the same object just like the `clone()`
+    /// method would have.
+    ///
+    /// If the object was created by some other C library you are interfacing
+    /// with, it will be created in an &quot;unmanaged&quot; state: wayland-client will
+    /// treat it as foreign, and as such most of the safeties will be absent.
+    /// Notably the lifetime of the object can&#39;t be tracked, so the `alive()`
+    /// method will always return `true` and you are responsible of not using
+    /// an object past its destruction (as this would cause a protocol error).
+    /// You will also be unable to associate any user data value to this object.
+    ///
+    /// In order to handle protocol races, invoking it with a NULL pointer will
+    /// create an already-dead object.
+    ///
+    /// NOTE: This method will panic if called while the `use_system_lib` feature is
+    /// not activated.
+    ///
+    /// # Safety
+    ///
+    /// The provided pointer must point to a valid wayland object from `libwayland-client`
+    /// with the correct interface.
+    </span><span class="kw">pub unsafe fn </span>from_c_ptr(_ptr: <span class="kw-2">*mut </span>wl_proxy) -&gt; Proxy&lt;I&gt;
+    <span class="kw">where
+        </span>I: From&lt;Proxy&lt;I&gt;&gt;,
     {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>)]</span>
-        {
-            <span class="ident">Proxy</span> { <span class="ident">_i</span>: <span class="ident">::std::marker::PhantomData</span>, <span class="ident">inner</span>: <span class="ident">ProxyInner::from_c_ptr</span>::<span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>(<span class="ident">_ptr</span>) }
+        <span class="attribute">#[cfg(feature = <span class="string">&quot;use_system_lib&quot;</span>)]
+        </span>{
+            Proxy { _i: ::std::marker::PhantomData, inner: ProxyInner::from_c_ptr::&lt;I&gt;(_ptr) }
         }
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>))]</span>
-        {
+        <span class="attribute">#[cfg(not(feature = <span class="string">&quot;use_system_lib&quot;</span>))]
+        </span>{
             <span class="macro">panic!</span>(<span class="string">&quot;[wayland-client] C interfacing methods can only be used with the `use_system_lib` cargo feature.&quot;</span>)
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_client" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_client" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

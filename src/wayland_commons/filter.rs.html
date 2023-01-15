@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-commons-0.29.5/src/filter.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>filter.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wayland_commons/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../wayland_commons/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../wayland_commons/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-commons-0.29.5/src/filter.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>filter.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../wayland_commons/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -107,114 +107,114 @@
 <span id="107">107</span>
 <span id="108">108</span>
 <span id="109">109</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Filter</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Filter
 
-<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">cell::RefCell</span>, <span class="ident">collections::VecDeque</span>, <span class="ident">rc::Rc</span>};
+</span><span class="kw">use </span>std::{cell::RefCell, collections::VecDeque, rc::Rc};
 
-<span class="doccomment">/// Holder of global dispatch-related data</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This struct serves as a dynamic container for the dispatch-time</span>
-<span class="doccomment">/// global data that you gave to the dispatch method, and is given as</span>
-<span class="doccomment">/// input to all your callbacks. It allows you to share global state</span>
-<span class="doccomment">/// between your filters.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The main method of interest is the `get` method, which allows you to</span>
-<span class="doccomment">/// access a `&amp;mut _` reference to the global data itself. The other methods</span>
-<span class="doccomment">/// are mostly used internally by the crate.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="kw">dyn</span> <span class="ident">std::any::Any</span>,
+<span class="doccomment">/// Holder of global dispatch-related data
+///
+/// This struct serves as a dynamic container for the dispatch-time
+/// global data that you gave to the dispatch method, and is given as
+/// input to all your callbacks. It allows you to share global state
+/// between your filters.
+///
+/// The main method of interest is the `get` method, which allows you to
+/// access a `&amp;mut _` reference to the global data itself. The other methods
+/// are mostly used internally by the crate.
+</span><span class="kw">pub struct </span>DispatchData&lt;<span class="lifetime">&#39;a</span>&gt; {
+    data: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span><span class="kw">dyn </span>std::any::Any,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-        <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;DispatchData { ... }&quot;</span>)
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; std::fmt::Debug <span class="kw">for </span>DispatchData&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        f.write_str(<span class="string">&quot;DispatchData { ... }&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Access the dispatch data knowing its type</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Will return `None` if the provided type is not the correct</span>
-    <span class="doccomment">/// inner type.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">std::any::Any</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;mut</span> <span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">downcast_mut</span>()
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; DispatchData&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// Access the dispatch data knowing its type
+    ///
+    /// Will return `None` if the provided type is not the correct
+    /// inner type.
+    </span><span class="kw">pub fn </span>get&lt;T: std::any::Any&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>T&gt; {
+        <span class="self">self</span>.data.downcast_mut()
     }
 
-    <span class="doccomment">/// Wrap a mutable reference</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This creates a new `DispatchData` from a mutable reference</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wrap</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">std::any::Any</span><span class="op">&gt;</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">T</span>) -&gt; <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-        <span class="ident">DispatchData</span> { <span class="ident">data</span> }
+    <span class="doccomment">/// Wrap a mutable reference
+    ///
+    /// This creates a new `DispatchData` from a mutable reference
+    </span><span class="kw">pub fn </span>wrap&lt;T: std::any::Any&gt;(data: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>T) -&gt; DispatchData&lt;<span class="lifetime">&#39;a</span>&gt; {
+        DispatchData { data }
     }
 
-    <span class="doccomment">/// Reborrows this `DispatchData` to create a new one with the same content</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This is a quick and cheap way to propagate the `DispatchData` down a</span>
-    <span class="doccomment">/// callback stack by value. It is basically a noop only there to ease</span>
-    <span class="doccomment">/// work with the borrow checker.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">reborrow</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">DispatchData</span> {
-        <span class="ident">DispatchData</span> { <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">data</span> }
-    }
-}
-
-<span class="kw">struct</span> <span class="ident">Inner</span><span class="op">&lt;</span><span class="ident">E</span>, <span class="ident">F</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> {
-    <span class="ident">pending</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">VecDeque</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">cb</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">type</span> <span class="ident">DynInner</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Inner</span><span class="op">&lt;</span><span class="ident">E</span>, <span class="kw">dyn</span> <span class="ident">FnMut</span>(<span class="ident">E</span>, <span class="kw-2">&amp;</span><span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>, <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>)<span class="op">&gt;</span>;
-
-<span class="doccomment">/// An event filter</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Can be used in wayland-client and wayland-server to aggregate</span>
-<span class="doccomment">/// messages from different objects into the same closure.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// You need to provide it a closure of type `FnMut(E, &amp;Filter&lt;E&gt;)`,</span>
-<span class="doccomment">/// which will be called any time a message is sent to the filter</span>
-<span class="doccomment">/// via the `send(..)` method. Your closure also receives a handle</span>
-<span class="doccomment">/// to the filter as argument, so that you can use it from within</span>
-<span class="doccomment">/// the callback (to assign new wayland objects to this filter for</span>
-<span class="doccomment">/// example).</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The `Filter` can be cloned, and all clones send messages to the</span>
-<span class="doccomment">/// same closure. However it is not threadsafe.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> {
-    <span class="ident">inner</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">DynInner</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">E</span>: <span class="ident">std::fmt::Debug</span><span class="op">&gt;</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-        <span class="ident">f</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;Filter&quot;</span>).<span class="ident">field</span>(<span class="string">&quot;pending&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">pending</span>).<span class="ident">finish</span>()
+    <span class="doccomment">/// Reborrows this `DispatchData` to create a new one with the same content
+    ///
+    /// This is a quick and cheap way to propagate the `DispatchData` down a
+    /// callback stack by value. It is basically a noop only there to ease
+    /// work with the borrow checker.
+    </span><span class="kw">pub fn </span>reborrow(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; DispatchData {
+        DispatchData { data: <span class="kw-2">&amp;mut *</span><span class="self">self</span>.data }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> {
-        <span class="ident">Filter</span> { <span class="ident">inner</span>: <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">clone</span>() }
+<span class="kw">struct </span>Inner&lt;E, F: <span class="question-mark">?</span>Sized&gt; {
+    pending: RefCell&lt;VecDeque&lt;E&gt;&gt;,
+    cb: RefCell&lt;F&gt;,
+}
+
+<span class="kw">type </span>DynInner&lt;E&gt; = Inner&lt;E, <span class="kw">dyn </span>FnMut(E, <span class="kw-2">&amp;</span>Filter&lt;E&gt;, DispatchData&lt;<span class="lifetime">&#39;_</span>&gt;)&gt;;
+
+<span class="doccomment">/// An event filter
+///
+/// Can be used in wayland-client and wayland-server to aggregate
+/// messages from different objects into the same closure.
+///
+/// You need to provide it a closure of type `FnMut(E, &amp;Filter&lt;E&gt;)`,
+/// which will be called any time a message is sent to the filter
+/// via the `send(..)` method. Your closure also receives a handle
+/// to the filter as argument, so that you can use it from within
+/// the callback (to assign new wayland objects to this filter for
+/// example).
+///
+/// The `Filter` can be cloned, and all clones send messages to the
+/// same closure. However it is not threadsafe.
+</span><span class="kw">pub struct </span>Filter&lt;E&gt; {
+    inner: Rc&lt;DynInner&lt;E&gt;&gt;,
+}
+
+<span class="kw">impl</span>&lt;E: std::fmt::Debug&gt; std::fmt::Debug <span class="kw">for </span>Filter&lt;E&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">&quot;Filter&quot;</span>).field(<span class="string">&quot;pending&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.inner.pending).finish()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Create a new filter from given closure</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">E</span>, <span class="kw-2">&amp;</span><span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>, <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">f</span>: <span class="ident">F</span>) -&gt; <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> {
-        <span class="ident">Filter</span> {
-            <span class="ident">inner</span>: <span class="ident">Rc::new</span>(<span class="ident">Inner</span> { <span class="ident">pending</span>: <span class="ident">RefCell::new</span>(<span class="ident">VecDeque::new</span>()), <span class="ident">cb</span>: <span class="ident">RefCell::new</span>(<span class="ident">f</span>) }),
+<span class="kw">impl</span>&lt;E&gt; Clone <span class="kw">for </span>Filter&lt;E&gt; {
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Filter&lt;E&gt; {
+        Filter { inner: <span class="self">self</span>.inner.clone() }
+    }
+}
+
+<span class="kw">impl</span>&lt;E&gt; Filter&lt;E&gt; {
+    <span class="doccomment">/// Create a new filter from given closure
+    </span><span class="kw">pub fn </span>new&lt;F: FnMut(E, <span class="kw-2">&amp;</span>Filter&lt;E&gt;, DispatchData&lt;<span class="lifetime">&#39;_</span>&gt;) + <span class="lifetime">&#39;static</span>&gt;(f: F) -&gt; Filter&lt;E&gt; {
+        Filter {
+            inner: Rc::new(Inner { pending: RefCell::new(VecDeque::new()), cb: RefCell::new(f) }),
         }
     }
 
-    <span class="doccomment">/// Send a message to this filter</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">evt</span>: <span class="ident">E</span>, <span class="kw-2">mut</span> <span class="ident">data</span>: <span class="ident">DispatchData</span>) {
-        <span class="comment">// gracefully handle reentrancy</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="kw-2">mut</span> <span class="ident">guard</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">cb</span>.<span class="ident">try_borrow_mut</span>() {
-            (<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">guard</span>)(<span class="ident">evt</span>, <span class="self">self</span>, <span class="ident">data</span>.<span class="ident">reborrow</span>());
-            <span class="comment">// process all events that might have been enqueued by the cb</span>
-            <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">evt</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">pending</span>.<span class="ident">borrow_mut</span>().<span class="ident">pop_front</span>() {
-                (<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">guard</span>)(<span class="ident">evt</span>, <span class="self">self</span>, <span class="ident">data</span>.<span class="ident">reborrow</span>());
+    <span class="doccomment">/// Send a message to this filter
+    </span><span class="kw">pub fn </span>send(<span class="kw-2">&amp;</span><span class="self">self</span>, evt: E, <span class="kw-2">mut </span>data: DispatchData) {
+        <span class="comment">// gracefully handle reentrancy
+        </span><span class="kw">if let </span><span class="prelude-val">Ok</span>(<span class="kw-2">mut </span>guard) = <span class="self">self</span>.inner.cb.try_borrow_mut() {
+            (<span class="kw-2">&amp;mut *</span>guard)(evt, <span class="self">self</span>, data.reborrow());
+            <span class="comment">// process all events that might have been enqueued by the cb
+            </span><span class="kw">while let </span><span class="prelude-val">Some</span>(evt) = <span class="self">self</span>.inner.pending.borrow_mut().pop_front() {
+                (<span class="kw-2">&amp;mut *</span>guard)(evt, <span class="self">self</span>, data.reborrow());
             }
-        } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">pending</span>.<span class="ident">borrow_mut</span>().<span class="ident">push_back</span>(<span class="ident">evt</span>);
+        } <span class="kw">else </span>{
+            <span class="self">self</span>.inner.pending.borrow_mut().push_back(evt);
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_commons" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_commons" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

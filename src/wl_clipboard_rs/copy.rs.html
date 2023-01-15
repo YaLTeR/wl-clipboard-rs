@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/copy.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>copy.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wl_clipboard_rs/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../wl_clipboard_rs/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../wl_clipboard_rs/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/copy.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>copy.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../wl_clipboard_rs/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -910,917 +910,949 @@
 <span id="910">910</span>
 <span id="911">911</span>
 <span id="912">912</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Copying and clearing clipboard contents.</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Copying and clearing clipboard contents.
 
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">cell</span>::{<span class="ident">Cell</span>, <span class="ident">RefCell</span>},
-    <span class="ident">collections</span>::{<span class="ident">hash_map::Entry</span>, <span class="ident">HashMap</span>, <span class="ident">HashSet</span>},
-    <span class="ident">ffi::OsString</span>,
-    <span class="ident">fs</span>::{<span class="ident">remove_dir</span>, <span class="ident">remove_file</span>, <span class="ident">File</span>, <span class="ident">OpenOptions</span>},
-    <span class="ident">io</span>::{<span class="self">self</span>, <span class="ident">Read</span>, <span class="ident">Seek</span>, <span class="ident">SeekFrom</span>, <span class="ident">Write</span>},
-    <span class="ident">iter</span>,
-    <span class="ident">os::unix::io::IntoRawFd</span>,
-    <span class="ident">path::PathBuf</span>,
-    <span class="ident">rc::Rc</span>,
-    <span class="ident">sync::mpsc::sync_channel</span>,
-    <span class="ident">thread</span>,
+</span><span class="kw">use </span>std::{
+    cell::{Cell, RefCell},
+    collections::{hash_map::Entry, HashMap, HashSet},
+    ffi::OsString,
+    fs::{remove_dir, remove_file, File, OpenOptions},
+    io::{<span class="self">self</span>, Read, Seek, SeekFrom, Write},
+    iter,
+    os::unix::io::IntoRawFd,
+    path::PathBuf,
+    rc::Rc,
+    sync::mpsc::sync_channel,
+    thread,
 };
 
-<span class="kw">use</span> <span class="ident">log::trace</span>;
-<span class="kw">use</span> <span class="ident">wayland_client</span>::{<span class="ident">ConnectError</span>, <span class="ident">EventQueue</span>, <span class="ident">Main</span>, <span class="ident">Proxy</span>};
-<span class="kw">use</span> <span class="ident">wayland_protocols::wlr::unstable::data_control::v1::client</span>::{
-    <span class="ident">zwlr_data_control_device_v1::ZwlrDataControlDeviceV1</span>, <span class="ident">zwlr_data_control_manager_v1::ZwlrDataControlManagerV1</span>,
-    <span class="ident">zwlr_data_control_source_v1::ZwlrDataControlSourceV1</span>,
+<span class="kw">use </span>log::trace;
+<span class="kw">use </span>wayland_client::{ConnectError, EventQueue, Main, Proxy};
+<span class="kw">use </span>wayland_protocols::wlr::unstable::data_control::v1::client::{
+    zwlr_data_control_device_v1::ZwlrDataControlDeviceV1, zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
+    zwlr_data_control_source_v1::ZwlrDataControlSourceV1,
 };
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">common</span>::{<span class="self">self</span>, <span class="ident">initialize</span>, <span class="ident">CommonData</span>},
-    <span class="ident">handlers</span>::{<span class="ident">data_device_handler</span>, <span class="ident">data_source_handler</span>, <span class="ident">DataDeviceHandler</span>, <span class="ident">DataSourceError</span>, <span class="ident">DataSourceHandler</span>},
-    <span class="ident">seat_data::SeatData</span>,
-    <span class="ident">utils</span>::{<span class="self">self</span>, <span class="ident">copy_data</span>, <span class="ident">is_text</span>},
+<span class="kw">use crate</span>::{
+    common::{<span class="self">self</span>, initialize, CommonData},
+    handlers::{data_device_handler, data_source_handler, DataDeviceHandler, DataSourceError, DataSourceHandler},
+    seat_data::SeatData,
+    utils::{<span class="self">self</span>, copy_data, is_text},
 };
 
-<span class="doccomment">/// The clipboard to operate on.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ClipboardType</span> {
-    <span class="doccomment">/// The regular clipboard.</span>
-    <span class="ident">Regular</span>,
-    <span class="doccomment">/// The &quot;primary&quot; clipboard.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Working with the &quot;primary&quot; clipboard requires the compositor to support the data-control</span>
-    <span class="doccomment">/// protocol of version 2 or above.</span>
-    <span class="ident">Primary</span>,
-    <span class="doccomment">/// Operate on both clipboards at once.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Useful for atomically setting both clipboards at once. This option requires the &quot;primary&quot;</span>
-    <span class="doccomment">/// clipboard to be supported.</span>
-    <span class="ident">Both</span>,
+<span class="doccomment">/// The clipboard to operate on.
+</span><span class="attribute">#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+</span><span class="kw">pub enum </span>ClipboardType {
+    <span class="doccomment">/// The regular clipboard.
+    </span>Regular,
+    <span class="doccomment">/// The &quot;primary&quot; clipboard.
+    ///
+    /// Working with the &quot;primary&quot; clipboard requires the compositor to support the data-control
+    /// protocol of version 2 or above.
+    </span>Primary,
+    <span class="doccomment">/// Operate on both clipboards at once.
+    ///
+    /// Useful for atomically setting both clipboards at once. This option requires the &quot;primary&quot;
+    /// clipboard to be supported.
+    </span>Both,
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">ClipboardType</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">ClipboardType::Regular</span>
+<span class="kw">impl </span>Default <span class="kw">for </span>ClipboardType {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        ClipboardType::Regular
     }
 }
 
-<span class="doccomment">/// MIME type to offer the copied data under.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">MimeType</span> {
-    <span class="doccomment">/// Detect the MIME type automatically from the data.</span>
-    <span class="ident">Autodetect</span>,
-    <span class="doccomment">/// Offer a number of common plain text MIME types.</span>
-    <span class="ident">Text</span>,
-    <span class="doccomment">/// Offer a specific MIME type.</span>
-    <span class="ident">Specific</span>(<span class="ident">String</span>),
+<span class="doccomment">/// MIME type to offer the copied data under.
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+</span><span class="kw">pub enum </span>MimeType {
+    <span class="doccomment">/// Detect the MIME type automatically from the data.
+    </span>Autodetect,
+    <span class="doccomment">/// Offer a number of common plain text MIME types.
+    </span>Text,
+    <span class="doccomment">/// Offer a specific MIME type.
+    </span>Specific(String),
 }
 
-<span class="doccomment">/// Source for copying.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Source</span> {
-    <span class="doccomment">/// Copy contents of the standard input.</span>
-    <span class="ident">StdIn</span>,
-    <span class="doccomment">/// Copy the given bytes.</span>
-    <span class="ident">Bytes</span>(<span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>),
+<span class="doccomment">/// Source for copying.
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+</span><span class="kw">pub enum </span>Source {
+    <span class="doccomment">/// Copy contents of the standard input.
+    </span>StdIn,
+    <span class="doccomment">/// Copy the given bytes.
+    </span>Bytes(Box&lt;[u8]&gt;),
 }
 
-<span class="doccomment">/// Source for copying, with a MIME type.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Used for [`copy_multi`].</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`copy_multi`]: fn.copy_multi.html</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MimeSource</span> {
-    <span class="kw">pub</span> <span class="ident">source</span>: <span class="ident">Source</span>,
-    <span class="kw">pub</span> <span class="ident">mime_type</span>: <span class="ident">MimeType</span>,
+<span class="doccomment">/// Source for copying, with a MIME type.
+///
+/// Used for [`copy_multi`].
+///
+/// [`copy_multi`]: fn.copy_multi.html
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+</span><span class="kw">pub struct </span>MimeSource {
+    <span class="kw">pub </span>source: Source,
+    <span class="kw">pub </span>mime_type: MimeType,
 }
 
-<span class="doccomment">/// Seat to operate on.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Seat</span> {
-    <span class="doccomment">/// Operate on all existing seats at once.</span>
-    <span class="ident">All</span>,
-    <span class="doccomment">/// Operate on a seat with the given name.</span>
-    <span class="ident">Specific</span>(<span class="ident">String</span>),
+<span class="doccomment">/// Seat to operate on.
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+</span><span class="kw">pub enum </span>Seat {
+    <span class="doccomment">/// Operate on all existing seats at once.
+    </span>All,
+    <span class="doccomment">/// Operate on a seat with the given name.
+    </span>Specific(String),
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Seat</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">Seat::All</span>
+<span class="kw">impl </span>Default <span class="kw">for </span>Seat {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        Seat::All
     }
 }
 
-<span class="doccomment">/// Number of paste requests to serve.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ServeRequests</span> {
-    <span class="doccomment">/// Serve requests indefinitely.</span>
-    <span class="ident">Unlimited</span>,
-    <span class="doccomment">/// Serve only the given number of requests.</span>
-    <span class="ident">Only</span>(<span class="ident">usize</span>),
+<span class="doccomment">/// Number of paste requests to serve.
+</span><span class="attribute">#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+</span><span class="kw">pub enum </span>ServeRequests {
+    <span class="doccomment">/// Serve requests indefinitely.
+    </span>Unlimited,
+    <span class="doccomment">/// Serve only the given number of requests.
+    </span>Only(usize),
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">ServeRequests</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">ServeRequests::Unlimited</span>
+<span class="kw">impl </span>Default <span class="kw">for </span>ServeRequests {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        ServeRequests::Unlimited
     }
 }
 
-<span class="doccomment">/// Options and flags that are used to customize the copying.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Options</span> {
-    <span class="doccomment">/// The clipboard to work with.</span>
-    <span class="ident">clipboard</span>: <span class="ident">ClipboardType</span>,
+<span class="doccomment">/// Options and flags that are used to customize the copying.
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Default, Hash, PartialOrd, Ord)]
+</span><span class="kw">pub struct </span>Options {
+    <span class="doccomment">/// The clipboard to work with.
+    </span>clipboard: ClipboardType,
 
-    <span class="doccomment">/// The seat to work with.</span>
-    <span class="ident">seat</span>: <span class="ident">Seat</span>,
+    <span class="doccomment">/// The seat to work with.
+    </span>seat: Seat,
 
-    <span class="doccomment">/// Trim the trailing newline character before copying.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This flag is only applied for text MIME types.</span>
-    <span class="ident">trim_newline</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// Trim the trailing newline character before copying.
+    ///
+    /// This flag is only applied for text MIME types.
+    </span>trim_newline: bool,
 
-    <span class="doccomment">/// Do not spawn a separate thread for serving copy requests.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Setting this flag will result in the call to `copy()` **blocking** until all data sources</span>
-    <span class="doccomment">/// it creates are destroyed, e.g. until someone else copies something into the clipboard.</span>
-    <span class="ident">foreground</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// Do not spawn a separate thread for serving copy requests.
+    ///
+    /// Setting this flag will result in the call to `copy()` **blocking** until all data sources
+    /// it creates are destroyed, e.g. until someone else copies something into the clipboard.
+    </span>foreground: bool,
 
-    <span class="doccomment">/// Number of paste requests to serve.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Limiting the number of paste requests to one effectively clears the clipboard after the</span>
-    <span class="doccomment">/// first paste. It can be used when copying e.g. sensitive data, like passwords. Note however</span>
-    <span class="doccomment">/// that certain apps may have issues pasting when this option is used, in particular XWayland</span>
-    <span class="doccomment">/// clients are known to suffer from this.</span>
-    <span class="ident">serve_requests</span>: <span class="ident">ServeRequests</span>,
+    <span class="doccomment">/// Number of paste requests to serve.
+    ///
+    /// Limiting the number of paste requests to one effectively clears the clipboard after the
+    /// first paste. It can be used when copying e.g. sensitive data, like passwords. Note however
+    /// that certain apps may have issues pasting when this option is used, in particular XWayland
+    /// clients are known to suffer from this.
+    </span>serve_requests: ServeRequests,
+
+    <span class="doccomment">/// Omit additional text mime types which are offered by default if at least one text mime type is provided.
+    ///
+    /// Omits additionally offered `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
+    /// `TEXT` mime types which are offered by default if at least one text mime type is provided.
+    </span>omit_additional_text_mime_types: bool,
 }
 
-<span class="doccomment">/// A copy operation ready to start serving requests.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PreparedCopy</span> {
-    <span class="ident">should_quit</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">queue</span>: <span class="ident">EventQueue</span>,
-    <span class="ident">sources</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">ZwlrDataControlSourceV1</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">data_paths</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">error</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DataSourceError</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="doccomment">/// A copy operation ready to start serving requests.
+</span><span class="kw">pub struct </span>PreparedCopy {
+    should_quit: Rc&lt;Cell&lt;bool&gt;&gt;,
+    queue: EventQueue,
+    sources: Vec&lt;Proxy&lt;ZwlrDataControlSourceV1&gt;&gt;,
+    data_paths: HashMap&lt;String, Rc&lt;RefCell&lt;PathBuf&gt;&gt;&gt;,
+    error: Rc&lt;RefCell&lt;<span class="prelude-ty">Option</span>&lt;DataSourceError&gt;&gt;&gt;,
 }
 
-<span class="doccomment">/// Errors that can occur for copying the source data to a temporary file.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">thiserror::Error</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SourceCreationError</span> {
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t create a temporary directory&quot;</span>)]</span>
-    <span class="ident">TempDirCreate</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+<span class="doccomment">/// Errors that can occur for copying the source data to a temporary file.
+</span><span class="attribute">#[derive(thiserror::Error, Debug)]
+</span><span class="kw">pub enum </span>SourceCreationError {
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t create a temporary directory&quot;</span>)]
+    </span>TempDirCreate(<span class="attribute">#[source] </span>io::Error),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t create a temporary file&quot;</span>)]</span>
-    <span class="ident">TempFileCreate</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t create a temporary file&quot;</span>)]
+    </span>TempFileCreate(<span class="attribute">#[source] </span>io::Error),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t copy data to the temporary file&quot;</span>)]</span>
-    <span class="ident">DataCopy</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">utils::CopyDataError</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t copy data to the temporary file&quot;</span>)]
+    </span>DataCopy(<span class="attribute">#[source] </span>utils::CopyDataError),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t write to the temporary file&quot;</span>)]</span>
-    <span class="ident">TempFileWrite</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t write to the temporary file&quot;</span>)]
+    </span>TempFileWrite(<span class="attribute">#[source] </span>io::Error),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t open the temporary file for newline trimming&quot;</span>)]</span>
-    <span class="ident">TempFileOpen</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t open the temporary file for newline trimming&quot;</span>)]
+    </span>TempFileOpen(<span class="attribute">#[source] </span>io::Error),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t get the temporary file metadata for newline trimming&quot;</span>)]</span>
-    <span class="ident">TempFileMetadata</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t get the temporary file metadata for newline trimming&quot;</span>)]
+    </span>TempFileMetadata(<span class="attribute">#[source] </span>io::Error),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t seek the temporary file for newline trimming&quot;</span>)]</span>
-    <span class="ident">TempFileSeek</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t seek the temporary file for newline trimming&quot;</span>)]
+    </span>TempFileSeek(<span class="attribute">#[source] </span>io::Error),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t read the last byte of the temporary file for newline trimming&quot;</span>)]</span>
-    <span class="ident">TempFileRead</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t read the last byte of the temporary file for newline trimming&quot;</span>)]
+    </span>TempFileRead(<span class="attribute">#[source] </span>io::Error),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t truncate the temporary file for newline trimming&quot;</span>)]</span>
-    <span class="ident">TempFileTruncate</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t truncate the temporary file for newline trimming&quot;</span>)]
+    </span>TempFileTruncate(<span class="attribute">#[source] </span>io::Error),
 }
 
-<span class="doccomment">/// Errors that can occur for copying and clearing the clipboard.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">thiserror::Error</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Error</span> {
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;There are no seats&quot;</span>)]</span>
-    <span class="ident">NoSeats</span>,
+<span class="doccomment">/// Errors that can occur for copying and clearing the clipboard.
+</span><span class="attribute">#[derive(thiserror::Error, Debug)]
+</span><span class="kw">pub enum </span>Error {
+    <span class="attribute">#[error(<span class="string">&quot;There are no seats&quot;</span>)]
+    </span>NoSeats,
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t connect to the Wayland compositor&quot;</span>)]</span>
-    <span class="ident">WaylandConnection</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">ConnectError</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t connect to the Wayland compositor&quot;</span>)]
+    </span>WaylandConnection(<span class="attribute">#[source] </span>ConnectError),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Wayland compositor communication error&quot;</span>)]</span>
-    <span class="ident">WaylandCommunication</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Wayland compositor communication error&quot;</span>)]
+    </span>WaylandCommunication(<span class="attribute">#[source] </span>io::Error),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;A required Wayland protocol ({} version {}) is not supported by the compositor&quot;</span>,
-            <span class="ident">name</span>,
-            <span class="ident">version</span>)]</span>
-    <span class="ident">MissingProtocol</span> { <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">version</span>: <span class="ident">u32</span> },
+    <span class="attribute">#[error(<span class="string">&quot;A required Wayland protocol ({} version {}) is not supported by the compositor&quot;</span>,
+            name,
+            version)]
+    </span>MissingProtocol { name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, version: u32 },
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;The compositor does not support primary selection&quot;</span>)]</span>
-    <span class="ident">PrimarySelectionUnsupported</span>,
+    <span class="attribute">#[error(<span class="string">&quot;The compositor does not support primary selection&quot;</span>)]
+    </span>PrimarySelectionUnsupported,
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;The requested seat was not found&quot;</span>)]</span>
-    <span class="ident">SeatNotFound</span>,
+    <span class="attribute">#[error(<span class="string">&quot;The requested seat was not found&quot;</span>)]
+    </span>SeatNotFound,
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Error copying the source into a temporary file&quot;</span>)]</span>
-    <span class="ident">TempCopy</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">SourceCreationError</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Error copying the source into a temporary file&quot;</span>)]
+    </span>TempCopy(<span class="attribute">#[source] </span>SourceCreationError),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t remove the temporary file&quot;</span>)]</span>
-    <span class="ident">TempFileRemove</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t remove the temporary file&quot;</span>)]
+    </span>TempFileRemove(<span class="attribute">#[source] </span>io::Error),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t remove the temporary directory&quot;</span>)]</span>
-    <span class="ident">TempDirRemove</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t remove the temporary directory&quot;</span>)]
+    </span>TempDirRemove(<span class="attribute">#[source] </span>io::Error),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Error satisfying a paste request&quot;</span>)]</span>
-    <span class="ident">Paste</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">DataSourceError</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Error satisfying a paste request&quot;</span>)]
+    </span>Paste(<span class="attribute">#[source] </span>DataSourceError),
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">common::Error</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">x</span>: <span class="ident">common::Error</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">use</span> <span class="ident">common::Error</span>::<span class="kw-2">*</span>;
+<span class="kw">impl </span>From&lt;common::Error&gt; <span class="kw">for </span>Error {
+    <span class="kw">fn </span>from(x: common::Error) -&gt; <span class="self">Self </span>{
+        <span class="kw">use </span>common::Error::<span class="kw-2">*</span>;
 
-        <span class="kw">match</span> <span class="ident">x</span> {
-            <span class="ident">WaylandConnection</span>(<span class="ident">err</span>) =&gt; <span class="ident">Error::WaylandConnection</span>(<span class="ident">err</span>),
-            <span class="ident">WaylandCommunication</span>(<span class="ident">err</span>) =&gt; <span class="ident">Error::WaylandCommunication</span>(<span class="ident">err</span>),
-            <span class="ident">MissingProtocol</span> { <span class="ident">name</span>, <span class="ident">version</span> } =&gt; <span class="ident">Error::MissingProtocol</span> { <span class="ident">name</span>, <span class="ident">version</span> },
+        <span class="kw">match </span>x {
+            WaylandConnection(err) =&gt; Error::WaylandConnection(err),
+            WaylandCommunication(err) =&gt; Error::WaylandCommunication(err),
+            MissingProtocol { name, version } =&gt; Error::MissingProtocol { name, version },
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Options</span> {
-    <span class="doccomment">/// Creates a blank new set of options ready for configuration.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::default</span>()
+<span class="kw">impl </span>Options {
+    <span class="doccomment">/// Creates a blank new set of options ready for configuration.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::default()
     }
 
-    <span class="doccomment">/// Sets the clipboard to work with.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clipboard</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">clipboard</span>: <span class="ident">ClipboardType</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">clipboard</span> <span class="op">=</span> <span class="ident">clipboard</span>;
-        <span class="self">self</span>
+    <span class="doccomment">/// Sets the clipboard to work with.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>clipboard(<span class="kw-2">&amp;mut </span><span class="self">self</span>, clipboard: ClipboardType) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.clipboard = clipboard;
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Sets the seat to use for copying.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>seat(<span class="kw-2">&amp;mut </span><span class="self">self</span>, seat: Seat) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.seat = seat;
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Sets the flag for trimming the trailing newline.
+    ///
+    /// This flag is only applied for text MIME types.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>trim_newline(<span class="kw-2">&amp;mut </span><span class="self">self</span>, trim_newline: bool) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.trim_newline = trim_newline;
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Sets the flag for not spawning a separate thread for serving copy requests.
+    ///
+    /// Setting this flag will result in the call to `copy()` **blocking** until all data sources
+    /// it creates are destroyed, e.g. until someone else copies something into the clipboard.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>foreground(<span class="kw-2">&amp;mut </span><span class="self">self</span>, foreground: bool) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.foreground = foreground;
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Sets the number of requests to serve.
+    ///
+    /// Limiting the number of requests to one effectively clears the clipboard after the first
+    /// paste. It can be used when copying e.g. sensitive data, like passwords. Note however that
+    /// certain apps may have issues pasting when this option is used, in particular XWayland
+    /// clients are known to suffer from this.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>serve_requests(<span class="kw-2">&amp;mut </span><span class="self">self</span>, serve_requests: ServeRequests) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.serve_requests = serve_requests;
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Sets the flag for omitting additional text mime types which are offered by default if at least one text mime type is provided.
+    ///
+    /// Omits additionally offered `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
+    /// `TEXT` mime types which are offered by default if at least one text mime type is provided.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>omit_additional_text_mime_types(<span class="kw-2">&amp;mut </span><span class="self">self</span>, omit_additional_text_mime_types: bool) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.omit_additional_text_mime_types = omit_additional_text_mime_types;
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Invokes the copy operation. See `copy()`.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # extern crate wl_clipboard_rs;
+    /// # use wl_clipboard_rs::copy::Error;
+    /// # fn foo() -&gt; Result&lt;(), Error&gt; {
+    /// use wl_clipboard_rs::copy::{MimeType, Options, Source};
+    ///
+    /// let opts = Options::new();
+    /// opts.copy(Source::Bytes([1, 2, 3][..].into()), MimeType::Autodetect)?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>copy(<span class="self">self</span>, source: Source, mime_type: MimeType) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+        copy(<span class="self">self</span>, source, mime_type)
     }
 
-    <span class="doccomment">/// Sets the seat to use for copying.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">seat</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">seat</span>: <span class="ident">Seat</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">seat</span> <span class="op">=</span> <span class="ident">seat</span>;
-        <span class="self">self</span>
+    <span class="doccomment">/// Invokes the copy_multi operation. See `copy_multi()`.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # extern crate wl_clipboard_rs;
+    /// # use wl_clipboard_rs::copy::Error;
+    /// # fn foo() -&gt; Result&lt;(), Error&gt; {
+    /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
+    ///
+    /// let opts = Options::new();
+    /// opts.copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
+    ///                                   mime_type: MimeType::Autodetect },
+    ///                      MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
+    ///                                   mime_type: MimeType::Text }])?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>copy_multi(<span class="self">self</span>, sources: Vec&lt;MimeSource&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+        copy_multi(<span class="self">self</span>, sources)
     }
 
-    <span class="doccomment">/// Sets the flag for trimming the trailing newline.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This flag is only applied for text MIME types.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">trim_newline</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">trim_newline</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">trim_newline</span> <span class="op">=</span> <span class="ident">trim_newline</span>;
-        <span class="self">self</span>
+    <span class="doccomment">/// Invokes the prepare_copy operation. See `prepare_copy()`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `foreground` is `false`.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # extern crate wl_clipboard_rs;
+    /// # use wl_clipboard_rs::copy::Error;
+    /// # fn foo() -&gt; Result&lt;(), Error&gt; {
+    /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
+    ///
+    /// let mut opts = Options::new();
+    /// opts.foreground(true);
+    /// let prepared_copy = opts.prepare_copy(Source::Bytes([1, 2, 3][..].into()),
+    ///                                       MimeType::Autodetect)?;
+    /// prepared_copy.serve()?;
+    ///
+    /// # Ok(())
+    /// # }
+    /// ```
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>prepare_copy(<span class="self">self</span>, source: Source, mime_type: MimeType) -&gt; <span class="prelude-ty">Result</span>&lt;PreparedCopy, Error&gt; {
+        prepare_copy(<span class="self">self</span>, source, mime_type)
     }
 
-    <span class="doccomment">/// Sets the flag for not spawning a separate thread for serving copy requests.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Setting this flag will result in the call to `copy()` **blocking** until all data sources</span>
-    <span class="doccomment">/// it creates are destroyed, e.g. until someone else copies something into the clipboard.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">foreground</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">foreground</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">foreground</span> <span class="op">=</span> <span class="ident">foreground</span>;
-        <span class="self">self</span>
-    }
-
-    <span class="doccomment">/// Sets the number of requests to serve.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Limiting the number of requests to one effectively clears the clipboard after the first</span>
-    <span class="doccomment">/// paste. It can be used when copying e.g. sensitive data, like passwords. Note however that</span>
-    <span class="doccomment">/// certain apps may have issues pasting when this option is used, in particular XWayland</span>
-    <span class="doccomment">/// clients are known to suffer from this.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">serve_requests</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">serve_requests</span>: <span class="ident">ServeRequests</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">serve_requests</span> <span class="op">=</span> <span class="ident">serve_requests</span>;
-        <span class="self">self</span>
-    }
-
-    <span class="doccomment">/// Invokes the copy operation. See `copy()`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```no_run</span>
-    <span class="doccomment">/// # extern crate wl_clipboard_rs;</span>
-    <span class="doccomment">/// # use wl_clipboard_rs::copy::Error;</span>
-    <span class="doccomment">/// # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
-    <span class="doccomment">/// use wl_clipboard_rs::copy::{MimeType, Options, Source};</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let opts = Options::new();</span>
-    <span class="doccomment">/// opts.copy(Source::Bytes([1, 2, 3][..].into()), MimeType::Autodetect)?;</span>
-    <span class="doccomment">/// # Ok(())</span>
-    <span class="doccomment">/// # }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">copy</span>(<span class="self">self</span>, <span class="ident">source</span>: <span class="ident">Source</span>, <span class="ident">mime_type</span>: <span class="ident">MimeType</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="ident">copy</span>(<span class="self">self</span>, <span class="ident">source</span>, <span class="ident">mime_type</span>)
-    }
-
-    <span class="doccomment">/// Invokes the copy_multi operation. See `copy_multi()`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```no_run</span>
-    <span class="doccomment">/// # extern crate wl_clipboard_rs;</span>
-    <span class="doccomment">/// # use wl_clipboard_rs::copy::Error;</span>
-    <span class="doccomment">/// # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
-    <span class="doccomment">/// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let opts = Options::new();</span>
-    <span class="doccomment">/// opts.copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),</span>
-    <span class="doccomment">///                                   mime_type: MimeType::Autodetect },</span>
-    <span class="doccomment">///                      MimeSource { source: Source::Bytes([7, 8, 9][..].into()),</span>
-    <span class="doccomment">///                                   mime_type: MimeType::Text }])?;</span>
-    <span class="doccomment">/// # Ok(())</span>
-    <span class="doccomment">/// # }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">copy_multi</span>(<span class="self">self</span>, <span class="ident">sources</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MimeSource</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="ident">copy_multi</span>(<span class="self">self</span>, <span class="ident">sources</span>)
-    }
-
-    <span class="doccomment">/// Invokes the prepare_copy operation. See `prepare_copy()`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Panics if `foreground` is `false`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```no_run</span>
-    <span class="doccomment">/// # extern crate wl_clipboard_rs;</span>
-    <span class="doccomment">/// # use wl_clipboard_rs::copy::Error;</span>
-    <span class="doccomment">/// # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
-    <span class="doccomment">/// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut opts = Options::new();</span>
-    <span class="doccomment">/// opts.foreground(true);</span>
-    <span class="doccomment">/// let prepared_copy = opts.prepare_copy(Source::Bytes([1, 2, 3][..].into()),</span>
-    <span class="doccomment">///                                       MimeType::Autodetect)?;</span>
-    <span class="doccomment">/// prepared_copy.serve()?;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Ok(())</span>
-    <span class="doccomment">/// # }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prepare_copy</span>(<span class="self">self</span>, <span class="ident">source</span>: <span class="ident">Source</span>, <span class="ident">mime_type</span>: <span class="ident">MimeType</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PreparedCopy</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="ident">prepare_copy</span>(<span class="self">self</span>, <span class="ident">source</span>, <span class="ident">mime_type</span>)
-    }
-
-    <span class="doccomment">/// Invokes the prepare_copy_multi operation. See `prepare_copy_multi()`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Panics if `foreground` is `false`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```no_run</span>
-    <span class="doccomment">/// # extern crate wl_clipboard_rs;</span>
-    <span class="doccomment">/// # use wl_clipboard_rs::copy::Error;</span>
-    <span class="doccomment">/// # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
-    <span class="doccomment">/// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut opts = Options::new();</span>
-    <span class="doccomment">/// opts.foreground(true);</span>
-    <span class="doccomment">/// let prepared_copy =</span>
-    <span class="doccomment">///     opts.prepare_copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),</span>
-    <span class="doccomment">///                                               mime_type: MimeType::Autodetect },</span>
-    <span class="doccomment">///                                  MimeSource { source: Source::Bytes([7, 8, 9][..].into()),</span>
-    <span class="doccomment">///                                               mime_type: MimeType::Text }])?;</span>
-    <span class="doccomment">/// prepared_copy.serve()?;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Ok(())</span>
-    <span class="doccomment">/// # }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prepare_copy_multi</span>(<span class="self">self</span>, <span class="ident">sources</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MimeSource</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PreparedCopy</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="ident">prepare_copy_multi</span>(<span class="self">self</span>, <span class="ident">sources</span>)
+    <span class="doccomment">/// Invokes the prepare_copy_multi operation. See `prepare_copy_multi()`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `foreground` is `false`.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # extern crate wl_clipboard_rs;
+    /// # use wl_clipboard_rs::copy::Error;
+    /// # fn foo() -&gt; Result&lt;(), Error&gt; {
+    /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
+    ///
+    /// let mut opts = Options::new();
+    /// opts.foreground(true);
+    /// let prepared_copy =
+    ///     opts.prepare_copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
+    ///                                               mime_type: MimeType::Autodetect },
+    ///                                  MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
+    ///                                               mime_type: MimeType::Text }])?;
+    /// prepared_copy.serve()?;
+    ///
+    /// # Ok(())
+    /// # }
+    /// ```
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>prepare_copy_multi(<span class="self">self</span>, sources: Vec&lt;MimeSource&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;PreparedCopy, Error&gt; {
+        prepare_copy_multi(<span class="self">self</span>, sources)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">PreparedCopy</span> {
-    <span class="doccomment">/// Starts serving copy requests.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This function **blocks** until all requests are served or the clipboard is taken over by</span>
-    <span class="doccomment">/// some other application.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">serve</span>(<span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="comment">// Loop until we&#39;re done.</span>
-        <span class="kw">while</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">should_quit</span>.<span class="ident">get</span>() {
-            <span class="self">self</span>.<span class="ident">queue</span>
-                .<span class="ident">dispatch</span>(<span class="kw-2">&amp;mut</span> (), <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {})
-                .<span class="ident">map_err</span>(<span class="ident">Error::WaylandCommunication</span>)<span class="question-mark">?</span>;
+<span class="kw">impl </span>PreparedCopy {
+    <span class="doccomment">/// Starts serving copy requests.
+    ///
+    /// This function **blocks** until all requests are served or the clipboard is taken over by
+    /// some other application.
+    </span><span class="kw">pub fn </span>serve(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+        <span class="comment">// Loop until we&#39;re done.
+        </span><span class="kw">while </span>!<span class="self">self</span>.should_quit.get() {
+            <span class="self">self</span>.queue
+                .dispatch(<span class="kw-2">&amp;mut </span>(), |<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>| {})
+                .map_err(Error::WaylandCommunication)<span class="question-mark">?</span>;
 
-            <span class="comment">// Check if all sources have been destroyed.</span>
-            <span class="kw">let</span> <span class="ident">all_destroyed</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sources</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="op">!</span><span class="ident">x</span>.<span class="ident">is_alive</span>());
-            <span class="kw">if</span> <span class="ident">all_destroyed</span> {
-                <span class="self">self</span>.<span class="ident">should_quit</span>.<span class="ident">set</span>(<span class="bool-val">true</span>);
+            <span class="comment">// Check if all sources have been destroyed.
+            </span><span class="kw">let </span>all_destroyed = <span class="self">self</span>.sources.iter().all(|x| !x.is_alive());
+            <span class="kw">if </span>all_destroyed {
+                <span class="self">self</span>.should_quit.set(<span class="bool-val">true</span>);
             }
         }
 
-        <span class="comment">// Clean up the temp file and directory.</span>
-        <span class="comment">//</span>
-        <span class="comment">// We want to try cleaning up all files and folders, so if any errors occur in process,</span>
-        <span class="comment">// collect them into a vector without interruption, and then return the first one.</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">results</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dropped</span> <span class="op">=</span> <span class="ident">HashSet::new</span>();
-        <span class="kw">for</span> <span class="ident">data_path</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">data_paths</span>.<span class="ident">values</span>() {
-            <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">data_path</span>.<span class="ident">as_ptr</span>();
-            <span class="comment">// data_paths can contain duplicate items, we want to free each only once.</span>
-            <span class="kw">if</span> <span class="ident">dropped</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">buf</span>) {
+        <span class="comment">// Clean up the temp file and directory.
+        //
+        // We want to try cleaning up all files and folders, so if any errors occur in process,
+        // collect them into a vector without interruption, and then return the first one.
+        </span><span class="kw">let </span><span class="kw-2">mut </span>results = Vec::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>dropped = HashSet::new();
+        <span class="kw">for </span>data_path <span class="kw">in </span><span class="self">self</span>.data_paths.values() {
+            <span class="kw">let </span>buf = data_path.as_ptr();
+            <span class="comment">// data_paths can contain duplicate items, we want to free each only once.
+            </span><span class="kw">if </span>dropped.contains(<span class="kw-2">&amp;</span>buf) {
                 <span class="kw">continue</span>;
             };
-            <span class="ident">dropped</span>.<span class="ident">insert</span>(<span class="ident">buf</span>);
+            dropped.insert(buf);
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data_path</span> <span class="op">=</span> <span class="ident">data_path</span>.<span class="ident">borrow_mut</span>();
-            <span class="kw">match</span> <span class="ident">remove_file</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">data_path</span>).<span class="ident">map_err</span>(<span class="ident">Error::TempFileRemove</span>) {
+            <span class="kw">let </span><span class="kw-2">mut </span>data_path = data_path.borrow_mut();
+            <span class="kw">match </span>remove_file(<span class="kw-2">&amp;*</span>data_path).map_err(Error::TempFileRemove) {
                 <span class="prelude-val">Ok</span>(()) =&gt; {
-                    <span class="ident">data_path</span>.<span class="ident">pop</span>();
-                    <span class="ident">results</span>.<span class="ident">push</span>(<span class="ident">remove_dir</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">data_path</span>).<span class="ident">map_err</span>(<span class="ident">Error::TempDirRemove</span>));
+                    data_path.pop();
+                    results.push(remove_dir(<span class="kw-2">&amp;*</span>data_path).map_err(Error::TempDirRemove));
                 }
-                <span class="ident">result</span> @ <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="ident">results</span>.<span class="ident">push</span>(<span class="ident">result</span>),
+                result @ <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; results.push(result),
             }
         }
 
-        <span class="comment">// Return the error, if any.</span>
-        <span class="kw">let</span> <span class="ident">result</span>: <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">results</span>.<span class="ident">into_iter</span>().<span class="ident">collect</span>();
-        <span class="ident">result</span><span class="question-mark">?</span>;
+        <span class="comment">// Return the error, if any.
+        </span><span class="kw">let </span>result: <span class="prelude-ty">Result</span>&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt; = results.into_iter().collect();
+        result<span class="question-mark">?</span>;
 
-        <span class="comment">// Check if an error occurred during data transfer.</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">error</span>.<span class="ident">borrow_mut</span>().<span class="ident">take</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::Paste</span>(<span class="ident">err</span>));
+        <span class="comment">// Check if an error occurred during data transfer.
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(err) = <span class="self">self</span>.error.borrow_mut().take() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Paste(err));
         }
 
         <span class="prelude-val">Ok</span>(())
     }
 }
 
-<span class="kw">fn</span> <span class="ident">make_source</span>(<span class="ident">source</span>: <span class="ident">Source</span>,
-               <span class="ident">mime_type</span>: <span class="ident">MimeType</span>,
-               <span class="ident">trim_newline</span>: <span class="ident">bool</span>)
-               -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">PathBuf</span>), <span class="ident">SourceCreationError</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">temp_dir</span> <span class="op">=</span> <span class="ident">tempfile::tempdir</span>().<span class="ident">map_err</span>(<span class="ident">SourceCreationError::TempDirCreate</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">temp_filename</span> <span class="op">=</span> <span class="ident">temp_dir</span>.<span class="ident">into_path</span>();
-    <span class="ident">temp_filename</span>.<span class="ident">push</span>(<span class="string">&quot;stdin&quot;</span>);
-    <span class="macro">trace!</span>(<span class="string">&quot;Temp filename: {}&quot;</span>, <span class="ident">temp_filename</span>.<span class="ident">to_string_lossy</span>());
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">temp_file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="kw-2">&amp;</span><span class="ident">temp_filename</span>).<span class="ident">map_err</span>(<span class="ident">SourceCreationError::TempFileCreate</span>)<span class="question-mark">?</span>;
+<span class="kw">fn </span>make_source(source: Source,
+               mime_type: MimeType,
+               trim_newline: bool)
+               -&gt; <span class="prelude-ty">Result</span>&lt;(String, PathBuf), SourceCreationError&gt; {
+    <span class="kw">let </span>temp_dir = tempfile::tempdir().map_err(SourceCreationError::TempDirCreate)<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>temp_filename = temp_dir.into_path();
+    temp_filename.push(<span class="string">&quot;stdin&quot;</span>);
+    <span class="macro">trace!</span>(<span class="string">&quot;Temp filename: {}&quot;</span>, temp_filename.to_string_lossy());
+    <span class="kw">let </span><span class="kw-2">mut </span>temp_file = File::create(<span class="kw-2">&amp;</span>temp_filename).map_err(SourceCreationError::TempFileCreate)<span class="question-mark">?</span>;
 
-    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Source::Bytes</span>(<span class="ident">data</span>) <span class="op">=</span> <span class="ident">source</span> {
-        <span class="ident">temp_file</span>.<span class="ident">write_all</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>).<span class="ident">map_err</span>(<span class="ident">SourceCreationError::TempFileWrite</span>)<span class="question-mark">?</span>;
-    } <span class="kw">else</span> {
-        <span class="comment">// Copy the standard input into the target file.</span>
-        <span class="ident">copy_data</span>(<span class="prelude-val">None</span>, <span class="ident">temp_file</span>.<span class="ident">into_raw_fd</span>(), <span class="bool-val">true</span>).<span class="ident">map_err</span>(<span class="ident">SourceCreationError::DataCopy</span>)<span class="question-mark">?</span>;
+    <span class="kw">if let </span>Source::Bytes(data) = source {
+        temp_file.write_all(<span class="kw-2">&amp;</span>data).map_err(SourceCreationError::TempFileWrite)<span class="question-mark">?</span>;
+    } <span class="kw">else </span>{
+        <span class="comment">// Copy the standard input into the target file.
+        </span>copy_data(<span class="prelude-val">None</span>, temp_file.into_raw_fd(), <span class="bool-val">true</span>).map_err(SourceCreationError::DataCopy)<span class="question-mark">?</span>;
     }
 
-    <span class="kw">let</span> <span class="ident">mime_type</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">mime_type</span> {
-        <span class="ident">MimeType::Autodetect</span> =&gt; {
-            <span class="kw">match</span> <span class="ident">tree_magic_mini::from_filepath</span>(<span class="kw-2">&amp;</span><span class="ident">temp_filename</span>) {
-                <span class="prelude-val">Some</span>(<span class="ident">magic</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">magic</span>),
-                <span class="prelude-val">None</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">SourceCreationError::TempFileOpen</span>(<span class="ident">std::io::Error::new</span>(<span class="ident">std::io::ErrorKind::Other</span>,
+    <span class="kw">let </span>mime_type = <span class="kw">match </span>mime_type {
+        MimeType::Autodetect =&gt; {
+            <span class="kw">match </span>tree_magic_mini::from_filepath(<span class="kw-2">&amp;</span>temp_filename) {
+                <span class="prelude-val">Some</span>(magic) =&gt; <span class="prelude-val">Ok</span>(magic),
+                <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(SourceCreationError::TempFileOpen(std::io::Error::new(std::io::ErrorKind::Other,
                                                                                   <span class="string">&quot;problem with temp file&quot;</span>))),
-            }<span class="question-mark">?</span>.<span class="ident">to_string</span>()
+            }<span class="question-mark">?</span>.to_string()
         }
-        <span class="ident">MimeType::Text</span> =&gt; <span class="string">&quot;text/plain&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">MimeType::Specific</span>(<span class="ident">mime_type</span>) =&gt; <span class="ident">mime_type</span>,
+        MimeType::Text =&gt; <span class="string">&quot;text/plain&quot;</span>.to_string(),
+        MimeType::Specific(mime_type) =&gt; mime_type,
     };
 
-    <span class="macro">trace!</span>(<span class="string">&quot;Base MIME type: {}&quot;</span>, <span class="ident">mime_type</span>);
+    <span class="macro">trace!</span>(<span class="string">&quot;Base MIME type: {}&quot;</span>, mime_type);
 
-    <span class="comment">// Trim the trailing newline if needed.</span>
-    <span class="kw">if</span> <span class="ident">trim_newline</span> <span class="op">&amp;&amp;</span> <span class="ident">is_text</span>(<span class="kw-2">&amp;</span><span class="ident">mime_type</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">temp_file</span> <span class="op">=</span> <span class="ident">OpenOptions::new</span>().<span class="ident">read</span>(<span class="bool-val">true</span>)
-                                              .<span class="ident">write</span>(<span class="bool-val">true</span>)
-                                              .<span class="ident">open</span>(<span class="kw-2">&amp;</span><span class="ident">temp_filename</span>)
-                                              .<span class="ident">map_err</span>(<span class="ident">SourceCreationError::TempFileOpen</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">metadata</span> <span class="op">=</span> <span class="ident">temp_file</span>.<span class="ident">metadata</span>().<span class="ident">map_err</span>(<span class="ident">SourceCreationError::TempFileMetadata</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">metadata</span>.<span class="ident">len</span>();
-        <span class="kw">if</span> <span class="ident">length</span> <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="ident">temp_file</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom::End</span>(<span class="op">-</span><span class="number">1</span>))
-                     .<span class="ident">map_err</span>(<span class="ident">SourceCreationError::TempFileSeek</span>)<span class="question-mark">?</span>;
+    <span class="comment">// Trim the trailing newline if needed.
+    </span><span class="kw">if </span>trim_newline &amp;&amp; is_text(<span class="kw-2">&amp;</span>mime_type) {
+        <span class="kw">let </span><span class="kw-2">mut </span>temp_file = OpenOptions::new().read(<span class="bool-val">true</span>)
+                                              .write(<span class="bool-val">true</span>)
+                                              .open(<span class="kw-2">&amp;</span>temp_filename)
+                                              .map_err(SourceCreationError::TempFileOpen)<span class="question-mark">?</span>;
+        <span class="kw">let </span>metadata = temp_file.metadata().map_err(SourceCreationError::TempFileMetadata)<span class="question-mark">?</span>;
+        <span class="kw">let </span>length = metadata.len();
+        <span class="kw">if </span>length &gt; <span class="number">0 </span>{
+            temp_file.seek(SeekFrom::End(-<span class="number">1</span>))
+                     .map_err(SourceCreationError::TempFileSeek)<span class="question-mark">?</span>;
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> [<span class="number">0</span>];
-            <span class="ident">temp_file</span>.<span class="ident">read_exact</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buf</span>)
-                     .<span class="ident">map_err</span>(<span class="ident">SourceCreationError::TempFileRead</span>)<span class="question-mark">?</span>;
-            <span class="kw">if</span> <span class="ident">buf</span>[<span class="number">0</span>] <span class="op">==</span> <span class="string">b&#39;\n&#39;</span> {
-                <span class="ident">temp_file</span>.<span class="ident">set_len</span>(<span class="ident">length</span> <span class="op">-</span> <span class="number">1</span>)
-                         .<span class="ident">map_err</span>(<span class="ident">SourceCreationError::TempFileTruncate</span>)<span class="question-mark">?</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>buf = [<span class="number">0</span>];
+            temp_file.read_exact(<span class="kw-2">&amp;mut </span>buf)
+                     .map_err(SourceCreationError::TempFileRead)<span class="question-mark">?</span>;
+            <span class="kw">if </span>buf[<span class="number">0</span>] == <span class="string">b&#39;\n&#39; </span>{
+                temp_file.set_len(length - <span class="number">1</span>)
+                         .map_err(SourceCreationError::TempFileTruncate)<span class="question-mark">?</span>;
             }
         }
     }
 
-    <span class="prelude-val">Ok</span>((<span class="ident">mime_type</span>, <span class="ident">temp_filename</span>))
+    <span class="prelude-val">Ok</span>((mime_type, temp_filename))
 }
 
-<span class="kw">fn</span> <span class="ident">get_devices</span>(<span class="ident">primary</span>: <span class="ident">bool</span>,
-               <span class="ident">seat</span>: <span class="ident">Seat</span>,
-               <span class="ident">socket_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">OsString</span><span class="op">&gt;</span>)
-               -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">EventQueue</span>, <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">ZwlrDataControlManagerV1</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ZwlrDataControlDeviceV1</span><span class="op">&gt;</span>), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">CommonData</span> { <span class="kw-2">mut</span> <span class="ident">queue</span>,
-                     <span class="ident">clipboard_manager</span>,
-                     <span class="ident">seats</span>, } <span class="op">=</span> <span class="ident">initialize</span>(<span class="ident">primary</span>, <span class="ident">socket_name</span>)<span class="question-mark">?</span>;
+<span class="kw">fn </span>get_devices(primary: bool,
+               seat: Seat,
+               socket_name: <span class="prelude-ty">Option</span>&lt;OsString&gt;)
+               -&gt; <span class="prelude-ty">Result</span>&lt;(EventQueue, Main&lt;ZwlrDataControlManagerV1&gt;, Vec&lt;ZwlrDataControlDeviceV1&gt;), Error&gt; {
+    <span class="kw">let </span>CommonData { <span class="kw-2">mut </span>queue,
+                     clipboard_manager,
+                     seats, } = initialize(primary, socket_name)<span class="question-mark">?</span>;
 
-    <span class="comment">// Check if there are no seats.</span>
-    <span class="kw">if</span> <span class="ident">seats</span>.<span class="ident">borrow_mut</span>().<span class="ident">is_empty</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::NoSeats</span>);
+    <span class="comment">// Check if there are no seats.
+    </span><span class="kw">if </span>seats.borrow_mut().is_empty() {
+        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::NoSeats);
     }
 
-    <span class="kw">let</span> <span class="ident">supports_primary</span> <span class="op">=</span> <span class="ident">Rc::new</span>(<span class="ident">Cell::new</span>(<span class="bool-val">false</span>));
+    <span class="kw">let </span>supports_primary = Rc::new(Cell::new(<span class="bool-val">false</span>));
 
-    <span class="comment">// Go through the seats and get their data devices.</span>
-    <span class="kw">for</span> <span class="ident">seat</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">seats</span>.<span class="ident">borrow_mut</span>() {
-        <span class="comment">// TODO: fast path here if all seats.</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">handler</span> <span class="op">=</span> <span class="ident">DataDeviceHandler::new</span>(<span class="ident">seat</span>.<span class="ident">detach</span>(), <span class="bool-val">true</span>, <span class="ident">supports_primary</span>.<span class="ident">clone</span>());
-        <span class="kw">let</span> <span class="ident">device</span> <span class="op">=</span> <span class="ident">clipboard_manager</span>.<span class="ident">get_data_device</span>(<span class="ident">seat</span>);
-        <span class="ident">device</span>.<span class="ident">quick_assign</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">data_device</span>, <span class="ident">event</span>, <span class="ident">dispatch_data</span><span class="op">|</span> {
-                  <span class="ident">data_device_handler</span>(<span class="kw-2">&amp;mut</span> <span class="ident">handler</span>, <span class="ident">data_device</span>, <span class="ident">event</span>, <span class="ident">dispatch_data</span>)
+    <span class="comment">// Go through the seats and get their data devices.
+    </span><span class="kw">for </span>seat <span class="kw">in </span><span class="kw-2">&amp;*</span>seats.borrow_mut() {
+        <span class="comment">// TODO: fast path here if all seats.
+        </span><span class="kw">let </span><span class="kw-2">mut </span>handler = DataDeviceHandler::new(seat.detach(), <span class="bool-val">true</span>, supports_primary.clone());
+        <span class="kw">let </span>device = clipboard_manager.get_data_device(seat);
+        device.quick_assign(<span class="kw">move </span>|data_device, event, dispatch_data| {
+                  data_device_handler(<span class="kw-2">&amp;mut </span>handler, data_device, event, dispatch_data)
               });
 
-        <span class="kw">let</span> <span class="ident">seat_data</span> <span class="op">=</span> <span class="ident">seat</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">SeatData</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>();
-        <span class="ident">seat_data</span>.<span class="ident">borrow_mut</span>().<span class="ident">set_device</span>(<span class="prelude-val">Some</span>(<span class="ident">device</span>.<span class="ident">detach</span>()));
+        <span class="kw">let </span>seat_data = seat.as_ref().user_data().get::&lt;RefCell&lt;SeatData&gt;&gt;().unwrap();
+        seat_data.borrow_mut().set_device(<span class="prelude-val">Some</span>(device.detach()));
     }
 
-    <span class="comment">// Retrieve all seat names.</span>
-    <span class="ident">queue</span>.<span class="ident">sync_roundtrip</span>(<span class="kw-2">&amp;mut</span> (), <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {})
-         .<span class="ident">map_err</span>(<span class="ident">Error::WaylandCommunication</span>)<span class="question-mark">?</span>;
+    <span class="comment">// Retrieve all seat names.
+    </span>queue.sync_roundtrip(<span class="kw-2">&amp;mut </span>(), |<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>| {})
+         .map_err(Error::WaylandCommunication)<span class="question-mark">?</span>;
 
-    <span class="comment">// Check if the compositor supports primary selection.</span>
-    <span class="kw">if</span> <span class="ident">primary</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">supports_primary</span>.<span class="ident">get</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::PrimarySelectionUnsupported</span>);
+    <span class="comment">// Check if the compositor supports primary selection.
+    </span><span class="kw">if </span>primary &amp;&amp; !supports_primary.get() {
+        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::PrimarySelectionUnsupported);
     }
 
-    <span class="comment">// Figure out which devices we&#39;re interested in.</span>
-    <span class="kw">let</span> <span class="ident">devices</span> <span class="op">=</span> <span class="ident">seats</span>.<span class="ident">borrow_mut</span>()
-                       .<span class="ident">iter</span>()
-                       .<span class="ident">map</span>(<span class="op">|</span><span class="ident">seat</span><span class="op">|</span> <span class="ident">seat</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">SeatData</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>().<span class="ident">borrow</span>())
-                       .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> {
-                           <span class="kw">let</span> <span class="ident">SeatData</span> { <span class="ident">name</span>, <span class="ident">device</span>, .. } <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">data</span>;
+    <span class="comment">// Figure out which devices we&#39;re interested in.
+    </span><span class="kw">let </span>devices = seats.borrow_mut()
+                       .iter()
+                       .map(|seat| seat.as_ref().user_data().get::&lt;RefCell&lt;SeatData&gt;&gt;().unwrap().borrow())
+                       .filter_map(|data| {
+                           <span class="kw">let </span>SeatData { name, device, .. } = <span class="kw-2">&amp;*</span>data;
 
-                           <span class="kw">if</span> <span class="ident">device</span>.<span class="ident">is_none</span>() {
-                               <span class="comment">// Can&#39;t handle seats without devices.</span>
-                               <span class="kw">return</span> <span class="prelude-val">None</span>;
+                           <span class="kw">if </span>device.is_none() {
+                               <span class="comment">// Can&#39;t handle seats without devices.
+                               </span><span class="kw">return </span><span class="prelude-val">None</span>;
                            }
 
-                           <span class="kw">let</span> <span class="ident">device</span> <span class="op">=</span> <span class="ident">device</span>.<span class="ident">as_ref</span>().<span class="ident">cloned</span>().<span class="ident">unwrap</span>();
+                           <span class="kw">let </span>device = device.as_ref().cloned().unwrap();
 
-                           <span class="kw">match</span> <span class="ident">seat</span> {
-                               <span class="ident">Seat::All</span> =&gt; {
-                                   <span class="comment">// If no seat was specified, handle all of them.</span>
-                                   <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">device</span>);
+                           <span class="kw">match </span>seat {
+                               Seat::All =&gt; {
+                                   <span class="comment">// If no seat was specified, handle all of them.
+                                   </span><span class="kw">return </span><span class="prelude-val">Some</span>(device);
                                }
-                               <span class="ident">Seat::Specific</span>(<span class="kw-2">ref</span> <span class="ident">desired_name</span>) =&gt; {
-                                   <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">name</span> {
-                                       <span class="kw">if</span> <span class="ident">name</span> <span class="op">==</span> <span class="ident">desired_name</span> {
-                                           <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">device</span>);
+                               Seat::Specific(<span class="kw-2">ref </span>desired_name) =&gt; {
+                                   <span class="kw">if let </span><span class="prelude-val">Some</span>(name) = name {
+                                       <span class="kw">if </span>name == desired_name {
+                                           <span class="kw">return </span><span class="prelude-val">Some</span>(device);
                                        }
                                    }
                                }
                            }
 
-                           <span class="prelude-val">None</span>
-                       })
-                       .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+                           <span class="prelude-val">None
+                       </span>})
+                       .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-    <span class="comment">// If we didn&#39;t find the seat, print an error message and exit.</span>
-    <span class="kw">if</span> <span class="ident">devices</span>.<span class="ident">is_empty</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::SeatNotFound</span>);
+    <span class="comment">// If we didn&#39;t find the seat, print an error message and exit.
+    </span><span class="kw">if </span>devices.is_empty() {
+        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::SeatNotFound);
     }
 
-    <span class="prelude-val">Ok</span>((<span class="ident">queue</span>, <span class="ident">clipboard_manager</span>, <span class="ident">devices</span>))
+    <span class="prelude-val">Ok</span>((queue, clipboard_manager, devices))
 }
 
-<span class="doccomment">/// Clears the clipboard for the given seat.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// If `seat` is `None`, clears clipboards of all existing seats.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// # extern crate wl_clipboard_rs;</span>
-<span class="doccomment">/// # use wl_clipboard_rs::copy::Error;</span>
-<span class="doccomment">/// # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
-<span class="doccomment">/// use wl_clipboard_rs::{copy::{clear, ClipboardType, Seat}};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// clear(ClipboardType::Regular, Seat::All)?;</span>
-<span class="doccomment">/// # Ok(())</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clear</span>(<span class="ident">clipboard</span>: <span class="ident">ClipboardType</span>, <span class="ident">seat</span>: <span class="ident">Seat</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="ident">clear_internal</span>(<span class="ident">clipboard</span>, <span class="ident">seat</span>, <span class="prelude-val">None</span>)
+<span class="doccomment">/// Clears the clipboard for the given seat.
+///
+/// If `seat` is `None`, clears clipboards of all existing seats.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # use wl_clipboard_rs::copy::Error;
+/// # fn foo() -&gt; Result&lt;(), Error&gt; {
+/// use wl_clipboard_rs::{copy::{clear, ClipboardType, Seat}};
+///
+/// clear(ClipboardType::Regular, Seat::All)?;
+/// # Ok(())
+/// # }
+/// ```
+</span><span class="attribute">#[inline]
+</span><span class="kw">pub fn </span>clear(clipboard: ClipboardType, seat: Seat) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+    clear_internal(clipboard, seat, <span class="prelude-val">None</span>)
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">clear_internal</span>(<span class="ident">clipboard</span>: <span class="ident">ClipboardType</span>, <span class="ident">seat</span>: <span class="ident">Seat</span>, <span class="ident">socket_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">OsString</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">primary</span> <span class="op">=</span> <span class="ident">clipboard</span> <span class="op">!</span><span class="op">=</span> <span class="ident">ClipboardType::Regular</span>;
-    <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">queue</span>, <span class="kw">_</span>, <span class="ident">devices</span>) <span class="op">=</span> <span class="ident">get_devices</span>(<span class="ident">primary</span>, <span class="ident">seat</span>, <span class="ident">socket_name</span>)<span class="question-mark">?</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>clear_internal(clipboard: ClipboardType, seat: Seat, socket_name: <span class="prelude-ty">Option</span>&lt;OsString&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+    <span class="kw">let </span>primary = clipboard != ClipboardType::Regular;
+    <span class="kw">let </span>(<span class="kw-2">mut </span>queue, <span class="kw">_</span>, devices) = get_devices(primary, seat, socket_name)<span class="question-mark">?</span>;
 
-    <span class="kw">for</span> <span class="ident">device</span> <span class="kw">in</span> <span class="ident">devices</span> {
-        <span class="kw">if</span> <span class="ident">clipboard</span> <span class="op">==</span> <span class="ident">ClipboardType::Primary</span> <span class="op">|</span><span class="op">|</span> <span class="ident">clipboard</span> <span class="op">==</span> <span class="ident">ClipboardType::Both</span> {
-            <span class="ident">device</span>.<span class="ident">set_primary_selection</span>(<span class="prelude-val">None</span>);
+    <span class="kw">for </span>device <span class="kw">in </span>devices {
+        <span class="kw">if </span>clipboard == ClipboardType::Primary || clipboard == ClipboardType::Both {
+            device.set_primary_selection(<span class="prelude-val">None</span>);
         }
-        <span class="kw">if</span> <span class="ident">clipboard</span> <span class="op">==</span> <span class="ident">ClipboardType::Regular</span> <span class="op">|</span><span class="op">|</span> <span class="ident">clipboard</span> <span class="op">==</span> <span class="ident">ClipboardType::Both</span> {
-            <span class="ident">device</span>.<span class="ident">set_selection</span>(<span class="prelude-val">None</span>);
+        <span class="kw">if </span>clipboard == ClipboardType::Regular || clipboard == ClipboardType::Both {
+            device.set_selection(<span class="prelude-val">None</span>);
         }
     }
 
-    <span class="comment">// We&#39;re clearing the clipboard so just do one roundtrip and quit.</span>
-    <span class="ident">queue</span>.<span class="ident">sync_roundtrip</span>(<span class="kw-2">&amp;mut</span> (), <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {})
-         .<span class="ident">map_err</span>(<span class="ident">Error::WaylandCommunication</span>)<span class="question-mark">?</span>;
+    <span class="comment">// We&#39;re clearing the clipboard so just do one roundtrip and quit.
+    </span>queue.sync_roundtrip(<span class="kw-2">&amp;mut </span>(), |<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>| {})
+         .map_err(Error::WaylandCommunication)<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Prepares a data copy to the clipboard.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The data is copied from `source` and offered in the `mime_type` MIME type. See `Options` for</span>
-<span class="doccomment">/// customizing the behavior of this operation.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This function can be used instead of `copy()` when it&#39;s desirable to separately prepare the</span>
-<span class="doccomment">/// copy operation, handle any errors that this may produce, and then start the serving loop,</span>
-<span class="doccomment">/// potentially past a fork (which is how `wl-copy` uses it). It is meant to be used in the</span>
-<span class="doccomment">/// foreground mode and does not spawn any threads.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Panics</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Panics if `foreground` is `false`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// # extern crate wl_clipboard_rs;</span>
-<span class="doccomment">/// # use wl_clipboard_rs::copy::Error;</span>
-<span class="doccomment">/// # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
-<span class="doccomment">/// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut opts = Options::new();</span>
-<span class="doccomment">/// opts.foreground(true);</span>
-<span class="doccomment">/// let prepared_copy = opts.prepare_copy(Source::Bytes([1, 2, 3][..].into()),</span>
-<span class="doccomment">///                                       MimeType::Autodetect)?;</span>
-<span class="doccomment">/// prepared_copy.serve()?;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Ok(())</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prepare_copy</span>(<span class="ident">options</span>: <span class="ident">Options</span>, <span class="ident">source</span>: <span class="ident">Source</span>, <span class="ident">mime_type</span>: <span class="ident">MimeType</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PreparedCopy</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="macro">assert!</span>(<span class="ident">options</span>.<span class="ident">foreground</span>);
+<span class="doccomment">/// Prepares a data copy to the clipboard.
+///
+/// The data is copied from `source` and offered in the `mime_type` MIME type. See `Options` for
+/// customizing the behavior of this operation.
+///
+/// This function can be used instead of `copy()` when it&#39;s desirable to separately prepare the
+/// copy operation, handle any errors that this may produce, and then start the serving loop,
+/// potentially past a fork (which is how `wl-copy` uses it). It is meant to be used in the
+/// foreground mode and does not spawn any threads.
+///
+/// # Panics
+///
+/// Panics if `foreground` is `false`.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # use wl_clipboard_rs::copy::Error;
+/// # fn foo() -&gt; Result&lt;(), Error&gt; {
+/// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
+///
+/// let mut opts = Options::new();
+/// opts.foreground(true);
+/// let prepared_copy = opts.prepare_copy(Source::Bytes([1, 2, 3][..].into()),
+///                                       MimeType::Autodetect)?;
+/// prepared_copy.serve()?;
+///
+/// # Ok(())
+/// # }
+/// ```
+</span><span class="attribute">#[inline]
+</span><span class="kw">pub fn </span>prepare_copy(options: Options, source: Source, mime_type: MimeType) -&gt; <span class="prelude-ty">Result</span>&lt;PreparedCopy, Error&gt; {
+    <span class="macro">assert!</span>(options.foreground);
 
-    <span class="kw">let</span> <span class="ident">sources</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">MimeSource</span> { <span class="ident">source</span>, <span class="ident">mime_type</span> }];
+    <span class="kw">let </span>sources = <span class="macro">vec!</span>[MimeSource { source, mime_type }];
 
-    <span class="ident">prepare_copy_internal</span>(<span class="ident">options</span>, <span class="ident">sources</span>, <span class="prelude-val">None</span>)
+    prepare_copy_internal(options, sources, <span class="prelude-val">None</span>)
 }
 
-<span class="doccomment">/// Prepares a data copy to the clipboard, offering multiple data sources.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The data from each source in `sources` is copied and offered in the corresponding MIME type.</span>
-<span class="doccomment">/// See `Options` for customizing the behavior of this operation.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// If multiple sources specify the same MIME type, the first one is offered. If one of the MIME</span>
-<span class="doccomment">/// types is text, all automatically added plain text offers will fall back to the first source</span>
-<span class="doccomment">/// with a text MIME type.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This function can be used instead of `copy()` when it&#39;s desirable to separately prepare the</span>
-<span class="doccomment">/// copy operation, handle any errors that this may produce, and then start the serving loop,</span>
-<span class="doccomment">/// potentially past a fork (which is how `wl-copy` uses it). It is meant to be used in the</span>
-<span class="doccomment">/// foreground mode and does not spawn any threads.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Panics</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Panics if `foreground` is `false`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// # extern crate wl_clipboard_rs;</span>
-<span class="doccomment">/// # use wl_clipboard_rs::copy::Error;</span>
-<span class="doccomment">/// # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
-<span class="doccomment">/// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut opts = Options::new();</span>
-<span class="doccomment">/// opts.foreground(true);</span>
-<span class="doccomment">/// let prepared_copy =</span>
-<span class="doccomment">///     opts.prepare_copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),</span>
-<span class="doccomment">///                                               mime_type: MimeType::Autodetect },</span>
-<span class="doccomment">///                                  MimeSource { source: Source::Bytes([7, 8, 9][..].into()),</span>
-<span class="doccomment">///                                               mime_type: MimeType::Text }])?;</span>
-<span class="doccomment">/// prepared_copy.serve()?;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Ok(())</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prepare_copy_multi</span>(<span class="ident">options</span>: <span class="ident">Options</span>, <span class="ident">sources</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MimeSource</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PreparedCopy</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="macro">assert!</span>(<span class="ident">options</span>.<span class="ident">foreground</span>);
+<span class="doccomment">/// Prepares a data copy to the clipboard, offering multiple data sources.
+///
+/// The data from each source in `sources` is copied and offered in the corresponding MIME type.
+/// See `Options` for customizing the behavior of this operation.
+///
+/// If multiple sources specify the same MIME type, the first one is offered. If one of the MIME
+/// types is text, all automatically added plain text offers will fall back to the first source
+/// with a text MIME type.
+///
+/// This function can be used instead of `copy()` when it&#39;s desirable to separately prepare the
+/// copy operation, handle any errors that this may produce, and then start the serving loop,
+/// potentially past a fork (which is how `wl-copy` uses it). It is meant to be used in the
+/// foreground mode and does not spawn any threads.
+///
+/// # Panics
+///
+/// Panics if `foreground` is `false`.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # use wl_clipboard_rs::copy::Error;
+/// # fn foo() -&gt; Result&lt;(), Error&gt; {
+/// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
+///
+/// let mut opts = Options::new();
+/// opts.foreground(true);
+/// let prepared_copy =
+///     opts.prepare_copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
+///                                               mime_type: MimeType::Autodetect },
+///                                  MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
+///                                               mime_type: MimeType::Text }])?;
+/// prepared_copy.serve()?;
+///
+/// # Ok(())
+/// # }
+/// ```
+</span><span class="attribute">#[inline]
+</span><span class="kw">pub fn </span>prepare_copy_multi(options: Options, sources: Vec&lt;MimeSource&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;PreparedCopy, Error&gt; {
+    <span class="macro">assert!</span>(options.foreground);
 
-    <span class="ident">prepare_copy_internal</span>(<span class="ident">options</span>, <span class="ident">sources</span>, <span class="prelude-val">None</span>)
+    prepare_copy_internal(options, sources, <span class="prelude-val">None</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">prepare_copy_internal</span>(<span class="ident">options</span>: <span class="ident">Options</span>,
-                         <span class="ident">sources</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MimeSource</span><span class="op">&gt;</span>,
-                         <span class="ident">socket_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">OsString</span><span class="op">&gt;</span>)
-                         -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PreparedCopy</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">Options</span> { <span class="ident">clipboard</span>,
-                  <span class="ident">seat</span>,
-                  <span class="ident">trim_newline</span>,
-                  <span class="ident">serve_requests</span>,
-                  .. } <span class="op">=</span> <span class="ident">options</span>;
+<span class="kw">fn </span>prepare_copy_internal(options: Options,
+                         sources: Vec&lt;MimeSource&gt;,
+                         socket_name: <span class="prelude-ty">Option</span>&lt;OsString&gt;)
+                         -&gt; <span class="prelude-ty">Result</span>&lt;PreparedCopy, Error&gt; {
+    <span class="kw">let </span>Options { clipboard,
+                  seat,
+                  trim_newline,
+                  serve_requests,
+                  .. } = options;
 
-    <span class="kw">let</span> <span class="ident">primary</span> <span class="op">=</span> <span class="ident">clipboard</span> <span class="op">!</span><span class="op">=</span> <span class="ident">ClipboardType::Regular</span>;
-    <span class="kw">let</span> (<span class="ident">queue</span>, <span class="ident">clipboard_manager</span>, <span class="ident">devices</span>) <span class="op">=</span> <span class="ident">get_devices</span>(<span class="ident">primary</span>, <span class="ident">seat</span>, <span class="ident">socket_name</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>primary = clipboard != ClipboardType::Regular;
+    <span class="kw">let </span>(queue, clipboard_manager, devices) = get_devices(primary, seat, socket_name)<span class="question-mark">?</span>;
 
-    <span class="comment">// Collect the source data to copy.</span>
-    <span class="kw">let</span> <span class="ident">data_paths</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data_paths</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">text_data_path</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-        <span class="kw">for</span> <span class="ident">MimeSource</span> { <span class="ident">source</span>, <span class="ident">mime_type</span> } <span class="kw">in</span> <span class="ident">sources</span>.<span class="ident">into_iter</span>() {
-            <span class="kw">let</span> (<span class="ident">mime_type</span>, <span class="kw-2">mut</span> <span class="ident">data_path</span>) <span class="op">=</span> <span class="ident">make_source</span>(<span class="ident">source</span>, <span class="ident">mime_type</span>, <span class="ident">trim_newline</span>).<span class="ident">map_err</span>(<span class="ident">Error::TempCopy</span>)<span class="question-mark">?</span>;
+    <span class="comment">// Collect the source data to copy.
+    </span><span class="kw">let </span>data_paths = {
+        <span class="kw">let </span><span class="kw-2">mut </span>data_paths = HashMap::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>text_data_path = <span class="prelude-val">None</span>;
+        <span class="kw">for </span>MimeSource { source, mime_type } <span class="kw">in </span>sources.into_iter() {
+            <span class="kw">let </span>(mime_type, <span class="kw-2">mut </span>data_path) = make_source(source, mime_type, trim_newline).map_err(Error::TempCopy)<span class="question-mark">?</span>;
 
-            <span class="kw">let</span> <span class="ident">mime_type_is_text</span> <span class="op">=</span> <span class="ident">is_text</span>(<span class="kw-2">&amp;</span><span class="ident">mime_type</span>);
+            <span class="kw">let </span>mime_type_is_text = is_text(<span class="kw-2">&amp;</span>mime_type);
 
-            <span class="kw">match</span> <span class="ident">data_paths</span>.<span class="ident">entry</span>(<span class="ident">mime_type</span>) {
-                <span class="ident">Entry::Occupied</span>(<span class="kw">_</span>) =&gt; {
-                    <span class="comment">// This MIME type has already been specified, so ignore it.</span>
-                    <span class="ident">remove_file</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">data_path</span>).<span class="ident">map_err</span>(<span class="ident">Error::TempFileRemove</span>)<span class="question-mark">?</span>;
-                    <span class="ident">data_path</span>.<span class="ident">pop</span>();
-                    <span class="ident">remove_dir</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">data_path</span>).<span class="ident">map_err</span>(<span class="ident">Error::TempDirRemove</span>)<span class="question-mark">?</span>;
+            <span class="kw">match </span>data_paths.entry(mime_type) {
+                Entry::Occupied(<span class="kw">_</span>) =&gt; {
+                    <span class="comment">// This MIME type has already been specified, so ignore it.
+                    </span>remove_file(<span class="kw-2">&amp;*</span>data_path).map_err(Error::TempFileRemove)<span class="question-mark">?</span>;
+                    data_path.pop();
+                    remove_dir(<span class="kw-2">&amp;*</span>data_path).map_err(Error::TempDirRemove)<span class="question-mark">?</span>;
                 }
-                <span class="ident">Entry::Vacant</span>(<span class="ident">entry</span>) =&gt; {
-                    <span class="kw">let</span> <span class="ident">data_path</span> <span class="op">=</span> <span class="ident">Rc::new</span>(<span class="ident">RefCell::new</span>(<span class="ident">data_path</span>));
+                Entry::Vacant(entry) =&gt; {
+                    <span class="kw">let </span>data_path = Rc::new(RefCell::new(data_path));
 
-                    <span class="kw">if</span> <span class="ident">text_data_path</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">mime_type_is_text</span> {
-                        <span class="ident">text_data_path</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">data_path</span>.<span class="ident">clone</span>());
+                    <span class="kw">if </span>!options.omit_additional_text_mime_types &amp;&amp; text_data_path.is_none() &amp;&amp; mime_type_is_text {
+                        text_data_path = <span class="prelude-val">Some</span>(data_path.clone());
                     }
 
-                    <span class="ident">entry</span>.<span class="ident">insert</span>(<span class="ident">data_path</span>);
+                    entry.insert(data_path);
                 }
             }
         }
 
-        <span class="comment">// If the MIME type is text, offer it in some other common formats.</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">text_data_path</span>) <span class="op">=</span> <span class="ident">text_data_path</span> {
-            <span class="kw">let</span> <span class="ident">text_mimes</span> <span class="op">=</span> [<span class="string">&quot;text/plain;charset=utf-8&quot;</span>,
+        <span class="comment">// If the MIME type is text, offer it in some other common formats.
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(text_data_path) = text_data_path {
+            <span class="kw">let </span>text_mimes = [<span class="string">&quot;text/plain;charset=utf-8&quot;</span>,
                               <span class="string">&quot;text/plain&quot;</span>,
                               <span class="string">&quot;STRING&quot;</span>,
                               <span class="string">&quot;UTF8_STRING&quot;</span>,
                               <span class="string">&quot;TEXT&quot;</span>];
-            <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">mime_type</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">text_mimes</span> {
-                <span class="comment">// We don&#39;t want to overwrite an explicit mime type, because it might be bound to a</span>
-                <span class="comment">// different data_path</span>
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">data_paths</span>.<span class="ident">contains_key</span>(<span class="ident">mime_type</span>) {
-                    <span class="ident">data_paths</span>.<span class="ident">insert</span>(<span class="ident">mime_type</span>.<span class="ident">to_string</span>(), <span class="ident">text_data_path</span>.<span class="ident">clone</span>());
+            <span class="kw">for </span><span class="kw-2">&amp;</span>mime_type <span class="kw">in </span><span class="kw-2">&amp;</span>text_mimes {
+                <span class="comment">// We don&#39;t want to overwrite an explicit mime type, because it might be bound to a
+                // different data_path
+                </span><span class="kw">if </span>!data_paths.contains_key(mime_type) {
+                    data_paths.insert(mime_type.to_string(), text_data_path.clone());
                 }
             }
         }
-        <span class="ident">data_paths</span>
+        data_paths
     };
 
-    <span class="comment">// This bool can be set to true when serving a request: either if an error occurs, or if the</span>
-    <span class="comment">// number of requests to serve was limited and the last request was served.</span>
-    <span class="kw">let</span> <span class="ident">should_quit</span> <span class="op">=</span> <span class="ident">Rc::new</span>(<span class="ident">Cell::new</span>(<span class="bool-val">false</span>));
-    <span class="comment">// An error that occurred while serving a request, if any.</span>
-    <span class="kw">let</span> <span class="ident">error</span> <span class="op">=</span> <span class="ident">Rc::new</span>(<span class="ident">RefCell::new</span>(<span class="prelude-val">None</span>::<span class="op">&lt;</span><span class="ident">DataSourceError</span><span class="op">&gt;</span>));
-    <span class="kw">let</span> <span class="ident">serve_requests</span> <span class="op">=</span> <span class="ident">Rc::new</span>(<span class="ident">Cell::new</span>(<span class="ident">serve_requests</span>));
+    <span class="comment">// This bool can be set to true when serving a request: either if an error occurs, or if the
+    // number of requests to serve was limited and the last request was served.
+    </span><span class="kw">let </span>should_quit = Rc::new(Cell::new(<span class="bool-val">false</span>));
+    <span class="comment">// An error that occurred while serving a request, if any.
+    </span><span class="kw">let </span>error = Rc::new(RefCell::new(<span class="prelude-val">None</span>::&lt;DataSourceError&gt;));
+    <span class="kw">let </span>serve_requests = Rc::new(Cell::new(serve_requests));
 
-    <span class="comment">// Create an iterator over (device, primary) for source creation later.</span>
-    <span class="comment">//</span>
-    <span class="comment">// This is needed because for ClipboardType::Both each device needs to appear twice because</span>
-    <span class="comment">// separate data sources need to be made for the regular and the primary clipboards (data</span>
-    <span class="comment">// sources cannot be reused).</span>
-    <span class="kw">let</span> <span class="ident">devices_iter</span> <span class="op">=</span> <span class="ident">devices</span>.<span class="ident">iter</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">device</span><span class="op">|</span> {
-                                         <span class="kw">let</span> <span class="ident">first</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">clipboard</span> {
-                                             <span class="ident">ClipboardType::Regular</span> =&gt; <span class="ident">iter::once</span>((<span class="ident">device</span>, <span class="bool-val">false</span>)),
-                                             <span class="ident">ClipboardType::Primary</span> =&gt; <span class="ident">iter::once</span>((<span class="ident">device</span>, <span class="bool-val">true</span>)),
-                                             <span class="ident">ClipboardType::Both</span> =&gt; <span class="ident">iter::once</span>((<span class="ident">device</span>, <span class="bool-val">false</span>)),
+    <span class="comment">// Create an iterator over (device, primary) for source creation later.
+    //
+    // This is needed because for ClipboardType::Both each device needs to appear twice because
+    // separate data sources need to be made for the regular and the primary clipboards (data
+    // sources cannot be reused).
+    </span><span class="kw">let </span>devices_iter = devices.iter().flat_map(|device| {
+                                         <span class="kw">let </span>first = <span class="kw">match </span>clipboard {
+                                             ClipboardType::Regular =&gt; iter::once((device, <span class="bool-val">false</span>)),
+                                             ClipboardType::Primary =&gt; iter::once((device, <span class="bool-val">true</span>)),
+                                             ClipboardType::Both =&gt; iter::once((device, <span class="bool-val">false</span>)),
                                          };
 
-                                         <span class="kw">let</span> <span class="ident">second</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">clipboard</span> <span class="op">==</span> <span class="ident">ClipboardType::Both</span> {
-                                             <span class="ident">iter::once</span>(<span class="prelude-val">Some</span>((<span class="ident">device</span>, <span class="bool-val">true</span>)))
-                                         } <span class="kw">else</span> {
-                                             <span class="ident">iter::once</span>(<span class="prelude-val">None</span>)
+                                         <span class="kw">let </span>second = <span class="kw">if </span>clipboard == ClipboardType::Both {
+                                             iter::once(<span class="prelude-val">Some</span>((device, <span class="bool-val">true</span>)))
+                                         } <span class="kw">else </span>{
+                                             iter::once(<span class="prelude-val">None</span>)
                                          };
 
-                                         <span class="ident">first</span>.<span class="ident">chain</span>(<span class="ident">second</span>.<span class="ident">flatten</span>())
+                                         first.chain(second.flatten())
                                      });
 
-    <span class="comment">// Create the data sources and set them as selections.</span>
-    <span class="kw">let</span> <span class="ident">sources</span> <span class="op">=</span> <span class="ident">devices_iter</span>.<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">device</span>, <span class="ident">primary</span>)<span class="op">|</span> {
-                                  <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">handler</span> <span class="op">=</span> <span class="ident">DataSourceHandler::new</span>(<span class="ident">data_paths</span>.<span class="ident">clone</span>(),
-                                                                           <span class="ident">should_quit</span>.<span class="ident">clone</span>(),
-                                                                           <span class="ident">serve_requests</span>.<span class="ident">clone</span>());
-                                  <span class="kw">let</span> <span class="ident">data_source</span> <span class="op">=</span> <span class="ident">clipboard_manager</span>.<span class="ident">create_data_source</span>();
-                                  <span class="kw">let</span> <span class="ident">error</span> <span class="op">=</span> <span class="ident">error</span>.<span class="ident">clone</span>();
-                                  <span class="ident">data_source</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">set</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="ident">error</span>);
-                                  <span class="ident">data_source</span>.<span class="ident">quick_assign</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">data_source</span>, <span class="ident">event</span>, <span class="ident">dispatch_data</span><span class="op">|</span> {
-                                                 <span class="ident">data_source_handler</span>(<span class="kw-2">&amp;mut</span> <span class="ident">handler</span>, <span class="ident">data_source</span>, <span class="ident">event</span>, <span class="ident">dispatch_data</span>)
+    <span class="comment">// Create the data sources and set them as selections.
+    </span><span class="kw">let </span>sources = devices_iter.map(|(device, primary)| {
+                                  <span class="kw">let </span><span class="kw-2">mut </span>handler = DataSourceHandler::new(data_paths.clone(),
+                                                                           should_quit.clone(),
+                                                                           serve_requests.clone());
+                                  <span class="kw">let </span>data_source = clipboard_manager.create_data_source();
+                                  <span class="kw">let </span>error = error.clone();
+                                  data_source.as_ref().user_data().set(<span class="kw">move </span>|| error);
+                                  data_source.quick_assign(<span class="kw">move </span>|data_source, event, dispatch_data| {
+                                                 data_source_handler(<span class="kw-2">&amp;mut </span>handler, data_source, event, dispatch_data)
                                              });
 
-                                  <span class="kw">for</span> <span class="ident">mime_type</span> <span class="kw">in</span> <span class="ident">data_paths</span>.<span class="ident">keys</span>() {
-                                      <span class="ident">data_source</span>.<span class="ident">offer</span>(<span class="ident">mime_type</span>.<span class="ident">clone</span>());
+                                  <span class="kw">for </span>mime_type <span class="kw">in </span>data_paths.keys() {
+                                      data_source.offer(mime_type.clone());
                                   }
 
-                                  <span class="kw">if</span> <span class="ident">primary</span> {
-                                      <span class="ident">device</span>.<span class="ident">set_primary_selection</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">data_source</span>));
-                                  } <span class="kw">else</span> {
-                                      <span class="ident">device</span>.<span class="ident">set_selection</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">data_source</span>));
+                                  <span class="kw">if </span>primary {
+                                      device.set_primary_selection(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>data_source));
+                                  } <span class="kw">else </span>{
+                                      device.set_selection(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>data_source));
                                   }
 
-                                  <span class="comment">// If we need to serve 0 requests, kill the data source right away.</span>
-                                  <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ServeRequests::Only</span>(<span class="number">0</span>) <span class="op">=</span> <span class="ident">serve_requests</span>.<span class="ident">get</span>() {
-                                      <span class="ident">data_source</span>.<span class="ident">destroy</span>();
+                                  <span class="comment">// If we need to serve 0 requests, kill the data source right away.
+                                  </span><span class="kw">if let </span>ServeRequests::Only(<span class="number">0</span>) = serve_requests.get() {
+                                      data_source.destroy();
                                   }
 
-                                  <span class="ident">data_source</span>.<span class="ident">detach</span>().<span class="ident">into</span>()
+                                  data_source.detach().into()
                               })
-                              .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+                              .collect::&lt;Vec&lt;Proxy&lt;<span class="kw">_</span>&gt;&gt;&gt;();
 
-    <span class="prelude-val">Ok</span>(<span class="ident">PreparedCopy</span> { <span class="ident">should_quit</span>,
-                      <span class="ident">queue</span>,
-                      <span class="ident">sources</span>,
-                      <span class="ident">data_paths</span>,
-                      <span class="ident">error</span> })
+    <span class="prelude-val">Ok</span>(PreparedCopy { should_quit,
+                      queue,
+                      sources,
+                      data_paths,
+                      error })
 }
 
-<span class="doccomment">/// Copies data to the clipboard.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The data is copied from `source` and offered in the `mime_type` MIME type. See `Options` for</span>
-<span class="doccomment">/// customizing the behavior of this operation.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// # extern crate wl_clipboard_rs;</span>
-<span class="doccomment">/// # use wl_clipboard_rs::copy::Error;</span>
-<span class="doccomment">/// # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
-<span class="doccomment">/// use wl_clipboard_rs::copy::{copy, MimeType, Options, Source};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let opts = Options::new();</span>
-<span class="doccomment">/// copy(opts, Source::Bytes([1, 2, 3][..].into()), MimeType::Autodetect)?;</span>
-<span class="doccomment">/// # Ok(())</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">copy</span>(<span class="ident">options</span>: <span class="ident">Options</span>, <span class="ident">source</span>: <span class="ident">Source</span>, <span class="ident">mime_type</span>: <span class="ident">MimeType</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">sources</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">MimeSource</span> { <span class="ident">source</span>, <span class="ident">mime_type</span> }];
-    <span class="ident">copy_internal</span>(<span class="ident">options</span>, <span class="ident">sources</span>, <span class="prelude-val">None</span>)
+<span class="doccomment">/// Copies data to the clipboard.
+///
+/// The data is copied from `source` and offered in the `mime_type` MIME type. See `Options` for
+/// customizing the behavior of this operation.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # use wl_clipboard_rs::copy::Error;
+/// # fn foo() -&gt; Result&lt;(), Error&gt; {
+/// use wl_clipboard_rs::copy::{copy, MimeType, Options, Source};
+///
+/// let opts = Options::new();
+/// copy(opts, Source::Bytes([1, 2, 3][..].into()), MimeType::Autodetect)?;
+/// # Ok(())
+/// # }
+/// ```
+</span><span class="attribute">#[inline]
+</span><span class="kw">pub fn </span>copy(options: Options, source: Source, mime_type: MimeType) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+    <span class="kw">let </span>sources = <span class="macro">vec!</span>[MimeSource { source, mime_type }];
+    copy_internal(options, sources, <span class="prelude-val">None</span>)
 }
 
-<span class="doccomment">/// Copies data to the clipboard, offering multiple data sources.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The data from each source in `sources` is copied and offered in the corresponding MIME type.</span>
-<span class="doccomment">/// See `Options` for customizing the behavior of this operation.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// If multiple sources specify the same MIME type, the first one is offered. If one of the MIME</span>
-<span class="doccomment">/// types is text, all automatically added plain text offers will fall back to the first source</span>
-<span class="doccomment">/// with a text MIME type.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// # extern crate wl_clipboard_rs;</span>
-<span class="doccomment">/// # use wl_clipboard_rs::copy::Error;</span>
-<span class="doccomment">/// # fn foo() -&gt; Result&lt;(), Error&gt; {</span>
-<span class="doccomment">/// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let opts = Options::new();</span>
-<span class="doccomment">/// opts.copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),</span>
-<span class="doccomment">///                                   mime_type: MimeType::Autodetect },</span>
-<span class="doccomment">///                      MimeSource { source: Source::Bytes([7, 8, 9][..].into()),</span>
-<span class="doccomment">///                                   mime_type: MimeType::Text }])?;</span>
-<span class="doccomment">/// # Ok(())</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">copy_multi</span>(<span class="ident">options</span>: <span class="ident">Options</span>, <span class="ident">sources</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MimeSource</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="ident">copy_internal</span>(<span class="ident">options</span>, <span class="ident">sources</span>, <span class="prelude-val">None</span>)
+<span class="doccomment">/// Copies data to the clipboard, offering multiple data sources.
+///
+/// The data from each source in `sources` is copied and offered in the corresponding MIME type.
+/// See `Options` for customizing the behavior of this operation.
+///
+/// If multiple sources specify the same MIME type, the first one is offered. If one of the MIME
+/// types is text, all automatically added plain text offers will fall back to the first source
+/// with a text MIME type.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # use wl_clipboard_rs::copy::Error;
+/// # fn foo() -&gt; Result&lt;(), Error&gt; {
+/// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
+///
+/// let opts = Options::new();
+/// opts.copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
+///                                   mime_type: MimeType::Autodetect },
+///                      MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
+///                                   mime_type: MimeType::Text }])?;
+/// # Ok(())
+/// # }
+/// ```
+</span><span class="attribute">#[inline]
+</span><span class="kw">pub fn </span>copy_multi(options: Options, sources: Vec&lt;MimeSource&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+    copy_internal(options, sources, <span class="prelude-val">None</span>)
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">copy_internal</span>(<span class="ident">options</span>: <span class="ident">Options</span>,
-                            <span class="ident">sources</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MimeSource</span><span class="op">&gt;</span>,
-                            <span class="ident">socket_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">OsString</span><span class="op">&gt;</span>)
-                            -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="ident">options</span>.<span class="ident">foreground</span> {
-        <span class="ident">prepare_copy_internal</span>(<span class="ident">options</span>, <span class="ident">sources</span>, <span class="ident">socket_name</span>)<span class="question-mark">?</span>.<span class="ident">serve</span>()
-    } <span class="kw">else</span> {
-        <span class="comment">// The copy must be prepared on the thread because PreparedCopy isn&#39;t Send.</span>
-        <span class="comment">// To receive errors from prepare_copy, use a channel.</span>
-        <span class="kw">let</span> (<span class="ident">tx</span>, <span class="ident">rx</span>) <span class="op">=</span> <span class="ident">sync_channel</span>(<span class="number">1</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>copy_internal(options: Options,
+                            sources: Vec&lt;MimeSource&gt;,
+                            socket_name: <span class="prelude-ty">Option</span>&lt;OsString&gt;)
+                            -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+    <span class="kw">if </span>options.foreground {
+        prepare_copy_internal(options, sources, socket_name)<span class="question-mark">?</span>.serve()
+    } <span class="kw">else </span>{
+        <span class="comment">// The copy must be prepared on the thread because PreparedCopy isn&#39;t Send.
+        // To receive errors from prepare_copy, use a channel.
+        </span><span class="kw">let </span>(tx, rx) = sync_channel(<span class="number">1</span>);
 
-        <span class="ident">thread::spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">prepare_copy_internal</span>(<span class="ident">options</span>, <span class="ident">sources</span>, <span class="ident">socket_name</span>) {
-            <span class="prelude-val">Ok</span>(<span class="ident">prepared_copy</span>) =&gt; {
-                <span class="comment">// prepare_copy completed successfully, report that.</span>
-                <span class="ident">drop</span>(<span class="ident">tx</span>.<span class="ident">send</span>(<span class="prelude-val">None</span>));
+        thread::spawn(<span class="kw">move </span>|| <span class="kw">match </span>prepare_copy_internal(options, sources, socket_name) {
+            <span class="prelude-val">Ok</span>(prepared_copy) =&gt; {
+                <span class="comment">// prepare_copy completed successfully, report that.
+                </span>drop(tx.send(<span class="prelude-val">None</span>));
 
-                <span class="comment">// There&#39;s nobody listening for errors at this point, just drop it.</span>
-                <span class="ident">drop</span>(<span class="ident">prepared_copy</span>.<span class="ident">serve</span>());
+                <span class="comment">// There&#39;s nobody listening for errors at this point, just drop it.
+                </span>drop(prepared_copy.serve());
             }
-            <span class="prelude-val">Err</span>(<span class="ident">err</span>) =&gt; <span class="ident">drop</span>(<span class="ident">tx</span>.<span class="ident">send</span>(<span class="prelude-val">Some</span>(<span class="ident">err</span>))),
+            <span class="prelude-val">Err</span>(err) =&gt; drop(tx.send(<span class="prelude-val">Some</span>(err))),
         });
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">rx</span>.<span class="ident">recv</span>().<span class="ident">unwrap</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>);
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(err) = rx.recv().unwrap() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(err);
         }
 
         <span class="prelude-val">Ok</span>(())
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wl_clipboard_rs" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wl_clipboard_rs" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

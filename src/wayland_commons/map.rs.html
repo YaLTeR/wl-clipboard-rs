@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-commons-0.29.5/src/map.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>map.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wayland_commons/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../wayland_commons/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../wayland_commons/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-commons-0.29.5/src/map.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>map.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../wayland_commons/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -250,257 +250,257 @@
 <span id="250">250</span>
 <span id="251">251</span>
 <span id="252">252</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Wayland objects map</span>
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Interface</span>, <span class="ident">MessageGroup</span>, <span class="ident">NoMessage</span>};
+</pre><pre class="rust"><code><span class="doccomment">//! Wayland objects map
+</span><span class="kw">use crate</span>::{Interface, MessageGroup, NoMessage};
 
-<span class="kw">use</span> <span class="ident">std::cmp::Ordering</span>;
+<span class="kw">use </span>std::cmp::Ordering;
 
-<span class="doccomment">/// Limit separating server-created from client-created objects IDs in the namespace</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SERVER_ID_LIMIT</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0xFF00_0000</span>;
+<span class="doccomment">/// Limit separating server-created from client-created objects IDs in the namespace
+</span><span class="kw">pub const </span>SERVER_ID_LIMIT: u32 = <span class="number">0xFF00_0000</span>;
 
-<span class="doccomment">/// A trait representing the metadata a wayland implementation</span>
-<span class="doccomment">/// may attach to an object.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ObjectMetadata</span>: <span class="ident">Clone</span> {
-    <span class="doccomment">/// Create the metadata for a child object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Mostly needed for client side, to propagate the event queues</span>
-    <span class="kw">fn</span> <span class="ident">child</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>;
+<span class="doccomment">/// A trait representing the metadata a wayland implementation
+/// may attach to an object.
+</span><span class="kw">pub trait </span>ObjectMetadata: Clone {
+    <span class="doccomment">/// Create the metadata for a child object
+    ///
+    /// Mostly needed for client side, to propagate the event queues
+    </span><span class="kw">fn </span>child(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>;
 }
 
-<span class="kw">impl</span> <span class="ident">ObjectMetadata</span> <span class="kw">for</span> () {
-    <span class="kw">fn</span> <span class="ident">child</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {}
+<span class="kw">impl </span>ObjectMetadata <span class="kw">for </span>() {
+    <span class="kw">fn </span>child(<span class="kw-2">&amp;</span><span class="self">self</span>) {}
 }
 
-<span class="doccomment">/// The representation of a protocol object</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span>: <span class="ident">ObjectMetadata</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Interface name of this object</span>
-    <span class="kw">pub</span> <span class="ident">interface</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="doccomment">/// Version of this object</span>
-    <span class="kw">pub</span> <span class="ident">version</span>: <span class="ident">u32</span>,
-    <span class="doccomment">/// Description of the requests of this object</span>
-    <span class="kw">pub</span> <span class="ident">requests</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident"><span class="kw">crate</span>::wire::MessageDesc</span>],
-    <span class="doccomment">/// Description of the events of this object</span>
-    <span class="kw">pub</span> <span class="ident">events</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident"><span class="kw">crate</span>::wire::MessageDesc</span>],
-    <span class="doccomment">/// Metadata associated to this object (ex: its event queue client side)</span>
-    <span class="kw">pub</span> <span class="ident">meta</span>: <span class="ident">Meta</span>,
-    <span class="doccomment">/// A function which, from an opcode, a version, and the Meta, creates a child</span>
-    <span class="doccomment">/// object associated with this event if any</span>
-    <span class="kw">pub</span> <span class="ident">childs_from_events</span>: <span class="kw">fn</span>(<span class="ident">u16</span>, <span class="ident">u32</span>, <span class="kw-2">&amp;</span><span class="ident">Meta</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// A function which, from an opcode, a version, and the Meta, creates a child</span>
-    <span class="doccomment">/// object associated with this request if any</span>
-    <span class="kw">pub</span> <span class="ident">childs_from_requests</span>: <span class="kw">fn</span>(<span class="ident">u16</span>, <span class="ident">u32</span>, <span class="kw-2">&amp;</span><span class="ident">Meta</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="doccomment">/// The representation of a protocol object
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>Object&lt;Meta: ObjectMetadata&gt; {
+    <span class="doccomment">/// Interface name of this object
+    </span><span class="kw">pub </span>interface: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="doccomment">/// Version of this object
+    </span><span class="kw">pub </span>version: u32,
+    <span class="doccomment">/// Description of the requests of this object
+    </span><span class="kw">pub </span>requests: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[<span class="kw">crate</span>::wire::MessageDesc],
+    <span class="doccomment">/// Description of the events of this object
+    </span><span class="kw">pub </span>events: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[<span class="kw">crate</span>::wire::MessageDesc],
+    <span class="doccomment">/// Metadata associated to this object (ex: its event queue client side)
+    </span><span class="kw">pub </span>meta: Meta,
+    <span class="doccomment">/// A function which, from an opcode, a version, and the Meta, creates a child
+    /// object associated with this event if any
+    </span><span class="kw">pub </span>childs_from_events: <span class="kw">fn</span>(u16, u32, <span class="kw-2">&amp;</span>Meta) -&gt; <span class="prelude-ty">Option</span>&lt;Object&lt;Meta&gt;&gt;,
+    <span class="doccomment">/// A function which, from an opcode, a version, and the Meta, creates a child
+    /// object associated with this request if any
+    </span><span class="kw">pub </span>childs_from_requests: <span class="kw">fn</span>(u16, u32, <span class="kw-2">&amp;</span>Meta) -&gt; <span class="prelude-ty">Option</span>&lt;Object&lt;Meta&gt;&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Meta</span>: <span class="ident">ObjectMetadata</span> <span class="op">+</span> <span class="ident">std::fmt::Debug</span><span class="op">&gt;</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-        <span class="ident">f</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;Object&quot;</span>)
-            .<span class="ident">field</span>(<span class="string">&quot;interface&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">interface</span>)
-            .<span class="ident">field</span>(<span class="string">&quot;version&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">version</span>)
-            .<span class="ident">field</span>(<span class="string">&quot;requests&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">requests</span>)
-            .<span class="ident">field</span>(<span class="string">&quot;events&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">events</span>)
-            .<span class="ident">field</span>(<span class="string">&quot;meta&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">meta</span>)
-            .<span class="ident">finish</span>()
+<span class="kw">impl</span>&lt;Meta: ObjectMetadata + std::fmt::Debug&gt; std::fmt::Debug <span class="kw">for </span>Object&lt;Meta&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">&quot;Object&quot;</span>)
+            .field(<span class="string">&quot;interface&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.interface)
+            .field(<span class="string">&quot;version&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.version)
+            .field(<span class="string">&quot;requests&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.requests)
+            .field(<span class="string">&quot;events&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.events)
+            .field(<span class="string">&quot;meta&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.meta)
+            .finish()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Meta</span>: <span class="ident">ObjectMetadata</span><span class="op">&gt;</span> <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Create an Object corresponding to given interface and version</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_interface</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span>(<span class="ident">version</span>: <span class="ident">u32</span>, <span class="ident">meta</span>: <span class="ident">Meta</span>) -&gt; <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span> {
-        <span class="ident">Object</span> {
-            <span class="ident">interface</span>: <span class="ident">I::NAME</span>,
-            <span class="ident">version</span>,
-            <span class="ident">requests</span>: <span class="ident">I::Request::MESSAGES</span>,
-            <span class="ident">events</span>: <span class="ident">I::Event::MESSAGES</span>,
-            <span class="ident">meta</span>,
-            <span class="ident">childs_from_events</span>: <span class="ident">childs_from</span>::<span class="op">&lt;</span><span class="ident">I::Event</span>, <span class="ident">Meta</span><span class="op">&gt;</span>,
-            <span class="ident">childs_from_requests</span>: <span class="ident">childs_from</span>::<span class="op">&lt;</span><span class="ident">I::Request</span>, <span class="ident">Meta</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;Meta: ObjectMetadata&gt; Object&lt;Meta&gt; {
+    <span class="doccomment">/// Create an Object corresponding to given interface and version
+    </span><span class="kw">pub fn </span>from_interface&lt;I: Interface&gt;(version: u32, meta: Meta) -&gt; Object&lt;Meta&gt; {
+        Object {
+            interface: I::NAME,
+            version,
+            requests: I::Request::MESSAGES,
+            events: I::Event::MESSAGES,
+            meta,
+            childs_from_events: childs_from::&lt;I::Event, Meta&gt;,
+            childs_from_requests: childs_from::&lt;I::Request, Meta&gt;,
         }
     }
 
-    <span class="doccomment">/// Create an optional `Object` corresponding to the possible `new_id` associated</span>
-    <span class="doccomment">/// with given event opcode</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">event_child</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">opcode</span>: <span class="ident">u16</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        (<span class="self">self</span>.<span class="ident">childs_from_events</span>)(<span class="ident">opcode</span>, <span class="self">self</span>.<span class="ident">version</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">meta</span>)
+    <span class="doccomment">/// Create an optional `Object` corresponding to the possible `new_id` associated
+    /// with given event opcode
+    </span><span class="kw">pub fn </span>event_child(<span class="kw-2">&amp;</span><span class="self">self</span>, opcode: u16) -&gt; <span class="prelude-ty">Option</span>&lt;Object&lt;Meta&gt;&gt; {
+        (<span class="self">self</span>.childs_from_events)(opcode, <span class="self">self</span>.version, <span class="kw-2">&amp;</span><span class="self">self</span>.meta)
     }
 
-    <span class="doccomment">/// Create an optional `Object` corresponding to the possible `new_id` associated</span>
-    <span class="doccomment">/// with given request opcode</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">request_child</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">opcode</span>: <span class="ident">u16</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        (<span class="self">self</span>.<span class="ident">childs_from_requests</span>)(<span class="ident">opcode</span>, <span class="self">self</span>.<span class="ident">version</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">meta</span>)
+    <span class="doccomment">/// Create an optional `Object` corresponding to the possible `new_id` associated
+    /// with given request opcode
+    </span><span class="kw">pub fn </span>request_child(<span class="kw-2">&amp;</span><span class="self">self</span>, opcode: u16) -&gt; <span class="prelude-ty">Option</span>&lt;Object&lt;Meta&gt;&gt; {
+        (<span class="self">self</span>.childs_from_requests)(opcode, <span class="self">self</span>.version, <span class="kw-2">&amp;</span><span class="self">self</span>.meta)
     }
 
-    <span class="doccomment">/// Check whether this object is of given interface</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_interface</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="comment">// TODO: we might want to be more robust than that</span>
-        <span class="self">self</span>.<span class="ident">interface</span> <span class="op">==</span> <span class="ident">I::NAME</span>
+    <span class="doccomment">/// Check whether this object is of given interface
+    </span><span class="kw">pub fn </span>is_interface&lt;I: Interface&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="comment">// TODO: we might want to be more robust than that
+        </span><span class="self">self</span>.interface == I::NAME
     }
 
-    <span class="doccomment">/// Create a placeholder object that will be filled-in by the message logic</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">placeholder</span>(<span class="ident">meta</span>: <span class="ident">Meta</span>) -&gt; <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span> {
-        <span class="ident">Object</span> {
-            <span class="ident">interface</span>: <span class="string">&quot;&quot;</span>,
-            <span class="ident">version</span>: <span class="number">0</span>,
-            <span class="ident">requests</span>: <span class="kw-2">&amp;</span>[],
-            <span class="ident">events</span>: <span class="kw-2">&amp;</span>[],
-            <span class="ident">meta</span>,
-            <span class="ident">childs_from_events</span>: <span class="ident">childs_from</span>::<span class="op">&lt;</span><span class="ident">NoMessage</span>, <span class="ident">Meta</span><span class="op">&gt;</span>,
-            <span class="ident">childs_from_requests</span>: <span class="ident">childs_from</span>::<span class="op">&lt;</span><span class="ident">NoMessage</span>, <span class="ident">Meta</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Create a placeholder object that will be filled-in by the message logic
+    </span><span class="kw">pub fn </span>placeholder(meta: Meta) -&gt; Object&lt;Meta&gt; {
+        Object {
+            interface: <span class="string">&quot;&quot;</span>,
+            version: <span class="number">0</span>,
+            requests: <span class="kw-2">&amp;</span>[],
+            events: <span class="kw-2">&amp;</span>[],
+            meta,
+            childs_from_events: childs_from::&lt;NoMessage, Meta&gt;,
+            childs_from_requests: childs_from::&lt;NoMessage, Meta&gt;,
         }
     }
 }
 
-<span class="kw">fn</span> <span class="ident">childs_from</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">MessageGroup</span>, <span class="ident">Meta</span>: <span class="ident">ObjectMetadata</span><span class="op">&gt;</span>(
-    <span class="ident">opcode</span>: <span class="ident">u16</span>,
-    <span class="ident">version</span>: <span class="ident">u32</span>,
-    <span class="ident">meta</span>: <span class="kw-2">&amp;</span><span class="ident">Meta</span>,
-) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="ident">M::child</span>(<span class="ident">opcode</span>, <span class="ident">version</span>, <span class="ident">meta</span>)
+<span class="kw">fn </span>childs_from&lt;M: MessageGroup, Meta: ObjectMetadata&gt;(
+    opcode: u16,
+    version: u32,
+    meta: <span class="kw-2">&amp;</span>Meta,
+) -&gt; <span class="prelude-ty">Option</span>&lt;Object&lt;Meta&gt;&gt; {
+    M::child(opcode, version, meta)
 }
 
-<span class="doccomment">/// A holder for the object store of a connection</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Keeps track of which object id is associated to which</span>
-<span class="doccomment">/// interface object, and which is currently unused.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ObjectMap</span><span class="op">&lt;</span><span class="ident">Meta</span>: <span class="ident">ObjectMetadata</span><span class="op">&gt;</span> {
-    <span class="ident">client_objects</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">server_objects</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="doccomment">/// A holder for the object store of a connection
+///
+/// Keeps track of which object id is associated to which
+/// interface object, and which is currently unused.
+</span><span class="attribute">#[derive(Default, Debug)]
+</span><span class="kw">pub struct </span>ObjectMap&lt;Meta: ObjectMetadata&gt; {
+    client_objects: Vec&lt;<span class="prelude-ty">Option</span>&lt;Object&lt;Meta&gt;&gt;&gt;,
+    server_objects: Vec&lt;<span class="prelude-ty">Option</span>&lt;Object&lt;Meta&gt;&gt;&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Meta</span>: <span class="ident">ObjectMetadata</span><span class="op">&gt;</span> <span class="ident">ObjectMap</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Create a new empty object map</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">ObjectMap</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span> {
-        <span class="ident">ObjectMap</span> { <span class="ident">client_objects</span>: <span class="ident">Vec::new</span>(), <span class="ident">server_objects</span>: <span class="ident">Vec::new</span>() }
+<span class="kw">impl</span>&lt;Meta: ObjectMetadata&gt; ObjectMap&lt;Meta&gt; {
+    <span class="doccomment">/// Create a new empty object map
+    </span><span class="kw">pub fn </span>new() -&gt; ObjectMap&lt;Meta&gt; {
+        ObjectMap { client_objects: Vec::new(), server_objects: Vec::new() }
     }
 
-    <span class="doccomment">/// Find an object in the store</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">id</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="prelude-val">None</span>
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">id</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">SERVER_ID_LIMIT</span> {
-            <span class="self">self</span>.<span class="ident">server_objects</span>.<span class="ident">get</span>((<span class="ident">id</span> <span class="op">-</span> <span class="ident">SERVER_ID_LIMIT</span>) <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">and_then</span>(<span class="ident">Clone::clone</span>)
-        } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">client_objects</span>.<span class="ident">get</span>((<span class="ident">id</span> <span class="op">-</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">and_then</span>(<span class="ident">Clone::clone</span>)
+    <span class="doccomment">/// Find an object in the store
+    </span><span class="kw">pub fn </span>find(<span class="kw-2">&amp;</span><span class="self">self</span>, id: u32) -&gt; <span class="prelude-ty">Option</span>&lt;Object&lt;Meta&gt;&gt; {
+        <span class="kw">if </span>id == <span class="number">0 </span>{
+            <span class="prelude-val">None
+        </span>} <span class="kw">else if </span>id &gt;= SERVER_ID_LIMIT {
+            <span class="self">self</span>.server_objects.get((id - SERVER_ID_LIMIT) <span class="kw">as </span>usize).and_then(Clone::clone)
+        } <span class="kw">else </span>{
+            <span class="self">self</span>.client_objects.get((id - <span class="number">1</span>) <span class="kw">as </span>usize).and_then(Clone::clone)
         }
     }
 
-    <span class="doccomment">/// Remove an object from the store</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Does nothing if the object didn&#39;t previously exists</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">u32</span>) {
-        <span class="kw">if</span> <span class="ident">id</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="comment">// nothing</span>
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">id</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">SERVER_ID_LIMIT</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">place</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">server_objects</span>.<span class="ident">get_mut</span>((<span class="ident">id</span> <span class="op">-</span> <span class="ident">SERVER_ID_LIMIT</span>) <span class="kw">as</span> <span class="ident">usize</span>) {
-                <span class="kw-2">*</span><span class="ident">place</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+    <span class="doccomment">/// Remove an object from the store
+    ///
+    /// Does nothing if the object didn&#39;t previously exists
+    </span><span class="kw">pub fn </span>remove(<span class="kw-2">&amp;mut </span><span class="self">self</span>, id: u32) {
+        <span class="kw">if </span>id == <span class="number">0 </span>{
+            <span class="comment">// nothing
+        </span>} <span class="kw">else if </span>id &gt;= SERVER_ID_LIMIT {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(place) = <span class="self">self</span>.server_objects.get_mut((id - SERVER_ID_LIMIT) <span class="kw">as </span>usize) {
+                <span class="kw-2">*</span>place = <span class="prelude-val">None</span>;
             }
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">place</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">client_objects</span>.<span class="ident">get_mut</span>((<span class="ident">id</span> <span class="op">-</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">usize</span>) {
-            <span class="kw-2">*</span><span class="ident">place</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(place) = <span class="self">self</span>.client_objects.get_mut((id - <span class="number">1</span>) <span class="kw">as </span>usize) {
+            <span class="kw-2">*</span>place = <span class="prelude-val">None</span>;
         }
     }
 
-    <span class="doccomment">/// Insert given object for given id</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Can fail if the requested id is not the next free id of this store.</span>
-    <span class="doccomment">/// (In which case this is a protocol error)</span>
-    <span class="comment">// -- The lint is allowed because fixing it would be a breaking change --</span>
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::result_unit_err</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert_at</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">u32</span>, <span class="ident">object</span>: <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">id</span> <span class="op">==</span> <span class="number">0</span> {
+    <span class="doccomment">/// Insert given object for given id
+    ///
+    /// Can fail if the requested id is not the next free id of this store.
+    /// (In which case this is a protocol error)
+    </span><span class="comment">// -- The lint is allowed because fixing it would be a breaking change --
+    </span><span class="attribute">#[allow(clippy::result_unit_err)]
+    </span><span class="kw">pub fn </span>insert_at(<span class="kw-2">&amp;mut </span><span class="self">self</span>, id: u32, object: Object&lt;Meta&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
+        <span class="kw">if </span>id == <span class="number">0 </span>{
             <span class="prelude-val">Err</span>(())
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">id</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">SERVER_ID_LIMIT</span> {
-            <span class="ident">insert_in_at</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">server_objects</span>, (<span class="ident">id</span> <span class="op">-</span> <span class="ident">SERVER_ID_LIMIT</span>) <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">object</span>)
-        } <span class="kw">else</span> {
-            <span class="ident">insert_in_at</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">client_objects</span>, (<span class="ident">id</span> <span class="op">-</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">object</span>)
+        } <span class="kw">else if </span>id &gt;= SERVER_ID_LIMIT {
+            insert_in_at(<span class="kw-2">&amp;mut </span><span class="self">self</span>.server_objects, (id - SERVER_ID_LIMIT) <span class="kw">as </span>usize, object)
+        } <span class="kw">else </span>{
+            insert_in_at(<span class="kw-2">&amp;mut </span><span class="self">self</span>.client_objects, (id - <span class="number">1</span>) <span class="kw">as </span>usize, object)
         }
     }
 
-    <span class="doccomment">/// Allocate a new id for an object in the client namespace</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">client_insert_new</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">object</span>: <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span>) -&gt; <span class="ident">u32</span> {
-        <span class="ident">insert_in</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">client_objects</span>, <span class="ident">object</span>) <span class="op">+</span> <span class="number">1</span>
+    <span class="doccomment">/// Allocate a new id for an object in the client namespace
+    </span><span class="kw">pub fn </span>client_insert_new(<span class="kw-2">&amp;mut </span><span class="self">self</span>, object: Object&lt;Meta&gt;) -&gt; u32 {
+        insert_in(<span class="kw-2">&amp;mut </span><span class="self">self</span>.client_objects, object) + <span class="number">1
+    </span>}
+
+    <span class="doccomment">/// Allocate a new id for an object in the server namespace
+    </span><span class="kw">pub fn </span>server_insert_new(<span class="kw-2">&amp;mut </span><span class="self">self</span>, object: Object&lt;Meta&gt;) -&gt; u32 {
+        insert_in(<span class="kw-2">&amp;mut </span><span class="self">self</span>.server_objects, object) + SERVER_ID_LIMIT
     }
 
-    <span class="doccomment">/// Allocate a new id for an object in the server namespace</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">server_insert_new</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">object</span>: <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span>) -&gt; <span class="ident">u32</span> {
-        <span class="ident">insert_in</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">server_objects</span>, <span class="ident">object</span>) <span class="op">+</span> <span class="ident">SERVER_ID_LIMIT</span>
-    }
-
-    <span class="doccomment">/// Mutably access an object of the map</span>
-    <span class="comment">// -- The lint is allowed because fixing it would be a breaking change --</span>
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::result_unit_err</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;mut</span> <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span>) -&gt; <span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">u32</span>, <span class="ident">f</span>: <span class="ident">F</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, ()<span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">id</span> <span class="op">==</span> <span class="number">0</span> {
+    <span class="doccomment">/// Mutably access an object of the map
+    </span><span class="comment">// -- The lint is allowed because fixing it would be a breaking change --
+    </span><span class="attribute">#[allow(clippy::result_unit_err)]
+    </span><span class="kw">pub fn </span>with&lt;T, F: FnOnce(<span class="kw-2">&amp;mut </span>Object&lt;Meta&gt;) -&gt; T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, id: u32, f: F) -&gt; <span class="prelude-ty">Result</span>&lt;T, ()&gt; {
+        <span class="kw">if </span>id == <span class="number">0 </span>{
             <span class="prelude-val">Err</span>(())
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">id</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">SERVER_ID_LIMIT</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">obj</span>)) <span class="op">=</span>
-                <span class="self">self</span>.<span class="ident">server_objects</span>.<span class="ident">get_mut</span>((<span class="ident">id</span> <span class="op">-</span> <span class="ident">SERVER_ID_LIMIT</span>) <span class="kw">as</span> <span class="ident">usize</span>)
+        } <span class="kw">else if </span>id &gt;= SERVER_ID_LIMIT {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>obj)) =
+                <span class="self">self</span>.server_objects.get_mut((id - SERVER_ID_LIMIT) <span class="kw">as </span>usize)
             {
-                <span class="prelude-val">Ok</span>(<span class="ident">f</span>(<span class="ident">obj</span>))
-            } <span class="kw">else</span> {
+                <span class="prelude-val">Ok</span>(f(obj))
+            } <span class="kw">else </span>{
                 <span class="prelude-val">Err</span>(())
             }
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">obj</span>)) <span class="op">=</span> <span class="self">self</span>.<span class="ident">client_objects</span>.<span class="ident">get_mut</span>((<span class="ident">id</span> <span class="op">-</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">usize</span>)
+        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>obj)) = <span class="self">self</span>.client_objects.get_mut((id - <span class="number">1</span>) <span class="kw">as </span>usize)
         {
-            <span class="prelude-val">Ok</span>(<span class="ident">f</span>(<span class="ident">obj</span>))
-        } <span class="kw">else</span> {
+            <span class="prelude-val">Ok</span>(f(obj))
+        } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(())
         }
     }
 
-    <span class="doccomment">/// Mutably access all objects of the map in sequence</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_all</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">u32</span>, <span class="kw-2">&amp;mut</span> <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span>)<span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>) {
-        <span class="kw">for</span> (<span class="ident">id</span>, <span class="ident">place</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">client_objects</span>.<span class="ident">iter_mut</span>().<span class="ident">enumerate</span>() {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">obj</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">place</span> {
-                <span class="ident">f</span>(<span class="ident">id</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">+</span> <span class="number">1</span>, <span class="ident">obj</span>);
+    <span class="doccomment">/// Mutably access all objects of the map in sequence
+    </span><span class="kw">pub fn </span>with_all&lt;F: FnMut(u32, <span class="kw-2">&amp;mut </span>Object&lt;Meta&gt;)&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>f: F) {
+        <span class="kw">for </span>(id, place) <span class="kw">in </span><span class="self">self</span>.client_objects.iter_mut().enumerate() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>obj) = <span class="kw-2">*</span>place {
+                f(id <span class="kw">as </span>u32 + <span class="number">1</span>, obj);
             }
         }
-        <span class="kw">for</span> (<span class="ident">id</span>, <span class="ident">place</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">server_objects</span>.<span class="ident">iter_mut</span>().<span class="ident">enumerate</span>() {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">obj</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">place</span> {
-                <span class="ident">f</span>(<span class="ident">id</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">+</span> <span class="ident">SERVER_ID_LIMIT</span>, <span class="ident">obj</span>);
+        <span class="kw">for </span>(id, place) <span class="kw">in </span><span class="self">self</span>.server_objects.iter_mut().enumerate() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>obj) = <span class="kw-2">*</span>place {
+                f(id <span class="kw">as </span>u32 + SERVER_ID_LIMIT, obj);
             }
         }
     }
 }
 
-<span class="comment">// insert a new object in a store at the first free place</span>
-<span class="kw">fn</span> <span class="ident">insert_in</span><span class="op">&lt;</span><span class="ident">Meta</span>: <span class="ident">ObjectMetadata</span><span class="op">&gt;</span>(
-    <span class="ident">store</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">object</span>: <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">u32</span> {
-    <span class="kw">match</span> <span class="ident">store</span>.<span class="ident">iter</span>().<span class="ident">position</span>(<span class="ident">Option::is_none</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">id</span>) =&gt; {
-            <span class="ident">store</span>[<span class="ident">id</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">object</span>);
-            <span class="ident">id</span> <span class="kw">as</span> <span class="ident">u32</span>
+<span class="comment">// insert a new object in a store at the first free place
+</span><span class="kw">fn </span>insert_in&lt;Meta: ObjectMetadata&gt;(
+    store: <span class="kw-2">&amp;mut </span>Vec&lt;<span class="prelude-ty">Option</span>&lt;Object&lt;Meta&gt;&gt;&gt;,
+    object: Object&lt;Meta&gt;,
+) -&gt; u32 {
+    <span class="kw">match </span>store.iter().position(Option::is_none) {
+        <span class="prelude-val">Some</span>(id) =&gt; {
+            store[id] = <span class="prelude-val">Some</span>(object);
+            id <span class="kw">as </span>u32
         }
-        <span class="prelude-val">None</span> =&gt; {
-            <span class="ident">store</span>.<span class="ident">push</span>(<span class="prelude-val">Some</span>(<span class="ident">object</span>));
-            (<span class="ident">store</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">u32</span>
+        <span class="prelude-val">None </span>=&gt; {
+            store.push(<span class="prelude-val">Some</span>(object));
+            (store.len() - <span class="number">1</span>) <span class="kw">as </span>u32
         }
     }
 }
 
-<span class="comment">// insert an object at a given place in a store</span>
-<span class="kw">fn</span> <span class="ident">insert_in_at</span><span class="op">&lt;</span><span class="ident">Meta</span>: <span class="ident">ObjectMetadata</span><span class="op">&gt;</span>(
-    <span class="ident">store</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">id</span>: <span class="ident">usize</span>,
-    <span class="ident">object</span>: <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Meta</span><span class="op">&gt;</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">id</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">store</span>.<span class="ident">len</span>()) {
-        <span class="ident">Ordering::Greater</span> =&gt; <span class="prelude-val">Err</span>(()),
-        <span class="ident">Ordering::Equal</span> =&gt; {
-            <span class="ident">store</span>.<span class="ident">push</span>(<span class="prelude-val">Some</span>(<span class="ident">object</span>));
+<span class="comment">// insert an object at a given place in a store
+</span><span class="kw">fn </span>insert_in_at&lt;Meta: ObjectMetadata&gt;(
+    store: <span class="kw-2">&amp;mut </span>Vec&lt;<span class="prelude-ty">Option</span>&lt;Object&lt;Meta&gt;&gt;&gt;,
+    id: usize,
+    object: Object&lt;Meta&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
+    <span class="kw">match </span>id.cmp(<span class="kw-2">&amp;</span>store.len()) {
+        Ordering::Greater =&gt; <span class="prelude-val">Err</span>(()),
+        Ordering::Equal =&gt; {
+            store.push(<span class="prelude-val">Some</span>(object));
             <span class="prelude-val">Ok</span>(())
         }
-        <span class="ident">Ordering::Less</span> =&gt; {
-            <span class="kw">let</span> <span class="ident">previous</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">store</span>[<span class="ident">id</span>];
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">previous</span>.<span class="ident">is_none</span>() {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(());
+        Ordering::Less =&gt; {
+            <span class="kw">let </span>previous = <span class="kw-2">&amp;mut </span>store[id];
+            <span class="kw">if </span>!previous.is_none() {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(());
             }
-            <span class="kw-2">*</span><span class="ident">previous</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">object</span>);
+            <span class="kw-2">*</span>previous = <span class="prelude-val">Some</span>(object);
             <span class="prelude-val">Ok</span>(())
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_commons" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_commons" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-client-0.29.5/src/rust_imp/display.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>display.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../wayland_client/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../wayland_client/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../wayland_client/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-client-0.29.5/src/rust_imp/display.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>display.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../wayland_client/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -150,157 +150,157 @@
 <span id="150">150</span>
 <span id="151">151</span>
 <span id="152">152</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::io</span>;
-<span class="kw">use</span> <span class="ident">std::os::unix::io</span>::{<span class="ident">AsRawFd</span>, <span class="ident">RawFd</span>};
-<span class="kw">use</span> <span class="ident">std::sync::atomic::Ordering</span>;
-<span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
+</pre><pre class="rust"><code><span class="kw">use </span>std::io;
+<span class="kw">use </span>std::os::unix::io::{AsRawFd, RawFd};
+<span class="kw">use </span>std::sync::atomic::Ordering;
+<span class="kw">use </span>std::sync::{Arc, Mutex};
 
-<span class="kw">use</span> <span class="ident">wayland_commons::debug</span>;
-<span class="kw">use</span> <span class="ident">wayland_commons::map</span>::{<span class="ident">Object</span>, <span class="ident">ObjectMap</span>};
-<span class="kw">use</span> <span class="ident">wayland_commons::wire::Message</span>;
-<span class="kw">use</span> <span class="ident">wayland_commons::MessageGroup</span>;
+<span class="kw">use </span>wayland_commons::debug;
+<span class="kw">use </span>wayland_commons::map::{Object, ObjectMap};
+<span class="kw">use </span>wayland_commons::wire::Message;
+<span class="kw">use </span>wayland_commons::MessageGroup;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::protocol::wl_display</span>::{<span class="self">self</span>, <span class="ident">WlDisplay</span>};
+<span class="kw">use </span><span class="kw">crate</span>::protocol::wl_display::{<span class="self">self</span>, WlDisplay};
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">ConnectError</span>, <span class="ident">ProtocolError</span>, <span class="ident">Proxy</span>};
+<span class="kw">use crate</span>::{ConnectError, ProtocolError, Proxy};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::connection</span>::{<span class="ident">Connection</span>, <span class="ident">Error</span> <span class="kw">as</span> <span class="ident">CxError</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::proxy</span>::{<span class="ident">ObjectMeta</span>, <span class="ident">ProxyInner</span>};
-<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">Dispatched</span>, <span class="ident">EventQueueInner</span>, <span class="ident">ProxyMap</span>, <span class="ident">WAYLAND_DEBUG</span>};
+<span class="kw">use </span><span class="kw">super</span>::connection::{Connection, Error <span class="kw">as </span>CxError};
+<span class="kw">use </span><span class="kw">super</span>::proxy::{ObjectMeta, ProxyInner};
+<span class="kw">use super</span>::{Dispatched, EventQueueInner, ProxyMap, WAYLAND_DEBUG};
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">DisplayInner</span> {
-    <span class="ident">connection</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Connection</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">proxy</span>: <span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">WlDisplay</span><span class="op">&gt;</span>,
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>DisplayInner {
+    connection: Arc&lt;Mutex&lt;Connection&gt;&gt;,
+    proxy: Proxy&lt;WlDisplay&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">DisplayInner</span> {
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_fd</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">DisplayInner</span><span class="op">&gt;</span>, <span class="ident">ConnectError</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span> <span class="ident">std::env::var_os</span>(<span class="string">&quot;WAYLAND_DEBUG&quot;</span>) {
-            <span class="comment">// Follow libwayland-client and enable debug log only on `1` and `client` values.</span>
-            <span class="kw">if</span> <span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;1&quot;</span> <span class="op">|</span><span class="op">|</span> <span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;client&quot;</span> {
-                <span class="comment">// Toggle debug log.</span>
-                <span class="ident">WAYLAND_DEBUG</span>.<span class="ident">store</span>(<span class="bool-val">true</span>, <span class="ident">Ordering::Relaxed</span>);
+<span class="kw">impl </span>DisplayInner {
+    <span class="kw">pub unsafe fn </span>from_fd(fd: RawFd) -&gt; <span class="prelude-ty">Result</span>&lt;Arc&lt;DisplayInner&gt;, ConnectError&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(value) = std::env::var_os(<span class="string">&quot;WAYLAND_DEBUG&quot;</span>) {
+            <span class="comment">// Follow libwayland-client and enable debug log only on `1` and `client` values.
+            </span><span class="kw">if </span>value == <span class="string">&quot;1&quot; </span>|| value == <span class="string">&quot;client&quot; </span>{
+                <span class="comment">// Toggle debug log.
+                </span>WAYLAND_DEBUG.store(<span class="bool-val">true</span>, Ordering::Relaxed);
             }
         }
 
-        <span class="comment">// The special buffer for display events</span>
-        <span class="kw">let</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident"><span class="kw">super</span>::queues::create_queue_buffer</span>();
-        <span class="kw">let</span> <span class="ident">display_object</span> <span class="op">=</span> <span class="ident">Object::from_interface</span>::<span class="op">&lt;</span><span class="ident">WlDisplay</span><span class="op">&gt;</span>(<span class="number">1</span>, <span class="ident">ObjectMeta::new</span>(<span class="ident">buffer</span>));
-        <span class="kw">let</span> (<span class="ident">connection</span>, <span class="ident">map</span>) <span class="op">=</span> {
-            <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">Connection::new</span>(<span class="ident">fd</span>, <span class="ident">display_object</span>);
-            <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">c</span>.<span class="ident">map</span>.<span class="ident">clone</span>();
-            (<span class="ident">Arc::new</span>(<span class="ident">Mutex::new</span>(<span class="ident">c</span>)), <span class="ident">m</span>)
+        <span class="comment">// The special buffer for display events
+        </span><span class="kw">let </span>buffer = <span class="kw">super</span>::queues::create_queue_buffer();
+        <span class="kw">let </span>display_object = Object::from_interface::&lt;WlDisplay&gt;(<span class="number">1</span>, ObjectMeta::new(buffer));
+        <span class="kw">let </span>(connection, map) = {
+            <span class="kw">let </span>c = Connection::new(fd, display_object);
+            <span class="kw">let </span>m = c.map.clone();
+            (Arc::new(Mutex::new(c)), m)
         };
 
-        <span class="comment">// Setup the display dispatcher</span>
-        <span class="ident">map</span>.<span class="ident">lock</span>()
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">with</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">obj</span><span class="op">|</span> {
-                <span class="ident">obj</span>.<span class="ident">meta</span>.<span class="ident">dispatcher</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">Mutex::new</span>(<span class="ident">DisplayDispatcher</span> {
-                    <span class="ident">map</span>: <span class="ident">map</span>.<span class="ident">clone</span>(),
-                    <span class="ident">last_error</span>: <span class="ident">connection</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">last_error</span>.<span class="ident">clone</span>(),
+        <span class="comment">// Setup the display dispatcher
+        </span>map.lock()
+            .unwrap()
+            .with(<span class="number">1</span>, |obj| {
+                obj.meta.dispatcher = Arc::new(Mutex::new(DisplayDispatcher {
+                    map: map.clone(),
+                    last_error: connection.lock().unwrap().last_error.clone(),
                 }));
             })
-            .<span class="ident">unwrap</span>();
+            .unwrap();
 
-        <span class="kw">let</span> <span class="ident">display_proxy</span> <span class="op">=</span> <span class="ident">ProxyInner::from_id</span>(<span class="number">1</span>, <span class="ident">map</span>, <span class="ident">connection</span>.<span class="ident">clone</span>()).<span class="ident">unwrap</span>();
+        <span class="kw">let </span>display_proxy = ProxyInner::from_id(<span class="number">1</span>, map, connection.clone()).unwrap();
 
-        <span class="kw">let</span> <span class="ident">display</span> <span class="op">=</span> <span class="ident">DisplayInner</span> { <span class="ident">proxy</span>: <span class="ident">Proxy::wrap</span>(<span class="ident">display_proxy</span>), <span class="ident">connection</span> };
+        <span class="kw">let </span>display = DisplayInner { proxy: Proxy::wrap(display_proxy), connection };
 
-        <span class="prelude-val">Ok</span>(<span class="ident">Arc::new</span>(<span class="ident">display</span>))
+        <span class="prelude-val">Ok</span>(Arc::new(display))
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">flush</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">connection</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">flush</span>() {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>flush(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;()&gt; {
+        <span class="kw">match </span><span class="self">self</span>.connection.lock().unwrap().flush() {
             <span class="prelude-val">Ok</span>(()) =&gt; <span class="prelude-val">Ok</span>(()),
-            <span class="prelude-val">Err</span>(<span class="ident">errno</span>) =&gt; <span class="prelude-val">Err</span>(<span class="ident">errno</span>.<span class="ident">into</span>()),
+            <span class="prelude-val">Err</span>(errno) =&gt; <span class="prelude-val">Err</span>(errno.into()),
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">create_event_queue</span>(<span class="ident">me</span>: <span class="kw-2">&amp;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">DisplayInner</span><span class="op">&gt;</span>) -&gt; <span class="ident">EventQueueInner</span> {
-        <span class="ident">EventQueueInner::new</span>(<span class="ident">me</span>.<span class="ident">connection</span>.<span class="ident">clone</span>(), <span class="prelude-val">None</span>)
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create_event_queue(me: <span class="kw-2">&amp;</span>Arc&lt;DisplayInner&gt;) -&gt; EventQueueInner {
+        EventQueueInner::new(me.connection.clone(), <span class="prelude-val">None</span>)
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_proxy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Proxy</span><span class="op">&lt;</span><span class="ident">WlDisplay</span><span class="op">&gt;</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">proxy</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_proxy(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Proxy&lt;WlDisplay&gt; {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.proxy
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">protocol_error</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ProtocolError</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">cx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">connection</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">last_error</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">last_error</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">CxError::Protocol</span>(<span class="kw-2">ref</span> <span class="ident">e</span>)) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">last_error</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">e</span>.<span class="ident">clone</span>())
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
-        }
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>protocol_error(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ProtocolError&gt; {
+        <span class="kw">let </span>cx = <span class="self">self</span>.connection.lock().unwrap();
+        <span class="kw">let </span>last_error = cx.last_error.lock().unwrap();
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(CxError::Protocol(<span class="kw-2">ref </span>e)) = <span class="kw-2">*</span>last_error {
+            <span class="prelude-val">Some</span>(e.clone())
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_connection_fd</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">::std::os::unix::io::RawFd</span> {
-        <span class="self">self</span>.<span class="ident">connection</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">socket</span>.<span class="ident">get_socket</span>().<span class="ident">as_raw_fd</span>()
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_connection_fd(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ::std::os::unix::io::RawFd {
+        <span class="self">self</span>.connection.lock().unwrap().socket.get_socket().as_raw_fd()
     }
 }
 
-<span class="comment">// WlDisplay needs its own dispatcher, as it can be dispatched from multiple threads</span>
-<span class="kw">struct</span> <span class="ident">DisplayDispatcher</span> {
-    <span class="ident">map</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">ObjectMap</span><span class="op">&lt;</span><span class="ident">ObjectMeta</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">last_error</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CxError</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="comment">// WlDisplay needs its own dispatcher, as it can be dispatched from multiple threads
+</span><span class="kw">struct </span>DisplayDispatcher {
+    map: Arc&lt;Mutex&lt;ObjectMap&lt;ObjectMeta&gt;&gt;&gt;,
+    last_error: Arc&lt;Mutex&lt;<span class="prelude-ty">Option</span>&lt;CxError&gt;&gt;&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident"><span class="kw">super</span>::Dispatcher</span> <span class="kw">for</span> <span class="ident">DisplayDispatcher</span> {
-    <span class="kw">fn</span> <span class="ident">dispatch</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">msg</span>: <span class="ident">Message</span>,
-        <span class="ident">proxy</span>: <span class="ident">ProxyInner</span>,
-        <span class="ident">map</span>: <span class="kw-2">&amp;mut</span> <span class="ident">ProxyMap</span>,
-        <span class="ident">_data</span>: <span class="ident"><span class="kw">crate</span>::DispatchData</span>,
-    ) -&gt; <span class="ident">Dispatched</span> {
-        <span class="kw">if</span> <span class="ident">WAYLAND_DEBUG</span>.<span class="ident">load</span>(<span class="ident">Ordering::Relaxed</span>) {
-            <span class="ident">debug::print_dispatched_message</span>(
-                <span class="ident">proxy</span>.<span class="ident">object</span>.<span class="ident">interface</span>,
-                <span class="ident">proxy</span>.<span class="ident">id</span>,
-                <span class="ident">proxy</span>.<span class="ident">object</span>.<span class="ident">events</span>[<span class="ident">msg</span>.<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">name</span>,
-                <span class="kw-2">&amp;</span><span class="ident">msg</span>.<span class="ident">args</span>,
+<span class="kw">impl </span><span class="kw">super</span>::Dispatcher <span class="kw">for </span>DisplayDispatcher {
+    <span class="kw">fn </span>dispatch(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        msg: Message,
+        proxy: ProxyInner,
+        map: <span class="kw-2">&amp;mut </span>ProxyMap,
+        _data: <span class="kw">crate</span>::DispatchData,
+    ) -&gt; Dispatched {
+        <span class="kw">if </span>WAYLAND_DEBUG.load(Ordering::Relaxed) {
+            debug::print_dispatched_message(
+                proxy.object.interface,
+                proxy.id,
+                proxy.object.events[msg.opcode <span class="kw">as </span>usize].name,
+                <span class="kw-2">&amp;</span>msg.args,
             );
         }
 
-        <span class="kw">let</span> <span class="ident">event</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">wl_display::Event::from_raw</span>(<span class="ident">msg</span>, <span class="ident">map</span>) {
-            <span class="prelude-val">Ok</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>,
-            <span class="prelude-val">Err</span>(()) =&gt; <span class="kw">return</span> <span class="ident">Dispatched::BadMsg</span>,
+        <span class="kw">let </span>event = <span class="kw">match </span>wl_display::Event::from_raw(msg, map) {
+            <span class="prelude-val">Ok</span>(v) =&gt; v,
+            <span class="prelude-val">Err</span>(()) =&gt; <span class="kw">return </span>Dispatched::BadMsg,
         };
 
-        <span class="kw">match</span> <span class="ident">event</span> {
-            <span class="ident">wl_display::Event::Error</span> { <span class="ident">object_id</span>, <span class="ident">code</span>, <span class="ident">message</span> } =&gt; {
+        <span class="kw">match </span>event {
+            wl_display::Event::Error { object_id, code, message } =&gt; {
                 <span class="macro">eprintln!</span>(
                     <span class="string">&quot;[wayland-client] Protocol error {} on object {}@{}: {}&quot;</span>,
-                    <span class="ident">code</span>,
-                    <span class="ident">object_id</span>.<span class="ident">as_ref</span>().<span class="ident">inner</span>.<span class="ident">object</span>.<span class="ident">interface</span>,
-                    <span class="ident">object_id</span>.<span class="ident">as_ref</span>().<span class="ident">id</span>(),
-                    <span class="ident">message</span>
+                    code,
+                    object_id.as_ref().inner.object.interface,
+                    object_id.as_ref().id(),
+                    message
                 );
-                <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">last_error</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>() <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">CxError::Protocol</span>(<span class="ident">ProtocolError</span> {
-                    <span class="ident">code</span>,
-                    <span class="ident">object_id</span>: <span class="ident">object_id</span>.<span class="ident">as_ref</span>().<span class="ident">id</span>(),
-                    <span class="ident">object_interface</span>: <span class="ident">object_id</span>.<span class="ident">as_ref</span>().<span class="ident">inner</span>.<span class="ident">object</span>.<span class="ident">interface</span>,
-                    <span class="ident">message</span>,
+                <span class="kw-2">*</span><span class="self">self</span>.last_error.lock().unwrap() = <span class="prelude-val">Some</span>(CxError::Protocol(ProtocolError {
+                    code,
+                    object_id: object_id.as_ref().id(),
+                    object_interface: object_id.as_ref().inner.object.interface,
+                    message,
                 }));
             }
-            <span class="ident">wl_display::Event::DeleteId</span> { <span class="ident">id</span> } =&gt; {
-                <span class="comment">// cleanup the map as appropriate</span>
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-                <span class="kw">let</span> <span class="ident">client_destroyed</span> <span class="op">=</span> <span class="ident">map</span>
-                    .<span class="ident">with</span>(<span class="ident">id</span>, <span class="op">|</span><span class="ident">obj</span><span class="op">|</span> {
-                        <span class="ident">obj</span>.<span class="ident">meta</span>.<span class="ident">server_destroyed</span> <span class="op">=</span> <span class="bool-val">true</span>;
-                        <span class="ident">obj</span>.<span class="ident">meta</span>.<span class="ident">client_destroyed</span>
+            wl_display::Event::DeleteId { id } =&gt; {
+                <span class="comment">// cleanup the map as appropriate
+                </span><span class="kw">let </span><span class="kw-2">mut </span>map = <span class="self">self</span>.map.lock().unwrap();
+                <span class="kw">let </span>client_destroyed = map
+                    .with(id, |obj| {
+                        obj.meta.server_destroyed = <span class="bool-val">true</span>;
+                        obj.meta.client_destroyed
                     })
-                    .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
-                <span class="kw">if</span> <span class="ident">client_destroyed</span> {
-                    <span class="ident">map</span>.<span class="ident">remove</span>(<span class="ident">id</span>);
+                    .unwrap_or(<span class="bool-val">false</span>);
+                <span class="kw">if </span>client_destroyed {
+                    map.remove(id);
                 }
             }
         }
 
-        <span class="ident">Dispatched::Yes</span>
+        Dispatched::Yes
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="wayland_client" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="wayland_client" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

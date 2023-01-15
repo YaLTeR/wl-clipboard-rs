@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/petgraph-0.6.2/src/algo/k_shortest_path.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>k_shortest_path.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../petgraph/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../petgraph/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../petgraph/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/petgraph-0.6.2/src/algo/k_shortest_path.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>k_shortest_path.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../petgraph/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -113,120 +113,120 @@
 <span id="113">113</span>
 <span id="114">114</span>
 <span id="115">115</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::collections</span>::{<span class="ident">BinaryHeap</span>, <span class="ident">HashMap</span>};
+</pre><pre class="rust"><code><span class="kw">use </span>std::collections::{BinaryHeap, HashMap};
 
-<span class="kw">use</span> <span class="ident">std::hash::Hash</span>;
+<span class="kw">use </span>std::hash::Hash;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::algo::Measure</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::scored::MinScored</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::visit</span>::{<span class="ident">EdgeRef</span>, <span class="ident">IntoEdges</span>, <span class="ident">NodeCount</span>, <span class="ident">NodeIndexable</span>, <span class="ident">Visitable</span>};
+<span class="kw">use </span><span class="kw">crate</span>::algo::Measure;
+<span class="kw">use </span><span class="kw">crate</span>::scored::MinScored;
+<span class="kw">use </span><span class="kw">crate</span>::visit::{EdgeRef, IntoEdges, NodeCount, NodeIndexable, Visitable};
 
-<span class="doccomment">/// \[Generic\] k&#39;th shortest path algorithm.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Compute the length of the k&#39;th shortest path from `start` to every reachable</span>
-<span class="doccomment">/// node.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The graph should be `Visitable` and implement `IntoEdges`. The function</span>
-<span class="doccomment">/// `edge_cost` should return the cost for a particular edge, which is used</span>
-<span class="doccomment">/// to compute path costs. Edge costs must be non-negative.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// If `goal` is not `None`, then the algorithm terminates once the `goal` node&#39;s</span>
-<span class="doccomment">/// cost is calculated.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Computes in **O(k * (|E| + |V|*log(|V|)))** time (average).</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Returns a `HashMap` that maps `NodeId` to path cost.</span>
-<span class="doccomment">/// # Example</span>
-<span class="doccomment">/// ```rust</span>
-<span class="doccomment">/// use petgraph::Graph;</span>
-<span class="doccomment">/// use petgraph::algo::k_shortest_path;</span>
-<span class="doccomment">/// use petgraph::prelude::*;</span>
-<span class="doccomment">/// use std::collections::HashMap;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut graph : Graph&lt;(),(),Directed&gt;= Graph::new();</span>
-<span class="doccomment">/// let a = graph.add_node(()); // node with no weight</span>
-<span class="doccomment">/// let b = graph.add_node(());</span>
-<span class="doccomment">/// let c = graph.add_node(());</span>
-<span class="doccomment">/// let d = graph.add_node(());</span>
-<span class="doccomment">/// let e = graph.add_node(());</span>
-<span class="doccomment">/// let f = graph.add_node(());</span>
-<span class="doccomment">/// let g = graph.add_node(());</span>
-<span class="doccomment">/// let h = graph.add_node(());</span>
-<span class="doccomment">/// // z will be in another connected component</span>
-<span class="doccomment">/// let z = graph.add_node(());</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// graph.extend_with_edges(&amp;[</span>
-<span class="doccomment">///     (a, b),</span>
-<span class="doccomment">///     (b, c),</span>
-<span class="doccomment">///     (c, d),</span>
-<span class="doccomment">///     (d, a),</span>
-<span class="doccomment">///     (e, f),</span>
-<span class="doccomment">///     (b, e),</span>
-<span class="doccomment">///     (f, g),</span>
-<span class="doccomment">///     (g, h),</span>
-<span class="doccomment">///     (h, e)</span>
-<span class="doccomment">/// ]);</span>
-<span class="doccomment">/// // a ----&gt; b ----&gt; e ----&gt; f</span>
-<span class="doccomment">/// // ^       |       ^       |</span>
-<span class="doccomment">/// // |       v       |       v</span>
-<span class="doccomment">/// // d &lt;---- c       h &lt;---- g</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let expected_res: HashMap&lt;NodeIndex, usize&gt; = [</span>
-<span class="doccomment">///      (a, 7),</span>
-<span class="doccomment">///      (b, 4),</span>
-<span class="doccomment">///      (c, 5),</span>
-<span class="doccomment">///      (d, 6),</span>
-<span class="doccomment">///      (e, 5),</span>
-<span class="doccomment">///      (f, 6),</span>
-<span class="doccomment">///      (g, 7),</span>
-<span class="doccomment">///      (h, 8)</span>
-<span class="doccomment">///     ].iter().cloned().collect();</span>
-<span class="doccomment">/// let res = k_shortest_path(&amp;graph,b,None,2, |_| 1);</span>
-<span class="doccomment">/// assert_eq!(res, expected_res);</span>
-<span class="doccomment">/// // z is not inside res because there is not path from b to z.</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">k_shortest_path</span><span class="op">&lt;</span><span class="ident">G</span>, <span class="ident">F</span>, <span class="ident">K</span><span class="op">&gt;</span>(
-    <span class="ident">graph</span>: <span class="ident">G</span>,
-    <span class="ident">start</span>: <span class="ident">G::NodeId</span>,
-    <span class="ident">goal</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">G::NodeId</span><span class="op">&gt;</span>,
-    <span class="ident">k</span>: <span class="ident">usize</span>,
-    <span class="kw-2">mut</span> <span class="ident">edge_cost</span>: <span class="ident">F</span>,
-) -&gt; <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">G::NodeId</span>, <span class="ident">K</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">IntoEdges</span> <span class="op">+</span> <span class="ident">Visitable</span> <span class="op">+</span> <span class="ident">NodeCount</span> <span class="op">+</span> <span class="ident">NodeIndexable</span>,
-    <span class="ident">G::NodeId</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>,
-    <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">G::EdgeRef</span>) -&gt; <span class="ident">K</span>,
-    <span class="ident">K</span>: <span class="ident">Measure</span> <span class="op">+</span> <span class="ident">Copy</span>,
+<span class="doccomment">/// \[Generic\] k&#39;th shortest path algorithm.
+///
+/// Compute the length of the k&#39;th shortest path from `start` to every reachable
+/// node.
+///
+/// The graph should be `Visitable` and implement `IntoEdges`. The function
+/// `edge_cost` should return the cost for a particular edge, which is used
+/// to compute path costs. Edge costs must be non-negative.
+///
+/// If `goal` is not `None`, then the algorithm terminates once the `goal` node&#39;s
+/// cost is calculated.
+///
+/// Computes in **O(k * (|E| + |V|*log(|V|)))** time (average).
+///
+/// Returns a `HashMap` that maps `NodeId` to path cost.
+/// # Example
+/// ```rust
+/// use petgraph::Graph;
+/// use petgraph::algo::k_shortest_path;
+/// use petgraph::prelude::*;
+/// use std::collections::HashMap;
+///
+/// let mut graph : Graph&lt;(),(),Directed&gt;= Graph::new();
+/// let a = graph.add_node(()); // node with no weight
+/// let b = graph.add_node(());
+/// let c = graph.add_node(());
+/// let d = graph.add_node(());
+/// let e = graph.add_node(());
+/// let f = graph.add_node(());
+/// let g = graph.add_node(());
+/// let h = graph.add_node(());
+/// // z will be in another connected component
+/// let z = graph.add_node(());
+///
+/// graph.extend_with_edges(&amp;[
+///     (a, b),
+///     (b, c),
+///     (c, d),
+///     (d, a),
+///     (e, f),
+///     (b, e),
+///     (f, g),
+///     (g, h),
+///     (h, e)
+/// ]);
+/// // a ----&gt; b ----&gt; e ----&gt; f
+/// // ^       |       ^       |
+/// // |       v       |       v
+/// // d &lt;---- c       h &lt;---- g
+///
+/// let expected_res: HashMap&lt;NodeIndex, usize&gt; = [
+///      (a, 7),
+///      (b, 4),
+///      (c, 5),
+///      (d, 6),
+///      (e, 5),
+///      (f, 6),
+///      (g, 7),
+///      (h, 8)
+///     ].iter().cloned().collect();
+/// let res = k_shortest_path(&amp;graph,b,None,2, |_| 1);
+/// assert_eq!(res, expected_res);
+/// // z is not inside res because there is not path from b to z.
+/// ```
+</span><span class="kw">pub fn </span>k_shortest_path&lt;G, F, K&gt;(
+    graph: G,
+    start: G::NodeId,
+    goal: <span class="prelude-ty">Option</span>&lt;G::NodeId&gt;,
+    k: usize,
+    <span class="kw-2">mut </span>edge_cost: F,
+) -&gt; HashMap&lt;G::NodeId, K&gt;
+<span class="kw">where
+    </span>G: IntoEdges + Visitable + NodeCount + NodeIndexable,
+    G::NodeId: Eq + Hash,
+    F: FnMut(G::EdgeRef) -&gt; K,
+    K: Measure + Copy,
 {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">counter</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">graph</span>.<span class="ident">node_count</span>()];
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">scores</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">visit_next</span> <span class="op">=</span> <span class="ident">BinaryHeap::new</span>();
-    <span class="kw">let</span> <span class="ident">zero_score</span> <span class="op">=</span> <span class="ident">K::default</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>counter: Vec&lt;usize&gt; = <span class="macro">vec!</span>[<span class="number">0</span>; graph.node_count()];
+    <span class="kw">let </span><span class="kw-2">mut </span>scores = HashMap::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>visit_next = BinaryHeap::new();
+    <span class="kw">let </span>zero_score = K::default();
 
-    <span class="ident">visit_next</span>.<span class="ident">push</span>(<span class="ident">MinScored</span>(<span class="ident">zero_score</span>, <span class="ident">start</span>));
+    visit_next.push(MinScored(zero_score, start));
 
-    <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">MinScored</span>(<span class="ident">node_score</span>, <span class="ident">node</span>)) <span class="op">=</span> <span class="ident">visit_next</span>.<span class="ident">pop</span>() {
-        <span class="ident">counter</span>[<span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">node</span>)] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="ident">current_counter</span> <span class="op">=</span> <span class="ident">counter</span>[<span class="ident">graph</span>.<span class="ident">to_index</span>(<span class="ident">node</span>)];
+    <span class="kw">while let </span><span class="prelude-val">Some</span>(MinScored(node_score, node)) = visit_next.pop() {
+        counter[graph.to_index(node)] += <span class="number">1</span>;
+        <span class="kw">let </span>current_counter = counter[graph.to_index(node)];
 
-        <span class="kw">if</span> <span class="ident">current_counter</span> <span class="op">&gt;</span> <span class="ident">k</span> {
+        <span class="kw">if </span>current_counter &gt; k {
             <span class="kw">continue</span>;
         }
 
-        <span class="kw">if</span> <span class="ident">current_counter</span> <span class="op">==</span> <span class="ident">k</span> {
-            <span class="ident">scores</span>.<span class="ident">insert</span>(<span class="ident">node</span>, <span class="ident">node_score</span>);
+        <span class="kw">if </span>current_counter == k {
+            scores.insert(node, node_score);
         }
 
-        <span class="comment">//Already reached goal k times</span>
-        <span class="kw">if</span> <span class="ident">goal</span>.<span class="ident">as_ref</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">node</span>) <span class="op">&amp;&amp;</span> <span class="ident">current_counter</span> <span class="op">==</span> <span class="ident">k</span> {
+        <span class="comment">//Already reached goal k times
+        </span><span class="kw">if </span>goal.as_ref() == <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>node) &amp;&amp; current_counter == k {
             <span class="kw">break</span>;
         }
 
-        <span class="kw">for</span> <span class="ident">edge</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">edges</span>(<span class="ident">node</span>) {
-            <span class="ident">visit_next</span>.<span class="ident">push</span>(<span class="ident">MinScored</span>(<span class="ident">node_score</span> <span class="op">+</span> <span class="ident">edge_cost</span>(<span class="ident">edge</span>), <span class="ident">edge</span>.<span class="ident">target</span>()));
+        <span class="kw">for </span>edge <span class="kw">in </span>graph.edges(node) {
+            visit_next.push(MinScored(node_score + edge_cost(edge), edge.target()));
         }
     }
-    <span class="ident">scores</span>
+    scores
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="petgraph" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="petgraph" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

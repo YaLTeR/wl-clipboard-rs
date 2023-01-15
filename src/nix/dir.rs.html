@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.2/src/dir.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dir.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../nix/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.3/src/dir.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dir.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../nix/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -243,250 +243,254 @@
 <span id="243">243</span>
 <span id="244">244</span>
 <span id="245">245</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Error</span>, <span class="ident">NixPath</span>, <span class="prelude-ty">Result</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errno::Errno</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::fcntl</span>::{<span class="self">self</span>, <span class="ident">OFlag</span>};
-<span class="kw">use</span> <span class="ident">std::os::unix::io</span>::{<span class="ident">AsRawFd</span>, <span class="ident">IntoRawFd</span>, <span class="ident">RawFd</span>};
-<span class="kw">use</span> <span class="ident">std::ptr</span>;
-<span class="kw">use</span> <span class="ident">std::ffi</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::sys</span>;
-<span class="kw">use</span> <span class="ident">cfg_if::cfg_if</span>;
+<span id="246">246</span>
+<span id="247">247</span>
+</pre><pre class="rust"><code><span class="kw">use crate</span>::{Error, NixPath, <span class="prelude-ty">Result</span>};
+<span class="kw">use </span><span class="kw">crate</span>::errno::Errno;
+<span class="kw">use </span><span class="kw">crate</span>::fcntl::{<span class="self">self</span>, OFlag};
+<span class="kw">use </span>std::os::unix::io::{AsRawFd, IntoRawFd, RawFd};
+<span class="kw">use </span>std::ptr;
+<span class="kw">use </span>std::ffi;
+<span class="kw">use </span><span class="kw">crate</span>::sys;
+<span class="kw">use </span>cfg_if::cfg_if;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">libc</span>::{<span class="ident">dirent64</span> <span class="kw">as</span> <span class="ident">dirent</span>, <span class="ident">readdir64_r</span> <span class="kw">as</span> <span class="ident">readdir_r</span>};
+<span class="attribute">#[cfg(target_os = <span class="string">&quot;linux&quot;</span>)]
+</span><span class="kw">use </span>libc::{dirent64 <span class="kw">as </span>dirent, readdir64_r <span class="kw">as </span>readdir_r};
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span>
-<span class="kw">use</span> <span class="ident">libc</span>::{<span class="ident">dirent</span>, <span class="ident">readdir_r</span>};
+<span class="attribute">#[cfg(not(target_os = <span class="string">&quot;linux&quot;</span>))]
+</span><span class="kw">use </span>libc::{dirent, readdir_r};
 
-<span class="doccomment">/// An open directory.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This is a lower-level interface than `std::fs::ReadDir`. Notable differences:</span>
-<span class="doccomment">///    * can be opened from a file descriptor (as returned by `openat`, perhaps before knowing</span>
-<span class="doccomment">///      if the path represents a file or directory).</span>
-<span class="doccomment">///    * implements `AsRawFd`, so it can be passed to `fstat`, `openat`, etc.</span>
-<span class="doccomment">///      The file descriptor continues to be owned by the `Dir`, so callers must not keep a `RawFd`</span>
-<span class="doccomment">///      after the `Dir` is dropped.</span>
-<span class="doccomment">///    * can be iterated through multiple times without closing and reopening the file</span>
-<span class="doccomment">///      descriptor. Each iteration rewinds when finished.</span>
-<span class="doccomment">///    * returns entries for `.` (current directory) and `..` (parent directory).</span>
-<span class="doccomment">///    * returns entries&#39; names as a `CStr` (no allocation or conversion beyond whatever libc</span>
-<span class="doccomment">///      does).</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Dir</span>(
-    <span class="ident">ptr::NonNull</span><span class="op">&lt;</span><span class="ident">libc::DIR</span><span class="op">&gt;</span>
+<span class="doccomment">/// An open directory.
+///
+/// This is a lower-level interface than `std::fs::ReadDir`. Notable differences:
+///    * can be opened from a file descriptor (as returned by `openat`, perhaps before knowing
+///      if the path represents a file or directory).
+///    * implements `AsRawFd`, so it can be passed to `fstat`, `openat`, etc.
+///      The file descriptor continues to be owned by the `Dir`, so callers must not keep a `RawFd`
+///      after the `Dir` is dropped.
+///    * can be iterated through multiple times without closing and reopening the file
+///      descriptor. Each iteration rewinds when finished.
+///    * returns entries for `.` (current directory) and `..` (parent directory).
+///    * returns entries&#39; names as a `CStr` (no allocation or conversion beyond whatever libc
+///      does).
+</span><span class="attribute">#[derive(Debug, Eq, Hash, PartialEq)]
+</span><span class="kw">pub struct </span>Dir(
+    ptr::NonNull&lt;libc::DIR&gt;
 );
 
-<span class="kw">impl</span> <span class="ident">Dir</span> {
-    <span class="doccomment">/// Opens the given path as with `fcntl::open`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">open</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">NixPath</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">P</span>, <span class="ident">oflag</span>: <span class="ident">OFlag</span>,
-                                     <span class="ident">mode</span>: <span class="ident">sys::stat::Mode</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">fd</span> <span class="op">=</span> <span class="ident">fcntl::open</span>(<span class="ident">path</span>, <span class="ident">oflag</span>, <span class="ident">mode</span>)<span class="question-mark">?</span>;
-        <span class="ident">Dir::from_fd</span>(<span class="ident">fd</span>)
+<span class="kw">impl </span>Dir {
+    <span class="doccomment">/// Opens the given path as with `fcntl::open`.
+    </span><span class="kw">pub fn </span>open&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(path: <span class="kw-2">&amp;</span>P, oflag: OFlag,
+                                     mode: sys::stat::Mode) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>fd = fcntl::open(path, oflag, mode)<span class="question-mark">?</span>;
+        Dir::from_fd(fd)
     }
 
-    <span class="doccomment">/// Opens the given path as with `fcntl::openat`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">openat</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">NixPath</span><span class="op">&gt;</span>(<span class="ident">dirfd</span>: <span class="ident">RawFd</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">P</span>, <span class="ident">oflag</span>: <span class="ident">OFlag</span>,
-                                       <span class="ident">mode</span>: <span class="ident">sys::stat::Mode</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">fd</span> <span class="op">=</span> <span class="ident">fcntl::openat</span>(<span class="ident">dirfd</span>, <span class="ident">path</span>, <span class="ident">oflag</span>, <span class="ident">mode</span>)<span class="question-mark">?</span>;
-        <span class="ident">Dir::from_fd</span>(<span class="ident">fd</span>)
+    <span class="doccomment">/// Opens the given path as with `fcntl::openat`.
+    </span><span class="kw">pub fn </span>openat&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(dirfd: RawFd, path: <span class="kw-2">&amp;</span>P, oflag: OFlag,
+                                       mode: sys::stat::Mode) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>fd = fcntl::openat(dirfd, path, oflag, mode)<span class="question-mark">?</span>;
+        Dir::from_fd(fd)
     }
 
-    <span class="doccomment">/// Converts from a descriptor-based object, closing the descriptor on success or failure.</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">IntoRawFd</span><span class="op">&gt;</span>(<span class="ident">fd</span>: <span class="ident">F</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="ident">Dir::from_fd</span>(<span class="ident">fd</span>.<span class="ident">into_raw_fd</span>())
+    <span class="doccomment">/// Converts from a descriptor-based object, closing the descriptor on success or failure.
+    </span><span class="attribute">#[inline]
+    </span><span class="kw">pub fn </span>from&lt;F: IntoRawFd&gt;(fd: F) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        Dir::from_fd(fd.into_raw_fd())
     }
 
-    <span class="doccomment">/// Converts from a file descriptor, closing it on success or failure.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_fd</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">d</span> <span class="op">=</span> <span class="ident">ptr::NonNull::new</span>(<span class="kw">unsafe</span> { <span class="ident">libc::fdopendir</span>(<span class="ident">fd</span>) }).<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="ident">Error::last</span>();
-            <span class="kw">unsafe</span> { <span class="ident">libc::close</span>(<span class="ident">fd</span>) };
-            <span class="ident">e</span>
+    <span class="doccomment">/// Converts from a file descriptor, closing it on success or failure.
+    </span><span class="kw">pub fn </span>from_fd(fd: RawFd) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>d = ptr::NonNull::new(<span class="kw">unsafe </span>{ libc::fdopendir(fd) }).ok_or_else(|| {
+            <span class="kw">let </span>e = Error::last();
+            <span class="kw">unsafe </span>{ libc::close(fd) };
+            e
         })<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">Dir</span>(<span class="ident">d</span>))
+        <span class="prelude-val">Ok</span>(Dir(d))
     }
 
-    <span class="doccomment">/// Returns an iterator of `Result&lt;Entry&gt;` which rewinds when finished.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">Iter</span> {
-        <span class="ident">Iter</span>(<span class="self">self</span>)
-    }
-}
-
-<span class="comment">// `Dir` is not `Sync`. With the current implementation, it could be, but according to</span>
-<span class="comment">// https://www.gnu.org/software/libc/manual/html_node/Reading_002fClosing-Directory.html,</span>
-<span class="comment">// future versions of POSIX are likely to obsolete `readdir_r` and specify that it&#39;s unsafe to</span>
-<span class="comment">// call `readdir` simultaneously from multiple threads.</span>
-<span class="comment">//</span>
-<span class="comment">// `Dir` is safe to pass from one thread to another, as it&#39;s not reference-counted.</span>
-<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">Dir</span> {}
-
-<span class="kw">impl</span> <span class="ident">AsRawFd</span> <span class="kw">for</span> <span class="ident">Dir</span> {
-    <span class="kw">fn</span> <span class="ident">as_raw_fd</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">RawFd</span> {
-        <span class="kw">unsafe</span> { <span class="ident">libc::dirfd</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ptr</span>()) }
+    <span class="doccomment">/// Returns an iterator of `Result&lt;Entry&gt;` which rewinds when finished.
+    </span><span class="kw">pub fn </span>iter(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; Iter {
+        Iter(<span class="self">self</span>)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">Dir</span> {
-    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="ident">Errno::result</span>(<span class="kw">unsafe</span> { <span class="ident">libc::closedir</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ptr</span>()) });
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">std::thread::panicking</span>() <span class="op">&amp;&amp;</span> <span class="ident">e</span> <span class="op">==</span> <span class="prelude-val">Err</span>(<span class="ident">Errno::EBADF</span>) {
+<span class="comment">// `Dir` is not `Sync`. With the current implementation, it could be, but according to
+// https://www.gnu.org/software/libc/manual/html_node/Reading_002fClosing-Directory.html,
+// future versions of POSIX are likely to obsolete `readdir_r` and specify that it&#39;s unsafe to
+// call `readdir` simultaneously from multiple threads.
+//
+// `Dir` is safe to pass from one thread to another, as it&#39;s not reference-counted.
+</span><span class="kw">unsafe impl </span>Send <span class="kw">for </span>Dir {}
+
+<span class="kw">impl </span>AsRawFd <span class="kw">for </span>Dir {
+    <span class="kw">fn </span>as_raw_fd(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RawFd {
+        <span class="kw">unsafe </span>{ libc::dirfd(<span class="self">self</span>.<span class="number">0</span>.as_ptr()) }
+    }
+}
+
+<span class="kw">impl </span>Drop <span class="kw">for </span>Dir {
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">let </span>e = Errno::result(<span class="kw">unsafe </span>{ libc::closedir(<span class="self">self</span>.<span class="number">0</span>.as_ptr()) });
+        <span class="kw">if </span>!std::thread::panicking() &amp;&amp; e == <span class="prelude-val">Err</span>(Errno::EBADF) {
             <span class="macro">panic!</span>(<span class="string">&quot;Closing an invalid file descriptor!&quot;</span>);
         };
     }
 }
 
-<span class="kw">fn</span> <span class="ident">next</span>(<span class="ident">dir</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Dir</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Entry</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">unsafe</span> {
-        <span class="comment">// Note: POSIX specifies that portable applications should dynamically allocate a</span>
-        <span class="comment">// buffer with room for a `d_name` field of size `pathconf(..., _PC_NAME_MAX)` plus 1</span>
-        <span class="comment">// for the NUL byte. It doesn&#39;t look like the std library does this; it just uses</span>
-        <span class="comment">// fixed-sized buffers (and libc&#39;s dirent seems to be sized so this is appropriate).</span>
-        <span class="comment">// Probably fine here too then.</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ent</span> <span class="op">=</span> <span class="ident">std::mem::MaybeUninit</span>::<span class="op">&lt;</span><span class="ident">dirent</span><span class="op">&gt;</span><span class="ident">::uninit</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">ptr::null_mut</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">Errno::result</span>(
-            <span class="ident">readdir_r</span>(<span class="ident">dir</span>.<span class="number">0</span>.<span class="ident">as_ptr</span>(), <span class="ident">ent</span>.<span class="ident">as_mut_ptr</span>(), <span class="kw-2">&amp;mut</span> <span class="ident">result</span>))
+<span class="kw">fn </span>next(dir: <span class="kw-2">&amp;mut </span>Dir) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Entry&gt;&gt; {
+    <span class="kw">unsafe </span>{
+        <span class="comment">// Note: POSIX specifies that portable applications should dynamically allocate a
+        // buffer with room for a `d_name` field of size `pathconf(..., _PC_NAME_MAX)` plus 1
+        // for the NUL byte. It doesn&#39;t look like the std library does this; it just uses
+        // fixed-sized buffers (and libc&#39;s dirent seems to be sized so this is appropriate).
+        // Probably fine here too then.
+        </span><span class="kw">let </span><span class="kw-2">mut </span>ent = std::mem::MaybeUninit::&lt;dirent&gt;::uninit();
+        <span class="kw">let </span><span class="kw-2">mut </span>result = ptr::null_mut();
+        <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = Errno::result(
+            readdir_r(dir.<span class="number">0</span>.as_ptr(), ent.as_mut_ptr(), <span class="kw-2">&amp;mut </span>result))
         {
-            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="ident">e</span>));
+            <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(e));
         }
-        <span class="kw">if</span> <span class="ident">result</span>.<span class="ident">is_null</span>() {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+        <span class="kw">if </span>result.is_null() {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
-        <span class="macro">assert_eq!</span>(<span class="ident">result</span>, <span class="ident">ent</span>.<span class="ident">as_mut_ptr</span>());
-        <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="ident">Entry</span>(<span class="ident">ent</span>.<span class="ident">assume_init</span>())))
+        <span class="macro">assert_eq!</span>(result, ent.as_mut_ptr());
+        <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Entry(ent.assume_init())))
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;d</span> <span class="kw-2">mut</span> <span class="ident">Dir</span>);
+<span class="attribute">#[derive(Debug, Eq, Hash, PartialEq)]
+</span><span class="kw">pub struct </span>Iter&lt;<span class="lifetime">&#39;d</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;d </span><span class="kw-2">mut </span>Dir);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Entry</span><span class="op">&gt;</span>;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;d</span>&gt; Iterator <span class="kw">for </span>Iter&lt;<span class="lifetime">&#39;d</span>&gt; {
+    <span class="kw">type </span>Item = <span class="prelude-ty">Result</span>&lt;Entry&gt;;
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="ident">next</span>(<span class="self">self</span>.<span class="number">0</span>)
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        next(<span class="self">self</span>.<span class="number">0</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span><span class="op">&gt;</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">unsafe</span> { <span class="ident">libc::rewinddir</span>((<span class="self">self</span>.<span class="number">0</span>).<span class="number">0</span>.<span class="ident">as_ptr</span>()) }
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;d</span>&gt; Drop <span class="kw">for </span>Iter&lt;<span class="lifetime">&#39;d</span>&gt; {
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">unsafe </span>{ libc::rewinddir((<span class="self">self</span>.<span class="number">0</span>).<span class="number">0</span>.as_ptr()) }
     }
 }
 
-<span class="doccomment">/// The return type of [Dir::into_iter]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">OwningIter</span>(<span class="ident">Dir</span>);
+<span class="doccomment">/// The return type of [Dir::into_iter]
+</span><span class="attribute">#[derive(Debug, Eq, Hash, PartialEq)]
+</span><span class="kw">pub struct </span>OwningIter(Dir);
 
-<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">OwningIter</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Entry</span><span class="op">&gt;</span>;
+<span class="kw">impl </span>Iterator <span class="kw">for </span>OwningIter {
+    <span class="kw">type </span>Item = <span class="prelude-ty">Result</span>&lt;Entry&gt;;
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="number">0</span>)
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        next(<span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0</span>)
     }
 }
 
-<span class="doccomment">/// The file descriptor continues to be owned by the `OwningIter`,</span>
-<span class="doccomment">/// so callers must not keep a `RawFd` after the `OwningIter` is dropped.</span>
-<span class="kw">impl</span> <span class="ident">AsRawFd</span> <span class="kw">for</span> <span class="ident">OwningIter</span> {
-    <span class="kw">fn</span> <span class="ident">as_raw_fd</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">RawFd</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_raw_fd</span>()
+<span class="doccomment">/// The file descriptor continues to be owned by the `OwningIter`,
+/// so callers must not keep a `RawFd` after the `OwningIter` is dropped.
+</span><span class="kw">impl </span>AsRawFd <span class="kw">for </span>OwningIter {
+    <span class="kw">fn </span>as_raw_fd(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RawFd {
+        <span class="self">self</span>.<span class="number">0</span>.as_raw_fd()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">Dir</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Entry</span><span class="op">&gt;</span>;
-    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">OwningIter</span>;
+<span class="kw">impl </span>IntoIterator <span class="kw">for </span>Dir {
+    <span class="kw">type </span>Item = <span class="prelude-ty">Result</span>&lt;Entry&gt;;
+    <span class="kw">type </span>IntoIter = OwningIter;
 
-    <span class="doccomment">/// Creates a owning iterator, that is, one that takes ownership of the</span>
-    <span class="doccomment">/// `Dir`. The `Dir` cannot be used after calling this.  This can be useful</span>
-    <span class="doccomment">/// when you have a function that both creates a `Dir` instance and returns</span>
-    <span class="doccomment">/// an `Iterator`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Example:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nix::{dir::Dir, fcntl::OFlag, sys::stat::Mode};</span>
-    <span class="doccomment">/// use std::{iter::Iterator, string::String};</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// fn ls_upper(dirname: &amp;str) -&gt; impl Iterator&lt;Item=String&gt; {</span>
-    <span class="doccomment">///     let d = Dir::open(dirname, OFlag::O_DIRECTORY, Mode::S_IXUSR).unwrap();</span>
-    <span class="doccomment">///     d.into_iter().map(|x| x.unwrap().file_name().as_ref().to_string_lossy().to_ascii_uppercase())</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::IntoIter</span> {
-        <span class="ident">OwningIter</span>(<span class="self">self</span>)
+    <span class="doccomment">/// Creates a owning iterator, that is, one that takes ownership of the
+    /// `Dir`. The `Dir` cannot be used after calling this.  This can be useful
+    /// when you have a function that both creates a `Dir` instance and returns
+    /// an `Iterator`.
+    ///
+    /// Example:
+    ///
+    /// ```
+    /// use nix::{dir::Dir, fcntl::OFlag, sys::stat::Mode};
+    /// use std::{iter::Iterator, string::String};
+    ///
+    /// fn ls_upper(dirname: &amp;str) -&gt; impl Iterator&lt;Item=String&gt; {
+    ///     let d = Dir::open(dirname, OFlag::O_DIRECTORY, Mode::S_IXUSR).unwrap();
+    ///     d.into_iter().map(|x| x.unwrap().file_name().as_ref().to_string_lossy().to_ascii_uppercase())
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
+        OwningIter(<span class="self">self</span>)
     }
 }
 
-<span class="doccomment">/// A directory entry, similar to `std::fs::DirEntry`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Note that unlike the std version, this may represent the `.` or `..` entries.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Entry</span>(<span class="ident">dirent</span>);
+<span class="doccomment">/// A directory entry, similar to `std::fs::DirEntry`.
+///
+/// Note that unlike the std version, this may represent the `.` or `..` entries.
+</span><span class="attribute">#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
+#[repr(transparent)]
+</span><span class="kw">pub struct </span>Entry(dirent);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Type</span> {
-    <span class="ident">Fifo</span>,
-    <span class="ident">CharacterDevice</span>,
-    <span class="ident">Directory</span>,
-    <span class="ident">BlockDevice</span>,
-    <span class="ident">File</span>,
-    <span class="ident">Symlink</span>,
-    <span class="ident">Socket</span>,
+<span class="attribute">#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
+</span><span class="kw">pub enum </span>Type {
+    Fifo,
+    CharacterDevice,
+    Directory,
+    BlockDevice,
+    File,
+    Symlink,
+    Socket,
 }
 
-<span class="kw">impl</span> <span class="ident">Entry</span> {
-    <span class="doccomment">/// Returns the inode number (`d_ino`) of the underlying `dirent`.</span>
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::useless_conversion</span>)]</span>    <span class="comment">// Not useless on all OSes</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ino</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u64</span> {
-        <span class="macro">cfg_if!</span> {
-            <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>,
-                         <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;emscripten&quot;</span>,
-                         <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;fuchsia&quot;</span>,
-                         <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;haiku&quot;</span>,
-                         <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>,
-                         <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>,
-                         <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;l4re&quot;</span>,
-                         <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>,
-                         <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>,
-                         <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span> {
-                <span class="self">self</span>.<span class="number">0</span>.<span class="ident">d_ino</span> <span class="kw">as</span> <span class="ident">u64</span>
-            } <span class="kw">else</span> {
-                <span class="ident">u64::from</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">d_fileno</span>)
+<span class="kw">impl </span>Entry {
+    <span class="doccomment">/// Returns the inode number (`d_ino`) of the underlying `dirent`.
+    </span><span class="attribute">#[allow(clippy::useless_conversion)]    </span><span class="comment">// Not useless on all OSes
+    // The cast is not unnecessary on all platforms.
+    </span><span class="attribute">#[allow(clippy::unnecessary_cast)]
+    </span><span class="kw">pub fn </span>ino(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
+        <span class="macro">cfg_if! </span>{
+            <span class="kw">if </span><span class="attribute">#[cfg(any(target_os = <span class="string">&quot;android&quot;</span>,
+                         target_os = <span class="string">&quot;emscripten&quot;</span>,
+                         target_os = <span class="string">&quot;fuchsia&quot;</span>,
+                         target_os = <span class="string">&quot;haiku&quot;</span>,
+                         target_os = <span class="string">&quot;illumos&quot;</span>,
+                         target_os = <span class="string">&quot;ios&quot;</span>,
+                         target_os = <span class="string">&quot;l4re&quot;</span>,
+                         target_os = <span class="string">&quot;linux&quot;</span>,
+                         target_os = <span class="string">&quot;macos&quot;</span>,
+                         target_os = <span class="string">&quot;solaris&quot;</span>))] </span>{
+                <span class="self">self</span>.<span class="number">0</span>.d_ino <span class="kw">as </span>u64
+            } <span class="kw">else </span>{
+                u64::from(<span class="self">self</span>.<span class="number">0</span>.d_fileno)
             }
         }
     }
 
-    <span class="doccomment">/// Returns the bare file name of this directory entry without any other leading path component.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">file_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">ffi::CStr</span> {
-        <span class="kw">unsafe</span> { <span class="ident">::std::ffi::CStr::from_ptr</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">d_name</span>.<span class="ident">as_ptr</span>()) }
+    <span class="doccomment">/// Returns the bare file name of this directory entry without any other leading path component.
+    </span><span class="kw">pub fn </span>file_name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>ffi::CStr {
+        <span class="kw">unsafe </span>{ ::std::ffi::CStr::from_ptr(<span class="self">self</span>.<span class="number">0</span>.d_name.as_ptr()) }
     }
 
-    <span class="doccomment">/// Returns the type of this directory entry, if known.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// See platform `readdir(3)` or `dirent(5)` manpage for when the file type is known;</span>
-    <span class="doccomment">/// notably, some Linux filesystems don&#39;t implement this. The caller should use `stat` or</span>
-    <span class="doccomment">/// `fstat` if this returns `None`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">file_type</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Type</span><span class="op">&gt;</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>)))]</span>
-        <span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">d_type</span> {
-            <span class="ident">libc::DT_FIFO</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::Fifo</span>),
-            <span class="ident">libc::DT_CHR</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::CharacterDevice</span>),
-            <span class="ident">libc::DT_DIR</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::Directory</span>),
-            <span class="ident">libc::DT_BLK</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::BlockDevice</span>),
-            <span class="ident">libc::DT_REG</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::File</span>),
-            <span class="ident">libc::DT_LNK</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::Symlink</span>),
-            <span class="ident">libc::DT_SOCK</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Type::Socket</span>),
-            <span class="comment">/* libc::DT_UNKNOWN | */</span> <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+    <span class="doccomment">/// Returns the type of this directory entry, if known.
+    ///
+    /// See platform `readdir(3)` or `dirent(5)` manpage for when the file type is known;
+    /// notably, some Linux filesystems don&#39;t implement this. The caller should use `stat` or
+    /// `fstat` if this returns `None`.
+    </span><span class="kw">pub fn </span>file_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Type&gt; {
+        <span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;illumos&quot;</span>, target_os = <span class="string">&quot;solaris&quot;</span>)))]
+        </span><span class="kw">match </span><span class="self">self</span>.<span class="number">0</span>.d_type {
+            libc::DT_FIFO =&gt; <span class="prelude-val">Some</span>(Type::Fifo),
+            libc::DT_CHR =&gt; <span class="prelude-val">Some</span>(Type::CharacterDevice),
+            libc::DT_DIR =&gt; <span class="prelude-val">Some</span>(Type::Directory),
+            libc::DT_BLK =&gt; <span class="prelude-val">Some</span>(Type::BlockDevice),
+            libc::DT_REG =&gt; <span class="prelude-val">Some</span>(Type::File),
+            libc::DT_LNK =&gt; <span class="prelude-val">Some</span>(Type::Symlink),
+            libc::DT_SOCK =&gt; <span class="prelude-val">Some</span>(Type::Socket),
+            <span class="comment">/* libc::DT_UNKNOWN | */ </span><span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
 
-        <span class="comment">// illumos and Solaris systems do not have the d_type member at all:</span>
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;illumos&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>
-        <span class="prelude-val">None</span>
-    }
+        <span class="comment">// illumos and Solaris systems do not have the d_type member at all:
+        </span><span class="attribute">#[cfg(any(target_os = <span class="string">&quot;illumos&quot;</span>, target_os = <span class="string">&quot;solaris&quot;</span>))]
+        </span><span class="prelude-val">None
+    </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/petgraph-0.6.2/src/algo/simple_paths.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>simple_paths.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../petgraph/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../petgraph/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../petgraph/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/petgraph-0.6.2/src/algo/simple_paths.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>simple_paths.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../petgraph/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -180,122 +180,122 @@
 <span id="180">180</span>
 <span id="181">181</span>
 <span id="182">182</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">hash::Hash</span>,
-    <span class="ident">iter</span>::{<span class="ident">from_fn</span>, <span class="ident">FromIterator</span>},
+</pre><pre class="rust"><code><span class="kw">use </span>std::{
+    hash::Hash,
+    iter::{from_fn, FromIterator},
 };
 
-<span class="kw">use</span> <span class="ident">indexmap::IndexSet</span>;
+<span class="kw">use </span>indexmap::IndexSet;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">visit</span>::{<span class="ident">IntoNeighborsDirected</span>, <span class="ident">NodeCount</span>},
-    <span class="ident">Direction::Outgoing</span>,
+<span class="kw">use crate</span>::{
+    visit::{IntoNeighborsDirected, NodeCount},
+    Direction::Outgoing,
 };
 
-<span class="doccomment">/// Returns an iterator that produces all simple paths from `from` node to `to`, which contains at least `min_intermediate_nodes` nodes</span>
-<span class="doccomment">/// and at most `max_intermediate_nodes`, if given, or limited by the graph&#39;s order otherwise. The simple path is a path without repetitions.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This algorithm is adapted from &lt;https://networkx.github.io/documentation/stable/reference/algorithms/generated/networkx.algorithms.simple_paths.all_simple_paths.html&gt;.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Example</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use petgraph::{algo, prelude::*};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut graph = DiGraph::&lt;&amp;str, i32&gt;::new();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let a = graph.add_node(&quot;a&quot;);</span>
-<span class="doccomment">/// let b = graph.add_node(&quot;b&quot;);</span>
-<span class="doccomment">/// let c = graph.add_node(&quot;c&quot;);</span>
-<span class="doccomment">/// let d = graph.add_node(&quot;d&quot;);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// graph.extend_with_edges(&amp;[(a, b, 1), (b, c, 1), (c, d, 1), (a, b, 1), (b, d, 1)]);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let ways = algo::all_simple_paths::&lt;Vec&lt;_&gt;, _&gt;(&amp;graph, a, d, 0, None)</span>
-<span class="doccomment">///   .collect::&lt;Vec&lt;_&gt;&gt;();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(4, ways.len());</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all_simple_paths</span><span class="op">&lt;</span><span class="ident">TargetColl</span>, <span class="ident">G</span><span class="op">&gt;</span>(
-    <span class="ident">graph</span>: <span class="ident">G</span>,
-    <span class="ident">from</span>: <span class="ident">G::NodeId</span>,
-    <span class="ident">to</span>: <span class="ident">G::NodeId</span>,
-    <span class="ident">min_intermediate_nodes</span>: <span class="ident">usize</span>,
-    <span class="ident">max_intermediate_nodes</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">TargetColl</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">NodeCount</span>,
-    <span class="ident">G</span>: <span class="ident">IntoNeighborsDirected</span>,
-    <span class="ident">G::NodeId</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>,
-    <span class="ident">TargetColl</span>: <span class="ident">FromIterator</span><span class="op">&lt;</span><span class="ident">G::NodeId</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Returns an iterator that produces all simple paths from `from` node to `to`, which contains at least `min_intermediate_nodes` nodes
+/// and at most `max_intermediate_nodes`, if given, or limited by the graph&#39;s order otherwise. The simple path is a path without repetitions.
+///
+/// This algorithm is adapted from &lt;https://networkx.github.io/documentation/stable/reference/algorithms/generated/networkx.algorithms.simple_paths.all_simple_paths.html&gt;.
+///
+/// # Example
+/// ```
+/// use petgraph::{algo, prelude::*};
+///
+/// let mut graph = DiGraph::&lt;&amp;str, i32&gt;::new();
+///
+/// let a = graph.add_node(&quot;a&quot;);
+/// let b = graph.add_node(&quot;b&quot;);
+/// let c = graph.add_node(&quot;c&quot;);
+/// let d = graph.add_node(&quot;d&quot;);
+///
+/// graph.extend_with_edges(&amp;[(a, b, 1), (b, c, 1), (c, d, 1), (a, b, 1), (b, d, 1)]);
+///
+/// let ways = algo::all_simple_paths::&lt;Vec&lt;_&gt;, _&gt;(&amp;graph, a, d, 0, None)
+///   .collect::&lt;Vec&lt;_&gt;&gt;();
+///
+/// assert_eq!(4, ways.len());
+/// ```
+</span><span class="kw">pub fn </span>all_simple_paths&lt;TargetColl, G&gt;(
+    graph: G,
+    from: G::NodeId,
+    to: G::NodeId,
+    min_intermediate_nodes: usize,
+    max_intermediate_nodes: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+) -&gt; <span class="kw">impl </span>Iterator&lt;Item = TargetColl&gt;
+<span class="kw">where
+    </span>G: NodeCount,
+    G: IntoNeighborsDirected,
+    G::NodeId: Eq + Hash,
+    TargetColl: FromIterator&lt;G::NodeId&gt;,
 {
-    <span class="comment">// how many nodes are allowed in simple path up to target node</span>
-    <span class="comment">// it is min/max allowed path length minus one, because it is more appropriate when implementing lookahead</span>
-    <span class="comment">// than constantly add 1 to length of current path</span>
-    <span class="kw">let</span> <span class="ident">max_length</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">l</span>) <span class="op">=</span> <span class="ident">max_intermediate_nodes</span> {
-        <span class="ident">l</span> <span class="op">+</span> <span class="number">1</span>
-    } <span class="kw">else</span> {
-        <span class="ident">graph</span>.<span class="ident">node_count</span>() <span class="op">-</span> <span class="number">1</span>
-    };
+    <span class="comment">// how many nodes are allowed in simple path up to target node
+    // it is min/max allowed path length minus one, because it is more appropriate when implementing lookahead
+    // than constantly add 1 to length of current path
+    </span><span class="kw">let </span>max_length = <span class="kw">if let </span><span class="prelude-val">Some</span>(l) = max_intermediate_nodes {
+        l + <span class="number">1
+    </span>} <span class="kw">else </span>{
+        graph.node_count() - <span class="number">1
+    </span>};
 
-    <span class="kw">let</span> <span class="ident">min_length</span> <span class="op">=</span> <span class="ident">min_intermediate_nodes</span> <span class="op">+</span> <span class="number">1</span>;
+    <span class="kw">let </span>min_length = min_intermediate_nodes + <span class="number">1</span>;
 
-    <span class="comment">// list of visited nodes</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">visited</span>: <span class="ident">IndexSet</span><span class="op">&lt;</span><span class="ident">G::NodeId</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">IndexSet::from_iter</span>(<span class="prelude-val">Some</span>(<span class="ident">from</span>));
-    <span class="comment">// list of childs of currently exploring path nodes,</span>
-    <span class="comment">// last elem is list of childs of last visited node</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stack</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">graph</span>.<span class="ident">neighbors_directed</span>(<span class="ident">from</span>, <span class="ident">Outgoing</span>)];
+    <span class="comment">// list of visited nodes
+    </span><span class="kw">let </span><span class="kw-2">mut </span>visited: IndexSet&lt;G::NodeId&gt; = IndexSet::from_iter(<span class="prelude-val">Some</span>(from));
+    <span class="comment">// list of childs of currently exploring path nodes,
+    // last elem is list of childs of last visited node
+    </span><span class="kw">let </span><span class="kw-2">mut </span>stack = <span class="macro">vec!</span>[graph.neighbors_directed(from, Outgoing)];
 
-    <span class="ident">from_fn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">children</span>) <span class="op">=</span> <span class="ident">stack</span>.<span class="ident">last_mut</span>() {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">child</span>) <span class="op">=</span> <span class="ident">children</span>.<span class="ident">next</span>() {
-                <span class="kw">if</span> <span class="ident">visited</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">max_length</span> {
-                    <span class="kw">if</span> <span class="ident">child</span> <span class="op">==</span> <span class="ident">to</span> {
-                        <span class="kw">if</span> <span class="ident">visited</span>.<span class="ident">len</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="ident">min_length</span> {
-                            <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">visited</span>
-                                .<span class="ident">iter</span>()
-                                .<span class="ident">cloned</span>()
-                                .<span class="ident">chain</span>(<span class="prelude-val">Some</span>(<span class="ident">to</span>))
-                                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">TargetColl</span><span class="op">&gt;</span>();
-                            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">path</span>);
+    from_fn(<span class="kw">move </span>|| {
+        <span class="kw">while let </span><span class="prelude-val">Some</span>(children) = stack.last_mut() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(child) = children.next() {
+                <span class="kw">if </span>visited.len() &lt; max_length {
+                    <span class="kw">if </span>child == to {
+                        <span class="kw">if </span>visited.len() &gt;= min_length {
+                            <span class="kw">let </span>path = visited
+                                .iter()
+                                .cloned()
+                                .chain(<span class="prelude-val">Some</span>(to))
+                                .collect::&lt;TargetColl&gt;();
+                            <span class="kw">return </span><span class="prelude-val">Some</span>(path);
                         }
-                    } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">visited</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">child</span>) {
-                        <span class="ident">visited</span>.<span class="ident">insert</span>(<span class="ident">child</span>);
-                        <span class="ident">stack</span>.<span class="ident">push</span>(<span class="ident">graph</span>.<span class="ident">neighbors_directed</span>(<span class="ident">child</span>, <span class="ident">Outgoing</span>));
+                    } <span class="kw">else if </span>!visited.contains(<span class="kw-2">&amp;</span>child) {
+                        visited.insert(child);
+                        stack.push(graph.neighbors_directed(child, Outgoing));
                     }
-                } <span class="kw">else</span> {
-                    <span class="kw">if</span> (<span class="ident">child</span> <span class="op">==</span> <span class="ident">to</span> <span class="op">|</span><span class="op">|</span> <span class="ident">children</span>.<span class="ident">any</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span> <span class="op">==</span> <span class="ident">to</span>)) <span class="op">&amp;&amp;</span> <span class="ident">visited</span>.<span class="ident">len</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="ident">min_length</span> {
-                        <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">visited</span>
-                            .<span class="ident">iter</span>()
-                            .<span class="ident">cloned</span>()
-                            .<span class="ident">chain</span>(<span class="prelude-val">Some</span>(<span class="ident">to</span>))
-                            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">TargetColl</span><span class="op">&gt;</span>();
-                        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">path</span>);
+                } <span class="kw">else </span>{
+                    <span class="kw">if </span>(child == to || children.any(|v| v == to)) &amp;&amp; visited.len() &gt;= min_length {
+                        <span class="kw">let </span>path = visited
+                            .iter()
+                            .cloned()
+                            .chain(<span class="prelude-val">Some</span>(to))
+                            .collect::&lt;TargetColl&gt;();
+                        <span class="kw">return </span><span class="prelude-val">Some</span>(path);
                     }
-                    <span class="ident">stack</span>.<span class="ident">pop</span>();
-                    <span class="ident">visited</span>.<span class="ident">pop</span>();
+                    stack.pop();
+                    visited.pop();
                 }
-            } <span class="kw">else</span> {
-                <span class="ident">stack</span>.<span class="ident">pop</span>();
-                <span class="ident">visited</span>.<span class="ident">pop</span>();
+            } <span class="kw">else </span>{
+                stack.pop();
+                visited.pop();
             }
         }
-        <span class="prelude-val">None</span>
-    })
+        <span class="prelude-val">None
+    </span>})
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">test</span> {
-    <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::HashSet</span>, <span class="ident">iter::FromIterator</span>};
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>test {
+    <span class="kw">use </span>std::{collections::HashSet, iter::FromIterator};
 
-    <span class="kw">use</span> <span class="ident">itertools::assert_equal</span>;
+    <span class="kw">use </span>itertools::assert_equal;
 
-    <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">dot::Dot</span>, <span class="ident">prelude::DiGraph</span>};
+    <span class="kw">use crate</span>::{dot::Dot, prelude::DiGraph};
 
-    <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::all_simple_paths</span>;
+    <span class="kw">use </span><span class="kw">super</span>::all_simple_paths;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_all_simple_paths</span>() {
-        <span class="kw">let</span> <span class="ident">graph</span> <span class="op">=</span> <span class="ident">DiGraph</span>::<span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">i32</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="ident">::from_edges</span>(<span class="kw-2">&amp;</span>[
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_all_simple_paths() {
+        <span class="kw">let </span>graph = DiGraph::&lt;i32, i32, <span class="kw">_</span>&gt;::from_edges(<span class="kw-2">&amp;</span>[
             (<span class="number">0</span>, <span class="number">1</span>),
             (<span class="number">0</span>, <span class="number">2</span>),
             (<span class="number">0</span>, <span class="number">3</span>),
@@ -311,7 +311,7 @@
             (<span class="number">5</span>, <span class="number">3</span>),
         ]);
 
-        <span class="kw">let</span> <span class="ident">expexted_simple_paths_0_to_5</span> <span class="op">=</span> <span class="macro">vec!</span>[
+        <span class="kw">let </span>expexted_simple_paths_0_to_5 = <span class="macro">vec!</span>[
             <span class="macro">vec!</span>[<span class="number">0usize</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>],
             <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span>],
             <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span>],
@@ -322,45 +322,45 @@
             <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>],
         ];
 
-        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">Dot::new</span>(<span class="kw-2">&amp;</span><span class="ident">graph</span>));
-        <span class="kw">let</span> <span class="ident">actual_simple_paths_0_to_5</span>: <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span>
-            <span class="ident">all_simple_paths</span>(<span class="kw-2">&amp;</span><span class="ident">graph</span>, <span class="number">0u32</span>.<span class="ident">into</span>(), <span class="number">5u32</span>.<span class="ident">into</span>(), <span class="number">0</span>, <span class="prelude-val">None</span>)
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">|</span> <span class="ident">v</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">index</span>()).<span class="ident">collect</span>())
-                .<span class="ident">collect</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">actual_simple_paths_0_to_5</span>.<span class="ident">len</span>(), <span class="number">8</span>);
+        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, Dot::new(<span class="kw-2">&amp;</span>graph));
+        <span class="kw">let </span>actual_simple_paths_0_to_5: HashSet&lt;Vec&lt;<span class="kw">_</span>&gt;&gt; =
+            all_simple_paths(<span class="kw-2">&amp;</span>graph, <span class="number">0u32</span>.into(), <span class="number">5u32</span>.into(), <span class="number">0</span>, <span class="prelude-val">None</span>)
+                .map(|v: Vec&lt;<span class="kw">_</span>&gt;| v.into_iter().map(|i| i.index()).collect())
+                .collect();
+        <span class="macro">assert_eq!</span>(actual_simple_paths_0_to_5.len(), <span class="number">8</span>);
         <span class="macro">assert_eq!</span>(
-            <span class="ident">HashSet::from_iter</span>(<span class="ident">expexted_simple_paths_0_to_5</span>),
-            <span class="ident">actual_simple_paths_0_to_5</span>
+            HashSet::from_iter(expexted_simple_paths_0_to_5),
+            actual_simple_paths_0_to_5
         );
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_one_simple_path</span>() {
-        <span class="kw">let</span> <span class="ident">graph</span> <span class="op">=</span> <span class="ident">DiGraph</span>::<span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">i32</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="ident">::from_edges</span>(<span class="kw-2">&amp;</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">2</span>, <span class="number">1</span>)]);
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_one_simple_path() {
+        <span class="kw">let </span>graph = DiGraph::&lt;i32, i32, <span class="kw">_</span>&gt;::from_edges(<span class="kw-2">&amp;</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">2</span>, <span class="number">1</span>)]);
 
-        <span class="kw">let</span> <span class="ident">expexted_simple_paths_0_to_1</span> <span class="op">=</span> <span class="kw-2">&amp;</span>[<span class="macro">vec!</span>[<span class="number">0usize</span>, <span class="number">1</span>]];
-        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">Dot::new</span>(<span class="kw-2">&amp;</span><span class="ident">graph</span>));
-        <span class="kw">let</span> <span class="ident">actual_simple_paths_0_to_1</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span>
-            <span class="ident">all_simple_paths</span>(<span class="kw-2">&amp;</span><span class="ident">graph</span>, <span class="number">0u32</span>.<span class="ident">into</span>(), <span class="number">1u32</span>.<span class="ident">into</span>(), <span class="number">0</span>, <span class="prelude-val">None</span>)
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">|</span> <span class="ident">v</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">index</span>()).<span class="ident">collect</span>())
-                .<span class="ident">collect</span>();
+        <span class="kw">let </span>expexted_simple_paths_0_to_1 = <span class="kw-2">&amp;</span>[<span class="macro">vec!</span>[<span class="number">0usize</span>, <span class="number">1</span>]];
+        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, Dot::new(<span class="kw-2">&amp;</span>graph));
+        <span class="kw">let </span>actual_simple_paths_0_to_1: Vec&lt;Vec&lt;<span class="kw">_</span>&gt;&gt; =
+            all_simple_paths(<span class="kw-2">&amp;</span>graph, <span class="number">0u32</span>.into(), <span class="number">1u32</span>.into(), <span class="number">0</span>, <span class="prelude-val">None</span>)
+                .map(|v: Vec&lt;<span class="kw">_</span>&gt;| v.into_iter().map(|i| i.index()).collect())
+                .collect();
 
-        <span class="macro">assert_eq!</span>(<span class="ident">actual_simple_paths_0_to_1</span>.<span class="ident">len</span>(), <span class="number">1</span>);
-        <span class="ident">assert_equal</span>(<span class="ident">expexted_simple_paths_0_to_1</span>, <span class="kw-2">&amp;</span><span class="ident">actual_simple_paths_0_to_1</span>);
+        <span class="macro">assert_eq!</span>(actual_simple_paths_0_to_1.len(), <span class="number">1</span>);
+        assert_equal(expexted_simple_paths_0_to_1, <span class="kw-2">&amp;</span>actual_simple_paths_0_to_1);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_no_simple_paths</span>() {
-        <span class="kw">let</span> <span class="ident">graph</span> <span class="op">=</span> <span class="ident">DiGraph</span>::<span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">i32</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="ident">::from_edges</span>(<span class="kw-2">&amp;</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">2</span>, <span class="number">1</span>)]);
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_no_simple_paths() {
+        <span class="kw">let </span>graph = DiGraph::&lt;i32, i32, <span class="kw">_</span>&gt;::from_edges(<span class="kw-2">&amp;</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">2</span>, <span class="number">1</span>)]);
 
-        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">Dot::new</span>(<span class="kw-2">&amp;</span><span class="ident">graph</span>));
-        <span class="kw">let</span> <span class="ident">actual_simple_paths_0_to_2</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span>
-            <span class="ident">all_simple_paths</span>(<span class="kw-2">&amp;</span><span class="ident">graph</span>, <span class="number">0u32</span>.<span class="ident">into</span>(), <span class="number">2u32</span>.<span class="ident">into</span>(), <span class="number">0</span>, <span class="prelude-val">None</span>)
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">|</span> <span class="ident">v</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">index</span>()).<span class="ident">collect</span>())
-                .<span class="ident">collect</span>();
+        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, Dot::new(<span class="kw-2">&amp;</span>graph));
+        <span class="kw">let </span>actual_simple_paths_0_to_2: Vec&lt;Vec&lt;<span class="kw">_</span>&gt;&gt; =
+            all_simple_paths(<span class="kw-2">&amp;</span>graph, <span class="number">0u32</span>.into(), <span class="number">2u32</span>.into(), <span class="number">0</span>, <span class="prelude-val">None</span>)
+                .map(|v: Vec&lt;<span class="kw">_</span>&gt;| v.into_iter().map(|i| i.index()).collect())
+                .collect();
 
-        <span class="macro">assert_eq!</span>(<span class="ident">actual_simple_paths_0_to_2</span>.<span class="ident">len</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(actual_simple_paths_0_to_2.len(), <span class="number">0</span>);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="petgraph" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="petgraph" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

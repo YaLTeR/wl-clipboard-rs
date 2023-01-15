@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-client-0.29.5/src/rust_imp/queues.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>queues.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../wayland_client/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../wayland_client/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../wayland_client/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-client-0.29.5/src/rust_imp/queues.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>queues.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../wayland_client/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -298,305 +298,305 @@
 <span id="298">298</span>
 <span id="299">299</span>
 <span id="300">300</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::cell::Cell</span>;
-<span class="kw">use</span> <span class="ident">std::collections::VecDeque</span>;
-<span class="kw">use</span> <span class="ident">std::io</span>;
-<span class="kw">use</span> <span class="ident">std::os::unix::io::AsRawFd</span>;
-<span class="kw">use</span> <span class="ident">std::rc::Rc</span>;
-<span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
+</pre><pre class="rust"><code><span class="kw">use </span>std::cell::Cell;
+<span class="kw">use </span>std::collections::VecDeque;
+<span class="kw">use </span>std::io;
+<span class="kw">use </span>std::os::unix::io::AsRawFd;
+<span class="kw">use </span>std::rc::Rc;
+<span class="kw">use </span>std::sync::{Arc, Mutex};
 
-<span class="kw">use</span> <span class="ident">nix::poll</span>::{<span class="ident">poll</span>, <span class="ident">PollFd</span>, <span class="ident">PollFlags</span>};
+<span class="kw">use </span>nix::poll::{poll, PollFd, PollFlags};
 
-<span class="kw">use</span> <span class="ident">wayland_commons::map::ObjectMap</span>;
-<span class="kw">use</span> <span class="ident">wayland_commons::wire</span>::{<span class="ident">Argument</span>, <span class="ident">Message</span>};
+<span class="kw">use </span>wayland_commons::map::ObjectMap;
+<span class="kw">use </span>wayland_commons::wire::{Argument, Message};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::connection</span>::{<span class="ident">Connection</span>, <span class="ident">Error</span> <span class="kw">as</span> <span class="ident">CError</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::proxy</span>::{<span class="ident">ObjectMeta</span>, <span class="ident">ProxyInner</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::Dispatched</span>;
+<span class="kw">use </span><span class="kw">super</span>::connection::{Connection, Error <span class="kw">as </span>CError};
+<span class="kw">use </span><span class="kw">super</span>::proxy::{ObjectMeta, ProxyInner};
+<span class="kw">use </span><span class="kw">super</span>::Dispatched;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">AnonymousObject</span>, <span class="ident">DispatchData</span>, <span class="ident">Filter</span>, <span class="ident">Main</span>, <span class="ident">RawEvent</span>};
+<span class="kw">use crate</span>::{AnonymousObject, DispatchData, Filter, Main, RawEvent};
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type</span> <span class="ident">QueueBuffer</span> <span class="op">=</span> <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">VecDeque</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>QueueBuffer = Arc&lt;Mutex&lt;VecDeque&lt;Message&gt;&gt;&gt;;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">create_queue_buffer</span>() -&gt; <span class="ident">QueueBuffer</span> {
-    <span class="ident">Arc::new</span>(<span class="ident">Mutex::new</span>(<span class="ident">VecDeque::new</span>()))
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create_queue_buffer() -&gt; QueueBuffer {
+    Arc::new(Mutex::new(VecDeque::new()))
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">EventQueueInner</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">connection</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Connection</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">map</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">ObjectMap</span><span class="op">&lt;</span><span class="ident">ObjectMeta</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">buffer</span>: <span class="ident">QueueBuffer</span>,
-    <span class="ident">display_buffer</span>: <span class="ident">QueueBuffer</span>,
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>EventQueueInner {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) connection: Arc&lt;Mutex&lt;Connection&gt;&gt;,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) map: Arc&lt;Mutex&lt;ObjectMap&lt;ObjectMeta&gt;&gt;&gt;,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) buffer: QueueBuffer,
+    display_buffer: QueueBuffer,
 }
 
-<span class="kw">impl</span> <span class="ident">EventQueueInner</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>(
-        <span class="ident">connection</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Connection</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-        <span class="ident">buffer</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">QueueBuffer</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">EventQueueInner</span> {
-        <span class="kw">let</span> (<span class="ident">map</span>, <span class="ident">display_buffer</span>) <span class="op">=</span> {
-            <span class="kw">let</span> <span class="ident">cx</span> <span class="op">=</span> <span class="ident">connection</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-            (<span class="ident">cx</span>.<span class="ident">map</span>.<span class="ident">clone</span>(), <span class="ident">cx</span>.<span class="ident">display_buffer</span>.<span class="ident">clone</span>())
+<span class="kw">impl </span>EventQueueInner {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(
+        connection: Arc&lt;Mutex&lt;Connection&gt;&gt;,
+        buffer: <span class="prelude-ty">Option</span>&lt;QueueBuffer&gt;,
+    ) -&gt; EventQueueInner {
+        <span class="kw">let </span>(map, display_buffer) = {
+            <span class="kw">let </span>cx = connection.lock().unwrap();
+            (cx.map.clone(), cx.display_buffer.clone())
         };
-        <span class="ident">EventQueueInner</span> {
-            <span class="ident">connection</span>,
-            <span class="ident">map</span>,
-            <span class="ident">buffer</span>: <span class="ident">buffer</span>.<span class="ident">unwrap_or_else</span>(<span class="ident">create_queue_buffer</span>),
-            <span class="ident">display_buffer</span>,
+        EventQueueInner {
+            connection,
+            map,
+            buffer: buffer.unwrap_or_else(create_queue_buffer),
+            display_buffer,
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">dispatch</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">data</span>: <span class="ident">DispatchData</span>, <span class="kw-2">mut</span> <span class="ident">fallback</span>: <span class="ident">F</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">RawEvent</span>, <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">AnonymousObject</span><span class="op">&gt;</span>, <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>),
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>dispatch&lt;F&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>data: DispatchData, <span class="kw-2">mut </span>fallback: F) -&gt; io::Result&lt;u32&gt;
+    <span class="kw">where
+        </span>F: FnMut(RawEvent, Main&lt;AnonymousObject&gt;, DispatchData&lt;<span class="lifetime">&#39;_</span>&gt;),
     {
-        <span class="comment">// don&#39;t read events if there are some pending</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(()) <span class="op">=</span> <span class="self">self</span>.<span class="ident">prepare_read</span>() {
-            <span class="kw">return</span> <span class="self">self</span>.<span class="ident">dispatch_pending</span>(<span class="ident">data</span>.<span class="ident">reborrow</span>(), <span class="kw-2">&amp;mut</span> <span class="ident">fallback</span>);
+        <span class="comment">// don&#39;t read events if there are some pending
+        </span><span class="kw">if let </span><span class="prelude-val">Err</span>(()) = <span class="self">self</span>.prepare_read() {
+            <span class="kw">return </span><span class="self">self</span>.dispatch_pending(data.reborrow(), <span class="kw-2">&amp;mut </span>fallback);
         }
 
-        <span class="comment">// temporarily retrieve the socket Fd, only using it for POLL-ing!</span>
-        <span class="kw">let</span> <span class="ident">socket_fd</span>;
+        <span class="comment">// temporarily retrieve the socket Fd, only using it for POLL-ing!
+        </span><span class="kw">let </span>socket_fd;
         {
-            <span class="comment">// Flush the outgoing socket</span>
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">conn_lock</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">connection</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-            <span class="ident">socket_fd</span> <span class="op">=</span> <span class="ident">conn_lock</span>.<span class="ident">socket</span>.<span class="ident">get_socket</span>().<span class="ident">as_raw_fd</span>();
-            <span class="kw">loop</span> {
-                <span class="kw">match</span> <span class="ident">conn_lock</span>.<span class="ident">flush</span>() {
+            <span class="comment">// Flush the outgoing socket
+            </span><span class="kw">let </span><span class="kw-2">mut </span>conn_lock = <span class="self">self</span>.connection.lock().unwrap();
+            socket_fd = conn_lock.socket.get_socket().as_raw_fd();
+            <span class="kw">loop </span>{
+                <span class="kw">match </span>conn_lock.flush() {
                     <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="kw">break</span>,
-                    <span class="prelude-val">Err</span>(<span class="ident">nix::Error::EAGAIN</span>) =&gt; {
-                        <span class="comment">// EAGAIN, we need to wait before writing, so we poll the socket</span>
-                        <span class="kw">let</span> <span class="ident">poll_ret</span> <span class="op">=</span> <span class="ident">poll</span>(<span class="kw-2">&amp;mut</span> [<span class="ident">PollFd::new</span>(<span class="ident">socket_fd</span>, <span class="ident">PollFlags::POLLOUT</span>)], <span class="op">-</span><span class="number">1</span>);
-                        <span class="kw">match</span> <span class="ident">poll_ret</span> {
+                    <span class="prelude-val">Err</span>(nix::Error::EAGAIN) =&gt; {
+                        <span class="comment">// EAGAIN, we need to wait before writing, so we poll the socket
+                        </span><span class="kw">let </span>poll_ret = poll(<span class="kw-2">&amp;mut </span>[PollFd::new(socket_fd, PollFlags::POLLOUT)], -<span class="number">1</span>);
+                        <span class="kw">match </span>poll_ret {
                             <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="kw">continue</span>,
-                            <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; {
-                                <span class="self">self</span>.<span class="ident">cancel_read</span>();
-                                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>.<span class="ident">into</span>());
+                            <span class="prelude-val">Err</span>(e) =&gt; {
+                                <span class="self">self</span>.cancel_read();
+                                <span class="kw">return </span><span class="prelude-val">Err</span>(e.into());
                             }
                         }
                     }
-                    <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; {
-                        <span class="kw">if</span> <span class="ident">e</span> <span class="op">!</span><span class="op">=</span> <span class="ident">nix::Error::EPIPE</span> {
-                            <span class="comment">// don&#39;t abort on EPIPE, so we can continue reading</span>
-                            <span class="comment">// to get the protocol error</span>
-                            <span class="self">self</span>.<span class="ident">cancel_read</span>();
-                            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>.<span class="ident">into</span>());
+                    <span class="prelude-val">Err</span>(e) =&gt; {
+                        <span class="kw">if </span>e != nix::Error::EPIPE {
+                            <span class="comment">// don&#39;t abort on EPIPE, so we can continue reading
+                            // to get the protocol error
+                            </span><span class="self">self</span>.cancel_read();
+                            <span class="kw">return </span><span class="prelude-val">Err</span>(e.into());
                         }
                     }
                 }
             }
         }
 
-        <span class="comment">// wait for incoming messages to arrive</span>
-        <span class="kw">match</span> <span class="ident">poll</span>(<span class="kw-2">&amp;mut</span> [<span class="ident">PollFd::new</span>(<span class="ident">socket_fd</span>, <span class="ident">PollFlags::POLLIN</span>)], <span class="op">-</span><span class="number">1</span>) {
+        <span class="comment">// wait for incoming messages to arrive
+        </span><span class="kw">match </span>poll(<span class="kw-2">&amp;mut </span>[PollFd::new(socket_fd, PollFlags::POLLIN)], -<span class="number">1</span>) {
             <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; (),
-            <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; {
-                <span class="self">self</span>.<span class="ident">cancel_read</span>();
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>.<span class="ident">into</span>());
+            <span class="prelude-val">Err</span>(e) =&gt; {
+                <span class="self">self</span>.cancel_read();
+                <span class="kw">return </span><span class="prelude-val">Err</span>(e.into());
             }
         }
-        <span class="kw">let</span> <span class="ident">read_ret</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_events</span>();
+        <span class="kw">let </span>read_ret = <span class="self">self</span>.read_events();
 
-        <span class="comment">// even if read_events returned an error, it may have queued messages the need dispatching</span>
-        <span class="comment">// so we dispatch them</span>
-        <span class="kw">let</span> <span class="ident">dispatch_ret</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">dispatch_pending</span>(<span class="ident">data</span>.<span class="ident">reborrow</span>(), <span class="kw-2">&amp;mut</span> <span class="ident">fallback</span>);
+        <span class="comment">// even if read_events returned an error, it may have queued messages the need dispatching
+        // so we dispatch them
+        </span><span class="kw">let </span>dispatch_ret = <span class="self">self</span>.dispatch_pending(data.reborrow(), <span class="kw-2">&amp;mut </span>fallback);
 
-        <span class="kw">match</span> <span class="ident">read_ret</span> {
+        <span class="kw">match </span>read_ret {
             <span class="prelude-val">Ok</span>(()) =&gt; (),
-            <span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="ident">e</span>) <span class="kw">if</span> <span class="ident">e</span>.<span class="ident">kind</span>() <span class="op">==</span> <span class="ident">io::ErrorKind::WouldBlock</span> =&gt; {
-                <span class="comment">// we waited for read readiness be then received a WouldBlock error</span>
-                <span class="comment">// this means that an other thread was also reading events and read them</span>
-                <span class="comment">// under our nose</span>
-                <span class="comment">// this is alright, continue</span>
-            }
-            <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>),
+            <span class="prelude-val">Err</span>(<span class="kw-2">ref </span>e) <span class="kw">if </span>e.kind() == io::ErrorKind::WouldBlock =&gt; {
+                <span class="comment">// we waited for read readiness be then received a WouldBlock error
+                // this means that an other thread was also reading events and read them
+                // under our nose
+                // this is alright, continue
+            </span>}
+            <span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(e),
         }
 
-        <span class="ident">dispatch_ret</span>
+        dispatch_ret
     }
 
-    <span class="kw">fn</span> <span class="ident">dispatch_buffer</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(
+    <span class="kw">fn </span>dispatch_buffer&lt;F&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">VecDeque</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-        <span class="kw-2">mut</span> <span class="ident">data</span>: <span class="ident">DispatchData</span>,
-        <span class="kw-2">mut</span> <span class="ident">fallback</span>: <span class="ident">F</span>,
-    ) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">RawEvent</span>, <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">AnonymousObject</span><span class="op">&gt;</span>, <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>),
+        buffer: <span class="kw-2">&amp;</span>Mutex&lt;VecDeque&lt;Message&gt;&gt;,
+        <span class="kw-2">mut </span>data: DispatchData,
+        <span class="kw-2">mut </span>fallback: F,
+    ) -&gt; io::Result&lt;u32&gt;
+    <span class="kw">where
+        </span>F: FnMut(RawEvent, Main&lt;AnonymousObject&gt;, DispatchData&lt;<span class="lifetime">&#39;_</span>&gt;),
     {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">count</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">proxymap</span> <span class="op">=</span> <span class="ident"><span class="kw">super</span>::ProxyMap::make</span>(<span class="self">self</span>.<span class="ident">map</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">connection</span>.<span class="ident">clone</span>());
-        <span class="kw">loop</span> {
-            <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> { <span class="ident">buffer</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">pop_front</span>() };
-            <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">msg</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">m</span>) =&gt; <span class="ident">m</span>,
-                <span class="prelude-val">None</span> =&gt; <span class="kw">break</span>,
+        <span class="kw">let </span><span class="kw-2">mut </span>count = <span class="number">0</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>proxymap = <span class="kw">super</span>::ProxyMap::make(<span class="self">self</span>.map.clone(), <span class="self">self</span>.connection.clone());
+        <span class="kw">loop </span>{
+            <span class="kw">let </span>msg = { buffer.lock().unwrap().pop_front() };
+            <span class="kw">let </span>msg = <span class="kw">match </span>msg {
+                <span class="prelude-val">Some</span>(m) =&gt; m,
+                <span class="prelude-val">None </span>=&gt; <span class="kw">break</span>,
             };
-            <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">msg</span>.<span class="ident">sender_id</span>;
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">proxy</span>) <span class="op">=</span> <span class="ident">ProxyInner::from_id</span>(<span class="ident">id</span>, <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">connection</span>.<span class="ident">clone</span>())
+            <span class="kw">let </span>id = msg.sender_id;
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(proxy) = ProxyInner::from_id(id, <span class="self">self</span>.map.clone(), <span class="self">self</span>.connection.clone())
             {
-                <span class="kw">let</span> <span class="ident">object</span> <span class="op">=</span> <span class="ident">proxy</span>.<span class="ident">object</span>.<span class="ident">clone</span>();
-                <span class="kw">if</span> <span class="ident">object</span>.<span class="ident">meta</span>.<span class="ident">client_destroyed</span> {
-                    <span class="comment">// This is a potential race, if we reach here it means that the proxy was</span>
-                    <span class="comment">// destroyed by the user between this message was queued and now. To handle it</span>
-                    <span class="comment">// correctly, we must close any FDs it contains, mark any child object as</span>
-                    <span class="comment">// destroyed (but the server will never know about it, so the ids will be</span>
-                    <span class="comment">// leaked) and discard the event.</span>
-                    <span class="kw">for</span> <span class="ident">arg</span> <span class="kw">in</span> <span class="ident">msg</span>.<span class="ident">args</span> {
-                        <span class="kw">match</span> <span class="ident">arg</span> {
-                            <span class="ident">Argument::Fd</span>(<span class="ident">fd</span>) =&gt; {
-                                <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">::nix::unistd::close</span>(<span class="ident">fd</span>);
+                <span class="kw">let </span>object = proxy.object.clone();
+                <span class="kw">if </span>object.meta.client_destroyed {
+                    <span class="comment">// This is a potential race, if we reach here it means that the proxy was
+                    // destroyed by the user between this message was queued and now. To handle it
+                    // correctly, we must close any FDs it contains, mark any child object as
+                    // destroyed (but the server will never know about it, so the ids will be
+                    // leaked) and discard the event.
+                    </span><span class="kw">for </span>arg <span class="kw">in </span>msg.args {
+                        <span class="kw">match </span>arg {
+                            Argument::Fd(fd) =&gt; {
+                                <span class="kw">let _ </span>= ::nix::unistd::close(fd);
                             }
-                            <span class="ident">Argument::NewId</span>(<span class="ident">id</span>) =&gt; {
-                                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-                                <span class="ident">map</span>.<span class="ident">with</span>(<span class="ident">id</span>, <span class="op">|</span><span class="ident">obj</span><span class="op">|</span> {
-                                    <span class="ident">obj</span>.<span class="ident">meta</span>.<span class="ident">client_destroyed</span> <span class="op">=</span> <span class="bool-val">true</span>;
+                            Argument::NewId(id) =&gt; {
+                                <span class="kw">let </span><span class="kw-2">mut </span>map = <span class="self">self</span>.map.lock().unwrap();
+                                map.with(id, |obj| {
+                                    obj.meta.client_destroyed = <span class="bool-val">true</span>;
                                 })
-                                .<span class="ident">unwrap</span>();
+                                .unwrap();
                             }
-                            <span class="kw">_</span> =&gt; {}
+                            <span class="kw">_ </span>=&gt; {}
                         }
                     }
                     <span class="kw">continue</span>;
                 }
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dispatcher</span> <span class="op">=</span> <span class="ident">object</span>.<span class="ident">meta</span>.<span class="ident">dispatcher</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-                <span class="kw">match</span> <span class="ident">dispatcher</span>.<span class="ident">dispatch</span>(<span class="ident">msg</span>, <span class="ident">proxy</span>, <span class="kw-2">&amp;mut</span> <span class="ident">proxymap</span>, <span class="ident">data</span>.<span class="ident">reborrow</span>()) {
-                    <span class="ident">Dispatched::Yes</span> =&gt; {
-                        <span class="ident">count</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>dispatcher = object.meta.dispatcher.lock().unwrap();
+                <span class="kw">match </span>dispatcher.dispatch(msg, proxy, <span class="kw-2">&amp;mut </span>proxymap, data.reborrow()) {
+                    Dispatched::Yes =&gt; {
+                        count += <span class="number">1</span>;
                     }
-                    <span class="ident">Dispatched::NoDispatch</span>(<span class="ident">msg</span>, <span class="ident">proxy</span>) =&gt; {
-                        <span class="kw">let</span> <span class="ident">raw_event</span> <span class="op">=</span> <span class="ident">message_to_rawevent</span>(<span class="ident">msg</span>, <span class="kw-2">&amp;</span><span class="ident">proxy</span>, <span class="kw-2">&amp;mut</span> <span class="ident">proxymap</span>);
-                        <span class="ident">fallback</span>(<span class="ident">raw_event</span>, <span class="ident">Main::wrap</span>(<span class="ident">proxy</span>), <span class="ident">data</span>.<span class="ident">reborrow</span>());
-                        <span class="ident">count</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+                    Dispatched::NoDispatch(msg, proxy) =&gt; {
+                        <span class="kw">let </span>raw_event = message_to_rawevent(msg, <span class="kw-2">&amp;</span>proxy, <span class="kw-2">&amp;mut </span>proxymap);
+                        fallback(raw_event, Main::wrap(proxy), data.reborrow());
+                        count += <span class="number">1</span>;
                     }
-                    <span class="ident">Dispatched::BadMsg</span> =&gt; {
-                        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">io::Error::new</span>(
-                            <span class="ident">io::ErrorKind::Other</span>,
-                            <span class="macro">format!</span>(<span class="string">&quot;Dispatch for object {}@{} errored.&quot;</span>, <span class="ident">object</span>.<span class="ident">interface</span>, <span class="ident">id</span>),
+                    Dispatched::BadMsg =&gt; {
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
+                            io::ErrorKind::Other,
+                            <span class="macro">format!</span>(<span class="string">&quot;Dispatch for object {}@{} errored.&quot;</span>, object.interface, id),
                         ))
                     }
                 }
-            } <span class="kw">else</span> {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">io::Error::new</span>(
-                    <span class="ident">io::ErrorKind::Other</span>,
-                    <span class="macro">format!</span>(<span class="string">&quot;Received an event for unknown object {}.&quot;</span>, <span class="ident">id</span>),
+            } <span class="kw">else </span>{
+                <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
+                    io::ErrorKind::Other,
+                    <span class="macro">format!</span>(<span class="string">&quot;Received an event for unknown object {}.&quot;</span>, id),
                 ));
             }
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">count</span>)
+        <span class="prelude-val">Ok</span>(count)
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">dispatch_pending</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">data</span>: <span class="ident">DispatchData</span>, <span class="ident">fallback</span>: <span class="ident">F</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">RawEvent</span>, <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">AnonymousObject</span><span class="op">&gt;</span>, <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>),
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>dispatch_pending&lt;F&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>data: DispatchData, fallback: F) -&gt; io::Result&lt;u32&gt;
+    <span class="kw">where
+        </span>F: FnMut(RawEvent, Main&lt;AnonymousObject&gt;, DispatchData&lt;<span class="lifetime">&#39;_</span>&gt;),
     {
-        <span class="comment">// First always dispatch the display buffer</span>
-        <span class="kw">let</span> <span class="ident">display_dispatched</span> <span class="op">=</span>
-            <span class="self">self</span>.<span class="ident">dispatch_buffer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">display_buffer</span>, <span class="ident">data</span>.<span class="ident">reborrow</span>(), <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> <span class="macro">unreachable!</span>())<span class="question-mark">?</span>;
+        <span class="comment">// First always dispatch the display buffer
+        </span><span class="kw">let </span>display_dispatched =
+            <span class="self">self</span>.dispatch_buffer(<span class="kw-2">&amp;</span><span class="self">self</span>.display_buffer, data.reborrow(), |<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>| <span class="macro">unreachable!</span>())<span class="question-mark">?</span>;
 
-        <span class="comment">// Then our actual buffer</span>
-        <span class="kw">let</span> <span class="ident">self_dispatched</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">dispatch_buffer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">buffer</span>, <span class="ident">data</span>.<span class="ident">reborrow</span>(), <span class="ident">fallback</span>)<span class="question-mark">?</span>;
+        <span class="comment">// Then our actual buffer
+        </span><span class="kw">let </span>self_dispatched = <span class="self">self</span>.dispatch_buffer(<span class="kw-2">&amp;</span><span class="self">self</span>.buffer, data.reborrow(), fallback)<span class="question-mark">?</span>;
 
-        <span class="prelude-val">Ok</span>(<span class="ident">display_dispatched</span> <span class="op">+</span> <span class="ident">self_dispatched</span>)
+        <span class="prelude-val">Ok</span>(display_dispatched + self_dispatched)
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">sync_roundtrip</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>sync_roundtrip&lt;F&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="kw-2">mut</span> <span class="ident">data</span>: <span class="ident">DispatchData</span>,
-        <span class="kw-2">mut</span> <span class="ident">fallback</span>: <span class="ident">F</span>,
-    ) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">RawEvent</span>, <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">AnonymousObject</span><span class="op">&gt;</span>, <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>),
+        <span class="kw-2">mut </span>data: DispatchData,
+        <span class="kw-2">mut </span>fallback: F,
+    ) -&gt; io::Result&lt;u32&gt;
+    <span class="kw">where
+        </span>F: FnMut(RawEvent, Main&lt;AnonymousObject&gt;, DispatchData&lt;<span class="lifetime">&#39;_</span>&gt;),
     {
-        <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::protocol::wl_callback</span>::{<span class="ident">Event</span> <span class="kw">as</span> <span class="ident">CbEvent</span>, <span class="ident">WlCallback</span>};
-        <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::protocol::wl_display</span>::{<span class="ident">Request</span> <span class="kw">as</span> <span class="ident">DRequest</span>, <span class="ident">WlDisplay</span>};
-        <span class="comment">// first retrieve the display and make a wrapper for it in this event queue</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">display</span> <span class="op">=</span>
-            <span class="ident">ProxyInner::from_id</span>(<span class="number">1</span>, <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">connection</span>.<span class="ident">clone</span>()).<span class="ident">unwrap</span>();
-        <span class="ident">display</span>.<span class="ident">attach</span>(<span class="self">self</span>);
+        <span class="kw">use </span><span class="kw">crate</span>::protocol::wl_callback::{Event <span class="kw">as </span>CbEvent, WlCallback};
+        <span class="kw">use </span><span class="kw">crate</span>::protocol::wl_display::{Request <span class="kw">as </span>DRequest, WlDisplay};
+        <span class="comment">// first retrieve the display and make a wrapper for it in this event queue
+        </span><span class="kw">let </span><span class="kw-2">mut </span>display =
+            ProxyInner::from_id(<span class="number">1</span>, <span class="self">self</span>.map.clone(), <span class="self">self</span>.connection.clone()).unwrap();
+        display.attach(<span class="self">self</span>);
 
-        <span class="kw">let</span> <span class="ident">done</span> <span class="op">=</span> <span class="ident">Rc::new</span>(<span class="ident">Cell::new</span>(<span class="bool-val">false</span>));
-        <span class="kw">let</span> <span class="ident">cb</span> <span class="op">=</span> <span class="ident">display</span>.<span class="ident">send</span>::<span class="op">&lt;</span><span class="ident">WlDisplay</span>, <span class="ident">WlCallback</span><span class="op">&gt;</span>(<span class="ident">DRequest::Sync</span> {}, <span class="prelude-val">Some</span>(<span class="number">1</span>)).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">done2</span> <span class="op">=</span> <span class="ident">done</span>.<span class="ident">clone</span>();
-        <span class="ident">cb</span>.<span class="ident">assign</span>::<span class="op">&lt;</span><span class="ident">WlCallback</span>, <span class="kw">_</span><span class="op">&gt;</span>(<span class="ident">Filter::new</span>(<span class="kw">move</span> <span class="op">|</span>(<span class="kw">_</span>, <span class="ident">CbEvent::Done</span> { .. }), <span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> {
-            <span class="ident">done2</span>.<span class="ident">set</span>(<span class="bool-val">true</span>);
+        <span class="kw">let </span>done = Rc::new(Cell::new(<span class="bool-val">false</span>));
+        <span class="kw">let </span>cb = display.send::&lt;WlDisplay, WlCallback&gt;(DRequest::Sync {}, <span class="prelude-val">Some</span>(<span class="number">1</span>)).unwrap();
+        <span class="kw">let </span>done2 = done.clone();
+        cb.assign::&lt;WlCallback, <span class="kw">_</span>&gt;(Filter::new(<span class="kw">move </span>|(<span class="kw">_</span>, CbEvent::Done { .. }), <span class="kw">_</span>, <span class="kw">_</span>| {
+            done2.set(<span class="bool-val">true</span>);
         }));
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dispatched</span> <span class="op">=</span> <span class="number">0</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>dispatched = <span class="number">0</span>;
 
-        <span class="kw">loop</span> {
-            <span class="ident">dispatched</span> <span class="op">+</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">dispatch</span>(<span class="ident">data</span>.<span class="ident">reborrow</span>(), <span class="kw-2">&amp;mut</span> <span class="ident">fallback</span>)<span class="question-mark">?</span>;
-            <span class="kw">if</span> <span class="ident">done</span>.<span class="ident">get</span>() {
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">dispatched</span>);
+        <span class="kw">loop </span>{
+            dispatched += <span class="self">self</span>.dispatch(data.reborrow(), <span class="kw-2">&amp;mut </span>fallback)<span class="question-mark">?</span>;
+            <span class="kw">if </span>done.get() {
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(dispatched);
             }
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">prepare_read</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">is_empty</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(());
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>prepare_read(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
+        <span class="kw">if </span>!<span class="self">self</span>.buffer.lock().unwrap().is_empty() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(());
         }
 
-        <span class="comment">// TODO: un-mock</span>
-        <span class="prelude-val">Ok</span>(())
+        <span class="comment">// TODO: un-mock
+        </span><span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_events</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="comment">// TODO: integrate more properly with prepare read with a fence</span>
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">connection</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">read_events</span>() {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>read_events(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;()&gt; {
+        <span class="comment">// TODO: integrate more properly with prepare read with a fence
+        </span><span class="kw">match </span><span class="self">self</span>.connection.lock().unwrap().read_events() {
             <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(()),
-            <span class="prelude-val">Err</span>(<span class="ident">CError::Protocol</span>(<span class="ident">e</span>)) =&gt; {
-                <span class="macro">eprintln!</span>(<span class="string">&quot;[wayland-client] Protocol error while reading events: {}&quot;</span>, <span class="ident">e</span>);
-                <span class="prelude-val">Err</span>(<span class="ident">::nix::errno::Errno::EPROTO</span>.<span class="ident">into</span>())
+            <span class="prelude-val">Err</span>(CError::Protocol(e)) =&gt; {
+                <span class="macro">eprintln!</span>(<span class="string">&quot;[wayland-client] Protocol error while reading events: {}&quot;</span>, e);
+                <span class="prelude-val">Err</span>(::nix::errno::Errno::EPROTO.into())
             }
-            <span class="prelude-val">Err</span>(<span class="ident">CError::Parse</span>(<span class="ident">e</span>)) =&gt; {
-                <span class="macro">eprintln!</span>(<span class="string">&quot;[wayland-client] Parse error while reading events: {}&quot;</span>, <span class="ident">e</span>);
-                <span class="prelude-val">Err</span>(<span class="ident">::nix::errno::Errno::EPROTO</span>.<span class="ident">into</span>())
+            <span class="prelude-val">Err</span>(CError::Parse(e)) =&gt; {
+                <span class="macro">eprintln!</span>(<span class="string">&quot;[wayland-client] Parse error while reading events: {}&quot;</span>, e);
+                <span class="prelude-val">Err</span>(::nix::errno::Errno::EPROTO.into())
             }
-            <span class="prelude-val">Err</span>(<span class="ident">CError::Nix</span>(<span class="ident">errno</span>)) =&gt; <span class="prelude-val">Err</span>(<span class="ident">errno</span>.<span class="ident">into</span>()),
+            <span class="prelude-val">Err</span>(CError::Nix(errno)) =&gt; <span class="prelude-val">Err</span>(errno.into()),
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">cancel_read</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="comment">// TODO: un-mock</span>
-    }
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>cancel_read(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+        <span class="comment">// TODO: un-mock
+    </span>}
 }
 
-<span class="kw">fn</span> <span class="ident">message_to_rawevent</span>(<span class="ident">msg</span>: <span class="ident">Message</span>, <span class="ident">proxy</span>: <span class="kw-2">&amp;</span><span class="ident">ProxyInner</span>, <span class="ident">map</span>: <span class="kw-2">&amp;mut</span> <span class="ident"><span class="kw">super</span>::ProxyMap</span>) -&gt; <span class="ident">RawEvent</span> {
-    <span class="kw">let</span> <span class="ident">Message</span> { <span class="ident">opcode</span>, <span class="ident">args</span>, .. } <span class="op">=</span> <span class="ident">msg</span>;
+<span class="kw">fn </span>message_to_rawevent(msg: Message, proxy: <span class="kw-2">&amp;</span>ProxyInner, map: <span class="kw-2">&amp;mut </span><span class="kw">super</span>::ProxyMap) -&gt; RawEvent {
+    <span class="kw">let </span>Message { opcode, args, .. } = msg;
 
-    <span class="kw">let</span> <span class="ident">args</span> <span class="op">=</span> <span class="ident">args</span>
-        .<span class="ident">into_iter</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">a</span> {
-            <span class="ident">Argument::Int</span>(<span class="ident">i</span>) =&gt; <span class="ident"><span class="kw">crate</span>::Argument::Int</span>(<span class="ident">i</span>),
-            <span class="ident">Argument::Uint</span>(<span class="ident">u</span>) =&gt; <span class="ident"><span class="kw">crate</span>::Argument::Uint</span>(<span class="ident">u</span>),
-            <span class="ident">Argument::Array</span>(<span class="ident">v</span>) =&gt; {
-                <span class="ident"><span class="kw">crate</span>::Argument::Array</span>(<span class="kw">if</span> <span class="ident">v</span>.<span class="ident">is_empty</span>() { <span class="prelude-val">None</span> } <span class="kw">else</span> { <span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="ident">v</span>) })
+    <span class="kw">let </span>args = args
+        .into_iter()
+        .map(|a| <span class="kw">match </span>a {
+            Argument::Int(i) =&gt; <span class="kw">crate</span>::Argument::Int(i),
+            Argument::Uint(u) =&gt; <span class="kw">crate</span>::Argument::Uint(u),
+            Argument::Array(v) =&gt; {
+                <span class="kw">crate</span>::Argument::Array(<span class="kw">if </span>v.is_empty() { <span class="prelude-val">None </span>} <span class="kw">else </span>{ <span class="prelude-val">Some</span>(<span class="kw-2">*</span>v) })
             }
-            <span class="ident">Argument::Fixed</span>(<span class="ident">f</span>) =&gt; <span class="ident"><span class="kw">crate</span>::Argument::Float</span>((<span class="ident">f</span> <span class="kw">as</span> <span class="ident">f32</span>) <span class="op">/</span> <span class="number">256.</span>),
-            <span class="ident">Argument::Fd</span>(<span class="ident">f</span>) =&gt; <span class="ident"><span class="kw">crate</span>::Argument::Fd</span>(<span class="ident">f</span>),
-            <span class="ident">Argument::Str</span>(<span class="ident">cs</span>) =&gt; <span class="ident"><span class="kw">crate</span>::Argument::Str</span>({
-                <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">cs</span>.<span class="ident">into_bytes</span>();
-                <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">is_empty</span>() {
-                    <span class="prelude-val">None</span>
-                } <span class="kw">else</span> {
+            Argument::Fixed(f) =&gt; <span class="kw">crate</span>::Argument::Float((f <span class="kw">as </span>f32) / <span class="number">256.</span>),
+            Argument::Fd(f) =&gt; <span class="kw">crate</span>::Argument::Fd(f),
+            Argument::Str(cs) =&gt; <span class="kw">crate</span>::Argument::Str({
+                <span class="kw">let </span>bytes = cs.into_bytes();
+                <span class="kw">if </span>bytes.is_empty() {
+                    <span class="prelude-val">None
+                </span>} <span class="kw">else </span>{
                     <span class="prelude-val">Some</span>(
-                        <span class="ident">String::from_utf8</span>(<span class="ident">bytes</span>)
-                            .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">String::from_utf8_lossy</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>.<span class="ident">into_bytes</span>()).<span class="ident">into</span>()),
+                        String::from_utf8(bytes)
+                            .unwrap_or_else(|e| String::from_utf8_lossy(<span class="kw-2">&amp;</span>e.into_bytes()).into()),
                     )
                 }
             }),
-            <span class="ident">Argument::Object</span>(<span class="ident">id</span>) =&gt; <span class="ident"><span class="kw">crate</span>::Argument::Object</span>(<span class="ident">map</span>.<span class="ident">get</span>(<span class="ident">id</span>)),
-            <span class="ident">Argument::NewId</span>(<span class="ident">id</span>) =&gt; <span class="ident"><span class="kw">crate</span>::Argument::NewId</span>(<span class="ident">map</span>.<span class="ident">get_new</span>(<span class="ident">id</span>)),
+            Argument::Object(id) =&gt; <span class="kw">crate</span>::Argument::Object(map.get(id)),
+            Argument::NewId(id) =&gt; <span class="kw">crate</span>::Argument::NewId(map.get_new(id)),
         })
-        .<span class="ident">collect</span>();
+        .collect();
 
-    <span class="ident">RawEvent</span> {
-        <span class="ident">interface</span>: <span class="ident">proxy</span>.<span class="ident">object</span>.<span class="ident">interface</span>,
-        <span class="ident">opcode</span>,
-        <span class="ident">name</span>: <span class="ident">proxy</span>.<span class="ident">object</span>.<span class="ident">events</span>[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">name</span>,
-        <span class="ident">args</span>,
+    RawEvent {
+        interface: proxy.object.interface,
+        opcode,
+        name: proxy.object.events[opcode <span class="kw">as </span>usize].name,
+        args,
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="wayland_client" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="wayland_client" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

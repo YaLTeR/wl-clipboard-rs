@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.2/src/mqueue.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mqueue.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../nix/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.3/src/mqueue.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mqueue.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../nix/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -229,236 +229,236 @@
 <span id="229">229</span>
 <span id="230">230</span>
 <span id="231">231</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Posix Message Queue functions</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! # Example</span>
-<span class="doccomment">//!</span>
-<span class="comment">// no_run because a kernel module may be required.</span>
-<span class="doccomment">//! ```no_run</span>
-<span class="doccomment">//! # use std::ffi::CString;</span>
-<span class="doccomment">//! # use nix::mqueue::*;</span>
-<span class="doccomment">//! use nix::sys::stat::Mode;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! const MSG_SIZE: mq_attr_member_t = 32;</span>
-<span class="doccomment">//! let mq_name= CString::new(&quot;/a_nix_test_queue&quot;).unwrap();</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! let oflag0 = MQ_OFlag::O_CREAT | MQ_OFlag::O_WRONLY;</span>
-<span class="doccomment">//! let mode = Mode::S_IWUSR | Mode::S_IRUSR | Mode::S_IRGRP | Mode::S_IROTH;</span>
-<span class="doccomment">//! let mqd0 = mq_open(&amp;mq_name, oflag0, mode, None).unwrap();</span>
-<span class="doccomment">//! let msg_to_send = b&quot;msg_1&quot;;</span>
-<span class="doccomment">//! mq_send(&amp;mqd0, msg_to_send, 1).unwrap();</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! let oflag1 = MQ_OFlag::O_CREAT | MQ_OFlag::O_RDONLY;</span>
-<span class="doccomment">//! let mqd1 = mq_open(&amp;mq_name, oflag1, mode, None).unwrap();</span>
-<span class="doccomment">//! let mut buf = [0u8; 32];</span>
-<span class="doccomment">//! let mut prio = 0u32;</span>
-<span class="doccomment">//! let len = mq_receive(&amp;mqd1, &amp;mut buf, &amp;mut prio).unwrap();</span>
-<span class="doccomment">//! assert_eq!(prio, 1);</span>
-<span class="doccomment">//! assert_eq!(msg_to_send, &amp;buf[0..len]);</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! mq_close(mqd1).unwrap();</span>
-<span class="doccomment">//! mq_close(mqd0).unwrap();</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//! [Further reading and details on the C API](https://man7.org/linux/man-pages/man7/mq_overview.7.html)</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Posix Message Queue functions
+//!
+//! # Example
+//!
+</span><span class="comment">// no_run because a kernel module may be required.
+</span><span class="doccomment">//! ```no_run
+//! # use std::ffi::CString;
+//! # use nix::mqueue::*;
+//! use nix::sys::stat::Mode;
+//!
+//! const MSG_SIZE: mq_attr_member_t = 32;
+//! let mq_name= CString::new(&quot;/a_nix_test_queue&quot;).unwrap();
+//!
+//! let oflag0 = MQ_OFlag::O_CREAT | MQ_OFlag::O_WRONLY;
+//! let mode = Mode::S_IWUSR | Mode::S_IRUSR | Mode::S_IRGRP | Mode::S_IROTH;
+//! let mqd0 = mq_open(&amp;mq_name, oflag0, mode, None).unwrap();
+//! let msg_to_send = b&quot;msg_1&quot;;
+//! mq_send(&amp;mqd0, msg_to_send, 1).unwrap();
+//!
+//! let oflag1 = MQ_OFlag::O_CREAT | MQ_OFlag::O_RDONLY;
+//! let mqd1 = mq_open(&amp;mq_name, oflag1, mode, None).unwrap();
+//! let mut buf = [0u8; 32];
+//! let mut prio = 0u32;
+//! let len = mq_receive(&amp;mqd1, &amp;mut buf, &amp;mut prio).unwrap();
+//! assert_eq!(prio, 1);
+//! assert_eq!(msg_to_send, &amp;buf[0..len]);
+//!
+//! mq_close(mqd1).unwrap();
+//! mq_close(mqd0).unwrap();
+//! ```
+//! [Further reading and details on the C API](https://man7.org/linux/man-pages/man7/mq_overview.7.html)
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::Result</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errno::Errno</span>;
+</span><span class="kw">use </span><span class="kw">crate</span>::Result;
+<span class="kw">use </span><span class="kw">crate</span>::errno::Errno;
 
-<span class="kw">use</span> <span class="ident">libc</span>::{<span class="self">self</span>, <span class="ident">c_char</span>, <span class="ident">mqd_t</span>, <span class="ident">size_t</span>};
-<span class="kw">use</span> <span class="ident">std::ffi::CStr</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::sys::stat::Mode</span>;
-<span class="kw">use</span> <span class="ident">std::mem</span>;
+<span class="kw">use </span>libc::{<span class="self">self</span>, c_char, mqd_t, size_t};
+<span class="kw">use </span>std::ffi::CStr;
+<span class="kw">use </span><span class="kw">crate</span>::sys::stat::Mode;
+<span class="kw">use </span>std::mem;
 
 <span class="macro">libc_bitflags!</span>{
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MQ_OFlag</span>: <span class="ident">libc::c_int</span> {
-        <span class="ident">O_RDONLY</span>;
-        <span class="ident">O_WRONLY</span>;
-        <span class="ident">O_RDWR</span>;
-        <span class="ident">O_CREAT</span>;
-        <span class="ident">O_EXCL</span>;
-        <span class="ident">O_NONBLOCK</span>;
-        <span class="ident">O_CLOEXEC</span>;
+    <span class="kw">pub struct </span>MQ_OFlag: libc::c_int {
+        O_RDONLY;
+        O_WRONLY;
+        O_RDWR;
+        O_CREAT;
+        O_EXCL;
+        O_NONBLOCK;
+        O_CLOEXEC;
     }
 }
 
 <span class="macro">libc_bitflags!</span>{
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FdFlag</span>: <span class="ident">libc::c_int</span> {
-        <span class="ident">FD_CLOEXEC</span>;
+    <span class="kw">pub struct </span>FdFlag: libc::c_int {
+        FD_CLOEXEC;
     }
 }
 
-<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">C</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MqAttr</span> {
-    <span class="ident">mq_attr</span>: <span class="ident">libc::mq_attr</span>,
+<span class="attribute">#[repr(C)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+</span><span class="kw">pub struct </span>MqAttr {
+    mq_attr: libc::mq_attr,
 }
 
-<span class="doccomment">/// Identifies an open POSIX Message Queue</span>
-<span class="comment">// A safer wrapper around libc::mqd_t, which is a pointer on some platforms</span>
-<span class="comment">// Deliberately is not Clone to prevent use-after-close scenarios</span>
-<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">transparent</span>)]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_copy_implementations</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MqdT</span>(<span class="ident">mqd_t</span>);
+<span class="doccomment">/// Identifies an open POSIX Message Queue
+</span><span class="comment">// A safer wrapper around libc::mqd_t, which is a pointer on some platforms
+// Deliberately is not Clone to prevent use-after-close scenarios
+</span><span class="attribute">#[repr(transparent)]
+#[derive(Debug)]
+#[allow(missing_copy_implementations)]
+</span><span class="kw">pub struct </span>MqdT(mqd_t);
 
-<span class="comment">// x32 compatibility</span>
-<span class="comment">// See https://sourceware.org/bugzilla/show_bug.cgi?id=21279</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>, <span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;32&quot;</span>))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mq_attr_member_t</span> <span class="op">=</span> <span class="ident">i64</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">all</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>, <span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;32&quot;</span>)))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">all</span>())))]</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">mq_attr_member_t</span> <span class="op">=</span> <span class="ident">libc::c_long</span>;
+<span class="comment">// x32 compatibility
+// See https://sourceware.org/bugzilla/show_bug.cgi?id=21279
+</span><span class="attribute">#[cfg(all(target_arch = <span class="string">&quot;x86_64&quot;</span>, target_pointer_width = <span class="string">&quot;32&quot;</span>))]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">pub type </span>mq_attr_member_t = i64;
+<span class="attribute">#[cfg(not(all(target_arch = <span class="string">&quot;x86_64&quot;</span>, target_pointer_width = <span class="string">&quot;32&quot;</span>)))]
+#[cfg_attr(docsrs, doc(cfg(all())))]
+</span><span class="kw">pub type </span>mq_attr_member_t = libc::c_long;
 
-<span class="kw">impl</span> <span class="ident">MqAttr</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">mq_flags</span>: <span class="ident">mq_attr_member_t</span>,
-               <span class="ident">mq_maxmsg</span>: <span class="ident">mq_attr_member_t</span>,
-               <span class="ident">mq_msgsize</span>: <span class="ident">mq_attr_member_t</span>,
-               <span class="ident">mq_curmsgs</span>: <span class="ident">mq_attr_member_t</span>)
-               -&gt; <span class="ident">MqAttr</span>
+<span class="kw">impl </span>MqAttr {
+    <span class="kw">pub fn </span>new(mq_flags: mq_attr_member_t,
+               mq_maxmsg: mq_attr_member_t,
+               mq_msgsize: mq_attr_member_t,
+               mq_curmsgs: mq_attr_member_t)
+               -&gt; MqAttr
     {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">attr</span> <span class="op">=</span> <span class="ident">mem::MaybeUninit</span>::<span class="op">&lt;</span><span class="ident">libc::mq_attr</span><span class="op">&gt;</span><span class="ident">::uninit</span>();
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">attr</span>.<span class="ident">as_mut_ptr</span>();
-            (<span class="kw-2">*</span><span class="ident">p</span>).<span class="ident">mq_flags</span> <span class="op">=</span> <span class="ident">mq_flags</span>;
-            (<span class="kw-2">*</span><span class="ident">p</span>).<span class="ident">mq_maxmsg</span> <span class="op">=</span> <span class="ident">mq_maxmsg</span>;
-            (<span class="kw-2">*</span><span class="ident">p</span>).<span class="ident">mq_msgsize</span> <span class="op">=</span> <span class="ident">mq_msgsize</span>;
-            (<span class="kw-2">*</span><span class="ident">p</span>).<span class="ident">mq_curmsgs</span> <span class="op">=</span> <span class="ident">mq_curmsgs</span>;
-            <span class="ident">MqAttr</span> { <span class="ident">mq_attr</span>: <span class="ident">attr</span>.<span class="ident">assume_init</span>() }
+        <span class="kw">let </span><span class="kw-2">mut </span>attr = mem::MaybeUninit::&lt;libc::mq_attr&gt;::uninit();
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>p = attr.as_mut_ptr();
+            (<span class="kw-2">*</span>p).mq_flags = mq_flags;
+            (<span class="kw-2">*</span>p).mq_maxmsg = mq_maxmsg;
+            (<span class="kw-2">*</span>p).mq_msgsize = mq_msgsize;
+            (<span class="kw-2">*</span>p).mq_curmsgs = mq_curmsgs;
+            MqAttr { mq_attr: attr.assume_init() }
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">flags</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">mq_attr_member_t</span> {
-        <span class="self">self</span>.<span class="ident">mq_attr</span>.<span class="ident">mq_flags</span>
+    <span class="kw">pub const fn </span>flags(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; mq_attr_member_t {
+        <span class="self">self</span>.mq_attr.mq_flags
     }
 
-    <span class="doccomment">/// The max number of messages that can be held by the queue</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">maxmsg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">mq_attr_member_t</span> {
-        <span class="self">self</span>.<span class="ident">mq_attr</span>.<span class="ident">mq_maxmsg</span>
+    <span class="doccomment">/// The max number of messages that can be held by the queue
+    </span><span class="kw">pub const fn </span>maxmsg(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; mq_attr_member_t {
+        <span class="self">self</span>.mq_attr.mq_maxmsg
     }
 
-    <span class="doccomment">/// The maximum size of each message (in bytes)</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">msgsize</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">mq_attr_member_t</span> {
-        <span class="self">self</span>.<span class="ident">mq_attr</span>.<span class="ident">mq_msgsize</span>
+    <span class="doccomment">/// The maximum size of each message (in bytes)
+    </span><span class="kw">pub const fn </span>msgsize(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; mq_attr_member_t {
+        <span class="self">self</span>.mq_attr.mq_msgsize
     }
 
-    <span class="doccomment">/// The number of messages currently held in the queue</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">curmsgs</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">mq_attr_member_t</span> {
-        <span class="self">self</span>.<span class="ident">mq_attr</span>.<span class="ident">mq_curmsgs</span>
+    <span class="doccomment">/// The number of messages currently held in the queue
+    </span><span class="kw">pub const fn </span>curmsgs(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; mq_attr_member_t {
+        <span class="self">self</span>.mq_attr.mq_curmsgs
     }
 }
 
 
-<span class="doccomment">/// Open a message queue</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// See also [`mq_open(2)`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_open.html)</span>
-<span class="comment">// The mode.bits cast is only lossless on some OSes</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::cast_lossless</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mq_open</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">CStr</span>,
-               <span class="ident">oflag</span>: <span class="ident">MQ_OFlag</span>,
-               <span class="ident">mode</span>: <span class="ident">Mode</span>,
-               <span class="ident">attr</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">MqAttr</span><span class="op">&gt;</span>)
-               -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MqdT</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">attr</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">mq_attr</span>) =&gt; <span class="kw">unsafe</span> {
-            <span class="ident">libc::mq_open</span>(<span class="ident">name</span>.<span class="ident">as_ptr</span>(),
-                          <span class="ident">oflag</span>.<span class="ident">bits</span>(),
-                          <span class="ident">mode</span>.<span class="ident">bits</span>() <span class="kw">as</span> <span class="ident">libc::c_int</span>,
-                          <span class="kw-2">&amp;</span><span class="ident">mq_attr</span>.<span class="ident">mq_attr</span> <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">libc::mq_attr</span>)
+<span class="doccomment">/// Open a message queue
+///
+/// See also [`mq_open(2)`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_open.html)
+</span><span class="comment">// The mode.bits cast is only lossless on some OSes
+</span><span class="attribute">#[allow(clippy::cast_lossless)]
+</span><span class="kw">pub fn </span>mq_open(name: <span class="kw-2">&amp;</span>CStr,
+               oflag: MQ_OFlag,
+               mode: Mode,
+               attr: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>MqAttr&gt;)
+               -&gt; <span class="prelude-ty">Result</span>&lt;MqdT&gt; {
+    <span class="kw">let </span>res = <span class="kw">match </span>attr {
+        <span class="prelude-val">Some</span>(mq_attr) =&gt; <span class="kw">unsafe </span>{
+            libc::mq_open(name.as_ptr(),
+                          oflag.bits(),
+                          mode.bits() <span class="kw">as </span>libc::c_int,
+                          <span class="kw-2">&amp;</span>mq_attr.mq_attr <span class="kw">as </span><span class="kw-2">*const </span>libc::mq_attr)
         },
-        <span class="prelude-val">None</span> =&gt; <span class="kw">unsafe</span> { <span class="ident">libc::mq_open</span>(<span class="ident">name</span>.<span class="ident">as_ptr</span>(), <span class="ident">oflag</span>.<span class="ident">bits</span>()) },
+        <span class="prelude-val">None </span>=&gt; <span class="kw">unsafe </span>{ libc::mq_open(name.as_ptr(), oflag.bits()) },
     };
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">MqdT</span>)
+    Errno::result(res).map(MqdT)
 }
 
-<span class="doccomment">/// Remove a message queue</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// See also [`mq_unlink(2)`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_unlink.html)</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mq_unlink</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">CStr</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::mq_unlink</span>(<span class="ident">name</span>.<span class="ident">as_ptr</span>()) };
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+<span class="doccomment">/// Remove a message queue
+///
+/// See also [`mq_unlink(2)`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_unlink.html)
+</span><span class="kw">pub fn </span>mq_unlink(name: <span class="kw-2">&amp;</span>CStr) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>res = <span class="kw">unsafe </span>{ libc::mq_unlink(name.as_ptr()) };
+    Errno::result(res).map(drop)
 }
 
-<span class="doccomment">/// Close a message queue</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// See also [`mq_close(2)`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_close.html)</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mq_close</span>(<span class="ident">mqdes</span>: <span class="ident">MqdT</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::mq_close</span>(<span class="ident">mqdes</span>.<span class="number">0</span>) };
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+<span class="doccomment">/// Close a message queue
+///
+/// See also [`mq_close(2)`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_close.html)
+</span><span class="kw">pub fn </span>mq_close(mqdes: MqdT) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>res = <span class="kw">unsafe </span>{ libc::mq_close(mqdes.<span class="number">0</span>) };
+    Errno::result(res).map(drop)
 }
 
-<span class="doccomment">/// Receive a message from a message queue</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// See also [`mq_receive(2)`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_receive.html)</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mq_receive</span>(<span class="ident">mqdes</span>: <span class="kw-2">&amp;</span><span class="ident">MqdT</span>, <span class="ident">message</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>], <span class="ident">msg_prio</span>: <span class="kw-2">&amp;mut</span> <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">message</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">size_t</span>;
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-        <span class="ident">libc::mq_receive</span>(<span class="ident">mqdes</span>.<span class="number">0</span>,
-                         <span class="ident">message</span>.<span class="ident">as_mut_ptr</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_char</span>,
-                         <span class="ident">len</span>,
-                         <span class="ident">msg_prio</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">u32</span>)
+<span class="doccomment">/// Receive a message from a message queue
+///
+/// See also [`mq_receive(2)`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_receive.html)
+</span><span class="kw">pub fn </span>mq_receive(mqdes: <span class="kw-2">&amp;</span>MqdT, message: <span class="kw-2">&amp;mut </span>[u8], msg_prio: <span class="kw-2">&amp;mut </span>u32) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+    <span class="kw">let </span>len = message.len() <span class="kw">as </span>size_t;
+    <span class="kw">let </span>res = <span class="kw">unsafe </span>{
+        libc::mq_receive(mqdes.<span class="number">0</span>,
+                         message.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_char,
+                         len,
+                         msg_prio <span class="kw">as </span><span class="kw-2">*mut </span>u32)
     };
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span> <span class="kw">as</span> <span class="ident">usize</span>)
+    Errno::result(res).map(|r| r <span class="kw">as </span>usize)
 }
 
-<span class="doccomment">/// Send a message to a message queue</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// See also [`mq_send(2)`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_send.html)</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mq_send</span>(<span class="ident">mqdes</span>: <span class="kw-2">&amp;</span><span class="ident">MqdT</span>, <span class="ident">message</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">msq_prio</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-        <span class="ident">libc::mq_send</span>(<span class="ident">mqdes</span>.<span class="number">0</span>,
-                      <span class="ident">message</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">c_char</span>,
-                      <span class="ident">message</span>.<span class="ident">len</span>(),
-                      <span class="ident">msq_prio</span>)
+<span class="doccomment">/// Send a message to a message queue
+///
+/// See also [`mq_send(2)`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_send.html)
+</span><span class="kw">pub fn </span>mq_send(mqdes: <span class="kw-2">&amp;</span>MqdT, message: <span class="kw-2">&amp;</span>[u8], msq_prio: u32) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="kw">let </span>res = <span class="kw">unsafe </span>{
+        libc::mq_send(mqdes.<span class="number">0</span>,
+                      message.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>c_char,
+                      message.len(),
+                      msq_prio)
     };
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="ident">drop</span>)
+    Errno::result(res).map(drop)
 }
 
-<span class="doccomment">/// Get message queue attributes</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// See also [`mq_getattr(2)`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_getattr.html)</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mq_getattr</span>(<span class="ident">mqd</span>: <span class="kw-2">&amp;</span><span class="ident">MqdT</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MqAttr</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">attr</span> <span class="op">=</span> <span class="ident">mem::MaybeUninit</span>::<span class="op">&lt;</span><span class="ident">libc::mq_attr</span><span class="op">&gt;</span><span class="ident">::uninit</span>();
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::mq_getattr</span>(<span class="ident">mqd</span>.<span class="number">0</span>, <span class="ident">attr</span>.<span class="ident">as_mut_ptr</span>()) };
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="kw">unsafe</span>{<span class="ident">MqAttr</span> { <span class="ident">mq_attr</span>: <span class="ident">attr</span>.<span class="ident">assume_init</span>() }})
+<span class="doccomment">/// Get message queue attributes
+///
+/// See also [`mq_getattr(2)`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_getattr.html)
+</span><span class="kw">pub fn </span>mq_getattr(mqd: <span class="kw-2">&amp;</span>MqdT) -&gt; <span class="prelude-ty">Result</span>&lt;MqAttr&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>attr = mem::MaybeUninit::&lt;libc::mq_attr&gt;::uninit();
+    <span class="kw">let </span>res = <span class="kw">unsafe </span>{ libc::mq_getattr(mqd.<span class="number">0</span>, attr.as_mut_ptr()) };
+    Errno::result(res).map(|<span class="kw">_</span>| <span class="kw">unsafe</span>{MqAttr { mq_attr: attr.assume_init() }})
 }
 
-<span class="doccomment">/// Set the attributes of the message queue. Only `O_NONBLOCK` can be set, everything else will be ignored</span>
-<span class="doccomment">/// Returns the old attributes</span>
-<span class="doccomment">/// It is recommend to use the `mq_set_nonblock()` and `mq_remove_nonblock()` convenience functions as they are easier to use</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [Further reading](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_setattr.html)</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mq_setattr</span>(<span class="ident">mqd</span>: <span class="kw-2">&amp;</span><span class="ident">MqdT</span>, <span class="ident">newattr</span>: <span class="kw-2">&amp;</span><span class="ident">MqAttr</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MqAttr</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">attr</span> <span class="op">=</span> <span class="ident">mem::MaybeUninit</span>::<span class="op">&lt;</span><span class="ident">libc::mq_attr</span><span class="op">&gt;</span><span class="ident">::uninit</span>();
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-        <span class="ident">libc::mq_setattr</span>(<span class="ident">mqd</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="ident">newattr</span>.<span class="ident">mq_attr</span> <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">libc::mq_attr</span>, <span class="ident">attr</span>.<span class="ident">as_mut_ptr</span>())
+<span class="doccomment">/// Set the attributes of the message queue. Only `O_NONBLOCK` can be set, everything else will be ignored
+/// Returns the old attributes
+/// It is recommend to use the `mq_set_nonblock()` and `mq_remove_nonblock()` convenience functions as they are easier to use
+///
+/// [Further reading](https://pubs.opengroup.org/onlinepubs/9699919799/functions/mq_setattr.html)
+</span><span class="kw">pub fn </span>mq_setattr(mqd: <span class="kw-2">&amp;</span>MqdT, newattr: <span class="kw-2">&amp;</span>MqAttr) -&gt; <span class="prelude-ty">Result</span>&lt;MqAttr&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>attr = mem::MaybeUninit::&lt;libc::mq_attr&gt;::uninit();
+    <span class="kw">let </span>res = <span class="kw">unsafe </span>{
+        libc::mq_setattr(mqd.<span class="number">0</span>, <span class="kw-2">&amp;</span>newattr.mq_attr <span class="kw">as </span><span class="kw-2">*const </span>libc::mq_attr, attr.as_mut_ptr())
     };
-    <span class="ident">Errno::result</span>(<span class="ident">res</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="kw">unsafe</span>{ <span class="ident">MqAttr</span> { <span class="ident">mq_attr</span>: <span class="ident">attr</span>.<span class="ident">assume_init</span>() }})
+    Errno::result(res).map(|<span class="kw">_</span>| <span class="kw">unsafe</span>{ MqAttr { mq_attr: attr.assume_init() }})
 }
 
-<span class="doccomment">/// Convenience function.</span>
-<span class="doccomment">/// Sets the `O_NONBLOCK` attribute for a given message queue descriptor</span>
-<span class="doccomment">/// Returns the old attributes</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::useless_conversion</span>)]</span>    <span class="comment">// Not useless on all OSes</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mq_set_nonblock</span>(<span class="ident">mqd</span>: <span class="kw-2">&amp;</span><span class="ident">MqdT</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MqAttr</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">oldattr</span> <span class="op">=</span> <span class="ident">mq_getattr</span>(<span class="ident">mqd</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">newattr</span> <span class="op">=</span> <span class="ident">MqAttr::new</span>(<span class="ident">mq_attr_member_t::from</span>(<span class="ident">MQ_OFlag::O_NONBLOCK</span>.<span class="ident">bits</span>()),
-                              <span class="ident">oldattr</span>.<span class="ident">mq_attr</span>.<span class="ident">mq_maxmsg</span>,
-                              <span class="ident">oldattr</span>.<span class="ident">mq_attr</span>.<span class="ident">mq_msgsize</span>,
-                              <span class="ident">oldattr</span>.<span class="ident">mq_attr</span>.<span class="ident">mq_curmsgs</span>);
-    <span class="ident">mq_setattr</span>(<span class="ident">mqd</span>, <span class="kw-2">&amp;</span><span class="ident">newattr</span>)
+<span class="doccomment">/// Convenience function.
+/// Sets the `O_NONBLOCK` attribute for a given message queue descriptor
+/// Returns the old attributes
+</span><span class="attribute">#[allow(clippy::useless_conversion)]    </span><span class="comment">// Not useless on all OSes
+</span><span class="kw">pub fn </span>mq_set_nonblock(mqd: <span class="kw-2">&amp;</span>MqdT) -&gt; <span class="prelude-ty">Result</span>&lt;MqAttr&gt; {
+    <span class="kw">let </span>oldattr = mq_getattr(mqd)<span class="question-mark">?</span>;
+    <span class="kw">let </span>newattr = MqAttr::new(mq_attr_member_t::from(MQ_OFlag::O_NONBLOCK.bits()),
+                              oldattr.mq_attr.mq_maxmsg,
+                              oldattr.mq_attr.mq_msgsize,
+                              oldattr.mq_attr.mq_curmsgs);
+    mq_setattr(mqd, <span class="kw-2">&amp;</span>newattr)
 }
 
-<span class="doccomment">/// Convenience function.</span>
-<span class="doccomment">/// Removes `O_NONBLOCK` attribute for a given message queue descriptor</span>
-<span class="doccomment">/// Returns the old attributes</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mq_remove_nonblock</span>(<span class="ident">mqd</span>: <span class="kw-2">&amp;</span><span class="ident">MqdT</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MqAttr</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">oldattr</span> <span class="op">=</span> <span class="ident">mq_getattr</span>(<span class="ident">mqd</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">newattr</span> <span class="op">=</span> <span class="ident">MqAttr::new</span>(<span class="number">0</span>,
-                              <span class="ident">oldattr</span>.<span class="ident">mq_attr</span>.<span class="ident">mq_maxmsg</span>,
-                              <span class="ident">oldattr</span>.<span class="ident">mq_attr</span>.<span class="ident">mq_msgsize</span>,
-                              <span class="ident">oldattr</span>.<span class="ident">mq_attr</span>.<span class="ident">mq_curmsgs</span>);
-    <span class="ident">mq_setattr</span>(<span class="ident">mqd</span>, <span class="kw-2">&amp;</span><span class="ident">newattr</span>)
+<span class="doccomment">/// Convenience function.
+/// Removes `O_NONBLOCK` attribute for a given message queue descriptor
+/// Returns the old attributes
+</span><span class="kw">pub fn </span>mq_remove_nonblock(mqd: <span class="kw-2">&amp;</span>MqdT) -&gt; <span class="prelude-ty">Result</span>&lt;MqAttr&gt; {
+    <span class="kw">let </span>oldattr = mq_getattr(mqd)<span class="question-mark">?</span>;
+    <span class="kw">let </span>newattr = MqAttr::new(<span class="number">0</span>,
+                              oldattr.mq_attr.mq_maxmsg,
+                              oldattr.mq_attr.mq_msgsize,
+                              oldattr.mq_attr.mq_curmsgs);
+    mq_setattr(mqd, <span class="kw-2">&amp;</span>newattr)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

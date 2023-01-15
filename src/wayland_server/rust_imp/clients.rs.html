@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-server-0.29.5/src/rust_imp/clients.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>clients.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../wayland_server/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../wayland_server/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../wayland_server/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-server-0.29.5/src/rust_imp/clients.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>clients.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../wayland_server/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -730,613 +730,613 @@
 <span id="730">730</span>
 <span id="731">731</span>
 <span id="732">732</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::cell::RefCell</span>;
-<span class="kw">use</span> <span class="ident">std::ffi::CString</span>;
-<span class="kw">use</span> <span class="ident">std::os::unix::io</span>::{<span class="ident">FromRawFd</span>, <span class="ident">IntoRawFd</span>, <span class="ident">RawFd</span>};
-<span class="kw">use</span> <span class="ident">std::rc::Rc</span>;
-<span class="kw">use</span> <span class="ident">std::sync::atomic::Ordering</span>;
-<span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
-<span class="kw">use</span> <span class="ident">std::thread</span>::{<span class="self">self</span>, <span class="ident">ThreadId</span>};
+</pre><pre class="rust"><code><span class="kw">use </span>std::cell::RefCell;
+<span class="kw">use </span>std::ffi::CString;
+<span class="kw">use </span>std::os::unix::io::{FromRawFd, IntoRawFd, RawFd};
+<span class="kw">use </span>std::rc::Rc;
+<span class="kw">use </span>std::sync::atomic::Ordering;
+<span class="kw">use </span>std::sync::{Arc, Mutex};
+<span class="kw">use </span>std::thread::{<span class="self">self</span>, ThreadId};
 
-<span class="kw">use</span> <span class="ident">nix::Result</span> <span class="kw">as</span> <span class="ident">NixResult</span>;
+<span class="kw">use </span>nix::Result <span class="kw">as </span>NixResult;
 
-<span class="kw">use</span> <span class="ident">wayland_commons::debug</span>;
-<span class="kw">use</span> <span class="ident">wayland_commons::map</span>::{<span class="ident">Object</span>, <span class="ident">ObjectMap</span>, <span class="ident">ObjectMetadata</span>, <span class="ident">SERVER_ID_LIMIT</span>};
-<span class="kw">use</span> <span class="ident">wayland_commons::socket</span>::{<span class="ident">BufferedSocket</span>, <span class="ident">Socket</span>};
-<span class="kw">use</span> <span class="ident">wayland_commons::wire</span>::{<span class="ident">Argument</span>, <span class="ident">ArgumentType</span>, <span class="ident">Message</span>, <span class="ident">MessageDesc</span>, <span class="ident">MessageParseError</span>};
-<span class="kw">use</span> <span class="ident">wayland_commons</span>::{<span class="ident">smallvec</span>, <span class="ident">ThreadGuard</span>};
+<span class="kw">use </span>wayland_commons::debug;
+<span class="kw">use </span>wayland_commons::map::{Object, ObjectMap, ObjectMetadata, SERVER_ID_LIMIT};
+<span class="kw">use </span>wayland_commons::socket::{BufferedSocket, Socket};
+<span class="kw">use </span>wayland_commons::wire::{Argument, ArgumentType, Message, MessageDesc, MessageParseError};
+<span class="kw">use </span>wayland_commons::{smallvec, ThreadGuard};
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">client::Credentials</span>, <span class="ident">DispatchData</span>, <span class="ident">Interface</span>, <span class="ident">UserDataMap</span>};
+<span class="kw">use crate</span>::{client::Credentials, DispatchData, Interface, UserDataMap};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::event_loop_glue</span>::{<span class="ident">FdManager</span>, <span class="ident">Token</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::globals::GlobalManager</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::resources</span>::{<span class="ident">ObjectMeta</span>, <span class="ident">ResourceDestructor</span>, <span class="ident">ResourceInner</span>};
-<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">Dispatched</span>, <span class="ident">WAYLAND_DEBUG</span>};
+<span class="kw">use </span><span class="kw">super</span>::event_loop_glue::{FdManager, Token};
+<span class="kw">use </span><span class="kw">super</span>::globals::GlobalManager;
+<span class="kw">use </span><span class="kw">super</span>::resources::{ObjectMeta, ResourceDestructor, ResourceInner};
+<span class="kw">use super</span>::{Dispatched, WAYLAND_DEBUG};
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum</span> <span class="ident">Error</span> {
-    <span class="ident">Protocol</span>,
-    <span class="ident">Parse</span>(<span class="ident">MessageParseError</span>),
-    <span class="ident">Nix</span>(<span class="ident">::nix::Error</span>),
+<span class="attribute">#[derive(Clone, Debug)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>Error {
+    Protocol,
+    Parse(MessageParseError),
+    Nix(::nix::Error),
 }
 
-<span class="kw">type</span> <span class="ident">BoxedClientDestructor</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">FnMut</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">UserDataMap</span><span class="op">&gt;</span>, <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>)<span class="op">&gt;</span>;
+<span class="kw">type </span>BoxedClientDestructor = Box&lt;<span class="kw">dyn </span>FnMut(Arc&lt;UserDataMap&gt;, DispatchData&lt;<span class="lifetime">&#39;_</span>&gt;)&gt;;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">ClientConnection</span> {
-    <span class="ident">socket</span>: <span class="ident">BufferedSocket</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">map</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">ObjectMap</span><span class="op">&lt;</span><span class="ident">ObjectMeta</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">user_data_map</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">UserDataMap</span><span class="op">&gt;</span>,
-    <span class="ident">destructors</span>: <span class="ident">ThreadGuard</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BoxedClientDestructor</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">last_error</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Error</span><span class="op">&gt;</span>,
-    <span class="ident">pending_destructors</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ResourceInner</span><span class="op">&gt;</span>,
-    <span class="ident">zombie_clients</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ClientConnection</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>ClientConnection {
+    socket: BufferedSocket,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) map: Arc&lt;Mutex&lt;ObjectMap&lt;ObjectMeta&gt;&gt;&gt;,
+    user_data_map: Arc&lt;UserDataMap&gt;,
+    destructors: ThreadGuard&lt;Vec&lt;BoxedClientDestructor&gt;&gt;,
+    last_error: <span class="prelude-ty">Option</span>&lt;Error&gt;,
+    pending_destructors: Vec&lt;ResourceInner&gt;,
+    zombie_clients: Arc&lt;Mutex&lt;Vec&lt;ClientConnection&gt;&gt;&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">ClientConnection</span> {
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new</span>(
-        <span class="ident">fd</span>: <span class="ident">RawFd</span>,
-        <span class="ident">display_object</span>: <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">ObjectMeta</span><span class="op">&gt;</span>,
-        <span class="ident">zombies</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ClientConnection</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">ClientConnection</span> {
-        <span class="kw">let</span> <span class="ident">socket</span> <span class="op">=</span> <span class="ident">BufferedSocket::new</span>(<span class="ident">Socket::from_raw_fd</span>(<span class="ident">fd</span>));
+<span class="kw">impl </span>ClientConnection {
+    <span class="kw">unsafe fn </span>new(
+        fd: RawFd,
+        display_object: Object&lt;ObjectMeta&gt;,
+        zombies: Arc&lt;Mutex&lt;Vec&lt;ClientConnection&gt;&gt;&gt;,
+    ) -&gt; ClientConnection {
+        <span class="kw">let </span>socket = BufferedSocket::new(Socket::from_raw_fd(fd));
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">ObjectMap::new</span>();
-        <span class="comment">// Insert first pre-existing object</span>
-        <span class="ident">map</span>.<span class="ident">insert_at</span>(<span class="number">1</span>, <span class="ident">display_object</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let </span><span class="kw-2">mut </span>map = ObjectMap::new();
+        <span class="comment">// Insert first pre-existing object
+        </span>map.insert_at(<span class="number">1</span>, display_object).unwrap();
 
-        <span class="ident">ClientConnection</span> {
-            <span class="ident">socket</span>,
-            <span class="ident">map</span>: <span class="ident">Arc::new</span>(<span class="ident">Mutex::new</span>(<span class="ident">map</span>)),
-            <span class="ident">user_data_map</span>: <span class="ident">Arc::new</span>(<span class="ident">UserDataMap::new</span>()),
-            <span class="ident">destructors</span>: <span class="ident">ThreadGuard::new</span>(<span class="ident">Vec::new</span>()),
-            <span class="ident">last_error</span>: <span class="prelude-val">None</span>,
-            <span class="ident">pending_destructors</span>: <span class="ident">Vec::new</span>(),
-            <span class="ident">zombie_clients</span>: <span class="ident">zombies</span>,
+        ClientConnection {
+            socket,
+            map: Arc::new(Mutex::new(map)),
+            user_data_map: Arc::new(UserDataMap::new()),
+            destructors: ThreadGuard::new(Vec::new()),
+            last_error: <span class="prelude-val">None</span>,
+            pending_destructors: Vec::new(),
+            zombie_clients: zombies,
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">schedule_destructor</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">resource</span>: <span class="ident">ResourceInner</span>) {
-        <span class="self">self</span>.<span class="ident">pending_destructors</span>.<span class="ident">push</span>(<span class="ident">resource</span>);
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>schedule_destructor(<span class="kw-2">&amp;mut </span><span class="self">self</span>, resource: ResourceInner) {
+        <span class="self">self</span>.pending_destructors.push(resource);
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">call_destructors</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">data</span>: <span class="ident"><span class="kw">crate</span>::DispatchData</span>) {
-        <span class="kw">for</span> <span class="ident">resource</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">pending_destructors</span>.<span class="ident">drain</span>(..) {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">dest</span>) <span class="op">=</span> <span class="ident">resource</span>.<span class="ident">object</span>.<span class="ident">meta</span>.<span class="ident">destructor</span> {
-                (<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">dest</span>.<span class="ident">get</span>().<span class="ident">borrow_mut</span>())(<span class="ident">resource</span>.<span class="ident">clone</span>(), <span class="ident">data</span>.<span class="ident">reborrow</span>());
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>call_destructors(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>data: <span class="kw">crate</span>::DispatchData) {
+        <span class="kw">for </span>resource <span class="kw">in </span><span class="self">self</span>.pending_destructors.drain(..) {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>dest) = resource.object.meta.destructor {
+                (<span class="kw-2">&amp;mut *</span>dest.get().borrow_mut())(resource.clone(), data.reborrow());
             }
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">write_message</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>) -&gt; <span class="ident">NixResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">socket</span>.<span class="ident">write_message</span>(<span class="ident">msg</span>)
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>write_message(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: <span class="kw-2">&amp;</span>Message) -&gt; NixResult&lt;()&gt; {
+        <span class="self">self</span>.socket.write_message(msg)
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">flush</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">NixResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">socket</span>.<span class="ident">flush</span>()
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>flush(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; NixResult&lt;()&gt; {
+        <span class="self">self</span>.socket.flush()
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">delete_id</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">u32</span>) -&gt; <span class="ident">NixResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">remove</span>(<span class="ident">id</span>);
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>delete_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, id: u32) -&gt; NixResult&lt;()&gt; {
+        <span class="self">self</span>.map.lock().unwrap().remove(id);
 
-        <span class="kw">if</span> <span class="ident">id</span> <span class="op">&lt;</span> <span class="ident">SERVER_ID_LIMIT</span> {
-            <span class="self">self</span>.<span class="ident">write_message</span>(<span class="kw-2">&amp;</span><span class="ident">Message</span> {
-                <span class="ident">sender_id</span>: <span class="number">1</span>,
-                <span class="ident">opcode</span>: <span class="number">1</span>,
-                <span class="ident">args</span>: <span class="macro">smallvec!</span>[<span class="ident">Argument::Uint</span>(<span class="ident">id</span>)],
+        <span class="kw">if </span>id &lt; SERVER_ID_LIMIT {
+            <span class="self">self</span>.write_message(<span class="kw-2">&amp;</span>Message {
+                sender_id: <span class="number">1</span>,
+                opcode: <span class="number">1</span>,
+                args: <span class="macro">smallvec!</span>[Argument::Uint(id)],
             })
-        } <span class="kw">else</span> {
+        } <span class="kw">else </span>{
             <span class="prelude-val">Ok</span>(())
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read_request</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">err</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">last_error</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>.<span class="ident">clone</span>());
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>read_request(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;Message&gt;, Error&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>err) = <span class="self">self</span>.last_error {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(err.clone());
         }
-        <span class="comment">// acquire the map lock, this means no objects can be created nor destroyed while we</span>
-        <span class="comment">// are reading requests</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-        <span class="comment">// read messages</span>
-        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">socket</span>.<span class="ident">read_one_message</span>(<span class="op">|</span><span class="ident">id</span>, <span class="ident">opcode</span><span class="op">|</span> {
-            <span class="ident">map</span>.<span class="ident">find</span>(<span class="ident">id</span>).<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="ident">o</span>.<span class="ident">requests</span>.<span class="ident">get</span>(<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span>)).<span class="ident">map</span>(<span class="op">|</span><span class="ident">desc</span><span class="op">|</span> <span class="ident">desc</span>.<span class="ident">signature</span>)
+        <span class="comment">// acquire the map lock, this means no objects can be created nor destroyed while we
+        // are reading requests
+        </span><span class="kw">let </span><span class="kw-2">mut </span>map = <span class="self">self</span>.map.lock().unwrap();
+        <span class="comment">// read messages
+        </span><span class="kw">let </span>ret = <span class="self">self</span>.socket.read_one_message(|id, opcode| {
+            map.find(id).and_then(|o| o.requests.get(opcode <span class="kw">as </span>usize)).map(|desc| desc.signature)
         });
-        <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ret</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">msg</span>) =&gt; <span class="ident">msg</span>,
-            <span class="prelude-val">Err</span>(<span class="ident">MessageParseError::Malformed</span>) =&gt; {
-                <span class="self">self</span>.<span class="ident">last_error</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Error::Parse</span>(<span class="ident">MessageParseError::Malformed</span>));
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::Parse</span>(<span class="ident">MessageParseError::Malformed</span>));
+        <span class="kw">let </span>msg = <span class="kw">match </span>ret {
+            <span class="prelude-val">Ok</span>(msg) =&gt; msg,
+            <span class="prelude-val">Err</span>(MessageParseError::Malformed) =&gt; {
+                <span class="self">self</span>.last_error = <span class="prelude-val">Some</span>(Error::Parse(MessageParseError::Malformed));
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Parse(MessageParseError::Malformed));
             }
-            <span class="prelude-val">Err</span>(<span class="ident">MessageParseError::MissingData</span>) <span class="op">|</span> <span class="prelude-val">Err</span>(<span class="ident">MessageParseError::MissingFD</span>) =&gt; {
-                <span class="comment">// missing data, read sockets and try again</span>
-                <span class="self">self</span>.<span class="ident">socket</span>.<span class="ident">fill_incoming_buffers</span>().<span class="ident">map_err</span>(<span class="ident">Error::Nix</span>)<span class="question-mark">?</span>;
+            <span class="prelude-val">Err</span>(MessageParseError::MissingData) | <span class="prelude-val">Err</span>(MessageParseError::MissingFD) =&gt; {
+                <span class="comment">// missing data, read sockets and try again
+                </span><span class="self">self</span>.socket.fill_incoming_buffers().map_err(Error::Nix)<span class="question-mark">?</span>;
 
-                <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">socket</span>.<span class="ident">read_one_message</span>(<span class="op">|</span><span class="ident">id</span>, <span class="ident">opcode</span><span class="op">|</span> {
-                    <span class="ident">map</span>.<span class="ident">find</span>(<span class="ident">id</span>)
-                        .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="ident">o</span>.<span class="ident">requests</span>.<span class="ident">get</span>(<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span>))
-                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">desc</span><span class="op">|</span> <span class="ident">desc</span>.<span class="ident">signature</span>)
+                <span class="kw">let </span>msg = <span class="self">self</span>.socket.read_one_message(|id, opcode| {
+                    map.find(id)
+                        .and_then(|o| o.requests.get(opcode <span class="kw">as </span>usize))
+                        .map(|desc| desc.signature)
                 });
 
-                <span class="kw">match</span> <span class="ident">msg</span> {
-                    <span class="prelude-val">Ok</span>(<span class="ident">msg</span>) =&gt; <span class="ident">msg</span>,
-                    <span class="prelude-val">Err</span>(<span class="ident">MessageParseError::Malformed</span>) =&gt; {
-                        <span class="self">self</span>.<span class="ident">last_error</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Error::Parse</span>(<span class="ident">MessageParseError::Malformed</span>));
-                        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::Parse</span>(<span class="ident">MessageParseError::Malformed</span>));
+                <span class="kw">match </span>msg {
+                    <span class="prelude-val">Ok</span>(msg) =&gt; msg,
+                    <span class="prelude-val">Err</span>(MessageParseError::Malformed) =&gt; {
+                        <span class="self">self</span>.last_error = <span class="prelude-val">Some</span>(Error::Parse(MessageParseError::Malformed));
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Parse(MessageParseError::Malformed));
                     }
-                    <span class="prelude-val">Err</span>(<span class="ident">MessageParseError::MissingData</span>) <span class="op">|</span> <span class="prelude-val">Err</span>(<span class="ident">MessageParseError::MissingFD</span>) =&gt; {
-                        <span class="comment">// still nothing, there is nothing to read</span>
-                        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
+                    <span class="prelude-val">Err</span>(MessageParseError::MissingData) | <span class="prelude-val">Err</span>(MessageParseError::MissingFD) =&gt; {
+                        <span class="comment">// still nothing, there is nothing to read
+                        </span><span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
                     }
                 }
             }
         };
 
-        <span class="comment">// we reach here, there is now a message to process in msg</span>
+        <span class="comment">// we reach here, there is now a message to process in msg
 
-        <span class="comment">// find the object that sent this message</span>
-        <span class="kw">let</span> <span class="ident">object</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">map</span>.<span class="ident">find</span>(<span class="ident">msg</span>.<span class="ident">sender_id</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">obj</span>) =&gt; <span class="ident">obj</span>,
-            <span class="prelude-val">None</span> =&gt; {
-                <span class="comment">// this is a message sent to a destroyed object</span>
-                <span class="comment">// to avoid dying because of races, we just consume it into void</span>
-                <span class="comment">// closing any associated FDs</span>
-                <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="ident">msg</span>.<span class="ident">args</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Argument::Fd</span>(<span class="ident">fd</span>) <span class="op">=</span> <span class="ident">a</span> {
-                        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">::nix::unistd::close</span>(<span class="ident">fd</span>);
+        // find the object that sent this message
+        </span><span class="kw">let </span>object = <span class="kw">match </span>map.find(msg.sender_id) {
+            <span class="prelude-val">Some</span>(obj) =&gt; obj,
+            <span class="prelude-val">None </span>=&gt; {
+                <span class="comment">// this is a message sent to a destroyed object
+                // to avoid dying because of races, we just consume it into void
+                // closing any associated FDs
+                </span><span class="kw">for </span>a <span class="kw">in </span>msg.args {
+                    <span class="kw">if let </span>Argument::Fd(fd) = a {
+                        <span class="kw">let _ </span>= ::nix::unistd::close(fd);
                     }
                 }
 
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
             }
         };
 
-        <span class="comment">// create a new object if applicable</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">child</span>) <span class="op">=</span> <span class="ident">object</span>.<span class="ident">request_child</span>(<span class="ident">msg</span>.<span class="ident">opcode</span>) {
-            <span class="kw">let</span> <span class="ident">new_id</span> <span class="op">=</span> <span class="ident">msg</span>
-                .<span class="ident">args</span>
-                .<span class="ident">iter</span>()
-                .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Argument::NewId</span>(<span class="ident">nid</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">a</span> { <span class="prelude-val">Some</span>(<span class="ident">nid</span>) } <span class="kw">else</span> { <span class="prelude-val">None</span> })
-                .<span class="ident">next</span>()
-                .<span class="ident">unwrap</span>();
+        <span class="comment">// create a new object if applicable
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(child) = object.request_child(msg.opcode) {
+            <span class="kw">let </span>new_id = msg
+                .args
+                .iter()
+                .flat_map(|a| <span class="kw">if let </span>Argument::NewId(nid) = <span class="kw-2">*</span>a { <span class="prelude-val">Some</span>(nid) } <span class="kw">else </span>{ <span class="prelude-val">None </span>})
+                .next()
+                .unwrap();
 
-            <span class="kw">let</span> <span class="ident">child_interface</span> <span class="op">=</span> <span class="ident">child</span>.<span class="ident">interface</span>;
+            <span class="kw">let </span>child_interface = child.interface;
 
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(()) <span class="op">=</span> <span class="ident">map</span>.<span class="ident">insert_at</span>(<span class="ident">new_id</span>, <span class="ident">child</span>) {
+            <span class="kw">if let </span><span class="prelude-val">Err</span>(()) = map.insert_at(new_id, child) {
                 <span class="macro">eprintln!</span>(
                     <span class="string">&quot;[wayland-client] Protocol error: server tried to create an object \&quot;{}\&quot; with invalid id \&quot;{}\&quot;.&quot;</span>,
-                    <span class="ident">child_interface</span>,
-                    <span class="ident">new_id</span>
+                    child_interface,
+                    new_id
                 );
-                <span class="comment">// abort parsing, this is an unrecoverable error</span>
-                <span class="self">self</span>.<span class="ident">last_error</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Error::Protocol</span>);
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::Protocol</span>);
+                <span class="comment">// abort parsing, this is an unrecoverable error
+                </span><span class="self">self</span>.last_error = <span class="prelude-val">Some</span>(Error::Protocol);
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Protocol);
             }
-        } <span class="kw">else</span> {
-            <span class="comment">// debug assert: if this opcode does not define a child, then there should be no</span>
-            <span class="comment">// NewId argument, unless we are the registry</span>
-            <span class="macro">debug_assert!</span>(
-                <span class="ident">object</span>.<span class="ident">interface</span> <span class="op">==</span> <span class="string">&quot;wl_registry&quot;</span>
-                    <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="ident">msg</span>.<span class="ident">args</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">get_type</span>() <span class="op">==</span> <span class="ident">ArgumentType::NewId</span>)
+        } <span class="kw">else </span>{
+            <span class="comment">// debug assert: if this opcode does not define a child, then there should be no
+            // NewId argument, unless we are the registry
+            </span><span class="macro">debug_assert!</span>(
+                object.interface == <span class="string">&quot;wl_registry&quot;
+                    </span>|| !msg.args.iter().any(|a| a.get_type() == ArgumentType::NewId)
             );
         }
 
-        <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">msg</span>))
+        <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(msg))
     }
 
-    <span class="kw">fn</span> <span class="ident">cleanup</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">data</span>: <span class="ident"><span class="kw">crate</span>::DispatchData</span>) {
-        <span class="kw">let</span> <span class="ident">dummy_client</span> <span class="op">=</span> <span class="ident">ClientInner</span> {
-            <span class="ident">data</span>: <span class="ident">Arc::new</span>(<span class="ident">Mutex::new</span>(<span class="prelude-val">None</span>)),
-            <span class="ident">user_data_map</span>: <span class="self">self</span>.<span class="ident">user_data_map</span>.<span class="ident">clone</span>(),
-            <span class="ident">loop_thread</span>: <span class="ident">thread::current</span>().<span class="ident">id</span>(),
+    <span class="kw">fn </span>cleanup(<span class="kw-2">mut </span><span class="self">self</span>, <span class="kw-2">mut </span>data: <span class="kw">crate</span>::DispatchData) {
+        <span class="kw">let </span>dummy_client = ClientInner {
+            data: Arc::new(Mutex::new(<span class="prelude-val">None</span>)),
+            user_data_map: <span class="self">self</span>.user_data_map.clone(),
+            loop_thread: thread::current().id(),
         };
-        <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">with_all</span>(<span class="op">|</span><span class="ident">id</span>, <span class="ident">obj</span><span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">resource</span> <span class="op">=</span> <span class="ident">ResourceInner</span> { <span class="ident">id</span>, <span class="ident">object</span>: <span class="ident">obj</span>.<span class="ident">clone</span>(), <span class="ident">client</span>: <span class="ident">dummy_client</span>.<span class="ident">clone</span>() };
-            <span class="ident">obj</span>.<span class="ident">meta</span>.<span class="ident">alive</span>.<span class="ident">store</span>(<span class="bool-val">false</span>, <span class="ident">Ordering::Release</span>);
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">dest</span>) <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">meta</span>.<span class="ident">destructor</span> {
-                (<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">dest</span>.<span class="ident">get</span>().<span class="ident">borrow_mut</span>())(<span class="ident">resource</span>, <span class="ident">data</span>.<span class="ident">reborrow</span>());
+        <span class="self">self</span>.map.lock().unwrap().with_all(|id, obj| {
+            <span class="kw">let </span>resource = ResourceInner { id, object: obj.clone(), client: dummy_client.clone() };
+            obj.meta.alive.store(<span class="bool-val">false</span>, Ordering::Release);
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>dest) = obj.meta.destructor {
+                (<span class="kw-2">&amp;mut *</span>dest.get().borrow_mut())(resource, data.reborrow());
             }
         });
-        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">::nix::unistd::close</span>(<span class="self">self</span>.<span class="ident">socket</span>.<span class="ident">into_socket</span>().<span class="ident">into_raw_fd</span>());
-        <span class="kw">for</span> <span class="kw-2">mut</span> <span class="ident">destructor</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">destructors</span>.<span class="ident">get_mut</span>().<span class="ident">drain</span>(..) {
-            <span class="ident">destructor</span>(<span class="self">self</span>.<span class="ident">user_data_map</span>.<span class="ident">clone</span>(), <span class="ident">data</span>.<span class="ident">reborrow</span>());
+        <span class="kw">let _ </span>= ::nix::unistd::close(<span class="self">self</span>.socket.into_socket().into_raw_fd());
+        <span class="kw">for </span><span class="kw-2">mut </span>destructor <span class="kw">in </span><span class="self">self</span>.destructors.get_mut().drain(..) {
+            destructor(<span class="self">self</span>.user_data_map.clone(), data.reborrow());
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">ClientInner</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ClientConnection</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">user_data_map</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">UserDataMap</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">loop_thread</span>: <span class="ident">ThreadId</span>,
+<span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>ClientInner {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) data: Arc&lt;Mutex&lt;<span class="prelude-ty">Option</span>&lt;ClientConnection&gt;&gt;&gt;,
+    user_data_map: Arc&lt;UserDataMap&gt;,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) loop_thread: ThreadId,
 }
 
-<span class="kw">impl</span> <span class="ident">ClientInner</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">alive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">is_some</span>()
+<span class="kw">impl </span>ClientInner {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>alive(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.data.lock().unwrap().is_some()
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">equals</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">ClientInner</span>) -&gt; <span class="ident">bool</span> {
-        <span class="ident">Arc::ptr_eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">data</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">data</span>)
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>equals(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>ClientInner) -&gt; bool {
+        Arc::ptr_eq(<span class="kw-2">&amp;</span><span class="self">self</span>.data, <span class="kw-2">&amp;</span>other.data)
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">flush</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">cx</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>() {
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">socket</span>.<span class="ident">flush</span>();
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>flush(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>cx) = <span class="kw-2">*</span><span class="self">self</span>.data.lock().unwrap() {
+            <span class="kw">let _ </span>= cx.socket.flush();
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">kill</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">clientconn</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">take</span>() {
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">clientconn</span>.<span class="ident">socket</span>.<span class="ident">flush</span>();
-            <span class="comment">// call all objects destructors</span>
-            <span class="kw">let</span> <span class="ident">zombies</span> <span class="op">=</span> <span class="ident">clientconn</span>.<span class="ident">zombie_clients</span>.<span class="ident">clone</span>();
-            <span class="ident">zombies</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">push</span>(<span class="ident">clientconn</span>);
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>kill(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>clientconn) = <span class="self">self</span>.data.lock().unwrap().take() {
+            <span class="kw">let _ </span>= clientconn.socket.flush();
+            <span class="comment">// call all objects destructors
+            </span><span class="kw">let </span>zombies = clientconn.zombie_clients.clone();
+            zombies.lock().unwrap().push(clientconn);
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">credentials</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Credentials</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">cx</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>() {
-            <span class="ident">cx</span>.<span class="ident">socket</span>
-                .<span class="ident">get_socket</span>()
-                .<span class="ident">opt</span>(<span class="ident">nix::sys::socket::sockopt::PeerCredentials</span>)
-                .<span class="ident">ok</span>()
-                .<span class="ident">map</span>(<span class="ident">Credentials::from</span>)
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
-        }
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>credentials(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Credentials&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>cx) = <span class="kw-2">*</span><span class="self">self</span>.data.lock().unwrap() {
+            cx.socket
+                .get_socket()
+                .opt(nix::sys::socket::sockopt::PeerCredentials)
+                .ok()
+                .map(Credentials::from)
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">user_data_map</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">UserDataMap</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">user_data_map</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>user_data_map(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>UserDataMap {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.user_data_map
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">add_destructor</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">UserDataMap</span><span class="op">&gt;</span>, <span class="ident">DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>add_destructor&lt;F: FnOnce(Arc&lt;UserDataMap&gt;, DispatchData&lt;<span class="lifetime">&#39;_</span>&gt;) + <span class="lifetime">&#39;static</span>&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">destructor</span>: <span class="ident">F</span>,
+        destructor: F,
     ) {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">loop_thread</span> <span class="op">!</span><span class="op">=</span> <span class="ident">std::thread::current</span>().<span class="ident">id</span>() {
+        <span class="kw">if </span><span class="self">self</span>.loop_thread != std::thread::current().id() {
             <span class="macro">panic!</span>(<span class="string">&quot;Can only add a destructor from the thread hosting the Display.&quot;</span>);
         }
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">client_data</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>() {
-            <span class="comment">// Wrap the FnOnce in an FnMut because Box&lt;FnOnce()&gt; does not work</span>
-            <span class="comment">// currently =(</span>
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">opt_dest</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">destructor</span>);
-            <span class="ident">client_data</span>.<span class="ident">destructors</span>.<span class="ident">get_mut</span>().<span class="ident">push</span>(<span class="ident">Box::new</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">data_map</span>, <span class="ident">data</span><span class="op">|</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">dest</span>) <span class="op">=</span> <span class="ident">opt_dest</span>.<span class="ident">take</span>() {
-                    <span class="ident">dest</span>(<span class="ident">data_map</span>, <span class="ident">data</span>);
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>client_data) = <span class="kw-2">*</span><span class="self">self</span>.data.lock().unwrap() {
+            <span class="comment">// Wrap the FnOnce in an FnMut because Box&lt;FnOnce()&gt; does not work
+            // currently =(
+            </span><span class="kw">let </span><span class="kw-2">mut </span>opt_dest = <span class="prelude-val">Some</span>(destructor);
+            client_data.destructors.get_mut().push(Box::new(<span class="kw">move </span>|data_map, data| {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(dest) = opt_dest.take() {
+                    dest(data_map, data);
                 }
             }));
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">post_error</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">object</span>: <span class="ident">u32</span>, <span class="ident">error_code</span>: <span class="ident">u32</span>, <span class="ident">msg</span>: <span class="ident">String</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">data</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>() {
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">write_message</span>(<span class="kw-2">&amp;</span><span class="ident">Message</span> {
-                <span class="ident">sender_id</span>: <span class="number">1</span>,
-                <span class="ident">opcode</span>: <span class="number">0</span>,
-                <span class="ident">args</span>: <span class="macro">smallvec!</span>[
-                    <span class="ident">Argument::Object</span>(<span class="ident">object</span>),
-                    <span class="ident">Argument::Uint</span>(<span class="ident">error_code</span>),
-                    <span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">CString::new</span>(<span class="ident">msg</span>).<span class="ident">unwrap</span>())),
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>post_error(<span class="kw-2">&amp;</span><span class="self">self</span>, object: u32, error_code: u32, msg: String) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>data) = <span class="kw-2">*</span><span class="self">self</span>.data.lock().unwrap() {
+            <span class="kw">let _ </span>= data.write_message(<span class="kw-2">&amp;</span>Message {
+                sender_id: <span class="number">1</span>,
+                opcode: <span class="number">0</span>,
+                args: <span class="macro">smallvec!</span>[
+                    Argument::Object(object),
+                    Argument::Uint(error_code),
+                    Argument::Str(Box::new(CString::new(msg).unwrap())),
                 ],
             });
         }
-        <span class="self">self</span>.<span class="ident">kill</span>();
+        <span class="self">self</span>.kill();
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">create_resource</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">version</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ResourceInner</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">loop_thread</span> <span class="op">!</span><span class="op">=</span> <span class="ident">thread::current</span>().<span class="ident">id</span>() {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create_resource&lt;I: Interface&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, version: u32) -&gt; <span class="prelude-ty">Option</span>&lt;ResourceInner&gt; {
+        <span class="kw">if </span><span class="self">self</span>.loop_thread != thread::current().id() {
             <span class="macro">panic!</span>(<span class="string">&quot;Can only create ressources from the thread hosting the Display.&quot;</span>);
         }
-        <span class="kw">let</span> (<span class="ident">id</span>, <span class="ident">map</span>) <span class="op">=</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">cx</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">as_ref</span>() {
+        <span class="kw">let </span>(id, map) = {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(cx) = <span class="self">self</span>.data.lock().unwrap().as_ref() {
                 (
-                    <span class="ident">cx</span>.<span class="ident">map</span>
-                        .<span class="ident">lock</span>()
-                        .<span class="ident">unwrap</span>()
-                        .<span class="ident">server_insert_new</span>(<span class="ident">Object::from_interface</span>::<span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>(<span class="ident">version</span>, <span class="ident">ObjectMeta::new</span>())),
-                    <span class="ident">cx</span>.<span class="ident">map</span>.<span class="ident">clone</span>(),
+                    cx.map
+                        .lock()
+                        .unwrap()
+                        .server_insert_new(Object::from_interface::&lt;I&gt;(version, ObjectMeta::new())),
+                    cx.map.clone(),
                 )
-            } <span class="kw">else</span> {
-                <span class="kw">return</span> <span class="prelude-val">None</span>;
+            } <span class="kw">else </span>{
+                <span class="kw">return </span><span class="prelude-val">None</span>;
             }
         };
 
-        <span class="prelude-val">Some</span>(<span class="ident">ResourceInner::from_id</span>(<span class="ident">id</span>, <span class="ident">map</span>, <span class="self">self</span>.<span class="ident">clone</span>()).<span class="ident">unwrap</span>())
+        <span class="prelude-val">Some</span>(ResourceInner::from_id(id, map, <span class="self">self</span>.clone()).unwrap())
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_resource</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Interface</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ResourceInner</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">object</span> <span class="op">=</span> <span class="self">self</span>
-            .<span class="ident">data</span>
-            .<span class="ident">lock</span>()
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">as_ref</span>()
-            .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">cx</span><span class="op">|</span> <span class="ident">ResourceInner::from_id</span>(<span class="ident">id</span>, <span class="ident">cx</span>.<span class="ident">map</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">clone</span>()))<span class="question-mark">?</span>;
-        <span class="kw">if</span> <span class="ident">object</span>.<span class="ident">is_interface</span>::<span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">object</span>)
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
-        }
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_resource&lt;I: Interface&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, id: u32) -&gt; <span class="prelude-ty">Option</span>&lt;ResourceInner&gt; {
+        <span class="kw">let </span>object = <span class="self">self
+            </span>.data
+            .lock()
+            .unwrap()
+            .as_ref()
+            .and_then(|cx| ResourceInner::from_id(id, cx.map.clone(), <span class="self">self</span>.clone()))<span class="question-mark">?</span>;
+        <span class="kw">if </span>object.is_interface::&lt;I&gt;() {
+            <span class="prelude-val">Some</span>(object)
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">set_dispatcher_for</span>(
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set_dispatcher_for(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">id</span>: <span class="ident">u32</span>,
-        <span class="ident">dispatcher</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">ThreadGuard</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident"><span class="kw">super</span>::Dispatcher</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+        id: u32,
+        dispatcher: Arc&lt;ThreadGuard&lt;RefCell&lt;<span class="kw">dyn </span><span class="kw">super</span>::Dispatcher&gt;&gt;&gt;,
     ) {
-        <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">cx</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">guard</span> {
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">map</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">with</span>(<span class="ident">id</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">obj</span><span class="op">|</span> {
-                <span class="ident">obj</span>.<span class="ident">meta</span>.<span class="ident">dispatcher</span> <span class="op">=</span> <span class="ident">dispatcher</span>;
+        <span class="kw">let </span>guard = <span class="self">self</span>.data.lock().unwrap();
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>cx) = <span class="kw-2">*</span>guard {
+            <span class="kw">let _ </span>= cx.map.lock().unwrap().with(id, <span class="kw">move </span>|obj| {
+                obj.meta.dispatcher = dispatcher;
             });
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">set_destructor_for</span>(
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set_destructor_for(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">id</span>: <span class="ident">u32</span>,
-        <span class="ident">destructor</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">ThreadGuard</span><span class="op">&lt;</span><span class="ident">ResourceDestructor</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+        id: u32,
+        destructor: Arc&lt;ThreadGuard&lt;ResourceDestructor&gt;&gt;,
     ) {
-        <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">cx</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">guard</span> {
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">map</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">with</span>(<span class="ident">id</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">obj</span><span class="op">|</span> {
-                <span class="ident">obj</span>.<span class="ident">meta</span>.<span class="ident">destructor</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">destructor</span>);
+        <span class="kw">let </span>guard = <span class="self">self</span>.data.lock().unwrap();
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>cx) = <span class="kw-2">*</span>guard {
+            <span class="kw">let _ </span>= cx.map.lock().unwrap().with(id, <span class="kw">move </span>|obj| {
+                obj.meta.destructor = <span class="prelude-val">Some</span>(destructor);
             });
         }
     }
 }
-<span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">ClientInner</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">equals</span>(<span class="ident">other</span>)
+<span class="kw">impl </span>PartialEq <span class="kw">for </span>ClientInner {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="self">self</span>.equals(other)
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">ClientManager</span> {
-    <span class="ident">epoll_mgr</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">FdManager</span><span class="op">&gt;</span>,
-    <span class="ident">clients</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">RefCell</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Token</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">ClientInner</span>)<span class="op">&gt;</span>,
-    <span class="ident">zombie_clients</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ClientConnection</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">global_mgr</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">GlobalManager</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>ClientManager {
+    epoll_mgr: Rc&lt;FdManager&gt;,
+    clients: Vec&lt;(RefCell&lt;<span class="prelude-ty">Option</span>&lt;Token&gt;&gt;, ClientInner)&gt;,
+    zombie_clients: Arc&lt;Mutex&lt;Vec&lt;ClientConnection&gt;&gt;&gt;,
+    global_mgr: Rc&lt;RefCell&lt;GlobalManager&gt;&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">ClientManager</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>(
-        <span class="ident">epoll_mgr</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">FdManager</span><span class="op">&gt;</span>,
-        <span class="ident">global_mgr</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">GlobalManager</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">ClientManager</span> {
-        <span class="ident">ClientManager</span> {
-            <span class="ident">epoll_mgr</span>,
-            <span class="ident">clients</span>: <span class="ident">Vec::new</span>(),
-            <span class="ident">zombie_clients</span>: <span class="ident">Arc::new</span>(<span class="ident">Mutex::new</span>(<span class="ident">Vec::new</span>())),
-            <span class="ident">global_mgr</span>,
+<span class="kw">impl </span>ClientManager {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(
+        epoll_mgr: Rc&lt;FdManager&gt;,
+        global_mgr: Rc&lt;RefCell&lt;GlobalManager&gt;&gt;,
+    ) -&gt; ClientManager {
+        ClientManager {
+            epoll_mgr,
+            clients: Vec::new(),
+            zombie_clients: Arc::new(Mutex::new(Vec::new())),
+            global_mgr,
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">init_client</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">fd</span>: <span class="ident">RawFd</span>,
-        <span class="ident">data</span>: <span class="ident"><span class="kw">crate</span>::DispatchData</span>,
-    ) -&gt; <span class="ident">ClientInner</span> {
-        <span class="kw">let</span> <span class="ident">display_object</span> <span class="op">=</span> <span class="ident">Object</span> {
-            <span class="ident">interface</span>: <span class="string">&quot;wl_display&quot;</span>,
-            <span class="ident">version</span>: <span class="number">1</span>,
-            <span class="ident">requests</span>: <span class="ident">DISPLAY_REQUESTS</span>,
-            <span class="ident">events</span>: <span class="ident">DISPLAY_EVENTS</span>,
-            <span class="ident">meta</span>: <span class="ident">ObjectMeta::with_dispatcher</span>(<span class="ident">DisplayDispatcher</span> {
-                <span class="ident">global_mgr</span>: <span class="self">self</span>.<span class="ident">global_mgr</span>.<span class="ident">clone</span>(),
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>init_client(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        fd: RawFd,
+        data: <span class="kw">crate</span>::DispatchData,
+    ) -&gt; ClientInner {
+        <span class="kw">let </span>display_object = Object {
+            interface: <span class="string">&quot;wl_display&quot;</span>,
+            version: <span class="number">1</span>,
+            requests: DISPLAY_REQUESTS,
+            events: DISPLAY_EVENTS,
+            meta: ObjectMeta::with_dispatcher(DisplayDispatcher {
+                global_mgr: <span class="self">self</span>.global_mgr.clone(),
             }),
-            <span class="ident">childs_from_events</span>: <span class="ident">no_child</span>,
-            <span class="ident">childs_from_requests</span>: <span class="ident">display_req_child</span>,
+            childs_from_events: no_child,
+            childs_from_requests: display_req_child,
         };
 
-        <span class="kw">let</span> <span class="ident">cx</span> <span class="op">=</span> <span class="ident">ClientConnection::new</span>(<span class="ident">fd</span>, <span class="ident">display_object</span>, <span class="self">self</span>.<span class="ident">zombie_clients</span>.<span class="ident">clone</span>());
-        <span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">map</span>.<span class="ident">clone</span>();
-        <span class="kw">let</span> <span class="ident">user_data_map</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">user_data_map</span>.<span class="ident">clone</span>();
+        <span class="kw">let </span>cx = ClientConnection::new(fd, display_object, <span class="self">self</span>.zombie_clients.clone());
+        <span class="kw">let </span>map = cx.map.clone();
+        <span class="kw">let </span>user_data_map = cx.user_data_map.clone();
 
-        <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">ClientInner</span> {
-            <span class="ident">data</span>: <span class="ident">Arc::new</span>(<span class="ident">Mutex::new</span>(<span class="prelude-val">Some</span>(<span class="ident">cx</span>))),
-            <span class="ident">user_data_map</span>,
-            <span class="ident">loop_thread</span>: <span class="ident">thread::current</span>().<span class="ident">id</span>(), <span class="comment">// init_client is only called by the display, which does not change threads</span>
-        };
+        <span class="kw">let </span>client = ClientInner {
+            data: Arc::new(Mutex::new(<span class="prelude-val">Some</span>(cx))),
+            user_data_map,
+            loop_thread: thread::current().id(), <span class="comment">// init_client is only called by the display, which does not change threads
+        </span>};
 
-        <span class="kw">let</span> <span class="ident">implementation</span> <span class="op">=</span> <span class="ident">ClientImplementation</span> { <span class="ident">inner</span>: <span class="ident">client</span>.<span class="ident">clone</span>(), <span class="ident">map</span> };
+        <span class="kw">let </span>implementation = ClientImplementation { inner: client.clone(), map };
 
-        <span class="comment">// process any pending messages before inserting it into the event loop</span>
-        <span class="ident">implementation</span>.<span class="ident">process_messages</span>(<span class="ident">data</span>);
+        <span class="comment">// process any pending messages before inserting it into the event loop
+        </span>implementation.process_messages(data);
 
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">client</span>.<span class="ident">alive</span>() {
-            <span class="comment">// client already made a protocol error and we killed it, there is no point</span>
-            <span class="comment">// inserting it in the event loop</span>
-            <span class="kw">return</span> <span class="ident">client</span>;
+        <span class="kw">if </span>!client.alive() {
+            <span class="comment">// client already made a protocol error and we killed it, there is no point
+            // inserting it in the event loop
+            </span><span class="kw">return </span>client;
         }
 
-        <span class="kw">let</span> <span class="ident">source</span> <span class="op">=</span>
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">epoll_mgr</span>.<span class="ident">register</span>(<span class="ident">fd</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">data</span><span class="op">|</span> <span class="ident">implementation</span>.<span class="ident">process_messages</span>(<span class="ident">data</span>)) {
-                <span class="prelude-val">Ok</span>(<span class="ident">source</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">source</span>),
-                <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; {
-                    <span class="macro">eprintln!</span>(<span class="string">&quot;[wayland-server] Failed to insert client into event loop: {:?}&quot;</span>, <span class="ident">e</span>);
-                    <span class="ident">client</span>.<span class="ident">kill</span>();
-                    <span class="prelude-val">None</span>
-                }
+        <span class="kw">let </span>source =
+            <span class="kw">match </span><span class="self">self</span>.epoll_mgr.register(fd, <span class="kw">move </span>|data| implementation.process_messages(data)) {
+                <span class="prelude-val">Ok</span>(source) =&gt; <span class="prelude-val">Some</span>(source),
+                <span class="prelude-val">Err</span>(e) =&gt; {
+                    <span class="macro">eprintln!</span>(<span class="string">&quot;[wayland-server] Failed to insert client into event loop: {:?}&quot;</span>, e);
+                    client.kill();
+                    <span class="prelude-val">None
+                </span>}
             };
 
-        <span class="kw">if</span> <span class="ident">source</span>.<span class="ident">is_some</span>() {
-            <span class="self">self</span>.<span class="ident">clients</span>.<span class="ident">push</span>((<span class="ident">RefCell::new</span>(<span class="ident">source</span>), <span class="ident">client</span>.<span class="ident">clone</span>()));
+        <span class="kw">if </span>source.is_some() {
+            <span class="self">self</span>.clients.push((RefCell::new(source), client.clone()));
         }
 
-        <span class="ident">client</span>
+        client
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">flush_all</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">disp_data</span>: <span class="ident"><span class="kw">crate</span>::DispatchData</span>) {
-        <span class="comment">// flush all clients and cleanup dead ones</span>
-        <span class="kw">let</span> <span class="ident">epoll_mgr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">epoll_mgr</span>.<span class="ident">clone</span>();
-        <span class="self">self</span>.<span class="ident">clients</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">s</span>, <span class="kw-2">ref</span> <span class="ident">c</span>)<span class="op">|</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">data</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">c</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>() {
-                <span class="ident">data</span>.<span class="ident">call_destructors</span>(<span class="ident">disp_data</span>.<span class="ident">reborrow</span>());
-                <span class="ident">data</span>.<span class="ident">flush</span>().<span class="ident">is_ok</span>()
-            } <span class="kw">else</span> {
-                <span class="comment">// This is a dead client, clean it up</span>
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">token</span>) <span class="op">=</span> <span class="ident">s</span>.<span class="ident">borrow_mut</span>().<span class="ident">take</span>() {
-                    <span class="ident">epoll_mgr</span>.<span class="ident">deregister</span>(<span class="ident">token</span>);
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>flush_all(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>disp_data: <span class="kw">crate</span>::DispatchData) {
+        <span class="comment">// flush all clients and cleanup dead ones
+        </span><span class="kw">let </span>epoll_mgr = <span class="self">self</span>.epoll_mgr.clone();
+        <span class="self">self</span>.clients.retain(|<span class="kw-2">&amp;</span>(<span class="kw-2">ref </span>s, <span class="kw-2">ref </span>c)| {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>data) = <span class="kw-2">*</span>c.data.lock().unwrap() {
+                data.call_destructors(disp_data.reborrow());
+                data.flush().is_ok()
+            } <span class="kw">else </span>{
+                <span class="comment">// This is a dead client, clean it up
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(token) = s.borrow_mut().take() {
+                    epoll_mgr.deregister(token);
                 }
-                <span class="bool-val">false</span>
-            }
+                <span class="bool-val">false
+            </span>}
         });
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">guard</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">zombie_clients</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-        <span class="kw">for</span> <span class="ident">zombie</span> <span class="kw">in</span> <span class="ident">guard</span>.<span class="ident">drain</span>(..) {
-            <span class="ident">zombie</span>.<span class="ident">cleanup</span>(<span class="ident">disp_data</span>.<span class="ident">reborrow</span>());
+        <span class="kw">let </span><span class="kw-2">mut </span>guard = <span class="self">self</span>.zombie_clients.lock().unwrap();
+        <span class="kw">for </span>zombie <span class="kw">in </span>guard.drain(..) {
+            zombie.cleanup(disp_data.reborrow());
         }
     }
 
-    <span class="comment">// kill &amp; cleanup all clients</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">kill_all</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="kw">_</span>, <span class="kw-2">ref</span> <span class="ident">client</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">clients</span> {
-            <span class="ident">client</span>.<span class="ident">kill</span>();
+    <span class="comment">// kill &amp; cleanup all clients
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>kill_all(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">for </span><span class="kw-2">&amp;</span>(<span class="kw">_</span>, <span class="kw-2">ref </span>client) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.clients {
+            client.kill();
         }
-        <span class="self">self</span>.<span class="ident">flush_all</span>(<span class="ident"><span class="kw">crate</span>::DispatchData::wrap</span>(<span class="kw-2">&amp;mut</span> ()));
+        <span class="self">self</span>.flush_all(<span class="kw">crate</span>::DispatchData::wrap(<span class="kw-2">&amp;mut </span>()));
     }
 }
 
-<span class="kw">const</span> <span class="ident">DISPLAY_REQUESTS</span>: <span class="kw-2">&amp;</span>[<span class="ident">MessageDesc</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[
-    <span class="ident">MessageDesc</span> { <span class="ident">name</span>: <span class="string">&quot;sync&quot;</span>, <span class="ident">since</span>: <span class="number">1</span>, <span class="ident">signature</span>: <span class="kw-2">&amp;</span>[<span class="ident">ArgumentType::NewId</span>], <span class="ident">destructor</span>: <span class="bool-val">false</span> },
-    <span class="ident">MessageDesc</span> {
-        <span class="ident">name</span>: <span class="string">&quot;get_registry&quot;</span>,
-        <span class="ident">since</span>: <span class="number">1</span>,
-        <span class="ident">signature</span>: <span class="kw-2">&amp;</span>[<span class="ident">ArgumentType::NewId</span>],
-        <span class="ident">destructor</span>: <span class="bool-val">false</span>,
+<span class="kw">const </span>DISPLAY_REQUESTS: <span class="kw-2">&amp;</span>[MessageDesc] = <span class="kw-2">&amp;</span>[
+    MessageDesc { name: <span class="string">&quot;sync&quot;</span>, since: <span class="number">1</span>, signature: <span class="kw-2">&amp;</span>[ArgumentType::NewId], destructor: <span class="bool-val">false </span>},
+    MessageDesc {
+        name: <span class="string">&quot;get_registry&quot;</span>,
+        since: <span class="number">1</span>,
+        signature: <span class="kw-2">&amp;</span>[ArgumentType::NewId],
+        destructor: <span class="bool-val">false</span>,
     },
 ];
 
-<span class="kw">const</span> <span class="ident">DISPLAY_EVENTS</span>: <span class="kw-2">&amp;</span>[<span class="ident">MessageDesc</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[
-    <span class="ident">MessageDesc</span> {
-        <span class="ident">name</span>: <span class="string">&quot;error&quot;</span>,
-        <span class="ident">since</span>: <span class="number">1</span>,
-        <span class="ident">signature</span>: <span class="kw-2">&amp;</span>[<span class="ident">ArgumentType::Object</span>, <span class="ident">ArgumentType::Uint</span>, <span class="ident">ArgumentType::Str</span>],
-        <span class="ident">destructor</span>: <span class="bool-val">false</span>,
+<span class="kw">const </span>DISPLAY_EVENTS: <span class="kw-2">&amp;</span>[MessageDesc] = <span class="kw-2">&amp;</span>[
+    MessageDesc {
+        name: <span class="string">&quot;error&quot;</span>,
+        since: <span class="number">1</span>,
+        signature: <span class="kw-2">&amp;</span>[ArgumentType::Object, ArgumentType::Uint, ArgumentType::Str],
+        destructor: <span class="bool-val">false</span>,
     },
-    <span class="ident">MessageDesc</span> {
-        <span class="ident">name</span>: <span class="string">&quot;delete_id&quot;</span>,
-        <span class="ident">since</span>: <span class="number">1</span>,
-        <span class="ident">signature</span>: <span class="kw-2">&amp;</span>[<span class="ident">ArgumentType::Uint</span>],
-        <span class="ident">destructor</span>: <span class="bool-val">false</span>,
+    MessageDesc {
+        name: <span class="string">&quot;delete_id&quot;</span>,
+        since: <span class="number">1</span>,
+        signature: <span class="kw-2">&amp;</span>[ArgumentType::Uint],
+        destructor: <span class="bool-val">false</span>,
     },
 ];
 
-<span class="kw">const</span> <span class="ident">REGISTRY_REQUESTS</span>: <span class="kw-2">&amp;</span>[<span class="ident">MessageDesc</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[<span class="ident">MessageDesc</span> {
-    <span class="ident">name</span>: <span class="string">&quot;bind&quot;</span>,
-    <span class="ident">since</span>: <span class="number">1</span>,
-    <span class="ident">signature</span>: <span class="kw-2">&amp;</span>[<span class="ident">ArgumentType::Uint</span>, <span class="ident">ArgumentType::Str</span>, <span class="ident">ArgumentType::Uint</span>, <span class="ident">ArgumentType::NewId</span>],
-    <span class="ident">destructor</span>: <span class="bool-val">false</span>,
+<span class="kw">const </span>REGISTRY_REQUESTS: <span class="kw-2">&amp;</span>[MessageDesc] = <span class="kw-2">&amp;</span>[MessageDesc {
+    name: <span class="string">&quot;bind&quot;</span>,
+    since: <span class="number">1</span>,
+    signature: <span class="kw-2">&amp;</span>[ArgumentType::Uint, ArgumentType::Str, ArgumentType::Uint, ArgumentType::NewId],
+    destructor: <span class="bool-val">false</span>,
 }];
 
-<span class="kw">const</span> <span class="ident">REGISTRY_EVENTS</span>: <span class="kw-2">&amp;</span>[<span class="ident">MessageDesc</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[
-    <span class="ident">MessageDesc</span> {
-        <span class="ident">name</span>: <span class="string">&quot;global&quot;</span>,
-        <span class="ident">since</span>: <span class="number">1</span>,
-        <span class="ident">signature</span>: <span class="kw-2">&amp;</span>[<span class="ident">ArgumentType::Uint</span>, <span class="ident">ArgumentType::Str</span>, <span class="ident">ArgumentType::Uint</span>],
-        <span class="ident">destructor</span>: <span class="bool-val">false</span>,
+<span class="kw">const </span>REGISTRY_EVENTS: <span class="kw-2">&amp;</span>[MessageDesc] = <span class="kw-2">&amp;</span>[
+    MessageDesc {
+        name: <span class="string">&quot;global&quot;</span>,
+        since: <span class="number">1</span>,
+        signature: <span class="kw-2">&amp;</span>[ArgumentType::Uint, ArgumentType::Str, ArgumentType::Uint],
+        destructor: <span class="bool-val">false</span>,
     },
-    <span class="ident">MessageDesc</span> {
-        <span class="ident">name</span>: <span class="string">&quot;global_remove&quot;</span>,
-        <span class="ident">since</span>: <span class="number">1</span>,
-        <span class="ident">signature</span>: <span class="kw-2">&amp;</span>[<span class="ident">ArgumentType::Uint</span>],
-        <span class="ident">destructor</span>: <span class="bool-val">false</span>,
+    MessageDesc {
+        name: <span class="string">&quot;global_remove&quot;</span>,
+        since: <span class="number">1</span>,
+        signature: <span class="kw-2">&amp;</span>[ArgumentType::Uint],
+        destructor: <span class="bool-val">false</span>,
     },
 ];
 
-<span class="kw">fn</span> <span class="ident">display_req_child</span>(<span class="ident">opcode</span>: <span class="ident">u16</span>, <span class="kw">_</span>: <span class="ident">u32</span>, <span class="ident">meta</span>: <span class="kw-2">&amp;</span><span class="ident">ObjectMeta</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Object</span><span class="op">&lt;</span><span class="ident">ObjectMeta</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">opcode</span> {
-        <span class="comment">// sync</span>
-        <span class="number">0</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Object::from_interface</span>::<span class="op">&lt;</span><span class="ident"><span class="kw">crate</span>::protocol::wl_callback::WlCallback</span><span class="op">&gt;</span>(
+<span class="kw">fn </span>display_req_child(opcode: u16, <span class="kw">_</span>: u32, meta: <span class="kw-2">&amp;</span>ObjectMeta) -&gt; <span class="prelude-ty">Option</span>&lt;Object&lt;ObjectMeta&gt;&gt; {
+    <span class="kw">match </span>opcode {
+        <span class="comment">// sync
+        </span><span class="number">0 </span>=&gt; <span class="prelude-val">Some</span>(Object::from_interface::&lt;<span class="kw">crate</span>::protocol::wl_callback::WlCallback&gt;(
             <span class="number">1</span>,
-            <span class="ident">meta</span>.<span class="ident">child</span>(),
+            meta.child(),
         )),
-        <span class="comment">// registry</span>
-        <span class="number">1</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">Object</span> {
-            <span class="ident">interface</span>: <span class="string">&quot;wl_registry&quot;</span>,
-            <span class="ident">version</span>: <span class="number">1</span>,
-            <span class="ident">requests</span>: <span class="ident">REGISTRY_REQUESTS</span>,
-            <span class="ident">events</span>: <span class="ident">REGISTRY_EVENTS</span>,
-            <span class="ident">meta</span>: <span class="ident">meta</span>.<span class="ident">child</span>(),
-            <span class="ident">childs_from_events</span>: <span class="ident">no_child</span>,
-            <span class="ident">childs_from_requests</span>: <span class="ident">no_child</span>,
+        <span class="comment">// registry
+        </span><span class="number">1 </span>=&gt; <span class="prelude-val">Some</span>(Object {
+            interface: <span class="string">&quot;wl_registry&quot;</span>,
+            version: <span class="number">1</span>,
+            requests: REGISTRY_REQUESTS,
+            events: REGISTRY_EVENTS,
+            meta: meta.child(),
+            childs_from_events: no_child,
+            childs_from_requests: no_child,
         }),
-        <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+        <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">no_child</span>(<span class="kw">_</span>: <span class="ident">u16</span>, <span class="kw">_</span>: <span class="ident">u32</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="ident">ObjectMeta</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Object</span><span class="op">&lt;</span><span class="ident">ObjectMeta</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="prelude-val">None</span>
+<span class="kw">fn </span>no_child(<span class="kw">_</span>: u16, <span class="kw">_</span>: u32, <span class="kw">_</span>: <span class="kw-2">&amp;</span>ObjectMeta) -&gt; <span class="prelude-ty">Option</span>&lt;Object&lt;ObjectMeta&gt;&gt; {
+    <span class="prelude-val">None
+</span>}
+
+<span class="kw">struct </span>ClientImplementation {
+    inner: ClientInner,
+    map: Arc&lt;Mutex&lt;ObjectMap&lt;ObjectMeta&gt;&gt;&gt;,
 }
 
-<span class="kw">struct</span> <span class="ident">ClientImplementation</span> {
-    <span class="ident">inner</span>: <span class="ident">ClientInner</span>,
-    <span class="ident">map</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">ObjectMap</span><span class="op">&lt;</span><span class="ident">ObjectMeta</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">ClientImplementation</span> {
-    <span class="kw">fn</span> <span class="ident">process_messages</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">data</span>: <span class="ident"><span class="kw">crate</span>::DispatchData</span>) {
-        <span class="kw">loop</span> {
-            <span class="comment">// we must process the messages one by one, because message parsing depends</span>
-            <span class="comment">// on the contents of the object map, which each message can change...</span>
-            <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">data</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>() {
-                <span class="ident">data</span>.<span class="ident">read_request</span>()
-            } <span class="kw">else</span> {
-                <span class="comment">// client is now dead, abort</span>
-                <span class="kw">return</span>;
+<span class="kw">impl </span>ClientImplementation {
+    <span class="kw">fn </span>process_messages(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>data: <span class="kw">crate</span>::DispatchData) {
+        <span class="kw">loop </span>{
+            <span class="comment">// we must process the messages one by one, because message parsing depends
+            // on the contents of the object map, which each message can change...
+            </span><span class="kw">let </span>ret = <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>data) = <span class="kw-2">*</span><span class="self">self</span>.inner.data.lock().unwrap() {
+                data.read_request()
+            } <span class="kw">else </span>{
+                <span class="comment">// client is now dead, abort
+                </span><span class="kw">return</span>;
             };
 
-            <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ret</span> {
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) <span class="op">|</span> <span class="prelude-val">Err</span>(<span class="ident">Error::Nix</span>(<span class="ident">::nix::Error::EAGAIN</span>)) =&gt; {
-                    <span class="comment">// Nothing more to read.</span>
-                    <span class="kw">return</span>;
+            <span class="kw">let </span>msg = <span class="kw">match </span>ret {
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) | <span class="prelude-val">Err</span>(Error::Nix(::nix::Error::EAGAIN)) =&gt; {
+                    <span class="comment">// Nothing more to read.
+                    </span><span class="kw">return</span>;
                 }
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">msg</span>)) =&gt; <span class="ident">msg</span>,
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(msg)) =&gt; msg,
                 <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
-                    <span class="comment">// On error, kill the client.</span>
-                    <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">kill</span>();
+                    <span class="comment">// On error, kill the client.
+                    </span><span class="self">self</span>.inner.kill();
                     <span class="kw">return</span>;
                 }
             };
 
-            <span class="comment">// There is a message to dispatch.</span>
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">resourcemap</span> <span class="op">=</span> <span class="ident"><span class="kw">super</span>::ResourceMap::make</span>(<span class="self">self</span>.<span class="ident">map</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">clone</span>());
-            <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">msg</span>.<span class="ident">sender_id</span>;
-            <span class="kw">let</span> <span class="ident">opcode</span> <span class="op">=</span> <span class="ident">msg</span>.<span class="ident">opcode</span>;
+            <span class="comment">// There is a message to dispatch.
+            </span><span class="kw">let </span><span class="kw-2">mut </span>resourcemap = <span class="kw">super</span>::ResourceMap::make(<span class="self">self</span>.map.clone(), <span class="self">self</span>.inner.clone());
+            <span class="kw">let </span>id = msg.sender_id;
+            <span class="kw">let </span>opcode = msg.opcode;
 
-            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ResourceInner::from_id</span>(<span class="ident">id</span>, <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">clone</span>()) {
-                <span class="prelude-val">Some</span>(<span class="ident">res</span>) =&gt; <span class="ident">res</span>,
-                <span class="prelude-val">None</span> =&gt; {
-                    <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">post_error</span>(
+            <span class="kw">let </span>res = <span class="kw">match </span>ResourceInner::from_id(id, <span class="self">self</span>.map.clone(), <span class="self">self</span>.inner.clone()) {
+                <span class="prelude-val">Some</span>(res) =&gt; res,
+                <span class="prelude-val">None </span>=&gt; {
+                    <span class="self">self</span>.inner.post_error(
                         <span class="number">1</span>,
-                        <span class="ident"><span class="kw">super</span>::display::DISPLAY_ERROR_INVALID_OBJECT</span>,
-                        <span class="macro">format!</span>(<span class="string">&quot;invalid object {}&quot;</span>, <span class="ident">id</span>),
+                        <span class="kw">super</span>::display::DISPLAY_ERROR_INVALID_OBJECT,
+                        <span class="macro">format!</span>(<span class="string">&quot;invalid object {}&quot;</span>, id),
                     );
                     <span class="kw">return</span>;
                 }
             };
 
-            <span class="kw">let</span> <span class="ident">object</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">object</span>.<span class="ident">clone</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dispatcher</span> <span class="op">=</span> <span class="ident">object</span>.<span class="ident">meta</span>.<span class="ident">dispatcher</span>.<span class="ident">get</span>().<span class="ident">borrow_mut</span>();
+            <span class="kw">let </span>object = res.object.clone();
+            <span class="kw">let </span><span class="kw-2">mut </span>dispatcher = object.meta.dispatcher.get().borrow_mut();
 
-            <span class="kw">match</span> <span class="ident">dispatcher</span>.<span class="ident">dispatch</span>(<span class="ident">msg</span>, <span class="ident">res</span>, <span class="kw-2">&amp;mut</span> <span class="ident">resourcemap</span>, <span class="ident">data</span>.<span class="ident">reborrow</span>()) {
-                <span class="ident">Dispatched::Yes</span> =&gt; (),
-                <span class="ident">Dispatched::NoDispatch</span>(<span class="ident">_msg</span>, <span class="ident">_res</span>) =&gt; {
+            <span class="kw">match </span>dispatcher.dispatch(msg, res, <span class="kw-2">&amp;mut </span>resourcemap, data.reborrow()) {
+                Dispatched::Yes =&gt; (),
+                Dispatched::NoDispatch(_msg, _res) =&gt; {
                     <span class="macro">eprintln!</span>(
                         <span class="string">&quot;[wayland-server] Request received for an object \
                                     not associated to any filter: {}@{}&quot;</span>,
-                        <span class="ident">object</span>.<span class="ident">interface</span>, <span class="ident">id</span>
+                        object.interface, id
                     );
-                    <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">post_error</span>(
+                    <span class="self">self</span>.inner.post_error(
                         <span class="number">1</span>,
-                        <span class="ident"><span class="kw">super</span>::display::DISPLAY_ERROR_NO_MEMORY</span>,
-                        <span class="string">&quot;Server-side bug, sorry.&quot;</span>.<span class="ident">into</span>(),
+                        <span class="kw">super</span>::display::DISPLAY_ERROR_NO_MEMORY,
+                        <span class="string">&quot;Server-side bug, sorry.&quot;</span>.into(),
                     );
                 }
-                <span class="ident">Dispatched::BadMsg</span> =&gt; {
-                    <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">post_error</span>(
+                Dispatched::BadMsg =&gt; {
+                    <span class="self">self</span>.inner.post_error(
                         <span class="number">1</span>,
-                        <span class="ident"><span class="kw">super</span>::display::DISPLAY_ERROR_INVALID_METHOD</span>,
-                        <span class="macro">format!</span>(<span class="string">&quot;invalid method {}, object {}@{}&quot;</span>, <span class="ident">opcode</span>, <span class="ident">object</span>.<span class="ident">interface</span>, <span class="ident">id</span>),
+                        <span class="kw">super</span>::display::DISPLAY_ERROR_INVALID_METHOD,
+                        <span class="macro">format!</span>(<span class="string">&quot;invalid method {}, object {}@{}&quot;</span>, opcode, object.interface, id),
                     );
                 }
             }
@@ -1344,123 +1344,123 @@
     }
 }
 
-<span class="kw">struct</span> <span class="ident">DisplayDispatcher</span> {
-    <span class="ident">global_mgr</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">GlobalManager</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">struct </span>DisplayDispatcher {
+    global_mgr: Rc&lt;RefCell&lt;GlobalManager&gt;&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident"><span class="kw">super</span>::Dispatcher</span> <span class="kw">for</span> <span class="ident">DisplayDispatcher</span> {
-    <span class="kw">fn</span> <span class="ident">dispatch</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">msg</span>: <span class="ident">Message</span>,
-        <span class="ident">_resource</span>: <span class="ident">ResourceInner</span>,
-        <span class="ident">map</span>: <span class="kw-2">&amp;mut</span> <span class="ident"><span class="kw">super</span>::ResourceMap</span>,
-        <span class="ident">_data</span>: <span class="ident"><span class="kw">crate</span>::DispatchData</span>,
-    ) -&gt; <span class="ident">Dispatched</span> {
-        <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::protocol::wl_callback</span>;
+<span class="kw">impl </span><span class="kw">super</span>::Dispatcher <span class="kw">for </span>DisplayDispatcher {
+    <span class="kw">fn </span>dispatch(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        msg: Message,
+        _resource: ResourceInner,
+        map: <span class="kw-2">&amp;mut </span><span class="kw">super</span>::ResourceMap,
+        _data: <span class="kw">crate</span>::DispatchData,
+    ) -&gt; Dispatched {
+        <span class="kw">use </span><span class="kw">crate</span>::protocol::wl_callback;
 
-        <span class="kw">if</span> <span class="ident">WAYLAND_DEBUG</span>.<span class="ident">load</span>(<span class="ident">Ordering::Relaxed</span>) {
-            <span class="ident">debug::print_dispatched_message</span>(
+        <span class="kw">if </span>WAYLAND_DEBUG.load(Ordering::Relaxed) {
+            debug::print_dispatched_message(
                 <span class="string">&quot;wl_display&quot;</span>,
                 <span class="number">1</span>,
-                <span class="ident">DISPLAY_REQUESTS</span>[<span class="ident">msg</span>.<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">name</span>,
-                <span class="kw-2">&amp;</span><span class="ident">msg</span>.<span class="ident">args</span>,
+                DISPLAY_REQUESTS[msg.opcode <span class="kw">as </span>usize].name,
+                <span class="kw-2">&amp;</span>msg.args,
             );
         }
 
-        <span class="kw">match</span> <span class="ident">msg</span>.<span class="ident">opcode</span> {
-            <span class="comment">// sync</span>
-            <span class="number">0</span> =&gt; {
-                <span class="kw">let</span> <span class="ident">new_id</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">msg</span>.<span class="ident">args</span>.<span class="ident">first</span>() {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Argument::NewId</span>(<span class="ident">new_id</span>)) =&gt; <span class="ident">new_id</span>,
-                    <span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="ident">Dispatched::BadMsg</span>,
+        <span class="kw">match </span>msg.opcode {
+            <span class="comment">// sync
+            </span><span class="number">0 </span>=&gt; {
+                <span class="kw">let </span>new_id = <span class="kw">match </span>msg.args.first() {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>Argument::NewId(new_id)) =&gt; new_id,
+                    <span class="kw">_ </span>=&gt; <span class="kw">return </span>Dispatched::BadMsg,
                 };
 
-                <span class="kw">let</span> <span class="ident">cb</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">map</span>.<span class="ident">get_new</span>::<span class="op">&lt;</span><span class="ident">wl_callback::WlCallback</span><span class="op">&gt;</span>(<span class="ident">new_id</span>) {
-                    <span class="prelude-val">Some</span>(<span class="ident">cb</span>) =&gt; <span class="ident">cb</span>,
-                    <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="ident">Dispatched::BadMsg</span>,
+                <span class="kw">let </span>cb = <span class="kw">match </span>map.get_new::&lt;wl_callback::WlCallback&gt;(new_id) {
+                    <span class="prelude-val">Some</span>(cb) =&gt; cb,
+                    <span class="prelude-val">None </span>=&gt; <span class="kw">return </span>Dispatched::BadMsg,
                 };
 
-                <span class="comment">// TODO: send a more meaningful serial?</span>
-                <span class="ident">cb</span>.<span class="ident">as_ref</span>().<span class="ident">send</span>(<span class="ident">wl_callback::Event::Done</span> { <span class="ident">callback_data</span>: <span class="number">0</span> });
+                <span class="comment">// TODO: send a more meaningful serial?
+                </span>cb.as_ref().send(wl_callback::Event::Done { callback_data: <span class="number">0 </span>});
             }
-            <span class="comment">// get_registry</span>
-            <span class="number">1</span> =&gt; {
-                <span class="kw">let</span> <span class="ident">new_id</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">msg</span>.<span class="ident">args</span>.<span class="ident">first</span>() {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Argument::NewId</span>(<span class="ident">new_id</span>)) =&gt; <span class="ident">new_id</span>,
-                    <span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="ident">Dispatched::BadMsg</span>,
+            <span class="comment">// get_registry
+            </span><span class="number">1 </span>=&gt; {
+                <span class="kw">let </span>new_id = <span class="kw">match </span>msg.args.first() {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>Argument::NewId(new_id)) =&gt; new_id,
+                    <span class="kw">_ </span>=&gt; <span class="kw">return </span>Dispatched::BadMsg,
                 };
 
-                <span class="comment">// We don&#39;t have a regular object for the registry, rather we insert the</span>
-                <span class="comment">// dispatcher by hand</span>
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(()) <span class="op">=</span> <span class="ident">map</span>.<span class="ident">map</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">with</span>(<span class="ident">new_id</span>, <span class="op">|</span><span class="ident">obj</span><span class="op">|</span> {
-                    <span class="ident">obj</span>.<span class="ident">meta</span>.<span class="ident">dispatcher</span> <span class="op">=</span>
-                        <span class="ident">Arc::new</span>(<span class="ident">ThreadGuard::new</span>(<span class="ident">RefCell::new</span>(<span class="ident">RegistryDispatcher</span> {
-                            <span class="ident">global_mgr</span>: <span class="self">self</span>.<span class="ident">global_mgr</span>.<span class="ident">clone</span>(),
+                <span class="comment">// We don&#39;t have a regular object for the registry, rather we insert the
+                // dispatcher by hand
+                </span><span class="kw">if let </span><span class="prelude-val">Err</span>(()) = map.map.lock().unwrap().with(new_id, |obj| {
+                    obj.meta.dispatcher =
+                        Arc::new(ThreadGuard::new(RefCell::new(RegistryDispatcher {
+                            global_mgr: <span class="self">self</span>.global_mgr.clone(),
                         })));
                 }) {
-                    <span class="kw">return</span> <span class="ident">Dispatched::BadMsg</span>;
+                    <span class="kw">return </span>Dispatched::BadMsg;
                 }
 
-                <span class="self">self</span>.<span class="ident">global_mgr</span>.<span class="ident">borrow_mut</span>().<span class="ident">new_registry</span>(<span class="ident">new_id</span>, <span class="ident">map</span>.<span class="ident">client</span>.<span class="ident">clone</span>());
+                <span class="self">self</span>.global_mgr.borrow_mut().new_registry(new_id, map.client.clone());
             }
-            <span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="ident">Dispatched::BadMsg</span>,
+            <span class="kw">_ </span>=&gt; <span class="kw">return </span>Dispatched::BadMsg,
         }
 
-        <span class="ident">Dispatched::Yes</span>
+        Dispatched::Yes
     }
 }
 
-<span class="kw">struct</span> <span class="ident">RegistryDispatcher</span> {
-    <span class="ident">global_mgr</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">GlobalManager</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">struct </span>RegistryDispatcher {
+    global_mgr: Rc&lt;RefCell&lt;GlobalManager&gt;&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident"><span class="kw">super</span>::Dispatcher</span> <span class="kw">for</span> <span class="ident">RegistryDispatcher</span> {
-    <span class="kw">fn</span> <span class="ident">dispatch</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">msg</span>: <span class="ident">Message</span>,
-        <span class="ident">resource</span>: <span class="ident">ResourceInner</span>,
-        <span class="ident">map</span>: <span class="kw-2">&amp;mut</span> <span class="ident"><span class="kw">super</span>::ResourceMap</span>,
-        <span class="ident">data</span>: <span class="ident"><span class="kw">crate</span>::DispatchData</span>,
-    ) -&gt; <span class="ident">Dispatched</span> {
-        <span class="kw">if</span> <span class="ident">WAYLAND_DEBUG</span>.<span class="ident">load</span>(<span class="ident">Ordering::Relaxed</span>) {
-            <span class="ident">debug::print_dispatched_message</span>(
+<span class="kw">impl </span><span class="kw">super</span>::Dispatcher <span class="kw">for </span>RegistryDispatcher {
+    <span class="kw">fn </span>dispatch(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        msg: Message,
+        resource: ResourceInner,
+        map: <span class="kw-2">&amp;mut </span><span class="kw">super</span>::ResourceMap,
+        data: <span class="kw">crate</span>::DispatchData,
+    ) -&gt; Dispatched {
+        <span class="kw">if </span>WAYLAND_DEBUG.load(Ordering::Relaxed) {
+            debug::print_dispatched_message(
                 <span class="string">&quot;wl_registry&quot;</span>,
-                <span class="ident">resource</span>.<span class="ident">id</span>,
-                <span class="ident">REGISTRY_REQUESTS</span>[<span class="ident">msg</span>.<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">name</span>,
-                <span class="kw-2">&amp;</span><span class="ident">msg</span>.<span class="ident">args</span>,
+                resource.id,
+                REGISTRY_REQUESTS[msg.opcode <span class="kw">as </span>usize].name,
+                <span class="kw-2">&amp;</span>msg.args,
             );
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">msg</span>.<span class="ident">args</span>.<span class="ident">into_iter</span>();
-        <span class="kw">let</span> <span class="ident">global_id</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">iter</span>.<span class="ident">next</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">Argument::Uint</span>(<span class="ident">u</span>)) =&gt; <span class="ident">u</span>,
-            <span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="ident">Dispatched::BadMsg</span>,
+        <span class="kw">let </span><span class="kw-2">mut </span>iter = msg.args.into_iter();
+        <span class="kw">let </span>global_id = <span class="kw">match </span>iter.next() {
+            <span class="prelude-val">Some</span>(Argument::Uint(u)) =&gt; u,
+            <span class="kw">_ </span>=&gt; <span class="kw">return </span>Dispatched::BadMsg,
         };
-        <span class="kw">let</span> <span class="ident">interface</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">iter</span>.<span class="ident">next</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">Argument::Str</span>(<span class="ident">s</span>)) =&gt; <span class="ident">s</span>,
-            <span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="ident">Dispatched::BadMsg</span>,
+        <span class="kw">let </span>interface = <span class="kw">match </span>iter.next() {
+            <span class="prelude-val">Some</span>(Argument::Str(s)) =&gt; s,
+            <span class="kw">_ </span>=&gt; <span class="kw">return </span>Dispatched::BadMsg,
         };
-        <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">iter</span>.<span class="ident">next</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">Argument::Uint</span>(<span class="ident">u</span>)) =&gt; <span class="ident">u</span>,
-            <span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="ident">Dispatched::BadMsg</span>,
+        <span class="kw">let </span>version = <span class="kw">match </span>iter.next() {
+            <span class="prelude-val">Some</span>(Argument::Uint(u)) =&gt; u,
+            <span class="kw">_ </span>=&gt; <span class="kw">return </span>Dispatched::BadMsg,
         };
-        <span class="kw">let</span> <span class="ident">new_id</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">iter</span>.<span class="ident">next</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">Argument::NewId</span>(<span class="ident">id</span>)) =&gt; <span class="ident">id</span>,
-            <span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="ident">Dispatched::BadMsg</span>,
+        <span class="kw">let </span>new_id = <span class="kw">match </span>iter.next() {
+            <span class="prelude-val">Some</span>(Argument::NewId(id)) =&gt; id,
+            <span class="kw">_ </span>=&gt; <span class="kw">return </span>Dispatched::BadMsg,
         };
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">global_mgr</span>.<span class="ident">borrow</span>().<span class="ident">bind</span>(
-            <span class="ident">resource</span>.<span class="ident">id</span>,
-            <span class="ident">new_id</span>,
-            <span class="ident">global_id</span>,
-            <span class="kw-2">&amp;</span><span class="ident">interface</span>.<span class="ident">to_string_lossy</span>(),
-            <span class="ident">version</span>,
-            <span class="ident">map</span>.<span class="ident">client</span>.<span class="ident">clone</span>(),
-            <span class="ident">data</span>,
+        <span class="kw">match </span><span class="self">self</span>.global_mgr.borrow().bind(
+            resource.id,
+            new_id,
+            global_id,
+            <span class="kw-2">&amp;</span>interface.to_string_lossy(),
+            version,
+            map.client.clone(),
+            data,
         ) {
-            <span class="prelude-val">Ok</span>(()) =&gt; <span class="ident">Dispatched::Yes</span>,
-            <span class="prelude-val">Err</span>(()) =&gt; <span class="ident">Dispatched::BadMsg</span>,
+            <span class="prelude-val">Ok</span>(()) =&gt; Dispatched::Yes,
+            <span class="prelude-val">Err</span>(()) =&gt; Dispatched::BadMsg,
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="wayland_server" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="wayland_server" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-server-0.29.5/src/rust_imp/display.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>display.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../wayland_server/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../wayland_server/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../wayland_server/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-server-0.29.5/src/rust_imp/display.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>display.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../wayland_server/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -199,206 +199,206 @@
 <span id="199">199</span>
 <span id="200">200</span>
 <span id="201">201</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::cell::RefCell</span>;
-<span class="kw">use</span> <span class="ident">std::env</span>;
-<span class="kw">use</span> <span class="ident">std::ffi</span>::{<span class="ident">OsStr</span>, <span class="ident">OsString</span>};
-<span class="kw">use</span> <span class="ident">std::io</span>;
-<span class="kw">use</span> <span class="ident">std::os::unix::io</span>::{<span class="ident">AsRawFd</span>, <span class="ident">FromRawFd</span>, <span class="ident">IntoRawFd</span>, <span class="ident">RawFd</span>};
-<span class="kw">use</span> <span class="ident">std::os::unix::net::UnixListener</span>;
-<span class="kw">use</span> <span class="ident">std::path::Path</span>;
-<span class="kw">use</span> <span class="ident">std::rc::Rc</span>;
-<span class="kw">use</span> <span class="ident">std::sync::atomic::Ordering</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>std::cell::RefCell;
+<span class="kw">use </span>std::env;
+<span class="kw">use </span>std::ffi::{OsStr, OsString};
+<span class="kw">use </span>std::io;
+<span class="kw">use </span>std::os::unix::io::{AsRawFd, FromRawFd, IntoRawFd, RawFd};
+<span class="kw">use </span>std::os::unix::net::UnixListener;
+<span class="kw">use </span>std::path::Path;
+<span class="kw">use </span>std::rc::Rc;
+<span class="kw">use </span>std::sync::atomic::Ordering;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::display::get_runtime_dir</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Interface</span>, <span class="ident">Main</span>, <span class="ident">Resource</span>};
+<span class="kw">use </span><span class="kw">crate</span>::display::get_runtime_dir;
+<span class="kw">use crate</span>::{Interface, Main, Resource};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::clients::ClientManager</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::event_loop_glue</span>::{<span class="ident">FdManager</span>, <span class="ident">Token</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::globals::GlobalManager</span>;
-<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">ClientInner</span>, <span class="ident">GlobalInner</span>, <span class="ident">WAYLAND_DEBUG</span>};
+<span class="kw">use </span><span class="kw">super</span>::clients::ClientManager;
+<span class="kw">use </span><span class="kw">super</span>::event_loop_glue::{FdManager, Token};
+<span class="kw">use </span><span class="kw">super</span>::globals::GlobalManager;
+<span class="kw">use super</span>::{ClientInner, GlobalInner, WAYLAND_DEBUG};
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const</span> <span class="ident">DISPLAY_ERROR_INVALID_OBJECT</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const</span> <span class="ident">DISPLAY_ERROR_INVALID_METHOD</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">1</span>;
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const</span> <span class="ident">DISPLAY_ERROR_NO_MEMORY</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">2</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>DISPLAY_ERROR_INVALID_OBJECT: u32 = <span class="number">0</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>DISPLAY_ERROR_INVALID_METHOD: u32 = <span class="number">1</span>;
+<span class="attribute">#[allow(dead_code)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>DISPLAY_ERROR_NO_MEMORY: u32 = <span class="number">2</span>;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">DisplayInner</span> {
-    <span class="ident">epoll_mgr</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">FdManager</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">clients_mgr</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">ClientManager</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">global_mgr</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">GlobalManager</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">listeners</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Token</span><span class="op">&gt;</span>,
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>DisplayInner {
+    epoll_mgr: Rc&lt;FdManager&gt;,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) clients_mgr: Rc&lt;RefCell&lt;ClientManager&gt;&gt;,
+    global_mgr: Rc&lt;RefCell&lt;GlobalManager&gt;&gt;,
+    listeners: Vec&lt;Token&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">DisplayInner</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">DisplayInner</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span> <span class="ident">std::env::var_os</span>(<span class="string">&quot;WAYLAND_DEBUG&quot;</span>) {
-            <span class="comment">// Follow libwayland-client and enable debug log only on `1` and `server` values.</span>
-            <span class="kw">if</span> <span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;1&quot;</span> <span class="op">|</span><span class="op">|</span> <span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;server&quot;</span> {
-                <span class="comment">// Toggle debug log.</span>
-                <span class="ident">WAYLAND_DEBUG</span>.<span class="ident">store</span>(<span class="bool-val">true</span>, <span class="ident">Ordering::Relaxed</span>);
+<span class="kw">impl </span>DisplayInner {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new() -&gt; DisplayInner {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(value) = std::env::var_os(<span class="string">&quot;WAYLAND_DEBUG&quot;</span>) {
+            <span class="comment">// Follow libwayland-client and enable debug log only on `1` and `server` values.
+            </span><span class="kw">if </span>value == <span class="string">&quot;1&quot; </span>|| value == <span class="string">&quot;server&quot; </span>{
+                <span class="comment">// Toggle debug log.
+                </span>WAYLAND_DEBUG.store(<span class="bool-val">true</span>, Ordering::Relaxed);
             }
         }
 
-        <span class="kw">let</span> <span class="ident">global_mgr</span> <span class="op">=</span> <span class="ident">Rc::new</span>(<span class="ident">RefCell::new</span>(<span class="ident">GlobalManager::new</span>()));
-        <span class="kw">let</span> <span class="ident">epoll_mgr</span> <span class="op">=</span> <span class="ident">Rc::new</span>(<span class="ident">FdManager::new</span>().<span class="ident">unwrap</span>());
+        <span class="kw">let </span>global_mgr = Rc::new(RefCell::new(GlobalManager::new()));
+        <span class="kw">let </span>epoll_mgr = Rc::new(FdManager::new().unwrap());
 
-        <span class="kw">let</span> <span class="ident">clients_mgr</span> <span class="op">=</span>
-            <span class="ident">Rc::new</span>(<span class="ident">RefCell::new</span>(<span class="ident">ClientManager::new</span>(<span class="ident">epoll_mgr</span>.<span class="ident">clone</span>(), <span class="ident">global_mgr</span>.<span class="ident">clone</span>())));
+        <span class="kw">let </span>clients_mgr =
+            Rc::new(RefCell::new(ClientManager::new(epoll_mgr.clone(), global_mgr.clone())));
 
-        <span class="ident">DisplayInner</span> { <span class="ident">epoll_mgr</span>, <span class="ident">clients_mgr</span>, <span class="ident">global_mgr</span>, <span class="ident">listeners</span>: <span class="ident">Vec::new</span>() }
+        DisplayInner { epoll_mgr, clients_mgr, global_mgr, listeners: Vec::new() }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">create_global</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">F1</span>, <span class="ident">F2</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">version</span>: <span class="ident">u32</span>,
-        <span class="ident">implementation</span>: <span class="ident">F1</span>,
-        <span class="ident">filter</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">F2</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">GlobalInner</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-        <span class="ident">F1</span>: <span class="ident">FnMut</span>(<span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">u32</span>, <span class="ident"><span class="kw">crate</span>::DispatchData</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">F2</span>: <span class="ident">FnMut</span>(<span class="ident">ClientInner</span>) -&gt; <span class="ident">bool</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create_global&lt;I, F1, F2&gt;(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        version: u32,
+        implementation: F1,
+        filter: <span class="prelude-ty">Option</span>&lt;F2&gt;,
+    ) -&gt; GlobalInner&lt;I&gt;
+    <span class="kw">where
+        </span>I: Interface + AsRef&lt;Resource&lt;I&gt;&gt; + From&lt;Resource&lt;I&gt;&gt;,
+        F1: FnMut(Main&lt;I&gt;, u32, <span class="kw">crate</span>::DispatchData&lt;<span class="lifetime">&#39;_</span>&gt;) + <span class="lifetime">&#39;static</span>,
+        F2: FnMut(ClientInner) -&gt; bool + <span class="lifetime">&#39;static</span>,
     {
-        <span class="self">self</span>.<span class="ident">global_mgr</span>.<span class="ident">borrow_mut</span>().<span class="ident">add_global</span>(<span class="ident">version</span>, <span class="ident">implementation</span>, <span class="ident">filter</span>)
+        <span class="self">self</span>.global_mgr.borrow_mut().add_global(version, implementation, filter)
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">flush_clients</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">data</span>: <span class="ident"><span class="kw">crate</span>::DispatchData</span>) {
-        <span class="self">self</span>.<span class="ident">clients_mgr</span>.<span class="ident">borrow_mut</span>().<span class="ident">flush_all</span>(<span class="ident">data</span>)
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>flush_clients(<span class="kw-2">&amp;mut </span><span class="self">self</span>, data: <span class="kw">crate</span>::DispatchData) {
+        <span class="self">self</span>.clients_mgr.borrow_mut().flush_all(data)
     }
 
-    <span class="kw">fn</span> <span class="ident">add_unix_listener</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">listener</span>: <span class="ident">UnixListener</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="ident">listener</span>.<span class="ident">set_nonblocking</span>(<span class="bool-val">true</span>)<span class="question-mark">?</span>;
-        <span class="comment">// The WaylandListener will automatically remove the filesystem socket</span>
-        <span class="comment">// on drop, if any.</span>
-        <span class="kw">let</span> <span class="ident">listener</span> <span class="op">=</span> <span class="ident">WaylandListener</span>(<span class="ident">listener</span>);
+    <span class="kw">fn </span>add_unix_listener(<span class="kw-2">&amp;mut </span><span class="self">self</span>, listener: UnixListener) -&gt; io::Result&lt;()&gt; {
+        listener.set_nonblocking(<span class="bool-val">true</span>)<span class="question-mark">?</span>;
+        <span class="comment">// The WaylandListener will automatically remove the filesystem socket
+        // on drop, if any.
+        </span><span class="kw">let </span>listener = WaylandListener(listener);
 
-        <span class="kw">let</span> <span class="ident">client_mgr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clients_mgr</span>.<span class="ident">clone</span>();
+        <span class="kw">let </span>client_mgr = <span class="self">self</span>.clients_mgr.clone();
 
-        <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">epoll_mgr</span>.<span class="ident">register</span>(<span class="ident">listener</span>.<span class="number">0</span>.<span class="ident">as_raw_fd</span>(), <span class="kw">move</span> <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">data</span><span class="op">|</span> {
-            <span class="kw">loop</span> {
-                <span class="kw">match</span> <span class="ident">listener</span>.<span class="number">0</span>.<span class="ident">accept</span>() {
-                    <span class="prelude-val">Ok</span>((<span class="ident">stream</span>, <span class="kw">_</span>)) =&gt; <span class="kw">unsafe</span> {
-                        <span class="ident">client_mgr</span>.<span class="ident">borrow_mut</span>().<span class="ident">init_client</span>(<span class="ident">stream</span>.<span class="ident">into_raw_fd</span>(), <span class="ident">data</span>.<span class="ident">reborrow</span>());
+        <span class="kw">let </span>token = <span class="self">self</span>.epoll_mgr.register(listener.<span class="number">0</span>.as_raw_fd(), <span class="kw">move </span>|<span class="kw-2">mut </span>data| {
+            <span class="kw">loop </span>{
+                <span class="kw">match </span>listener.<span class="number">0</span>.accept() {
+                    <span class="prelude-val">Ok</span>((stream, <span class="kw">_</span>)) =&gt; <span class="kw">unsafe </span>{
+                        client_mgr.borrow_mut().init_client(stream.into_raw_fd(), data.reborrow());
                     },
-                    <span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="ident">e</span>) <span class="kw">if</span> <span class="ident">e</span>.<span class="ident">kind</span>() <span class="op">==</span> <span class="ident">io::ErrorKind::WouldBlock</span> =&gt; {
-                        <span class="comment">// we have exhausted all the pending connections</span>
-                        <span class="kw">break</span>;
+                    <span class="prelude-val">Err</span>(<span class="kw-2">ref </span>e) <span class="kw">if </span>e.kind() == io::ErrorKind::WouldBlock =&gt; {
+                        <span class="comment">// we have exhausted all the pending connections
+                        </span><span class="kw">break</span>;
                     }
-                    <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; {
-                        <span class="comment">// this is a legitimate error</span>
-                        <span class="ident">listener</span>.<span class="ident">eprint_error</span>(<span class="ident">e</span>);
+                    <span class="prelude-val">Err</span>(e) =&gt; {
+                        <span class="comment">// this is a legitimate error
+                        </span>listener.eprint_error(e);
                     }
                 }
             }
         })<span class="question-mark">?</span>;
 
-        <span class="self">self</span>.<span class="ident">listeners</span>.<span class="ident">push</span>(<span class="ident">token</span>);
+        <span class="self">self</span>.listeners.push(token);
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">add_socket</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">OsStr</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>add_socket&lt;S&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name: <span class="prelude-ty">Option</span>&lt;S&gt;) -&gt; io::Result&lt;()&gt;
+    <span class="kw">where
+        </span>S: AsRef&lt;OsStr&gt;,
     {
-        <span class="comment">// first, compute the actual socket name we will use</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">get_runtime_dir</span>()<span class="question-mark">?</span>;
+        <span class="comment">// first, compute the actual socket name we will use
+        </span><span class="kw">let </span><span class="kw-2">mut </span>path = get_runtime_dir()<span class="question-mark">?</span>;
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">name</span> {
-            <span class="ident">path</span>.<span class="ident">push</span>(<span class="ident">name</span>.<span class="ident">as_ref</span>());
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">env::var_os</span>(<span class="string">&quot;WAYLAND_DISPLAY&quot;</span>) {
-            <span class="kw">let</span> <span class="ident">name_path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">as_ref</span>();
-            <span class="kw">if</span> <span class="ident">name_path</span>.<span class="ident">is_absolute</span>() {
-                <span class="ident">path</span> <span class="op">=</span> <span class="ident">name_path</span>.<span class="ident">into</span>();
-            } <span class="kw">else</span> {
-                <span class="ident">path</span>.<span class="ident">push</span>(<span class="ident">name_path</span>);
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(name) = name {
+            path.push(name.as_ref());
+        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(name) = env::var_os(<span class="string">&quot;WAYLAND_DISPLAY&quot;</span>) {
+            <span class="kw">let </span>name_path: <span class="kw-2">&amp;</span>Path = name.as_ref();
+            <span class="kw">if </span>name_path.is_absolute() {
+                path = name_path.into();
+            } <span class="kw">else </span>{
+                path.push(name_path);
             }
-        } <span class="kw">else</span> {
-            <span class="ident">path</span>.<span class="ident">push</span>(<span class="string">&quot;wayland-0&quot;</span>);
+        } <span class="kw">else </span>{
+            path.push(<span class="string">&quot;wayland-0&quot;</span>);
         }
 
-        <span class="kw">let</span> <span class="ident">listener</span> <span class="op">=</span> <span class="ident">UnixListener::bind</span>(<span class="ident">path</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>listener = UnixListener::bind(path)<span class="question-mark">?</span>;
 
-        <span class="self">self</span>.<span class="ident">add_unix_listener</span>(<span class="ident">listener</span>)
+        <span class="self">self</span>.add_unix_listener(listener)
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">add_socket_auto</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">OsString</span><span class="op">&gt;</span> {
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">32</span> {
-            <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;wayland-{}&quot;</span>, <span class="ident">i</span>);
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">add_socket</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>)) {
-                <span class="prelude-val">Ok</span>(()) =&gt; <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">name</span>.<span class="ident">into</span>()),
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>add_socket_auto(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;OsString&gt; {
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="number">32 </span>{
+            <span class="kw">let </span>name = <span class="macro">format!</span>(<span class="string">&quot;wayland-{}&quot;</span>, i);
+            <span class="kw">match </span><span class="self">self</span>.add_socket(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>name)) {
+                <span class="prelude-val">Ok</span>(()) =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(name.into()),
                 <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">continue</span>,
             }
         }
-        <span class="prelude-val">Err</span>(<span class="ident">io::Error::new</span>(
-            <span class="ident">io::ErrorKind::AddrInUse</span>,
+        <span class="prelude-val">Err</span>(io::Error::new(
+            io::ErrorKind::AddrInUse,
             <span class="string">&quot;All sockets from wayland-0 to wayland-31 are already in use.&quot;</span>,
         ))
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">add_socket_fd</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">fd</span>: <span class="ident">RawFd</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">add_unix_listener</span>(<span class="ident">FromRawFd::from_raw_fd</span>(<span class="ident">fd</span>))
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>add_socket_fd(<span class="kw-2">&amp;mut </span><span class="self">self</span>, fd: RawFd) -&gt; io::Result&lt;()&gt; {
+        <span class="self">self</span>.add_unix_listener(FromRawFd::from_raw_fd(fd))
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">create_client</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">fd</span>: <span class="ident">RawFd</span>,
-        <span class="ident">data</span>: <span class="ident"><span class="kw">crate</span>::DispatchData</span>,
-    ) -&gt; <span class="ident">ClientInner</span> {
-        <span class="self">self</span>.<span class="ident">clients_mgr</span>.<span class="ident">borrow_mut</span>().<span class="ident">init_client</span>(<span class="ident">fd</span>, <span class="ident">data</span>)
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>create_client(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        fd: RawFd,
+        data: <span class="kw">crate</span>::DispatchData,
+    ) -&gt; ClientInner {
+        <span class="self">self</span>.clients_mgr.borrow_mut().init_client(fd, data)
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">dispatch</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">timeout</span>: <span class="ident">i32</span>,
-        <span class="ident">data</span>: <span class="ident"><span class="kw">crate</span>::DispatchData</span>,
-    ) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">epoll_mgr</span>.<span class="ident">poll</span>(<span class="ident">timeout</span>, <span class="ident">data</span>)<span class="question-mark">?</span>;
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>dispatch(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        timeout: i32,
+        data: <span class="kw">crate</span>::DispatchData,
+    ) -&gt; std::io::Result&lt;()&gt; {
+        <span class="self">self</span>.epoll_mgr.poll(timeout, data)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_poll_fd</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">RawFd</span> {
-        <span class="self">self</span>.<span class="ident">epoll_mgr</span>.<span class="ident">get_poll_fd</span>()
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_poll_fd(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RawFd {
+        <span class="self">self</span>.epoll_mgr.get_poll_fd()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">DisplayInner</span> {
-    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">for</span> <span class="ident">l</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">listeners</span>.<span class="ident">drain</span>(..) {
-            <span class="self">self</span>.<span class="ident">epoll_mgr</span>.<span class="ident">deregister</span>(<span class="ident">l</span>);
+<span class="kw">impl </span>Drop <span class="kw">for </span>DisplayInner {
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">for </span>l <span class="kw">in </span><span class="self">self</span>.listeners.drain(..) {
+            <span class="self">self</span>.epoll_mgr.deregister(l);
         }
-        <span class="self">self</span>.<span class="ident">clients_mgr</span>.<span class="ident">borrow_mut</span>().<span class="ident">kill_all</span>();
+        <span class="self">self</span>.clients_mgr.borrow_mut().kill_all();
     }
 }
 
-<span class="kw">struct</span> <span class="ident">WaylandListener</span>(<span class="ident">UnixListener</span>);
+<span class="kw">struct </span>WaylandListener(UnixListener);
 
-<span class="kw">impl</span> <span class="ident">WaylandListener</span> {
-    <span class="kw">fn</span> <span class="ident">eprint_error</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">error</span>: <span class="ident">io::Error</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">addr</span>) <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">local_addr</span>() {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">path</span>) <span class="op">=</span> <span class="ident">addr</span>.<span class="ident">as_pathname</span>() {
+<span class="kw">impl </span>WaylandListener {
+    <span class="kw">fn </span>eprint_error(<span class="kw-2">&amp;</span><span class="self">self</span>, error: io::Error) {
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(addr) = <span class="self">self</span>.<span class="number">0</span>.local_addr() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = addr.as_pathname() {
                 <span class="macro">eprintln!</span>(
                     <span class="string">&quot;[wayland-server] Error accepting connection on listening socket {} : {}&quot;</span>,
-                    <span class="ident">path</span>.<span class="ident">display</span>(),
-                    <span class="ident">error</span>
+                    path.display(),
+                    error
                 );
                 <span class="kw">return</span>;
             }
         }
         <span class="macro">eprintln!</span>(
             <span class="string">&quot;[wayland-server] Error accepting connection on listening socket &lt;unnamed&gt; : {}&quot;</span>,
-            <span class="ident">error</span>
+            error
         );
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">WaylandListener</span> {
-    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">socketaddr</span>) <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">local_addr</span>() {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">path</span>) <span class="op">=</span> <span class="ident">socketaddr</span>.<span class="ident">as_pathname</span>() {
-                <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">::std::fs::remove_file</span>(<span class="ident">path</span>);
+<span class="kw">impl </span>Drop <span class="kw">for </span>WaylandListener {
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(socketaddr) = <span class="self">self</span>.<span class="number">0</span>.local_addr() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = socketaddr.as_pathname() {
+                <span class="kw">let _ </span>= ::std::fs::remove_file(path);
             }
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="wayland_server" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="wayland_server" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

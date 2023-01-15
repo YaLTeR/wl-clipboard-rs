@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-server-0.29.5/src/display.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>display.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wayland_server/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../wayland_server/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../wayland_server/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-server-0.29.5/src/display.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>display.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../wayland_server/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -253,260 +253,260 @@
 <span id="253">253</span>
 <span id="254">254</span>
 <span id="255">255</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::env</span>;
-<span class="kw">use</span> <span class="ident">std::ffi</span>::{<span class="ident">OsStr</span>, <span class="ident">OsString</span>};
-<span class="kw">use</span> <span class="ident">std::io</span>::{<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">IoError</span>, <span class="ident">ErrorKind</span>, <span class="prelude-ty">Result</span> <span class="kw">as</span> <span class="ident">IoResult</span>};
-<span class="kw">use</span> <span class="ident">std::os::unix::io</span>::{<span class="ident">IntoRawFd</span>, <span class="ident">RawFd</span>};
-<span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>std::env;
+<span class="kw">use </span>std::ffi::{OsStr, OsString};
+<span class="kw">use </span>std::io::{Error <span class="kw">as </span>IoError, ErrorKind, <span class="prelude-ty">Result </span><span class="kw">as </span>IoResult};
+<span class="kw">use </span>std::os::unix::io::{IntoRawFd, RawFd};
+<span class="kw">use </span>std::path::PathBuf;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">wayland_sys::server::wl_display</span>;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;use_system_lib&quot;</span>)]
+</span><span class="kw">use </span>wayland_sys::server::wl_display;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::imp::DisplayInner</span>;
+<span class="kw">use </span><span class="kw">crate</span>::imp::DisplayInner;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Client</span>, <span class="ident">Filter</span>, <span class="ident">Global</span>, <span class="ident">Interface</span>, <span class="ident">Main</span>, <span class="ident">Resource</span>};
+<span class="kw">use crate</span>::{Client, Filter, Global, Interface, Main, Resource};
 
-<span class="doccomment">/// The wayland display</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This is the core of your wayland server, this object must</span>
-<span class="doccomment">/// be kept alive as long as your server is running. It allows</span>
-<span class="doccomment">/// you to manage listening sockets and clients.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Display</span> {
-    <span class="ident">inner</span>: <span class="ident">DisplayInner</span>,
+<span class="doccomment">/// The wayland display
+///
+/// This is the core of your wayland server, this object must
+/// be kept alive as long as your server is running. It allows
+/// you to manage listening sockets and clients.
+</span><span class="kw">pub struct </span>Display {
+    inner: DisplayInner,
 }
 
-<span class="kw">impl</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">Display</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-        <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;Display { ... }&quot;</span>)
+<span class="kw">impl </span>std::fmt::Debug <span class="kw">for </span>Display {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        f.write_str(<span class="string">&quot;Display { ... }&quot;</span>)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Display</span> {
-    <span class="doccomment">/// Create a new display</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This method provides you a `Display` and inserts it into an existing</span>
-    <span class="doccomment">/// `calloop::EventLoop`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Note that at this point, your server is not yet ready to receive connections,</span>
-    <span class="doccomment">/// your need to add listening sockets using the `add_socket*` methods.</span>
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::new_without_default</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">Display</span> {
-        <span class="ident">Display</span> { <span class="ident">inner</span>: <span class="ident">DisplayInner::new</span>() }
+<span class="kw">impl </span>Display {
+    <span class="doccomment">/// Create a new display
+    ///
+    /// This method provides you a `Display` and inserts it into an existing
+    /// `calloop::EventLoop`.
+    ///
+    /// Note that at this point, your server is not yet ready to receive connections,
+    /// your need to add listening sockets using the `add_socket*` methods.
+    </span><span class="attribute">#[allow(clippy::new_without_default)]
+    </span><span class="kw">pub fn </span>new() -&gt; Display {
+        Display { inner: DisplayInner::new() }
     }
 
-    <span class="doccomment">/// Create a new global object</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This object will be advertised to all clients, and they will</span>
-    <span class="doccomment">/// be able to instantiate it from their registries.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Your filter will receinve an event whenever a client instantiates</span>
-    <span class="doccomment">/// this global.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The version specified is the **highest supported version**, you must</span>
-    <span class="doccomment">/// be able to handle clients that choose to instantiate this global with</span>
-    <span class="doccomment">/// a lower version number.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">create_global</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">E</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">version</span>: <span class="ident">u32</span>, <span class="ident">filter</span>: <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>) -&gt; <span class="ident">Global</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-        <span class="ident">E</span>: <span class="ident">From</span><span class="op">&lt;</span>(<span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">u32</span>)<span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    <span class="doccomment">/// Create a new global object
+    ///
+    /// This object will be advertised to all clients, and they will
+    /// be able to instantiate it from their registries.
+    ///
+    /// Your filter will receinve an event whenever a client instantiates
+    /// this global.
+    ///
+    /// The version specified is the **highest supported version**, you must
+    /// be able to handle clients that choose to instantiate this global with
+    /// a lower version number.
+    </span><span class="kw">pub fn </span>create_global&lt;I, E&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, version: u32, filter: Filter&lt;E&gt;) -&gt; Global&lt;I&gt;
+    <span class="kw">where
+        </span>I: Interface + AsRef&lt;Resource&lt;I&gt;&gt; + From&lt;Resource&lt;I&gt;&gt;,
+        E: From&lt;(Main&lt;I&gt;, u32)&gt; + <span class="lifetime">&#39;static</span>,
     {
         <span class="macro">assert!</span>(
-            <span class="ident">version</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">I::VERSION</span>,
+            version &lt;= I::VERSION,
             <span class="string">&quot;Cannot create global {} with version {}, maximum protocol version is {}.&quot;</span>,
-            <span class="ident">I::NAME</span>,
-            <span class="ident">version</span>,
-            <span class="ident">I::VERSION</span>
+            I::NAME,
+            version,
+            I::VERSION
         );
-        <span class="ident">Global::create</span>(<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">create_global</span>(
-            <span class="ident">version</span>,
-            <span class="kw">move</span> <span class="op">|</span><span class="ident">main</span>, <span class="ident">id</span>, <span class="ident">ddata</span><span class="op">|</span> <span class="ident">filter</span>.<span class="ident">send</span>((<span class="ident">main</span>, <span class="ident">id</span>).<span class="ident">into</span>(), <span class="ident">ddata</span>),
-            <span class="prelude-val">None</span>::<span class="op">&lt;</span><span class="kw">fn</span>(<span class="kw">_</span>) -&gt; <span class="ident">bool</span><span class="op">&gt;</span>,
+        Global::create(<span class="self">self</span>.inner.create_global(
+            version,
+            <span class="kw">move </span>|main, id, ddata| filter.send((main, id).into(), ddata),
+            <span class="prelude-val">None</span>::&lt;<span class="kw">fn</span>(<span class="kw">_</span>) -&gt; bool&gt;,
         ))
     }
 
-    <span class="doccomment">/// Create a new global object with a client filter</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This object will only be advertized to clients for which your</span>
-    <span class="doccomment">/// client filter closure returns `true`. Note that this client filter cannot</span>
-    <span class="doccomment">/// access the `DispatchData` as it may be invoked outside of a dispatch. As</span>
-    <span class="doccomment">/// such it should only rely on the client-associated user-data to make its</span>
-    <span class="doccomment">/// decision.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Your event filter will be receive an event whenever a client instantiates</span>
-    <span class="doccomment">/// this global.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The version specified is the **highest supported version**, you must</span>
-    <span class="doccomment">/// be able to handle clients that choose to instantiate this global with</span>
-    <span class="doccomment">/// a lower version number.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">create_global_with_filter</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">E</span>, <span class="ident">F</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">version</span>: <span class="ident">u32</span>,
-        <span class="ident">filter</span>: <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>,
-        <span class="kw-2">mut</span> <span class="ident">client_filter</span>: <span class="ident">F</span>,
-    ) -&gt; <span class="ident">Global</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">Interface</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Resource</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-        <span class="ident">E</span>: <span class="ident">From</span><span class="op">&lt;</span>(<span class="ident">Main</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>, <span class="ident">u32</span>)<span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">Client</span>) -&gt; <span class="ident">bool</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    <span class="doccomment">/// Create a new global object with a client filter
+    ///
+    /// This object will only be advertized to clients for which your
+    /// client filter closure returns `true`. Note that this client filter cannot
+    /// access the `DispatchData` as it may be invoked outside of a dispatch. As
+    /// such it should only rely on the client-associated user-data to make its
+    /// decision.
+    ///
+    /// Your event filter will be receive an event whenever a client instantiates
+    /// this global.
+    ///
+    /// The version specified is the **highest supported version**, you must
+    /// be able to handle clients that choose to instantiate this global with
+    /// a lower version number.
+    </span><span class="kw">pub fn </span>create_global_with_filter&lt;I, E, F&gt;(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        version: u32,
+        filter: Filter&lt;E&gt;,
+        <span class="kw-2">mut </span>client_filter: F,
+    ) -&gt; Global&lt;I&gt;
+    <span class="kw">where
+        </span>I: Interface + AsRef&lt;Resource&lt;I&gt;&gt; + From&lt;Resource&lt;I&gt;&gt;,
+        E: From&lt;(Main&lt;I&gt;, u32)&gt; + <span class="lifetime">&#39;static</span>,
+        F: FnMut(Client) -&gt; bool + <span class="lifetime">&#39;static</span>,
     {
         <span class="macro">assert!</span>(
-            <span class="ident">version</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">I::VERSION</span>,
+            version &lt;= I::VERSION,
             <span class="string">&quot;Cannot create global {} with version {}, maximum protocol version is {}.&quot;</span>,
-            <span class="ident">I::NAME</span>,
-            <span class="ident">version</span>,
-            <span class="ident">I::VERSION</span>
+            I::NAME,
+            version,
+            I::VERSION
         );
-        <span class="ident">Global::create</span>(<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">create_global</span>(
-            <span class="ident">version</span>,
-            <span class="kw">move</span> <span class="op">|</span><span class="ident">main</span>, <span class="ident">id</span>, <span class="ident">ddata</span><span class="op">|</span> <span class="ident">filter</span>.<span class="ident">send</span>((<span class="ident">main</span>, <span class="ident">id</span>).<span class="ident">into</span>(), <span class="ident">ddata</span>),
-            <span class="prelude-val">Some</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">client_inner</span><span class="op">|</span> <span class="ident">client_filter</span>(<span class="ident">Client::make</span>(<span class="ident">client_inner</span>))),
+        Global::create(<span class="self">self</span>.inner.create_global(
+            version,
+            <span class="kw">move </span>|main, id, ddata| filter.send((main, id).into(), ddata),
+            <span class="prelude-val">Some</span>(<span class="kw">move </span>|client_inner| client_filter(Client::make(client_inner))),
         ))
     }
 
-    <span class="doccomment">/// Flush events to the clients</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Will send as many pending events as possible to the respective sockets of the clients.</span>
-    <span class="doccomment">/// Will not block, but might not send everything if the socket buffer fills up.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The provided `data` will be mutably accessible from all the callbacks that may be called</span>
-    <span class="doccomment">/// during this (destructors notably) via the [`DispatchData`](struct.DispatchData.html) mechanism.</span>
-    <span class="doccomment">/// If you don&#39;t need global data, you can just provide a `&amp;mut ()` there.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">flush_clients</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">std::any::Any</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> <span class="ident">T</span>) {
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::DispatchData::wrap</span>(<span class="ident">data</span>);
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">flush_clients</span>(<span class="ident">data</span>)
+    <span class="doccomment">/// Flush events to the clients
+    ///
+    /// Will send as many pending events as possible to the respective sockets of the clients.
+    /// Will not block, but might not send everything if the socket buffer fills up.
+    ///
+    /// The provided `data` will be mutably accessible from all the callbacks that may be called
+    /// during this (destructors notably) via the [`DispatchData`](struct.DispatchData.html) mechanism.
+    /// If you don&#39;t need global data, you can just provide a `&amp;mut ()` there.
+    </span><span class="kw">pub fn </span>flush_clients&lt;T: std::any::Any&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, data: <span class="kw-2">&amp;mut </span>T) {
+        <span class="kw">let </span>data = <span class="kw">crate</span>::DispatchData::wrap(data);
+        <span class="self">self</span>.inner.flush_clients(data)
     }
 
-    <span class="doccomment">/// Dispatches all pending messages to their respective filters</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This method will block waiting for messages until one of these occur:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - Some messages are received, in which case all pending messages are processed</span>
-    <span class="doccomment">/// - The timeout is reached</span>
-    <span class="doccomment">/// - An error occurs</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If `timeout` is a duration of 0, this function will only process pending messages and then</span>
-    <span class="doccomment">/// return, not blocking.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The provided `data` will be mutably accessible from all the callbacks, via the</span>
-    <span class="doccomment">/// [`DispatchData`](struct.DispatchData.html) mechanism. If you don&#39;t need global data, you</span>
-    <span class="doccomment">/// can just provide a `&amp;mut ()` there.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// In general for good performance you will want to integrate the `Display` into your own event loop,</span>
-    <span class="doccomment">/// monitoring the file descriptor retrieved by the `get_poll_fd()` method, and only calling this method</span>
-    <span class="doccomment">/// when messages are available, with a timeout of `0`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dispatch</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">std::any::Any</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">timeout</span>: <span class="ident">std::time::Duration</span>,
-        <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> <span class="ident">T</span>,
-    ) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::DispatchData::wrap</span>(<span class="ident">data</span>);
-        <span class="kw">let</span> <span class="ident">ms</span> <span class="op">=</span> <span class="ident">timeout</span>.<span class="ident">as_millis</span>();
-        <span class="kw">let</span> <span class="ident">clamped_timeout</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">ms</span> <span class="op">&gt;</span> <span class="ident">std::i32::MAX</span> <span class="kw">as</span> <span class="ident">u128</span> { <span class="ident">std::i32::MAX</span> } <span class="kw">else</span> { <span class="ident">ms</span> <span class="kw">as</span> <span class="ident">i32</span> };
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">dispatch</span>(<span class="ident">clamped_timeout</span>, <span class="ident">data</span>)
+    <span class="doccomment">/// Dispatches all pending messages to their respective filters
+    ///
+    /// This method will block waiting for messages until one of these occur:
+    ///
+    /// - Some messages are received, in which case all pending messages are processed
+    /// - The timeout is reached
+    /// - An error occurs
+    ///
+    /// If `timeout` is a duration of 0, this function will only process pending messages and then
+    /// return, not blocking.
+    ///
+    /// The provided `data` will be mutably accessible from all the callbacks, via the
+    /// [`DispatchData`](struct.DispatchData.html) mechanism. If you don&#39;t need global data, you
+    /// can just provide a `&amp;mut ()` there.
+    ///
+    /// In general for good performance you will want to integrate the `Display` into your own event loop,
+    /// monitoring the file descriptor retrieved by the `get_poll_fd()` method, and only calling this method
+    /// when messages are available, with a timeout of `0`.
+    </span><span class="kw">pub fn </span>dispatch&lt;T: std::any::Any&gt;(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        timeout: std::time::Duration,
+        data: <span class="kw-2">&amp;mut </span>T,
+    ) -&gt; IoResult&lt;()&gt; {
+        <span class="kw">let </span>data = <span class="kw">crate</span>::DispatchData::wrap(data);
+        <span class="kw">let </span>ms = timeout.as_millis();
+        <span class="kw">let </span>clamped_timeout = <span class="kw">if </span>ms &gt; std::i32::MAX <span class="kw">as </span>u128 { std::i32::MAX } <span class="kw">else </span>{ ms <span class="kw">as </span>i32 };
+        <span class="self">self</span>.inner.dispatch(clamped_timeout, data)
     }
 
-    <span class="doccomment">/// Retrieve the underlying file descriptor</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This file descriptor can be monitored for activity with a poll/epoll like mechanism.</span>
-    <span class="doccomment">/// When it becomes readable, this means that there are pending messages that would be dispatched if</span>
-    <span class="doccomment">/// you call `dispatch` with a timeout of 0.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// You should not use this file descriptor for any other purpose than monitoring it.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_poll_fd</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">RawFd</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">get_poll_fd</span>()
+    <span class="doccomment">/// Retrieve the underlying file descriptor
+    ///
+    /// This file descriptor can be monitored for activity with a poll/epoll like mechanism.
+    /// When it becomes readable, this means that there are pending messages that would be dispatched if
+    /// you call `dispatch` with a timeout of 0.
+    ///
+    /// You should not use this file descriptor for any other purpose than monitoring it.
+    </span><span class="kw">pub fn </span>get_poll_fd(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RawFd {
+        <span class="self">self</span>.inner.get_poll_fd()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Display</span> {
-    <span class="doccomment">/// Add a listening socket to this display</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Wayland clients will be able to connect to your compositor from this socket.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Socket will be created in the directory specified by the environment variable</span>
-    <span class="doccomment">/// `XDG_RUNTIME_DIR`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If a name is provided, it is used. Otherwise, if `WAYLAND_DISPLAY` environment</span>
-    <span class="doccomment">/// variable is set, its contents are used as socket name. Otherwise, `wayland-0` is used.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Errors if `name` contains an interior null, or if `XDG_RUNTIME_DIR` is not set,</span>
-    <span class="doccomment">/// or if specified could not be bound (either it is already used or the compositor</span>
-    <span class="doccomment">/// does not have the rights to create it).</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_socket</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">OsStr</span><span class="op">&gt;</span>,
+<span class="kw">impl </span>Display {
+    <span class="doccomment">/// Add a listening socket to this display
+    ///
+    /// Wayland clients will be able to connect to your compositor from this socket.
+    ///
+    /// Socket will be created in the directory specified by the environment variable
+    /// `XDG_RUNTIME_DIR`.
+    ///
+    /// If a name is provided, it is used. Otherwise, if `WAYLAND_DISPLAY` environment
+    /// variable is set, its contents are used as socket name. Otherwise, `wayland-0` is used.
+    ///
+    /// Errors if `name` contains an interior null, or if `XDG_RUNTIME_DIR` is not set,
+    /// or if specified could not be bound (either it is already used or the compositor
+    /// does not have the rights to create it).
+    </span><span class="kw">pub fn </span>add_socket&lt;S&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name: <span class="prelude-ty">Option</span>&lt;S&gt;) -&gt; IoResult&lt;()&gt;
+    <span class="kw">where
+        </span>S: AsRef&lt;OsStr&gt;,
     {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">add_socket</span>(<span class="ident">name</span>)
+        <span class="self">self</span>.inner.add_socket(name)
     }
 
-    <span class="doccomment">/// Add an automatically named listening socket to this display</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Wayland clients will be able to connect to your compositor from this socket.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Socket will be created in the directory specified by the environment variable</span>
-    <span class="doccomment">/// `XDG_RUNTIME_DIR`. The directory is scanned for any name in the form `wayland-$d` with</span>
-    <span class="doccomment">/// `0 &lt;= $d &lt; 32` and the first available one is used.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Errors if `XDG_RUNTIME_DIR` is not set, or all 32 names are already in use.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_socket_auto</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span><span class="ident">OsString</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">add_socket_auto</span>()
+    <span class="doccomment">/// Add an automatically named listening socket to this display
+    ///
+    /// Wayland clients will be able to connect to your compositor from this socket.
+    ///
+    /// Socket will be created in the directory specified by the environment variable
+    /// `XDG_RUNTIME_DIR`. The directory is scanned for any name in the form `wayland-$d` with
+    /// `0 &lt;= $d &lt; 32` and the first available one is used.
+    ///
+    /// Errors if `XDG_RUNTIME_DIR` is not set, or all 32 names are already in use.
+    </span><span class="kw">pub fn </span>add_socket_auto(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; IoResult&lt;OsString&gt; {
+        <span class="self">self</span>.inner.add_socket_auto()
     }
 
-    <span class="doccomment">/// Add existing listening socket to this display</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Wayland clients will be able to connect to your compositor from this socket.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The existing socket fd must already be created, opened, and locked.</span>
-    <span class="doccomment">/// The fd must be properly set to CLOEXEC and bound to a socket file</span>
-    <span class="doccomment">/// with both bind() and listen() already called. An error is returned</span>
-    <span class="doccomment">/// otherwise.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_socket_from</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">socket</span>: <span class="ident">T</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">IntoRawFd</span>,
+    <span class="doccomment">/// Add existing listening socket to this display
+    ///
+    /// Wayland clients will be able to connect to your compositor from this socket.
+    ///
+    /// The existing socket fd must already be created, opened, and locked.
+    /// The fd must be properly set to CLOEXEC and bound to a socket file
+    /// with both bind() and listen() already called. An error is returned
+    /// otherwise.
+    </span><span class="kw">pub fn </span>add_socket_from&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, socket: T) -&gt; IoResult&lt;()&gt;
+    <span class="kw">where
+        </span>T: IntoRawFd,
     {
-        <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">add_socket_fd</span>(<span class="ident">socket</span>.<span class="ident">into_raw_fd</span>()) }
+        <span class="kw">unsafe </span>{ <span class="self">self</span>.add_socket_fd(socket.into_raw_fd()) }
     }
 
-    <span class="doccomment">/// Add existing listening socket to this display from a raw file descriptor</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Wayland clients will be able to connect to your compositor from this socket.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The library takes ownership of the provided socket if this method returns</span>
-    <span class="doccomment">/// successfully.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The existing socket fd must already be created, opened, and locked.</span>
-    <span class="doccomment">/// The fd must be properly set to CLOEXEC and bound to a socket file</span>
-    <span class="doccomment">/// with both bind() and listen() already called. An error is returned</span>
-    <span class="doccomment">/// otherwise.</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">add_socket_fd</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">fd</span>: <span class="ident">RawFd</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">add_socket_fd</span>(<span class="ident">fd</span>)
+    <span class="doccomment">/// Add existing listening socket to this display from a raw file descriptor
+    ///
+    /// Wayland clients will be able to connect to your compositor from this socket.
+    ///
+    /// The library takes ownership of the provided socket if this method returns
+    /// successfully.
+    ///
+    /// # Safety
+    ///
+    /// The existing socket fd must already be created, opened, and locked.
+    /// The fd must be properly set to CLOEXEC and bound to a socket file
+    /// with both bind() and listen() already called. An error is returned
+    /// otherwise.
+    </span><span class="kw">pub unsafe fn </span>add_socket_fd(<span class="kw-2">&amp;mut </span><span class="self">self</span>, fd: RawFd) -&gt; IoResult&lt;()&gt; {
+        <span class="self">self</span>.inner.add_socket_fd(fd)
     }
 
-    <span class="doccomment">/// Create a new client to this display from an already-existing connected Fd</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The provided file descriptor must be associated to a valid client connection.</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">create_client</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">std::any::Any</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">fd</span>: <span class="ident">RawFd</span>, <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> <span class="ident">T</span>) -&gt; <span class="ident">Client</span> {
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::DispatchData::wrap</span>(<span class="ident">data</span>);
-        <span class="ident">Client::make</span>(<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">create_client</span>(<span class="ident">fd</span>, <span class="ident">data</span>))
-    }
-}
-
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;use_system_lib&quot;</span>)]</span>
-<span class="kw">impl</span> <span class="ident">Display</span> {
-    <span class="doccomment">/// Retrieve a pointer from the C lib to this `wl_display`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">c_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wl_display</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">ptr</span>()
+    <span class="doccomment">/// Create a new client to this display from an already-existing connected Fd
+    ///
+    /// # Safety
+    ///
+    /// The provided file descriptor must be associated to a valid client connection.
+    </span><span class="kw">pub unsafe fn </span>create_client&lt;T: std::any::Any&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, fd: RawFd, data: <span class="kw-2">&amp;mut </span>T) -&gt; Client {
+        <span class="kw">let </span>data = <span class="kw">crate</span>::DispatchData::wrap(data);
+        Client::make(<span class="self">self</span>.inner.create_client(fd, data))
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_runtime_dir</span>() -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">env::var_os</span>(<span class="string">&quot;XDG_RUNTIME_DIR&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">s</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">s</span>.<span class="ident">into</span>()),
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">IoError::new</span>(<span class="ident">ErrorKind::NotFound</span>, <span class="string">&quot;XDG_RUNTIME_DIR env variable is not set&quot;</span>)),
+<span class="attribute">#[cfg(feature = <span class="string">&quot;use_system_lib&quot;</span>)]
+</span><span class="kw">impl </span>Display {
+    <span class="doccomment">/// Retrieve a pointer from the C lib to this `wl_display`
+    </span><span class="kw">pub fn </span>c_ptr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut </span>wl_display {
+        <span class="self">self</span>.inner.ptr()
+    }
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_runtime_dir() -&gt; IoResult&lt;PathBuf&gt; {
+    <span class="kw">match </span>env::var_os(<span class="string">&quot;XDG_RUNTIME_DIR&quot;</span>) {
+        <span class="prelude-val">Some</span>(s) =&gt; <span class="prelude-val">Ok</span>(s.into()),
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(IoError::new(ErrorKind::NotFound, <span class="string">&quot;XDG_RUNTIME_DIR env variable is not set&quot;</span>)),
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_server" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_server" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

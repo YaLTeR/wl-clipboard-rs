@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.2/src/ifaddrs.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ifaddrs.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../nix/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../nix/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/nix-0.24.3/src/ifaddrs.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ifaddrs.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../nix/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -145,152 +145,284 @@
 <span id="145">145</span>
 <span id="146">146</span>
 <span id="147">147</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Query network interface addresses</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Uses the Linux and/or BSD specific function `getifaddrs` to query the list</span>
-<span class="doccomment">//! of interfaces and their associated addresses.</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Query network interface addresses
+//!
+//! Uses the Linux and/or BSD specific function `getifaddrs` to query the list
+//! of interfaces and their associated addresses.
 
-<span class="kw">use</span> <span class="ident">cfg_if::cfg_if</span>;
-<span class="kw">use</span> <span class="ident">std::ffi</span>;
-<span class="kw">use</span> <span class="ident">std::iter::Iterator</span>;
-<span class="kw">use</span> <span class="ident">std::mem</span>;
-<span class="kw">use</span> <span class="ident">std::option::Option</span>;
+</span><span class="kw">use </span>cfg_if::cfg_if;
+<span class="attribute">#[cfg(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>))]
+</span><span class="kw">use </span>std::convert::TryFrom;
+<span class="kw">use </span>std::ffi;
+<span class="kw">use </span>std::iter::Iterator;
+<span class="kw">use </span>std::mem;
+<span class="kw">use </span>std::option::Option;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="prelude-ty">Result</span>, <span class="ident">Errno</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::sys::socket</span>::{<span class="ident">SockaddrLike</span>, <span class="ident">SockaddrStorage</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::net::if_</span>::<span class="kw-2">*</span>;
+<span class="kw">use crate</span>::{<span class="prelude-ty">Result</span>, Errno};
+<span class="kw">use </span><span class="kw">crate</span>::sys::socket::{SockaddrLike, SockaddrStorage};
+<span class="kw">use </span><span class="kw">crate</span>::net::if_::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// Describes a single address for an interface as returned by `getifaddrs`.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InterfaceAddress</span> {
-    <span class="doccomment">/// Name of the network interface</span>
-    <span class="kw">pub</span> <span class="ident">interface_name</span>: <span class="ident">String</span>,
-    <span class="doccomment">/// Flags as from `SIOCGIFFLAGS` ioctl</span>
-    <span class="kw">pub</span> <span class="ident">flags</span>: <span class="ident">InterfaceFlags</span>,
-    <span class="doccomment">/// Network address of this interface</span>
-    <span class="kw">pub</span> <span class="ident">address</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SockaddrStorage</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Netmask of this interface</span>
-    <span class="kw">pub</span> <span class="ident">netmask</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SockaddrStorage</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Broadcast address of this interface, if applicable</span>
-    <span class="kw">pub</span> <span class="ident">broadcast</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SockaddrStorage</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Point-to-point destination address</span>
-    <span class="kw">pub</span> <span class="ident">destination</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SockaddrStorage</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Describes a single address for an interface as returned by `getifaddrs`.
+</span><span class="attribute">#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+</span><span class="kw">pub struct </span>InterfaceAddress {
+    <span class="doccomment">/// Name of the network interface
+    </span><span class="kw">pub </span>interface_name: String,
+    <span class="doccomment">/// Flags as from `SIOCGIFFLAGS` ioctl
+    </span><span class="kw">pub </span>flags: InterfaceFlags,
+    <span class="doccomment">/// Network address of this interface
+    </span><span class="kw">pub </span>address: <span class="prelude-ty">Option</span>&lt;SockaddrStorage&gt;,
+    <span class="doccomment">/// Netmask of this interface
+    </span><span class="kw">pub </span>netmask: <span class="prelude-ty">Option</span>&lt;SockaddrStorage&gt;,
+    <span class="doccomment">/// Broadcast address of this interface, if applicable
+    </span><span class="kw">pub </span>broadcast: <span class="prelude-ty">Option</span>&lt;SockaddrStorage&gt;,
+    <span class="doccomment">/// Point-to-point destination address
+    </span><span class="kw">pub </span>destination: <span class="prelude-ty">Option</span>&lt;SockaddrStorage&gt;,
 }
 
-<span class="macro">cfg_if!</span> {
-    <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;android&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;emscripten&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;fuchsia&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>))]</span> {
-        <span class="kw">fn</span> <span class="ident">get_ifu_from_sockaddr</span>(<span class="ident">info</span>: <span class="kw-2">&amp;</span><span class="ident">libc::ifaddrs</span>) -&gt; <span class="kw-2">*const</span> <span class="ident">libc::sockaddr</span> {
-            <span class="ident">info</span>.<span class="ident">ifa_ifu</span>
+<span class="macro">cfg_if! </span>{
+    <span class="kw">if </span><span class="attribute">#[cfg(any(target_os = <span class="string">&quot;android&quot;</span>, target_os = <span class="string">&quot;emscripten&quot;</span>, target_os = <span class="string">&quot;fuchsia&quot;</span>, target_os = <span class="string">&quot;linux&quot;</span>))] </span>{
+        <span class="kw">fn </span>get_ifu_from_sockaddr(info: <span class="kw-2">&amp;</span>libc::ifaddrs) -&gt; <span class="kw-2">*const </span>libc::sockaddr {
+            info.ifa_ifu
         }
-    } <span class="kw">else</span> {
-        <span class="kw">fn</span> <span class="ident">get_ifu_from_sockaddr</span>(<span class="ident">info</span>: <span class="kw-2">&amp;</span><span class="ident">libc::ifaddrs</span>) -&gt; <span class="kw-2">*const</span> <span class="ident">libc::sockaddr</span> {
-            <span class="ident">info</span>.<span class="ident">ifa_dstaddr</span>
+    } <span class="kw">else </span>{
+        <span class="kw">fn </span>get_ifu_from_sockaddr(info: <span class="kw-2">&amp;</span>libc::ifaddrs) -&gt; <span class="kw-2">*const </span>libc::sockaddr {
+            info.ifa_dstaddr
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">InterfaceAddress</span> {
-    <span class="doccomment">/// Create an `InterfaceAddress` from the libc struct.</span>
-    <span class="kw">fn</span> <span class="ident">from_libc_ifaddrs</span>(<span class="ident">info</span>: <span class="kw-2">&amp;</span><span class="ident">libc::ifaddrs</span>) -&gt; <span class="ident">InterfaceAddress</span> {
-        <span class="kw">let</span> <span class="ident">ifname</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">ffi::CStr::from_ptr</span>(<span class="ident">info</span>.<span class="ident">ifa_name</span>) };
-        <span class="kw">let</span> <span class="ident">address</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">SockaddrStorage::from_raw</span>(<span class="ident">info</span>.<span class="ident">ifa_addr</span>, <span class="prelude-val">None</span>) };
-        <span class="kw">let</span> <span class="ident">netmask</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">SockaddrStorage::from_raw</span>(<span class="ident">info</span>.<span class="ident">ifa_netmask</span>, <span class="prelude-val">None</span>) };
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">addr</span> <span class="op">=</span> <span class="ident">InterfaceAddress</span> {
-            <span class="ident">interface_name</span>: <span class="ident">ifname</span>.<span class="ident">to_string_lossy</span>().<span class="ident">to_string</span>(),
-            <span class="ident">flags</span>: <span class="ident">InterfaceFlags::from_bits_truncate</span>(<span class="ident">info</span>.<span class="ident">ifa_flags</span> <span class="kw">as</span> <span class="ident">i32</span>),
-            <span class="ident">address</span>,
-            <span class="ident">netmask</span>,
-            <span class="ident">broadcast</span>: <span class="prelude-val">None</span>,
-            <span class="ident">destination</span>: <span class="prelude-val">None</span>,
+<span class="doccomment">/// Workaround a bug in XNU where netmasks will always have the wrong size in
+/// the sa_len field due to the kernel ignoring trailing zeroes in the structure
+/// when setting the field. See https://github.com/nix-rust/nix/issues/1709#issuecomment-1199304470
+///
+/// To fix this, we stack-allocate a new sockaddr_storage, zero it out, and
+/// memcpy sa_len of the netmask to that new storage. Finally, we reset the
+/// ss_len field to sizeof(sockaddr_storage). This is supposedly valid as all
+/// members of the sockaddr_storage are &quot;ok&quot; with being zeroed out (there are
+/// no pointers).
+</span><span class="attribute">#[cfg(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>))]
+</span><span class="kw">unsafe fn </span>workaround_xnu_bug(info: <span class="kw-2">&amp;</span>libc::ifaddrs) -&gt; <span class="prelude-ty">Option</span>&lt;SockaddrStorage&gt; {
+    <span class="kw">let </span>src_sock = info.ifa_netmask;
+    <span class="kw">if </span>src_sock.is_null() {
+        <span class="kw">return </span><span class="prelude-val">None</span>;
+    }
+
+    <span class="kw">let </span><span class="kw-2">mut </span>dst_sock = mem::MaybeUninit::&lt;libc::sockaddr_storage&gt;::zeroed();
+
+    <span class="comment">// memcpy only sa_len bytes, assume the rest is zero
+    </span>std::ptr::copy_nonoverlapping(
+        src_sock <span class="kw">as </span><span class="kw-2">*const </span>u8,
+        dst_sock.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>u8,
+        (<span class="kw-2">*</span>src_sock).sa_len.into(),
+    );
+
+    <span class="comment">// Initialize ss_len to sizeof(libc::sockaddr_storage).
+    </span>(<span class="kw-2">*</span>dst_sock.as_mut_ptr()).ss_len =
+        u8::try_from(mem::size_of::&lt;libc::sockaddr_storage&gt;()).unwrap();
+    <span class="kw">let </span>dst_sock = dst_sock.assume_init();
+
+    <span class="kw">let </span>dst_sock_ptr =
+        <span class="kw-2">&amp;</span>dst_sock <span class="kw">as </span><span class="kw-2">*const </span>libc::sockaddr_storage <span class="kw">as </span><span class="kw-2">*const </span>libc::sockaddr;
+
+    SockaddrStorage::from_raw(dst_sock_ptr, <span class="prelude-val">None</span>)
+}
+
+<span class="kw">impl </span>InterfaceAddress {
+    <span class="doccomment">/// Create an `InterfaceAddress` from the libc struct.
+    </span><span class="kw">fn </span>from_libc_ifaddrs(info: <span class="kw-2">&amp;</span>libc::ifaddrs) -&gt; InterfaceAddress {
+        <span class="kw">let </span>ifname = <span class="kw">unsafe </span>{ ffi::CStr::from_ptr(info.ifa_name) };
+        <span class="kw">let </span>address = <span class="kw">unsafe </span>{ SockaddrStorage::from_raw(info.ifa_addr, <span class="prelude-val">None</span>) };
+        <span class="attribute">#[cfg(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>))]
+        </span><span class="kw">let </span>netmask = <span class="kw">unsafe </span>{ workaround_xnu_bug(info) };
+        <span class="attribute">#[cfg(not(any(target_os = <span class="string">&quot;ios&quot;</span>, target_os = <span class="string">&quot;macos&quot;</span>)))]
+        </span><span class="kw">let </span>netmask =
+            <span class="kw">unsafe </span>{ SockaddrStorage::from_raw(info.ifa_netmask, <span class="prelude-val">None</span>) };
+        <span class="kw">let </span><span class="kw-2">mut </span>addr = InterfaceAddress {
+            interface_name: ifname.to_string_lossy().to_string(),
+            flags: InterfaceFlags::from_bits_truncate(info.ifa_flags <span class="kw">as </span>i32),
+            address,
+            netmask,
+            broadcast: <span class="prelude-val">None</span>,
+            destination: <span class="prelude-val">None</span>,
         };
 
-        <span class="kw">let</span> <span class="ident">ifu</span> <span class="op">=</span> <span class="ident">get_ifu_from_sockaddr</span>(<span class="ident">info</span>);
-        <span class="kw">if</span> <span class="ident">addr</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">InterfaceFlags::IFF_POINTOPOINT</span>) {
-            <span class="ident">addr</span>.<span class="ident">destination</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">SockaddrStorage::from_raw</span>(<span class="ident">ifu</span>, <span class="prelude-val">None</span>) };
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">addr</span>.<span class="ident">flags</span>.<span class="ident">contains</span>(<span class="ident">InterfaceFlags::IFF_BROADCAST</span>) {
-            <span class="ident">addr</span>.<span class="ident">broadcast</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">SockaddrStorage::from_raw</span>(<span class="ident">ifu</span>, <span class="prelude-val">None</span>) };
+        <span class="kw">let </span>ifu = get_ifu_from_sockaddr(info);
+        <span class="kw">if </span>addr.flags.contains(InterfaceFlags::IFF_POINTOPOINT) {
+            addr.destination = <span class="kw">unsafe </span>{ SockaddrStorage::from_raw(ifu, <span class="prelude-val">None</span>) };
+        } <span class="kw">else if </span>addr.flags.contains(InterfaceFlags::IFF_BROADCAST) {
+            addr.broadcast = <span class="kw">unsafe </span>{ SockaddrStorage::from_raw(ifu, <span class="prelude-val">None</span>) };
         }
 
-        <span class="ident">addr</span>
+        addr
     }
 }
 
-<span class="doccomment">/// Holds the results of `getifaddrs`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Use the function `getifaddrs` to create this Iterator. Note that the</span>
-<span class="doccomment">/// actual list of interfaces can be iterated once and will be freed as</span>
-<span class="doccomment">/// soon as the Iterator goes out of scope.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InterfaceAddressIterator</span> {
-    <span class="ident">base</span>: <span class="kw-2">*mut</span> <span class="ident">libc::ifaddrs</span>,
-    <span class="ident">next</span>: <span class="kw-2">*mut</span> <span class="ident">libc::ifaddrs</span>,
+<span class="doccomment">/// Holds the results of `getifaddrs`.
+///
+/// Use the function `getifaddrs` to create this Iterator. Note that the
+/// actual list of interfaces can be iterated once and will be freed as
+/// soon as the Iterator goes out of scope.
+</span><span class="attribute">#[derive(Debug, Eq, Hash, PartialEq)]
+</span><span class="kw">pub struct </span>InterfaceAddressIterator {
+    base: <span class="kw-2">*mut </span>libc::ifaddrs,
+    next: <span class="kw-2">*mut </span>libc::ifaddrs,
 }
 
-<span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">InterfaceAddressIterator</span> {
-    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">unsafe</span> { <span class="ident">libc::freeifaddrs</span>(<span class="self">self</span>.<span class="ident">base</span>) };
+<span class="kw">impl </span>Drop <span class="kw">for </span>InterfaceAddressIterator {
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">unsafe </span>{ libc::freeifaddrs(<span class="self">self</span>.base) };
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">InterfaceAddressIterator</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">InterfaceAddress</span>;
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">Iterator</span><span class="op">&gt;</span><span class="ident">::Item</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">next</span>.<span class="ident">as_ref</span>() } {
-            <span class="prelude-val">Some</span>(<span class="ident">ifaddr</span>) =&gt; {
-                <span class="self">self</span>.<span class="ident">next</span> <span class="op">=</span> <span class="ident">ifaddr</span>.<span class="ident">ifa_next</span>;
-                <span class="prelude-val">Some</span>(<span class="ident">InterfaceAddress::from_libc_ifaddrs</span>(<span class="ident">ifaddr</span>))
+<span class="kw">impl </span>Iterator <span class="kw">for </span>InterfaceAddressIterator {
+    <span class="kw">type </span>Item = InterfaceAddress;
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self </span><span class="kw">as </span>Iterator&gt;::Item&gt; {
+        <span class="kw">match unsafe </span>{ <span class="self">self</span>.next.as_ref() } {
+            <span class="prelude-val">Some</span>(ifaddr) =&gt; {
+                <span class="self">self</span>.next = ifaddr.ifa_next;
+                <span class="prelude-val">Some</span>(InterfaceAddress::from_libc_ifaddrs(ifaddr))
             }
-            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
 }
 
-<span class="doccomment">/// Get interface addresses using libc&#39;s `getifaddrs`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Note that the underlying implementation differs between OSes. Only the</span>
-<span class="doccomment">/// most common address families are supported by the nix crate (due to</span>
-<span class="doccomment">/// lack of time and complexity of testing). The address family is encoded</span>
-<span class="doccomment">/// in the specific variant of `SockaddrStorage` returned for the fields</span>
-<span class="doccomment">/// `address`, `netmask`, `broadcast`, and `destination`. For any entry not</span>
-<span class="doccomment">/// supported, the returned list will contain a `None` entry.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Example</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// let addrs = nix::ifaddrs::getifaddrs().unwrap();</span>
-<span class="doccomment">/// for ifaddr in addrs {</span>
-<span class="doccomment">///   match ifaddr.address {</span>
-<span class="doccomment">///     Some(address) =&gt; {</span>
-<span class="doccomment">///       println!(&quot;interface {} address {}&quot;,</span>
-<span class="doccomment">///                ifaddr.interface_name, address);</span>
-<span class="doccomment">///     },</span>
-<span class="doccomment">///     None =&gt; {</span>
-<span class="doccomment">///       println!(&quot;interface {} with unsupported address family&quot;,</span>
-<span class="doccomment">///                ifaddr.interface_name);</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">///   }</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">getifaddrs</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">InterfaceAddressIterator</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">addrs</span> <span class="op">=</span> <span class="ident">mem::MaybeUninit</span>::<span class="op">&lt;</span><span class="kw-2">*mut</span> <span class="ident">libc::ifaddrs</span><span class="op">&gt;</span><span class="ident">::uninit</span>();
-    <span class="kw">unsafe</span> {
-        <span class="ident">Errno::result</span>(<span class="ident">libc::getifaddrs</span>(<span class="ident">addrs</span>.<span class="ident">as_mut_ptr</span>())).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-            <span class="ident">InterfaceAddressIterator</span> {
-                <span class="ident">base</span>: <span class="ident">addrs</span>.<span class="ident">assume_init</span>(),
-                <span class="ident">next</span>: <span class="ident">addrs</span>.<span class="ident">assume_init</span>(),
+<span class="doccomment">/// Get interface addresses using libc&#39;s `getifaddrs`
+///
+/// Note that the underlying implementation differs between OSes. Only the
+/// most common address families are supported by the nix crate (due to
+/// lack of time and complexity of testing). The address family is encoded
+/// in the specific variant of `SockaddrStorage` returned for the fields
+/// `address`, `netmask`, `broadcast`, and `destination`. For any entry not
+/// supported, the returned list will contain a `None` entry.
+///
+/// # Example
+/// ```
+/// let addrs = nix::ifaddrs::getifaddrs().unwrap();
+/// for ifaddr in addrs {
+///   match ifaddr.address {
+///     Some(address) =&gt; {
+///       println!(&quot;interface {} address {}&quot;,
+///                ifaddr.interface_name, address);
+///     },
+///     None =&gt; {
+///       println!(&quot;interface {} with unsupported address family&quot;,
+///                ifaddr.interface_name);
+///     }
+///   }
+/// }
+/// ```
+</span><span class="kw">pub fn </span>getifaddrs() -&gt; <span class="prelude-ty">Result</span>&lt;InterfaceAddressIterator&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>addrs = mem::MaybeUninit::&lt;<span class="kw-2">*mut </span>libc::ifaddrs&gt;::uninit();
+    <span class="kw">unsafe </span>{
+        Errno::result(libc::getifaddrs(addrs.as_mut_ptr())).map(|<span class="kw">_</span>| {
+            InterfaceAddressIterator {
+                base: addrs.assume_init(),
+                next: addrs.assume_init(),
             }
         })
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="comment">// Only checks if `getifaddrs` can be invoked without panicking.</span>
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_getifaddrs</span>() {
-        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">getifaddrs</span>();
+    <span class="comment">// Only checks if `getifaddrs` can be invoked without panicking.
+    </span><span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_getifaddrs() {
+        <span class="kw">let _ </span>= getifaddrs();
+    }
+
+    <span class="comment">// Ensures getting the netmask works, and in particular that
+    // `workaround_xnu_bug` works properly.
+    </span><span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_getifaddrs_netmask_correct() {
+        <span class="kw">let </span>addrs = getifaddrs().unwrap();
+        <span class="kw">for </span>iface <span class="kw">in </span>addrs {
+            <span class="kw">let </span>sock = <span class="kw">if let </span><span class="prelude-val">Some</span>(sock) = iface.netmask {
+                sock
+            } <span class="kw">else </span>{
+                <span class="kw">continue</span>;
+            };
+            <span class="kw">if </span>sock.family() == <span class="prelude-val">Some</span>(<span class="kw">crate</span>::sys::socket::AddressFamily::Inet) {
+                <span class="kw">let _ </span>= sock.as_sockaddr_in().unwrap();
+                <span class="kw">return</span>;
+            } <span class="kw">else if </span>sock.family()
+                == <span class="prelude-val">Some</span>(<span class="kw">crate</span>::sys::socket::AddressFamily::Inet6)
+            {
+                <span class="kw">let _ </span>= sock.as_sockaddr_in6().unwrap();
+                <span class="kw">return</span>;
+            }
+        }
+        <span class="macro">panic!</span>(<span class="string">&quot;No address?&quot;</span>);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nix" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-commons-0.29.5/src/socket.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>socket.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wayland_commons/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../wayland_commons/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../wayland_commons/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/wayland-commons-0.29.5/src/socket.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>socket.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../wayland_commons/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -679,686 +679,686 @@
 <span id="679">679</span>
 <span id="680">680</span>
 <span id="681">681</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Wayland socket manipulation</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Wayland socket manipulation
 
-<span class="kw">use</span> <span class="ident">std::io</span>::{<span class="ident">IoSlice</span>, <span class="ident">IoSliceMut</span>};
-<span class="kw">use</span> <span class="ident">std::os::unix::io</span>::{<span class="ident">AsRawFd</span>, <span class="ident">FromRawFd</span>, <span class="ident">IntoRawFd</span>, <span class="ident">RawFd</span>};
+</span><span class="kw">use </span>std::io::{IoSlice, IoSliceMut};
+<span class="kw">use </span>std::os::unix::io::{AsRawFd, FromRawFd, IntoRawFd, RawFd};
 
-<span class="kw">use</span> <span class="ident">nix</span>::{<span class="ident">sys::socket</span>, <span class="prelude-ty">Result</span> <span class="kw">as</span> <span class="ident">NixResult</span>};
+<span class="kw">use </span>nix::{sys::socket, <span class="prelude-ty">Result </span><span class="kw">as </span>NixResult};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::wire</span>::{<span class="ident">ArgumentType</span>, <span class="ident">Message</span>, <span class="ident">MessageParseError</span>, <span class="ident">MessageWriteError</span>};
+<span class="kw">use </span><span class="kw">crate</span>::wire::{ArgumentType, Message, MessageParseError, MessageWriteError};
 
-<span class="doccomment">/// Maximum number of FD that can be sent in a single socket message</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MAX_FDS_OUT</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">28</span>;
-<span class="doccomment">/// Maximum number of bytes that can be sent in a single socket message</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MAX_BYTES_OUT</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">4096</span>;
+<span class="doccomment">/// Maximum number of FD that can be sent in a single socket message
+</span><span class="kw">pub const </span>MAX_FDS_OUT: usize = <span class="number">28</span>;
+<span class="doccomment">/// Maximum number of bytes that can be sent in a single socket message
+</span><span class="kw">pub const </span>MAX_BYTES_OUT: usize = <span class="number">4096</span>;
 
 <span class="comment">/*
  * Socket
- */</span>
+ */
 
-<span class="doccomment">/// A wayland socket</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Socket</span> {
-    <span class="ident">fd</span>: <span class="ident">RawFd</span>,
+</span><span class="doccomment">/// A wayland socket
+</span><span class="attribute">#[derive(Debug)]
+</span><span class="kw">pub struct </span>Socket {
+    fd: RawFd,
 }
 
-<span class="kw">impl</span> <span class="ident">Socket</span> {
-    <span class="doccomment">/// Send a single message to the socket</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// A single socket message can contain several wayland messages</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The `fds` slice should not be longer than `MAX_FDS_OUT`, and the `bytes`</span>
-    <span class="doccomment">/// slice should not be longer than `MAX_BYTES_OUT` otherwise the receiving</span>
-    <span class="doccomment">/// end may lose some data.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">fds</span>: <span class="kw-2">&amp;</span>[<span class="ident">RawFd</span>]) -&gt; <span class="ident">NixResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">flags</span> <span class="op">=</span> <span class="ident">socket::MsgFlags::MSG_DONTWAIT</span> <span class="op">|</span> <span class="ident">socket::MsgFlags::MSG_NOSIGNAL</span>;
-        <span class="kw">let</span> <span class="ident">iov</span> <span class="op">=</span> [<span class="ident">IoSlice::new</span>(<span class="ident">bytes</span>)];
+<span class="kw">impl </span>Socket {
+    <span class="doccomment">/// Send a single message to the socket
+    ///
+    /// A single socket message can contain several wayland messages
+    ///
+    /// The `fds` slice should not be longer than `MAX_FDS_OUT`, and the `bytes`
+    /// slice should not be longer than `MAX_BYTES_OUT` otherwise the receiving
+    /// end may lose some data.
+    </span><span class="kw">pub fn </span>send_msg(<span class="kw-2">&amp;</span><span class="self">self</span>, bytes: <span class="kw-2">&amp;</span>[u8], fds: <span class="kw-2">&amp;</span>[RawFd]) -&gt; NixResult&lt;()&gt; {
+        <span class="kw">let </span>flags = socket::MsgFlags::MSG_DONTWAIT | socket::MsgFlags::MSG_NOSIGNAL;
+        <span class="kw">let </span>iov = [IoSlice::new(bytes)];
 
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">fds</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">let</span> <span class="ident">cmsgs</span> <span class="op">=</span> [<span class="ident">socket::ControlMessage::ScmRights</span>(<span class="ident">fds</span>)];
-            <span class="ident">socket::sendmsg</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="self">self</span>.<span class="ident">fd</span>, <span class="kw-2">&amp;</span><span class="ident">iov</span>, <span class="kw-2">&amp;</span><span class="ident">cmsgs</span>, <span class="ident">flags</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
-        } <span class="kw">else</span> {
-            <span class="ident">socket::sendmsg</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="self">self</span>.<span class="ident">fd</span>, <span class="kw-2">&amp;</span><span class="ident">iov</span>, <span class="kw-2">&amp;</span>[], <span class="ident">flags</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+        <span class="kw">if </span>!fds.is_empty() {
+            <span class="kw">let </span>cmsgs = [socket::ControlMessage::ScmRights(fds)];
+            socket::sendmsg::&lt;()&gt;(<span class="self">self</span>.fd, <span class="kw-2">&amp;</span>iov, <span class="kw-2">&amp;</span>cmsgs, flags, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+        } <span class="kw">else </span>{
+            socket::sendmsg::&lt;()&gt;(<span class="self">self</span>.fd, <span class="kw-2">&amp;</span>iov, <span class="kw-2">&amp;</span>[], flags, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
         };
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="doccomment">/// Receive a single message from the socket</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Return the number of bytes received and the number of Fds received.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Errors with `WouldBlock` is no message is available.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// A single socket message can contain several wayland messages.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The `buffer` slice should be at least `MAX_BYTES_OUT` long and the `fds`</span>
-    <span class="doccomment">/// slice `MAX_FDS_OUT` long, otherwise some data of the received message may</span>
-    <span class="doccomment">/// be lost.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rcv_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>], <span class="ident">fds</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">RawFd</span>]) -&gt; <span class="ident">NixResult</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cmsg</span> <span class="op">=</span> <span class="macro">cmsg_space!</span>([<span class="ident">RawFd</span>; <span class="ident">MAX_FDS_OUT</span>]);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iov</span> <span class="op">=</span> [<span class="ident">IoSliceMut::new</span>(<span class="ident">buffer</span>)];
+    <span class="doccomment">/// Receive a single message from the socket
+    ///
+    /// Return the number of bytes received and the number of Fds received.
+    ///
+    /// Errors with `WouldBlock` is no message is available.
+    ///
+    /// A single socket message can contain several wayland messages.
+    ///
+    /// The `buffer` slice should be at least `MAX_BYTES_OUT` long and the `fds`
+    /// slice `MAX_FDS_OUT` long, otherwise some data of the received message may
+    /// be lost.
+    </span><span class="kw">pub fn </span>rcv_msg(<span class="kw-2">&amp;</span><span class="self">self</span>, buffer: <span class="kw-2">&amp;mut </span>[u8], fds: <span class="kw-2">&amp;mut </span>[RawFd]) -&gt; NixResult&lt;(usize, usize)&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>cmsg = <span class="macro">cmsg_space!</span>([RawFd; MAX_FDS_OUT]);
+        <span class="kw">let </span><span class="kw-2">mut </span>iov = [IoSliceMut::new(buffer)];
 
-        <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="ident">socket::recvmsg</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(
-            <span class="self">self</span>.<span class="ident">fd</span>,
-            <span class="kw-2">&amp;mut</span> <span class="ident">iov</span>[..],
-            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut</span> <span class="ident">cmsg</span>),
-            <span class="ident">socket::MsgFlags::MSG_DONTWAIT</span>
-                <span class="op">|</span> <span class="ident">socket::MsgFlags::MSG_CMSG_CLOEXEC</span>
-                <span class="op">|</span> <span class="ident">socket::MsgFlags::MSG_NOSIGNAL</span>,
+        <span class="kw">let </span>msg = socket::recvmsg::&lt;()&gt;(
+            <span class="self">self</span>.fd,
+            <span class="kw-2">&amp;mut </span>iov[..],
+            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut </span>cmsg),
+            socket::MsgFlags::MSG_DONTWAIT
+                | socket::MsgFlags::MSG_CMSG_CLOEXEC
+                | socket::MsgFlags::MSG_NOSIGNAL,
         )<span class="question-mark">?</span>;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fd_count</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="ident">received_fds</span> <span class="op">=</span> <span class="ident">msg</span>.<span class="ident">cmsgs</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">cmsg</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">cmsg</span> {
-            <span class="ident">socket::ControlMessageOwned::ScmRights</span>(<span class="ident">s</span>) =&gt; <span class="ident">s</span>,
-            <span class="kw">_</span> =&gt; <span class="ident">Vec::new</span>(),
+        <span class="kw">let </span><span class="kw-2">mut </span>fd_count = <span class="number">0</span>;
+        <span class="kw">let </span>received_fds = msg.cmsgs().flat_map(|cmsg| <span class="kw">match </span>cmsg {
+            socket::ControlMessageOwned::ScmRights(s) =&gt; s,
+            <span class="kw">_ </span>=&gt; Vec::new(),
         });
-        <span class="kw">for</span> (<span class="ident">fd</span>, <span class="ident">place</span>) <span class="kw">in</span> <span class="ident">received_fds</span>.<span class="ident">zip</span>(<span class="ident">fds</span>.<span class="ident">iter_mut</span>()) {
-            <span class="ident">fd_count</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="kw-2">*</span><span class="ident">place</span> <span class="op">=</span> <span class="ident">fd</span>;
+        <span class="kw">for </span>(fd, place) <span class="kw">in </span>received_fds.zip(fds.iter_mut()) {
+            fd_count += <span class="number">1</span>;
+            <span class="kw-2">*</span>place = fd;
         }
-        <span class="prelude-val">Ok</span>((<span class="ident">msg</span>.<span class="ident">bytes</span>, <span class="ident">fd_count</span>))
+        <span class="prelude-val">Ok</span>((msg.bytes, fd_count))
     }
 
-    <span class="doccomment">/// Retrieve the current value of the requested [socket::GetSockOpt]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">opt</span><span class="op">&lt;</span><span class="ident">O</span>: <span class="ident">socket::GetSockOpt</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">opt</span>: <span class="ident">O</span>) -&gt; <span class="ident">NixResult</span><span class="op">&lt;</span><span class="ident">O::Val</span><span class="op">&gt;</span> {
-        <span class="ident">socket::getsockopt</span>(<span class="self">self</span>.<span class="ident">fd</span>, <span class="ident">opt</span>)
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">FromRawFd</span> <span class="kw">for</span> <span class="ident">Socket</span> {
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_raw_fd</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>) -&gt; <span class="ident">Socket</span> {
-        <span class="ident">Socket</span> { <span class="ident">fd</span> }
+    <span class="doccomment">/// Retrieve the current value of the requested [socket::GetSockOpt]
+    </span><span class="kw">pub fn </span>opt&lt;O: socket::GetSockOpt&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, opt: O) -&gt; NixResult&lt;O::Val&gt; {
+        socket::getsockopt(<span class="self">self</span>.fd, opt)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">AsRawFd</span> <span class="kw">for</span> <span class="ident">Socket</span> {
-    <span class="kw">fn</span> <span class="ident">as_raw_fd</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">RawFd</span> {
-        <span class="self">self</span>.<span class="ident">fd</span>
+<span class="kw">impl </span>FromRawFd <span class="kw">for </span>Socket {
+    <span class="kw">unsafe fn </span>from_raw_fd(fd: RawFd) -&gt; Socket {
+        Socket { fd }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">IntoRawFd</span> <span class="kw">for</span> <span class="ident">Socket</span> {
-    <span class="kw">fn</span> <span class="ident">into_raw_fd</span>(<span class="self">self</span>) -&gt; <span class="ident">RawFd</span> {
-        <span class="self">self</span>.<span class="ident">fd</span>
+<span class="kw">impl </span>AsRawFd <span class="kw">for </span>Socket {
+    <span class="kw">fn </span>as_raw_fd(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RawFd {
+        <span class="self">self</span>.fd
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">Socket</span> {
-    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">::nix::unistd::close</span>(<span class="self">self</span>.<span class="ident">fd</span>);
+<span class="kw">impl </span>IntoRawFd <span class="kw">for </span>Socket {
+    <span class="kw">fn </span>into_raw_fd(<span class="self">self</span>) -&gt; RawFd {
+        <span class="self">self</span>.fd
+    }
+}
+
+<span class="kw">impl </span>Drop <span class="kw">for </span>Socket {
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">let _ </span>= ::nix::unistd::close(<span class="self">self</span>.fd);
     }
 }
 
 <span class="comment">/*
  * BufferedSocket
- */</span>
+ */
 
-<span class="doccomment">/// An adapter around a raw Socket that directly handles buffering and</span>
-<span class="doccomment">/// conversion from/to wayland messages</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BufferedSocket</span> {
-    <span class="ident">socket</span>: <span class="ident">Socket</span>,
-    <span class="ident">in_data</span>: <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="ident">in_fds</span>: <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">RawFd</span><span class="op">&gt;</span>,
-    <span class="ident">out_data</span>: <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="ident">out_fds</span>: <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">RawFd</span><span class="op">&gt;</span>,
+</span><span class="doccomment">/// An adapter around a raw Socket that directly handles buffering and
+/// conversion from/to wayland messages
+</span><span class="attribute">#[derive(Debug)]
+</span><span class="kw">pub struct </span>BufferedSocket {
+    socket: Socket,
+    in_data: Buffer&lt;u32&gt;,
+    in_fds: Buffer&lt;RawFd&gt;,
+    out_data: Buffer&lt;u32&gt;,
+    out_fds: Buffer&lt;RawFd&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">BufferedSocket</span> {
-    <span class="doccomment">/// Wrap a Socket into a Buffered Socket</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">socket</span>: <span class="ident">Socket</span>) -&gt; <span class="ident">BufferedSocket</span> {
-        <span class="ident">BufferedSocket</span> {
-            <span class="ident">socket</span>,
-            <span class="ident">in_data</span>: <span class="ident">Buffer::new</span>(<span class="number">2</span> <span class="op">*</span> <span class="ident">MAX_BYTES_OUT</span> <span class="op">/</span> <span class="number">4</span>), <span class="comment">// Incoming buffers are twice as big in order to be</span>
-            <span class="ident">in_fds</span>: <span class="ident">Buffer::new</span>(<span class="number">2</span> <span class="op">*</span> <span class="ident">MAX_FDS_OUT</span>),        <span class="comment">// able to store leftover data if needed</span>
-            <span class="ident">out_data</span>: <span class="ident">Buffer::new</span>(<span class="ident">MAX_BYTES_OUT</span> <span class="op">/</span> <span class="number">4</span>),
-            <span class="ident">out_fds</span>: <span class="ident">Buffer::new</span>(<span class="ident">MAX_FDS_OUT</span>),
+<span class="kw">impl </span>BufferedSocket {
+    <span class="doccomment">/// Wrap a Socket into a Buffered Socket
+    </span><span class="kw">pub fn </span>new(socket: Socket) -&gt; BufferedSocket {
+        BufferedSocket {
+            socket,
+            in_data: Buffer::new(<span class="number">2 </span>* MAX_BYTES_OUT / <span class="number">4</span>), <span class="comment">// Incoming buffers are twice as big in order to be
+            </span>in_fds: Buffer::new(<span class="number">2 </span>* MAX_FDS_OUT),        <span class="comment">// able to store leftover data if needed
+            </span>out_data: Buffer::new(MAX_BYTES_OUT / <span class="number">4</span>),
+            out_fds: Buffer::new(MAX_FDS_OUT),
         }
     }
 
-    <span class="doccomment">/// Get direct access to the underlying socket</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_socket</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident">Socket</span> {
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">socket</span>
+    <span class="doccomment">/// Get direct access to the underlying socket
+    </span><span class="kw">pub fn </span>get_socket(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Socket {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.socket
     }
 
-    <span class="doccomment">/// Retrieve ownership of the underlying Socket</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Any leftover content in the internal buffers will be lost</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_socket</span>(<span class="self">self</span>) -&gt; <span class="ident">Socket</span> {
-        <span class="self">self</span>.<span class="ident">socket</span>
+    <span class="doccomment">/// Retrieve ownership of the underlying Socket
+    ///
+    /// Any leftover content in the internal buffers will be lost
+    </span><span class="kw">pub fn </span>into_socket(<span class="self">self</span>) -&gt; Socket {
+        <span class="self">self</span>.socket
     }
 
-    <span class="doccomment">/// Flush the contents of the outgoing buffer into the socket</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">flush</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">NixResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="doccomment">/// Flush the contents of the outgoing buffer into the socket
+    </span><span class="kw">pub fn </span>flush(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; NixResult&lt;()&gt; {
         {
-            <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">out_data</span>.<span class="ident">get_contents</span>();
-            <span class="kw">if</span> <span class="ident">words</span>.<span class="ident">is_empty</span>() {
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
+            <span class="kw">let </span>words = <span class="self">self</span>.out_data.get_contents();
+            <span class="kw">if </span>words.is_empty() {
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(());
             }
-            <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-                <span class="ident">::std::slice::from_raw_parts</span>(<span class="ident">words</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">u8</span>, <span class="ident">words</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="number">4</span>)
+            <span class="kw">let </span>bytes = <span class="kw">unsafe </span>{
+                ::std::slice::from_raw_parts(words.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>u8, words.len() * <span class="number">4</span>)
             };
-            <span class="kw">let</span> <span class="ident">fds</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">out_fds</span>.<span class="ident">get_contents</span>();
-            <span class="self">self</span>.<span class="ident">socket</span>.<span class="ident">send_msg</span>(<span class="ident">bytes</span>, <span class="ident">fds</span>)<span class="question-mark">?</span>;
-            <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">fd</span> <span class="kw">in</span> <span class="ident">fds</span> {
-                <span class="comment">// once the fds are sent, we can close them</span>
-                <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">::nix::unistd::close</span>(<span class="ident">fd</span>);
+            <span class="kw">let </span>fds = <span class="self">self</span>.out_fds.get_contents();
+            <span class="self">self</span>.socket.send_msg(bytes, fds)<span class="question-mark">?</span>;
+            <span class="kw">for </span><span class="kw-2">&amp;</span>fd <span class="kw">in </span>fds {
+                <span class="comment">// once the fds are sent, we can close them
+                </span><span class="kw">let _ </span>= ::nix::unistd::close(fd);
             }
         }
-        <span class="self">self</span>.<span class="ident">out_data</span>.<span class="ident">clear</span>();
-        <span class="self">self</span>.<span class="ident">out_fds</span>.<span class="ident">clear</span>();
+        <span class="self">self</span>.out_data.clear();
+        <span class="self">self</span>.out_fds.clear();
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="comment">// internal method</span>
-    <span class="comment">//</span>
-    <span class="comment">// attempts to write a message in the internal out buffers,</span>
-    <span class="comment">// returns true if successful</span>
-    <span class="comment">//</span>
-    <span class="comment">// if false is returned, it means there is not enough space</span>
-    <span class="comment">// in the buffer</span>
-    <span class="kw">fn</span> <span class="ident">attempt_write_message</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>) -&gt; <span class="ident">NixResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="ident">msg</span>.<span class="ident">write_to_buffers</span>(
-            <span class="self">self</span>.<span class="ident">out_data</span>.<span class="ident">get_writable_storage</span>(),
-            <span class="self">self</span>.<span class="ident">out_fds</span>.<span class="ident">get_writable_storage</span>(),
+    <span class="comment">// internal method
+    //
+    // attempts to write a message in the internal out buffers,
+    // returns true if successful
+    //
+    // if false is returned, it means there is not enough space
+    // in the buffer
+    </span><span class="kw">fn </span>attempt_write_message(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: <span class="kw-2">&amp;</span>Message) -&gt; NixResult&lt;bool&gt; {
+        <span class="kw">match </span>msg.write_to_buffers(
+            <span class="self">self</span>.out_data.get_writable_storage(),
+            <span class="self">self</span>.out_fds.get_writable_storage(),
         ) {
-            <span class="prelude-val">Ok</span>((<span class="ident">bytes_out</span>, <span class="ident">fds_out</span>)) =&gt; {
-                <span class="self">self</span>.<span class="ident">out_data</span>.<span class="ident">advance</span>(<span class="ident">bytes_out</span>);
-                <span class="self">self</span>.<span class="ident">out_fds</span>.<span class="ident">advance</span>(<span class="ident">fds_out</span>);
+            <span class="prelude-val">Ok</span>((bytes_out, fds_out)) =&gt; {
+                <span class="self">self</span>.out_data.advance(bytes_out);
+                <span class="self">self</span>.out_fds.advance(fds_out);
                 <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)
             }
-            <span class="prelude-val">Err</span>(<span class="ident">MessageWriteError::BufferTooSmall</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>),
-            <span class="prelude-val">Err</span>(<span class="ident">MessageWriteError::DupFdFailed</span>(<span class="ident">e</span>)) =&gt; <span class="prelude-val">Err</span>(<span class="ident">e</span>),
+            <span class="prelude-val">Err</span>(MessageWriteError::BufferTooSmall) =&gt; <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>),
+            <span class="prelude-val">Err</span>(MessageWriteError::DupFdFailed(e)) =&gt; <span class="prelude-val">Err</span>(e),
         }
     }
 
-    <span class="doccomment">/// Write a message to the outgoing buffer</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This method may flush the internal buffer if necessary (if it is full).</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If the message is too big to fit in the buffer, the error `Error::Sys(E2BIG)`</span>
-    <span class="doccomment">/// will be returned.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_message</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>) -&gt; <span class="ident">NixResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">attempt_write_message</span>(<span class="ident">msg</span>)<span class="question-mark">?</span> {
-            <span class="comment">// the attempt failed, there is not enough space in the buffer</span>
-            <span class="comment">// we need to flush it</span>
-            <span class="self">self</span>.<span class="ident">flush</span>()<span class="question-mark">?</span>;
-            <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">attempt_write_message</span>(<span class="ident">msg</span>)<span class="question-mark">?</span> {
-                <span class="comment">// If this fails again, this means the message is too big</span>
-                <span class="comment">// to be transmitted at all</span>
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">::nix::Error::E2BIG</span>);
+    <span class="doccomment">/// Write a message to the outgoing buffer
+    ///
+    /// This method may flush the internal buffer if necessary (if it is full).
+    ///
+    /// If the message is too big to fit in the buffer, the error `Error::Sys(E2BIG)`
+    /// will be returned.
+    </span><span class="kw">pub fn </span>write_message(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: <span class="kw-2">&amp;</span>Message) -&gt; NixResult&lt;()&gt; {
+        <span class="kw">if </span>!<span class="self">self</span>.attempt_write_message(msg)<span class="question-mark">? </span>{
+            <span class="comment">// the attempt failed, there is not enough space in the buffer
+            // we need to flush it
+            </span><span class="self">self</span>.flush()<span class="question-mark">?</span>;
+            <span class="kw">if </span>!<span class="self">self</span>.attempt_write_message(msg)<span class="question-mark">? </span>{
+                <span class="comment">// If this fails again, this means the message is too big
+                // to be transmitted at all
+                </span><span class="kw">return </span><span class="prelude-val">Err</span>(::nix::Error::E2BIG);
             }
         }
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="doccomment">/// Try to fill the incoming buffers of this socket, to prepare</span>
-    <span class="doccomment">/// a new round of parsing.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fill_incoming_buffers</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">NixResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="comment">// clear the buffers if they have no content</span>
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">in_data</span>.<span class="ident">has_content</span>() {
-            <span class="self">self</span>.<span class="ident">in_data</span>.<span class="ident">clear</span>();
+    <span class="doccomment">/// Try to fill the incoming buffers of this socket, to prepare
+    /// a new round of parsing.
+    </span><span class="kw">pub fn </span>fill_incoming_buffers(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; NixResult&lt;()&gt; {
+        <span class="comment">// clear the buffers if they have no content
+        </span><span class="kw">if </span>!<span class="self">self</span>.in_data.has_content() {
+            <span class="self">self</span>.in_data.clear();
         }
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">in_fds</span>.<span class="ident">has_content</span>() {
-            <span class="self">self</span>.<span class="ident">in_fds</span>.<span class="ident">clear</span>();
+        <span class="kw">if </span>!<span class="self">self</span>.in_fds.has_content() {
+            <span class="self">self</span>.in_fds.clear();
         }
-        <span class="comment">// receive a message</span>
-        <span class="kw">let</span> (<span class="ident">in_bytes</span>, <span class="ident">in_fds</span>) <span class="op">=</span> {
-            <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">in_data</span>.<span class="ident">get_writable_storage</span>();
-            <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-                <span class="ident">::std::slice::from_raw_parts_mut</span>(<span class="ident">words</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">u8</span>, <span class="ident">words</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="number">4</span>)
+        <span class="comment">// receive a message
+        </span><span class="kw">let </span>(in_bytes, in_fds) = {
+            <span class="kw">let </span>words = <span class="self">self</span>.in_data.get_writable_storage();
+            <span class="kw">let </span>bytes = <span class="kw">unsafe </span>{
+                ::std::slice::from_raw_parts_mut(words.as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>u8, words.len() * <span class="number">4</span>)
             };
-            <span class="kw">let</span> <span class="ident">fds</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">in_fds</span>.<span class="ident">get_writable_storage</span>();
-            <span class="self">self</span>.<span class="ident">socket</span>.<span class="ident">rcv_msg</span>(<span class="ident">bytes</span>, <span class="ident">fds</span>)<span class="question-mark">?</span>
-        };
-        <span class="kw">if</span> <span class="ident">in_bytes</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="comment">// the other end of the socket was closed</span>
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">::nix::Error::EPIPE</span>);
+            <span class="kw">let </span>fds = <span class="self">self</span>.in_fds.get_writable_storage();
+            <span class="self">self</span>.socket.rcv_msg(bytes, fds)<span class="question-mark">?
+        </span>};
+        <span class="kw">if </span>in_bytes == <span class="number">0 </span>{
+            <span class="comment">// the other end of the socket was closed
+            </span><span class="kw">return </span><span class="prelude-val">Err</span>(::nix::Error::EPIPE);
         }
-        <span class="comment">// advance the storage</span>
-        <span class="self">self</span>.<span class="ident">in_data</span>.<span class="ident">advance</span>(<span class="ident">in_bytes</span> <span class="op">/</span> <span class="number">4</span> <span class="op">+</span> <span class="kw">if</span> <span class="ident">in_bytes</span> <span class="op">%</span> <span class="number">4</span> <span class="op">&gt;</span> <span class="number">0</span> { <span class="number">1</span> } <span class="kw">else</span> { <span class="number">0</span> });
-        <span class="self">self</span>.<span class="ident">in_fds</span>.<span class="ident">advance</span>(<span class="ident">in_fds</span>);
+        <span class="comment">// advance the storage
+        </span><span class="self">self</span>.in_data.advance(in_bytes / <span class="number">4 </span>+ <span class="kw">if </span>in_bytes % <span class="number">4 </span>&gt; <span class="number">0 </span>{ <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>});
+        <span class="self">self</span>.in_fds.advance(in_fds);
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="doccomment">/// Read and deserialize a single message from the incoming buffers socket</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This method requires one closure that given an object id and an opcode,</span>
-    <span class="doccomment">/// must provide the signature of the associated request/event, in the form of</span>
-    <span class="doccomment">/// a `&amp;&#39;static [ArgumentType]`. If it returns `None`, meaning that</span>
-    <span class="doccomment">/// the couple object/opcode does not exist, an error will be returned.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// There are 3 possibilities of return value:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - `Ok(Ok(msg))`: no error occurred, this is the message</span>
-    <span class="doccomment">/// - `Ok(Err(e))`: either a malformed message was encountered or we need more data,</span>
-    <span class="doccomment">///    in the latter case you need to try calling `fill_incoming_buffers()`.</span>
-    <span class="doccomment">/// - `Err(e)`: an I/O error occurred reading from the socked, details are in `e`</span>
-    <span class="doccomment">///   (this can be a &quot;wouldblock&quot; error, which just means that no message is available</span>
-    <span class="doccomment">///   to read)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_one_message</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">signature</span>: <span class="ident">F</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span>, <span class="ident">MessageParseError</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">u32</span>, <span class="ident">u16</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">ArgumentType</span>]<span class="op">&gt;</span>,
+    <span class="doccomment">/// Read and deserialize a single message from the incoming buffers socket
+    ///
+    /// This method requires one closure that given an object id and an opcode,
+    /// must provide the signature of the associated request/event, in the form of
+    /// a `&amp;&#39;static [ArgumentType]`. If it returns `None`, meaning that
+    /// the couple object/opcode does not exist, an error will be returned.
+    ///
+    /// There are 3 possibilities of return value:
+    ///
+    /// - `Ok(Ok(msg))`: no error occurred, this is the message
+    /// - `Ok(Err(e))`: either a malformed message was encountered or we need more data,
+    ///    in the latter case you need to try calling `fill_incoming_buffers()`.
+    /// - `Err(e)`: an I/O error occurred reading from the socked, details are in `e`
+    ///   (this can be a &quot;wouldblock&quot; error, which just means that no message is available
+    ///   to read)
+    </span><span class="kw">pub fn </span>read_one_message&lt;F&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>signature: F) -&gt; <span class="prelude-ty">Result</span>&lt;Message, MessageParseError&gt;
+    <span class="kw">where
+        </span>F: FnMut(u32, u16) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[ArgumentType]&gt;,
     {
-        <span class="kw">let</span> (<span class="ident">msg</span>, <span class="ident">read_data</span>, <span class="ident">read_fd</span>) <span class="op">=</span> {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">in_data</span>.<span class="ident">get_contents</span>();
-            <span class="kw">let</span> <span class="ident">fds</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">in_fds</span>.<span class="ident">get_contents</span>();
-            <span class="kw">if</span> <span class="ident">data</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="number">2</span> {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">MessageParseError::MissingData</span>);
+        <span class="kw">let </span>(msg, read_data, read_fd) = {
+            <span class="kw">let </span>data = <span class="self">self</span>.in_data.get_contents();
+            <span class="kw">let </span>fds = <span class="self">self</span>.in_fds.get_contents();
+            <span class="kw">if </span>data.len() &lt; <span class="number">2 </span>{
+                <span class="kw">return </span><span class="prelude-val">Err</span>(MessageParseError::MissingData);
             }
-            <span class="kw">let</span> <span class="ident">object_id</span> <span class="op">=</span> <span class="ident">data</span>[<span class="number">0</span>];
-            <span class="kw">let</span> <span class="ident">opcode</span> <span class="op">=</span> (<span class="ident">data</span>[<span class="number">1</span>] <span class="op">&amp;</span> <span class="number">0x0000_FFFF</span>) <span class="kw">as</span> <span class="ident">u16</span>;
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">sig</span>) <span class="op">=</span> <span class="ident">signature</span>(<span class="ident">object_id</span>, <span class="ident">opcode</span>) {
-                <span class="kw">match</span> <span class="ident">Message::from_raw</span>(<span class="ident">data</span>, <span class="ident">sig</span>, <span class="ident">fds</span>) {
-                    <span class="prelude-val">Ok</span>((<span class="ident">msg</span>, <span class="ident">rest_data</span>, <span class="ident">rest_fds</span>)) =&gt; {
-                        (<span class="ident">msg</span>, <span class="ident">data</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">rest_data</span>.<span class="ident">len</span>(), <span class="ident">fds</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">rest_fds</span>.<span class="ident">len</span>())
+            <span class="kw">let </span>object_id = data[<span class="number">0</span>];
+            <span class="kw">let </span>opcode = (data[<span class="number">1</span>] &amp; <span class="number">0x0000_FFFF</span>) <span class="kw">as </span>u16;
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(sig) = signature(object_id, opcode) {
+                <span class="kw">match </span>Message::from_raw(data, sig, fds) {
+                    <span class="prelude-val">Ok</span>((msg, rest_data, rest_fds)) =&gt; {
+                        (msg, data.len() - rest_data.len(), fds.len() - rest_fds.len())
                     }
-                    <span class="comment">// TODO: gracefully handle wayland messages split across unix messages ?</span>
-                    <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>),
+                    <span class="comment">// TODO: gracefully handle wayland messages split across unix messages ?
+                    </span><span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(e),
                 }
-            } <span class="kw">else</span> {
-                <span class="comment">// no signature found ?</span>
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">MessageParseError::Malformed</span>);
+            } <span class="kw">else </span>{
+                <span class="comment">// no signature found ?
+                </span><span class="kw">return </span><span class="prelude-val">Err</span>(MessageParseError::Malformed);
             }
         };
 
-        <span class="self">self</span>.<span class="ident">in_data</span>.<span class="ident">offset</span>(<span class="ident">read_data</span>);
-        <span class="self">self</span>.<span class="ident">in_fds</span>.<span class="ident">offset</span>(<span class="ident">read_fd</span>);
+        <span class="self">self</span>.in_data.offset(read_data);
+        <span class="self">self</span>.in_fds.offset(read_fd);
 
-        <span class="prelude-val">Ok</span>(<span class="ident">msg</span>)
+        <span class="prelude-val">Ok</span>(msg)
     }
 
-    <span class="doccomment">/// Read and deserialize messages from the socket</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This method requires two closures:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - The first one, given an object id and an opcode, must provide</span>
-    <span class="doccomment">///   the signature of the associated request/event, in the form of</span>
-    <span class="doccomment">///   a `&amp;&#39;static [ArgumentType]`. If it returns `None`, meaning that</span>
-    <span class="doccomment">///   the couple object/opcode does not exist, the parsing will be</span>
-    <span class="doccomment">///   prematurely interrupted and this method will return a</span>
-    <span class="doccomment">///   `MessageParseError::Malformed` error.</span>
-    <span class="doccomment">/// - The second closure is charged to process the parsed message. If it</span>
-    <span class="doccomment">///   returns `false`, the iteration will be prematurely stopped.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// In both cases of early stopping, the remaining unused data will be left</span>
-    <span class="doccomment">/// in the buffers, and will start to be processed at the next call of this</span>
-    <span class="doccomment">/// method.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// There are 3 possibilities of return value:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - `Ok(Ok(n))`: no error occurred, `n` messages where processed</span>
-    <span class="doccomment">/// - `Ok(Err(MessageParseError::Malformed))`: a malformed message was encountered</span>
-    <span class="doccomment">///   (this is a protocol error and is supposed to be fatal to the connection).</span>
-    <span class="doccomment">/// - `Err(e)`: an I/O error occurred reading from the socked, details are in `e`</span>
-    <span class="doccomment">///   (this can be a &quot;wouldblock&quot; error, which just means that no message is available</span>
-    <span class="doccomment">///   to read)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_messages</span><span class="op">&lt;</span><span class="ident">F1</span>, <span class="ident">F2</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="kw-2">mut</span> <span class="ident">signature</span>: <span class="ident">F1</span>,
-        <span class="kw-2">mut</span> <span class="ident">callback</span>: <span class="ident">F2</span>,
-    ) -&gt; <span class="ident">NixResult</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">MessageParseError</span><span class="op">&gt;</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">F1</span>: <span class="ident">FnMut</span>(<span class="ident">u32</span>, <span class="ident">u16</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">ArgumentType</span>]<span class="op">&gt;</span>,
-        <span class="ident">F2</span>: <span class="ident">FnMut</span>(<span class="ident">Message</span>) -&gt; <span class="ident">bool</span>,
+    <span class="doccomment">/// Read and deserialize messages from the socket
+    ///
+    /// This method requires two closures:
+    ///
+    /// - The first one, given an object id and an opcode, must provide
+    ///   the signature of the associated request/event, in the form of
+    ///   a `&amp;&#39;static [ArgumentType]`. If it returns `None`, meaning that
+    ///   the couple object/opcode does not exist, the parsing will be
+    ///   prematurely interrupted and this method will return a
+    ///   `MessageParseError::Malformed` error.
+    /// - The second closure is charged to process the parsed message. If it
+    ///   returns `false`, the iteration will be prematurely stopped.
+    ///
+    /// In both cases of early stopping, the remaining unused data will be left
+    /// in the buffers, and will start to be processed at the next call of this
+    /// method.
+    ///
+    /// There are 3 possibilities of return value:
+    ///
+    /// - `Ok(Ok(n))`: no error occurred, `n` messages where processed
+    /// - `Ok(Err(MessageParseError::Malformed))`: a malformed message was encountered
+    ///   (this is a protocol error and is supposed to be fatal to the connection).
+    /// - `Err(e)`: an I/O error occurred reading from the socked, details are in `e`
+    ///   (this can be a &quot;wouldblock&quot; error, which just means that no message is available
+    ///   to read)
+    </span><span class="kw">pub fn </span>read_messages&lt;F1, F2&gt;(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        <span class="kw-2">mut </span>signature: F1,
+        <span class="kw-2">mut </span>callback: F2,
+    ) -&gt; NixResult&lt;<span class="prelude-ty">Result</span>&lt;usize, MessageParseError&gt;&gt;
+    <span class="kw">where
+        </span>F1: FnMut(u32, u16) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[ArgumentType]&gt;,
+        F2: FnMut(Message) -&gt; bool,
     {
-        <span class="comment">// message parsing</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dispatched</span> <span class="op">=</span> <span class="number">0</span>;
+        <span class="comment">// message parsing
+        </span><span class="kw">let </span><span class="kw-2">mut </span>dispatched = <span class="number">0</span>;
 
-        <span class="kw">loop</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-            <span class="comment">// first parse any leftover messages</span>
-            <span class="kw">loop</span> {
-                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_one_message</span>(<span class="kw-2">&amp;mut</span> <span class="ident">signature</span>) {
-                    <span class="prelude-val">Ok</span>(<span class="ident">msg</span>) =&gt; {
-                        <span class="kw">let</span> <span class="ident">keep_going</span> <span class="op">=</span> <span class="ident">callback</span>(<span class="ident">msg</span>);
-                        <span class="ident">dispatched</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                        <span class="kw">if</span> <span class="op">!</span><span class="ident">keep_going</span> {
+        <span class="kw">loop </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>err = <span class="prelude-val">None</span>;
+            <span class="comment">// first parse any leftover messages
+            </span><span class="kw">loop </span>{
+                <span class="kw">match </span><span class="self">self</span>.read_one_message(<span class="kw-2">&amp;mut </span>signature) {
+                    <span class="prelude-val">Ok</span>(msg) =&gt; {
+                        <span class="kw">let </span>keep_going = callback(msg);
+                        dispatched += <span class="number">1</span>;
+                        <span class="kw">if </span>!keep_going {
                             <span class="kw">break</span>;
                         }
                     }
-                    <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; {
-                        <span class="ident">err</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">e</span>);
+                    <span class="prelude-val">Err</span>(e) =&gt; {
+                        err = <span class="prelude-val">Some</span>(e);
                         <span class="kw">break</span>;
                     }
                 }
             }
 
-            <span class="comment">// copy back any leftover content to the front of the buffer</span>
-            <span class="self">self</span>.<span class="ident">in_data</span>.<span class="ident">move_to_front</span>();
-            <span class="self">self</span>.<span class="ident">in_fds</span>.<span class="ident">move_to_front</span>();
+            <span class="comment">// copy back any leftover content to the front of the buffer
+            </span><span class="self">self</span>.in_data.move_to_front();
+            <span class="self">self</span>.in_fds.move_to_front();
 
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">MessageParseError::Malformed</span>) <span class="op">=</span> <span class="ident">err</span> {
-                <span class="comment">// early stop here</span>
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(<span class="ident">MessageParseError::Malformed</span>));
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(MessageParseError::Malformed) = err {
+                <span class="comment">// early stop here
+                </span><span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(MessageParseError::Malformed));
             }
 
-            <span class="kw">if</span> <span class="ident">err</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">in_data</span>.<span class="ident">has_content</span>() {
-                <span class="comment">// we stopped reading without error while there is content? That means</span>
-                <span class="comment">// the user requested an early stopping</span>
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(<span class="ident">dispatched</span>));
+            <span class="kw">if </span>err.is_none() &amp;&amp; <span class="self">self</span>.in_data.has_content() {
+                <span class="comment">// we stopped reading without error while there is content? That means
+                // the user requested an early stopping
+                </span><span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(dispatched));
             }
 
-            <span class="comment">// now, try to get more data</span>
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fill_incoming_buffers</span>() {
+            <span class="comment">// now, try to get more data
+            </span><span class="kw">match </span><span class="self">self</span>.fill_incoming_buffers() {
                 <span class="prelude-val">Ok</span>(()) =&gt; (),
-                <span class="prelude-val">Err</span>(<span class="ident">e</span> @ <span class="ident">::nix::Error::EAGAIN</span>) =&gt; {
-                    <span class="comment">// stop looping, returning Ok() or EAGAIN depending on whether messages</span>
-                    <span class="comment">// were dispatched</span>
-                    <span class="kw">if</span> <span class="ident">dispatched</span> <span class="op">==</span> <span class="number">0</span> {
-                        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>);
-                    } <span class="kw">else</span> {
+                <span class="prelude-val">Err</span>(e @ ::nix::Error::EAGAIN) =&gt; {
+                    <span class="comment">// stop looping, returning Ok() or EAGAIN depending on whether messages
+                    // were dispatched
+                    </span><span class="kw">if </span>dispatched == <span class="number">0 </span>{
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(e);
+                    } <span class="kw">else </span>{
                         <span class="kw">break</span>;
                     }
                 }
-                <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>),
+                <span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(e),
             }
         }
 
-        <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(<span class="ident">dispatched</span>))
+        <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(dispatched))
     }
 }
 
 <span class="comment">/*
  * Buffer
- */</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Copy</span><span class="op">&gt;</span> {
-    <span class="ident">storage</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="ident">occupied</span>: <span class="ident">usize</span>,
-    <span class="ident">offset</span>: <span class="ident">usize</span>,
+ */
+</span><span class="attribute">#[derive(Debug)]
+</span><span class="kw">struct </span>Buffer&lt;T: Copy&gt; {
+    storage: Vec&lt;T&gt;,
+    occupied: usize,
+    offset: usize,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span><span class="op">&gt;</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">size</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="ident">Buffer</span> { <span class="ident">storage</span>: <span class="macro">vec!</span>[<span class="ident">T::default</span>(); <span class="ident">size</span>], <span class="ident">occupied</span>: <span class="number">0</span>, <span class="ident">offset</span>: <span class="number">0</span> }
+<span class="kw">impl</span>&lt;T: Copy + Default&gt; Buffer&lt;T&gt; {
+    <span class="kw">fn </span>new(size: usize) -&gt; Buffer&lt;T&gt; {
+        Buffer { storage: <span class="macro">vec!</span>[T::default(); size], occupied: <span class="number">0</span>, offset: <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Check if this buffer has content to read</span>
-    <span class="kw">fn</span> <span class="ident">has_content</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">occupied</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">offset</span>
+    <span class="doccomment">/// Check if this buffer has content to read
+    </span><span class="kw">fn </span>has_content(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.occupied &gt; <span class="self">self</span>.offset
     }
 
-    <span class="doccomment">/// Advance the internal counter of occupied space</span>
-    <span class="kw">fn</span> <span class="ident">advance</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">bytes</span>: <span class="ident">usize</span>) {
-        <span class="self">self</span>.<span class="ident">occupied</span> <span class="op">+</span><span class="op">=</span> <span class="ident">bytes</span>;
+    <span class="doccomment">/// Advance the internal counter of occupied space
+    </span><span class="kw">fn </span>advance(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bytes: usize) {
+        <span class="self">self</span>.occupied += bytes;
     }
 
-    <span class="doccomment">/// Advance the read offset of current occupied space</span>
-    <span class="kw">fn</span> <span class="ident">offset</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">bytes</span>: <span class="ident">usize</span>) {
-        <span class="self">self</span>.<span class="ident">offset</span> <span class="op">+</span><span class="op">=</span> <span class="ident">bytes</span>;
+    <span class="doccomment">/// Advance the read offset of current occupied space
+    </span><span class="kw">fn </span>offset(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bytes: usize) {
+        <span class="self">self</span>.offset += bytes;
     }
 
-    <span class="doccomment">/// Clears the contents of the buffer</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This only sets the counter of occupied space back to zero,</span>
-    <span class="doccomment">/// allowing previous content to be overwritten.</span>
-    <span class="kw">fn</span> <span class="ident">clear</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="self">self</span>.<span class="ident">occupied</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="self">self</span>.<span class="ident">offset</span> <span class="op">=</span> <span class="number">0</span>;
+    <span class="doccomment">/// Clears the contents of the buffer
+    ///
+    /// This only sets the counter of occupied space back to zero,
+    /// allowing previous content to be overwritten.
+    </span><span class="kw">fn </span>clear(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="self">self</span>.occupied = <span class="number">0</span>;
+        <span class="self">self</span>.offset = <span class="number">0</span>;
     }
 
-    <span class="doccomment">/// Get the current contents of the occupied space of the buffer</span>
-    <span class="kw">fn</span> <span class="ident">get_contents</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">T</span>] {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">storage</span>[(<span class="self">self</span>.<span class="ident">offset</span>)..(<span class="self">self</span>.<span class="ident">occupied</span>)]
+    <span class="doccomment">/// Get the current contents of the occupied space of the buffer
+    </span><span class="kw">fn </span>get_contents(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T] {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.storage[(<span class="self">self</span>.offset)..(<span class="self">self</span>.occupied)]
     }
 
-    <span class="doccomment">/// Get mutable access to the unoccupied space of the buffer</span>
-    <span class="kw">fn</span> <span class="ident">get_writable_storage</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> [<span class="ident">T</span>] {
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">storage</span>[(<span class="self">self</span>.<span class="ident">occupied</span>)..]
+    <span class="doccomment">/// Get mutable access to the unoccupied space of the buffer
+    </span><span class="kw">fn </span>get_writable_storage(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T] {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.storage[(<span class="self">self</span>.occupied)..]
     }
 
-    <span class="doccomment">/// Move the unread contents of the buffer to the front, to ensure</span>
-    <span class="doccomment">/// maximal write space availability</span>
-    <span class="kw">fn</span> <span class="ident">move_to_front</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">unsafe</span> {
-            <span class="ident">::std::ptr::copy</span>(
-                <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">storage</span>[<span class="self">self</span>.<span class="ident">offset</span>] <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">T</span>,
-                <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">storage</span>[<span class="number">0</span>] <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>,
-                <span class="self">self</span>.<span class="ident">occupied</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">offset</span>,
+    <span class="doccomment">/// Move the unread contents of the buffer to the front, to ensure
+    /// maximal write space availability
+    </span><span class="kw">fn </span>move_to_front(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">unsafe </span>{
+            ::std::ptr::copy(
+                <span class="kw-2">&amp;</span><span class="self">self</span>.storage[<span class="self">self</span>.offset] <span class="kw">as </span><span class="kw-2">*const </span>T,
+                <span class="kw-2">&amp;mut </span><span class="self">self</span>.storage[<span class="number">0</span>] <span class="kw">as </span><span class="kw-2">*mut </span>T,
+                <span class="self">self</span>.occupied - <span class="self">self</span>.offset,
             );
         }
-        <span class="self">self</span>.<span class="ident">occupied</span> <span class="op">-</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">offset</span>;
-        <span class="self">self</span>.<span class="ident">offset</span> <span class="op">=</span> <span class="number">0</span>;
+        <span class="self">self</span>.occupied -= <span class="self">self</span>.offset;
+        <span class="self">self</span>.offset = <span class="number">0</span>;
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::wire</span>::{<span class="ident">Argument</span>, <span class="ident">ArgumentType</span>, <span class="ident">Message</span>};
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::wire::{Argument, ArgumentType, Message};
 
-    <span class="kw">use</span> <span class="ident">std::ffi::CString</span>;
+    <span class="kw">use </span>std::ffi::CString;
 
-    <span class="kw">use</span> <span class="ident">smallvec::smallvec</span>;
+    <span class="kw">use </span>smallvec::smallvec;
 
-    <span class="kw">fn</span> <span class="ident">same_file</span>(<span class="ident">a</span>: <span class="ident">RawFd</span>, <span class="ident">b</span>: <span class="ident">RawFd</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">let</span> <span class="ident">stat1</span> <span class="op">=</span> <span class="ident">::nix::sys::stat::fstat</span>(<span class="ident">a</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">stat2</span> <span class="op">=</span> <span class="ident">::nix::sys::stat::fstat</span>(<span class="ident">b</span>).<span class="ident">unwrap</span>();
-        <span class="ident">stat1</span>.<span class="ident">st_dev</span> <span class="op">==</span> <span class="ident">stat2</span>.<span class="ident">st_dev</span> <span class="op">&amp;&amp;</span> <span class="ident">stat1</span>.<span class="ident">st_ino</span> <span class="op">==</span> <span class="ident">stat2</span>.<span class="ident">st_ino</span>
+    <span class="kw">fn </span>same_file(a: RawFd, b: RawFd) -&gt; bool {
+        <span class="kw">let </span>stat1 = ::nix::sys::stat::fstat(a).unwrap();
+        <span class="kw">let </span>stat2 = ::nix::sys::stat::fstat(b).unwrap();
+        stat1.st_dev == stat2.st_dev &amp;&amp; stat1.st_ino == stat2.st_ino
     }
 
-    <span class="comment">// check if two messages are equal</span>
-    <span class="comment">//</span>
-    <span class="comment">// if arguments contain FDs, check that the fd point to</span>
-    <span class="comment">// the same file, rather than are the same number.</span>
-    <span class="kw">fn</span> <span class="ident">assert_eq_msgs</span>(<span class="ident">msg1</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">msg2</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>) {
-        <span class="macro">assert_eq!</span>(<span class="ident">msg1</span>.<span class="ident">sender_id</span>, <span class="ident">msg2</span>.<span class="ident">sender_id</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">msg1</span>.<span class="ident">opcode</span>, <span class="ident">msg2</span>.<span class="ident">opcode</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">msg1</span>.<span class="ident">args</span>.<span class="ident">len</span>(), <span class="ident">msg2</span>.<span class="ident">args</span>.<span class="ident">len</span>());
-        <span class="kw">for</span> (<span class="ident">arg1</span>, <span class="ident">arg2</span>) <span class="kw">in</span> <span class="ident">msg1</span>.<span class="ident">args</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">msg2</span>.<span class="ident">args</span>.<span class="ident">iter</span>()) {
-            <span class="kw">if</span> <span class="kw">let</span> (<span class="kw-2">&amp;</span><span class="ident">Argument::Fd</span>(<span class="ident">fd1</span>), <span class="kw-2">&amp;</span><span class="ident">Argument::Fd</span>(<span class="ident">fd2</span>)) <span class="op">=</span> (<span class="ident">arg1</span>, <span class="ident">arg2</span>) {
-                <span class="macro">assert!</span>(<span class="ident">same_file</span>(<span class="ident">fd1</span>, <span class="ident">fd2</span>));
-            } <span class="kw">else</span> {
-                <span class="macro">assert_eq!</span>(<span class="ident">arg1</span>, <span class="ident">arg2</span>);
+    <span class="comment">// check if two messages are equal
+    //
+    // if arguments contain FDs, check that the fd point to
+    // the same file, rather than are the same number.
+    </span><span class="kw">fn </span>assert_eq_msgs(msg1: <span class="kw-2">&amp;</span>Message, msg2: <span class="kw-2">&amp;</span>Message) {
+        <span class="macro">assert_eq!</span>(msg1.sender_id, msg2.sender_id);
+        <span class="macro">assert_eq!</span>(msg1.opcode, msg2.opcode);
+        <span class="macro">assert_eq!</span>(msg1.args.len(), msg2.args.len());
+        <span class="kw">for </span>(arg1, arg2) <span class="kw">in </span>msg1.args.iter().zip(msg2.args.iter()) {
+            <span class="kw">if let </span>(<span class="kw-2">&amp;</span>Argument::Fd(fd1), <span class="kw-2">&amp;</span>Argument::Fd(fd2)) = (arg1, arg2) {
+                <span class="macro">assert!</span>(same_file(fd1, fd2));
+            } <span class="kw">else </span>{
+                <span class="macro">assert_eq!</span>(arg1, arg2);
             }
         }
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">write_read_cycle</span>() {
-        <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="ident">Message</span> {
-            <span class="ident">sender_id</span>: <span class="number">42</span>,
-            <span class="ident">opcode</span>: <span class="number">7</span>,
-            <span class="ident">args</span>: <span class="macro">smallvec!</span>[
-                <span class="ident">Argument::Uint</span>(<span class="number">3</span>),
-                <span class="ident">Argument::Fixed</span>(<span class="op">-</span><span class="number">89</span>),
-                <span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">CString::new</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;I like trains!&quot;</span>[..]).<span class="ident">unwrap</span>())),
-                <span class="ident">Argument::Array</span>(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>].<span class="ident">into</span>()),
-                <span class="ident">Argument::Object</span>(<span class="number">88</span>),
-                <span class="ident">Argument::NewId</span>(<span class="number">56</span>),
-                <span class="ident">Argument::Int</span>(<span class="op">-</span><span class="number">25</span>),
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>write_read_cycle() {
+        <span class="kw">let </span>msg = Message {
+            sender_id: <span class="number">42</span>,
+            opcode: <span class="number">7</span>,
+            args: <span class="macro">smallvec!</span>[
+                Argument::Uint(<span class="number">3</span>),
+                Argument::Fixed(-<span class="number">89</span>),
+                Argument::Str(Box::new(CString::new(<span class="kw-2">&amp;</span><span class="string">b&quot;I like trains!&quot;</span>[..]).unwrap())),
+                Argument::Array(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>].into()),
+                Argument::Object(<span class="number">88</span>),
+                Argument::NewId(<span class="number">56</span>),
+                Argument::Int(-<span class="number">25</span>),
             ],
         };
 
-        <span class="kw">let</span> (<span class="ident">client</span>, <span class="ident">server</span>) <span class="op">=</span> <span class="ident">::std::os::unix::net::UnixStream::pair</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">BufferedSocket::new</span>(<span class="kw">unsafe</span> { <span class="ident">Socket::from_raw_fd</span>(<span class="ident">client</span>.<span class="ident">into_raw_fd</span>()) });
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">server</span> <span class="op">=</span> <span class="ident">BufferedSocket::new</span>(<span class="kw">unsafe</span> { <span class="ident">Socket::from_raw_fd</span>(<span class="ident">server</span>.<span class="ident">into_raw_fd</span>()) });
+        <span class="kw">let </span>(client, server) = ::std::os::unix::net::UnixStream::pair().unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>client = BufferedSocket::new(<span class="kw">unsafe </span>{ Socket::from_raw_fd(client.into_raw_fd()) });
+        <span class="kw">let </span><span class="kw-2">mut </span>server = BufferedSocket::new(<span class="kw">unsafe </span>{ Socket::from_raw_fd(server.into_raw_fd()) });
 
-        <span class="ident">client</span>.<span class="ident">write_message</span>(<span class="kw-2">&amp;</span><span class="ident">msg</span>).<span class="ident">unwrap</span>();
-        <span class="ident">client</span>.<span class="ident">flush</span>().<span class="ident">unwrap</span>();
+        client.write_message(<span class="kw-2">&amp;</span>msg).unwrap();
+        client.flush().unwrap();
 
-        <span class="kw">static</span> <span class="ident">SIGNATURE</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">ArgumentType</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[
-            <span class="ident">ArgumentType::Uint</span>,
-            <span class="ident">ArgumentType::Fixed</span>,
-            <span class="ident">ArgumentType::Str</span>,
-            <span class="ident">ArgumentType::Array</span>,
-            <span class="ident">ArgumentType::Object</span>,
-            <span class="ident">ArgumentType::NewId</span>,
-            <span class="ident">ArgumentType::Int</span>,
+        <span class="kw">static </span>SIGNATURE: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[ArgumentType] = <span class="kw-2">&amp;</span>[
+            ArgumentType::Uint,
+            ArgumentType::Fixed,
+            ArgumentType::Str,
+            ArgumentType::Array,
+            ArgumentType::Object,
+            ArgumentType::NewId,
+            ArgumentType::Int,
         ];
 
-        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">server</span>
-            .<span class="ident">read_messages</span>(
-                <span class="op">|</span><span class="ident">sender_id</span>, <span class="ident">opcode</span><span class="op">|</span> {
-                    <span class="kw">if</span> <span class="ident">sender_id</span> <span class="op">==</span> <span class="number">42</span> <span class="op">&amp;&amp;</span> <span class="ident">opcode</span> <span class="op">==</span> <span class="number">7</span> {
-                        <span class="prelude-val">Some</span>(<span class="ident">SIGNATURE</span>)
-                    } <span class="kw">else</span> {
-                        <span class="prelude-val">None</span>
-                    }
+        <span class="kw">let </span>ret = server
+            .read_messages(
+                |sender_id, opcode| {
+                    <span class="kw">if </span>sender_id == <span class="number">42 </span>&amp;&amp; opcode == <span class="number">7 </span>{
+                        <span class="prelude-val">Some</span>(SIGNATURE)
+                    } <span class="kw">else </span>{
+                        <span class="prelude-val">None
+                    </span>}
                 },
-                <span class="op">|</span><span class="ident">message</span><span class="op">|</span> {
-                    <span class="ident">assert_eq_msgs</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="kw-2">&amp;</span><span class="ident">msg</span>);
-                    <span class="bool-val">true</span>
-                },
+                |message| {
+                    assert_eq_msgs(<span class="kw-2">&amp;</span>message, <span class="kw-2">&amp;</span>msg);
+                    <span class="bool-val">true
+                </span>},
             )
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">unwrap</span>();
+            .unwrap()
+            .unwrap();
 
-        <span class="macro">assert_eq!</span>(<span class="ident">ret</span>, <span class="number">1</span>);
+        <span class="macro">assert_eq!</span>(ret, <span class="number">1</span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">write_read_cycle_fd</span>() {
-        <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="ident">Message</span> {
-            <span class="ident">sender_id</span>: <span class="number">42</span>,
-            <span class="ident">opcode</span>: <span class="number">7</span>,
-            <span class="ident">args</span>: <span class="macro">smallvec!</span>[
-                <span class="ident">Argument::Fd</span>(<span class="number">1</span>), <span class="comment">// stdin</span>
-                <span class="ident">Argument::Fd</span>(<span class="number">0</span>), <span class="comment">// stdout</span>
-            ],
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>write_read_cycle_fd() {
+        <span class="kw">let </span>msg = Message {
+            sender_id: <span class="number">42</span>,
+            opcode: <span class="number">7</span>,
+            args: <span class="macro">smallvec!</span>[
+                Argument::Fd(<span class="number">1</span>), <span class="comment">// stdin
+                </span>Argument::Fd(<span class="number">0</span>), <span class="comment">// stdout
+            </span>],
         };
 
-        <span class="kw">let</span> (<span class="ident">client</span>, <span class="ident">server</span>) <span class="op">=</span> <span class="ident">::std::os::unix::net::UnixStream::pair</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">BufferedSocket::new</span>(<span class="kw">unsafe</span> { <span class="ident">Socket::from_raw_fd</span>(<span class="ident">client</span>.<span class="ident">into_raw_fd</span>()) });
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">server</span> <span class="op">=</span> <span class="ident">BufferedSocket::new</span>(<span class="kw">unsafe</span> { <span class="ident">Socket::from_raw_fd</span>(<span class="ident">server</span>.<span class="ident">into_raw_fd</span>()) });
+        <span class="kw">let </span>(client, server) = ::std::os::unix::net::UnixStream::pair().unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>client = BufferedSocket::new(<span class="kw">unsafe </span>{ Socket::from_raw_fd(client.into_raw_fd()) });
+        <span class="kw">let </span><span class="kw-2">mut </span>server = BufferedSocket::new(<span class="kw">unsafe </span>{ Socket::from_raw_fd(server.into_raw_fd()) });
 
-        <span class="ident">client</span>.<span class="ident">write_message</span>(<span class="kw-2">&amp;</span><span class="ident">msg</span>).<span class="ident">unwrap</span>();
-        <span class="ident">client</span>.<span class="ident">flush</span>().<span class="ident">unwrap</span>();
+        client.write_message(<span class="kw-2">&amp;</span>msg).unwrap();
+        client.flush().unwrap();
 
-        <span class="kw">static</span> <span class="ident">SIGNATURE</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">ArgumentType</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[<span class="ident">ArgumentType::Fd</span>, <span class="ident">ArgumentType::Fd</span>];
+        <span class="kw">static </span>SIGNATURE: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[ArgumentType] = <span class="kw-2">&amp;</span>[ArgumentType::Fd, ArgumentType::Fd];
 
-        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">server</span>
-            .<span class="ident">read_messages</span>(
-                <span class="op">|</span><span class="ident">sender_id</span>, <span class="ident">opcode</span><span class="op">|</span> {
-                    <span class="kw">if</span> <span class="ident">sender_id</span> <span class="op">==</span> <span class="number">42</span> <span class="op">&amp;&amp;</span> <span class="ident">opcode</span> <span class="op">==</span> <span class="number">7</span> {
-                        <span class="prelude-val">Some</span>(<span class="ident">SIGNATURE</span>)
-                    } <span class="kw">else</span> {
-                        <span class="prelude-val">None</span>
-                    }
+        <span class="kw">let </span>ret = server
+            .read_messages(
+                |sender_id, opcode| {
+                    <span class="kw">if </span>sender_id == <span class="number">42 </span>&amp;&amp; opcode == <span class="number">7 </span>{
+                        <span class="prelude-val">Some</span>(SIGNATURE)
+                    } <span class="kw">else </span>{
+                        <span class="prelude-val">None
+                    </span>}
                 },
-                <span class="op">|</span><span class="ident">message</span><span class="op">|</span> {
-                    <span class="ident">assert_eq_msgs</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="kw-2">&amp;</span><span class="ident">msg</span>);
-                    <span class="bool-val">true</span>
-                },
+                |message| {
+                    assert_eq_msgs(<span class="kw-2">&amp;</span>message, <span class="kw-2">&amp;</span>msg);
+                    <span class="bool-val">true
+                </span>},
             )
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">unwrap</span>();
+            .unwrap()
+            .unwrap();
 
-        <span class="macro">assert_eq!</span>(<span class="ident">ret</span>, <span class="number">1</span>);
+        <span class="macro">assert_eq!</span>(ret, <span class="number">1</span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">write_read_cycle_multiple</span>() {
-        <span class="kw">let</span> <span class="ident">messages</span> <span class="op">=</span> [
-            <span class="ident">Message</span> {
-                <span class="ident">sender_id</span>: <span class="number">42</span>,
-                <span class="ident">opcode</span>: <span class="number">0</span>,
-                <span class="ident">args</span>: <span class="macro">smallvec!</span>[
-                    <span class="ident">Argument::Int</span>(<span class="number">42</span>),
-                    <span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">CString::new</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;I like trains&quot;</span>[..]).<span class="ident">unwrap</span>())),
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>write_read_cycle_multiple() {
+        <span class="kw">let </span>messages = [
+            Message {
+                sender_id: <span class="number">42</span>,
+                opcode: <span class="number">0</span>,
+                args: <span class="macro">smallvec!</span>[
+                    Argument::Int(<span class="number">42</span>),
+                    Argument::Str(Box::new(CString::new(<span class="kw-2">&amp;</span><span class="string">b&quot;I like trains&quot;</span>[..]).unwrap())),
                 ],
             },
-            <span class="ident">Message</span> {
-                <span class="ident">sender_id</span>: <span class="number">42</span>,
-                <span class="ident">opcode</span>: <span class="number">1</span>,
-                <span class="ident">args</span>: <span class="macro">smallvec!</span>[
-                    <span class="ident">Argument::Fd</span>(<span class="number">1</span>), <span class="comment">// stdin</span>
-                    <span class="ident">Argument::Fd</span>(<span class="number">0</span>), <span class="comment">// stdout</span>
-                ],
+            Message {
+                sender_id: <span class="number">42</span>,
+                opcode: <span class="number">1</span>,
+                args: <span class="macro">smallvec!</span>[
+                    Argument::Fd(<span class="number">1</span>), <span class="comment">// stdin
+                    </span>Argument::Fd(<span class="number">0</span>), <span class="comment">// stdout
+                </span>],
             },
-            <span class="ident">Message</span> {
-                <span class="ident">sender_id</span>: <span class="number">42</span>,
-                <span class="ident">opcode</span>: <span class="number">2</span>,
-                <span class="ident">args</span>: <span class="macro">smallvec!</span>[
-                    <span class="ident">Argument::Uint</span>(<span class="number">3</span>),
-                    <span class="ident">Argument::Fd</span>(<span class="number">2</span>), <span class="comment">// stderr</span>
-                ],
+            Message {
+                sender_id: <span class="number">42</span>,
+                opcode: <span class="number">2</span>,
+                args: <span class="macro">smallvec!</span>[
+                    Argument::Uint(<span class="number">3</span>),
+                    Argument::Fd(<span class="number">2</span>), <span class="comment">// stderr
+                </span>],
             },
         ];
 
-        <span class="kw">static</span> <span class="ident">SIGNATURES</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">ArgumentType</span>]] <span class="op">=</span> <span class="kw-2">&amp;</span>[
-            <span class="kw-2">&amp;</span>[<span class="ident">ArgumentType::Int</span>, <span class="ident">ArgumentType::Str</span>],
-            <span class="kw-2">&amp;</span>[<span class="ident">ArgumentType::Fd</span>, <span class="ident">ArgumentType::Fd</span>],
-            <span class="kw-2">&amp;</span>[<span class="ident">ArgumentType::Uint</span>, <span class="ident">ArgumentType::Fd</span>],
+        <span class="kw">static </span>SIGNATURES: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[ArgumentType]] = <span class="kw-2">&amp;</span>[
+            <span class="kw-2">&amp;</span>[ArgumentType::Int, ArgumentType::Str],
+            <span class="kw-2">&amp;</span>[ArgumentType::Fd, ArgumentType::Fd],
+            <span class="kw-2">&amp;</span>[ArgumentType::Uint, ArgumentType::Fd],
         ];
 
-        <span class="kw">let</span> (<span class="ident">client</span>, <span class="ident">server</span>) <span class="op">=</span> <span class="ident">::std::os::unix::net::UnixStream::pair</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">BufferedSocket::new</span>(<span class="kw">unsafe</span> { <span class="ident">Socket::from_raw_fd</span>(<span class="ident">client</span>.<span class="ident">into_raw_fd</span>()) });
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">server</span> <span class="op">=</span> <span class="ident">BufferedSocket::new</span>(<span class="kw">unsafe</span> { <span class="ident">Socket::from_raw_fd</span>(<span class="ident">server</span>.<span class="ident">into_raw_fd</span>()) });
+        <span class="kw">let </span>(client, server) = ::std::os::unix::net::UnixStream::pair().unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>client = BufferedSocket::new(<span class="kw">unsafe </span>{ Socket::from_raw_fd(client.into_raw_fd()) });
+        <span class="kw">let </span><span class="kw-2">mut </span>server = BufferedSocket::new(<span class="kw">unsafe </span>{ Socket::from_raw_fd(server.into_raw_fd()) });
 
-        <span class="kw">for</span> <span class="ident">msg</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">messages</span> {
-            <span class="ident">client</span>.<span class="ident">write_message</span>(<span class="ident">msg</span>).<span class="ident">unwrap</span>();
+        <span class="kw">for </span>msg <span class="kw">in </span><span class="kw-2">&amp;</span>messages {
+            client.write_message(msg).unwrap();
         }
-        <span class="ident">client</span>.<span class="ident">flush</span>().<span class="ident">unwrap</span>();
+        client.flush().unwrap();
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">recv_msgs</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">server</span>
-            .<span class="ident">read_messages</span>(
-                <span class="op">|</span><span class="ident">sender_id</span>, <span class="ident">opcode</span><span class="op">|</span> {
-                    <span class="kw">if</span> <span class="ident">sender_id</span> <span class="op">==</span> <span class="number">42</span> {
-                        <span class="prelude-val">Some</span>(<span class="ident">SIGNATURES</span>[<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span>])
-                    } <span class="kw">else</span> {
-                        <span class="prelude-val">None</span>
-                    }
+        <span class="kw">let </span><span class="kw-2">mut </span>recv_msgs = Vec::new();
+        <span class="kw">let </span>ret = server
+            .read_messages(
+                |sender_id, opcode| {
+                    <span class="kw">if </span>sender_id == <span class="number">42 </span>{
+                        <span class="prelude-val">Some</span>(SIGNATURES[opcode <span class="kw">as </span>usize])
+                    } <span class="kw">else </span>{
+                        <span class="prelude-val">None
+                    </span>}
                 },
-                <span class="op">|</span><span class="ident">message</span><span class="op">|</span> {
-                    <span class="ident">recv_msgs</span>.<span class="ident">push</span>(<span class="ident">message</span>);
-                    <span class="bool-val">true</span>
-                },
+                |message| {
+                    recv_msgs.push(message);
+                    <span class="bool-val">true
+                </span>},
             )
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">unwrap</span>();
+            .unwrap()
+            .unwrap();
 
-        <span class="macro">assert_eq!</span>(<span class="ident">ret</span>, <span class="number">3</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">recv_msgs</span>.<span class="ident">len</span>(), <span class="number">3</span>);
-        <span class="kw">for</span> (<span class="ident">msg1</span>, <span class="ident">msg2</span>) <span class="kw">in</span> <span class="ident">messages</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">recv_msgs</span>.<span class="ident">iter</span>()) {
-            <span class="ident">assert_eq_msgs</span>(<span class="ident">msg1</span>, <span class="ident">msg2</span>);
+        <span class="macro">assert_eq!</span>(ret, <span class="number">3</span>);
+        <span class="macro">assert_eq!</span>(recv_msgs.len(), <span class="number">3</span>);
+        <span class="kw">for </span>(msg1, msg2) <span class="kw">in </span>messages.iter().zip(recv_msgs.iter()) {
+            assert_eq_msgs(msg1, msg2);
         }
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">parse_with_string_len_multiple_of_4</span>() {
-        <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="ident">Message</span> {
-            <span class="ident">sender_id</span>: <span class="number">2</span>,
-            <span class="ident">opcode</span>: <span class="number">0</span>,
-            <span class="ident">args</span>: <span class="macro">smallvec!</span>[
-                <span class="ident">Argument::Uint</span>(<span class="number">18</span>),
-                <span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">CString::new</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;wl_shell&quot;</span>[..]).<span class="ident">unwrap</span>())),
-                <span class="ident">Argument::Uint</span>(<span class="number">1</span>),
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>parse_with_string_len_multiple_of_4() {
+        <span class="kw">let </span>msg = Message {
+            sender_id: <span class="number">2</span>,
+            opcode: <span class="number">0</span>,
+            args: <span class="macro">smallvec!</span>[
+                Argument::Uint(<span class="number">18</span>),
+                Argument::Str(Box::new(CString::new(<span class="kw-2">&amp;</span><span class="string">b&quot;wl_shell&quot;</span>[..]).unwrap())),
+                Argument::Uint(<span class="number">1</span>),
             ],
         };
 
-        <span class="kw">let</span> (<span class="ident">client</span>, <span class="ident">server</span>) <span class="op">=</span> <span class="ident">::std::os::unix::net::UnixStream::pair</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">BufferedSocket::new</span>(<span class="kw">unsafe</span> { <span class="ident">Socket::from_raw_fd</span>(<span class="ident">client</span>.<span class="ident">into_raw_fd</span>()) });
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">server</span> <span class="op">=</span> <span class="ident">BufferedSocket::new</span>(<span class="kw">unsafe</span> { <span class="ident">Socket::from_raw_fd</span>(<span class="ident">server</span>.<span class="ident">into_raw_fd</span>()) });
+        <span class="kw">let </span>(client, server) = ::std::os::unix::net::UnixStream::pair().unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>client = BufferedSocket::new(<span class="kw">unsafe </span>{ Socket::from_raw_fd(client.into_raw_fd()) });
+        <span class="kw">let </span><span class="kw-2">mut </span>server = BufferedSocket::new(<span class="kw">unsafe </span>{ Socket::from_raw_fd(server.into_raw_fd()) });
 
-        <span class="ident">client</span>.<span class="ident">write_message</span>(<span class="kw-2">&amp;</span><span class="ident">msg</span>).<span class="ident">unwrap</span>();
-        <span class="ident">client</span>.<span class="ident">flush</span>().<span class="ident">unwrap</span>();
+        client.write_message(<span class="kw-2">&amp;</span>msg).unwrap();
+        client.flush().unwrap();
 
-        <span class="kw">static</span> <span class="ident">SIGNATURE</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">ArgumentType</span>] <span class="op">=</span>
-            <span class="kw-2">&amp;</span>[<span class="ident">ArgumentType::Uint</span>, <span class="ident">ArgumentType::Str</span>, <span class="ident">ArgumentType::Uint</span>];
+        <span class="kw">static </span>SIGNATURE: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[ArgumentType] =
+            <span class="kw-2">&amp;</span>[ArgumentType::Uint, ArgumentType::Str, ArgumentType::Uint];
 
-        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">server</span>
-            .<span class="ident">read_messages</span>(
-                <span class="op">|</span><span class="ident">sender_id</span>, <span class="ident">opcode</span><span class="op">|</span> {
-                    <span class="kw">if</span> <span class="ident">sender_id</span> <span class="op">==</span> <span class="number">2</span> <span class="op">&amp;&amp;</span> <span class="ident">opcode</span> <span class="op">==</span> <span class="number">0</span> {
-                        <span class="prelude-val">Some</span>(<span class="ident">SIGNATURE</span>)
-                    } <span class="kw">else</span> {
-                        <span class="prelude-val">None</span>
-                    }
+        <span class="kw">let </span>ret = server
+            .read_messages(
+                |sender_id, opcode| {
+                    <span class="kw">if </span>sender_id == <span class="number">2 </span>&amp;&amp; opcode == <span class="number">0 </span>{
+                        <span class="prelude-val">Some</span>(SIGNATURE)
+                    } <span class="kw">else </span>{
+                        <span class="prelude-val">None
+                    </span>}
                 },
-                <span class="op">|</span><span class="ident">message</span><span class="op">|</span> {
-                    <span class="ident">assert_eq_msgs</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="kw-2">&amp;</span><span class="ident">msg</span>);
-                    <span class="bool-val">true</span>
-                },
+                |message| {
+                    assert_eq_msgs(<span class="kw-2">&amp;</span>message, <span class="kw-2">&amp;</span>msg);
+                    <span class="bool-val">true
+                </span>},
             )
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">unwrap</span>();
+            .unwrap()
+            .unwrap();
 
-        <span class="macro">assert_eq!</span>(<span class="ident">ret</span>, <span class="number">1</span>);
+        <span class="macro">assert_eq!</span>(ret, <span class="number">1</span>);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_commons" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_commons" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/handlers.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>handlers.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wl_clipboard_rs/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../wl_clipboard_rs/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../wl_clipboard_rs/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/handlers.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>handlers.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../wl_clipboard_rs/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -176,183 +176,183 @@
 <span id="176">176</span>
 <span id="177">177</span>
 <span id="178">178</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">cell</span>::{<span class="ident">Cell</span>, <span class="ident">RefCell</span>},
-    <span class="ident">collections</span>::{<span class="ident">HashMap</span>, <span class="ident">HashSet</span>},
-    <span class="ident">fs::File</span>,
-    <span class="ident">io</span>,
-    <span class="ident">os::unix::io</span>::{<span class="ident">IntoRawFd</span>, <span class="ident">RawFd</span>},
-    <span class="ident">path::PathBuf</span>,
-    <span class="ident">rc::Rc</span>,
+</pre><pre class="rust"><code><span class="kw">use </span>std::{
+    cell::{Cell, RefCell},
+    collections::{HashMap, HashSet},
+    fs::File,
+    io,
+    os::unix::io::{IntoRawFd, RawFd},
+    path::PathBuf,
+    rc::Rc,
 };
 
-<span class="kw">use</span> <span class="ident">derive_new::new</span>;
-<span class="kw">use</span> <span class="ident">nix::unistd::close</span>;
-<span class="kw">use</span> <span class="ident">wayland_client</span>::{
-    <span class="ident">protocol</span>::{<span class="ident">wl_seat::WlSeat</span>, <span class="kw-2">*</span>},
-    <span class="ident">DispatchData</span>, <span class="ident">Main</span>,
+<span class="kw">use </span>derive_new::new;
+<span class="kw">use </span>nix::unistd::close;
+<span class="kw">use </span>wayland_client::{
+    protocol::{wl_seat::WlSeat, <span class="kw-2">*</span>},
+    DispatchData, Main,
 };
-<span class="kw">use</span> <span class="ident">wayland_protocols::wlr::unstable::data_control::v1::client</span>::{
-    <span class="ident">zwlr_data_control_device_v1::ZwlrDataControlDeviceV1</span>, <span class="ident">zwlr_data_control_offer_v1::ZwlrDataControlOfferV1</span>,
-    <span class="ident">zwlr_data_control_source_v1::ZwlrDataControlSourceV1</span>, <span class="kw-2">*</span>,
-};
-
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">copy::ServeRequests</span>,
-    <span class="ident">seat_data::SeatData</span>,
-    <span class="ident">utils</span>::{<span class="self">self</span>, <span class="ident">copy_data</span>},
+<span class="kw">use </span>wayland_protocols::wlr::unstable::data_control::v1::client::{
+    zwlr_data_control_device_v1::ZwlrDataControlDeviceV1, zwlr_data_control_offer_v1::ZwlrDataControlOfferV1,
+    zwlr_data_control_source_v1::ZwlrDataControlSourceV1, <span class="kw-2">*</span>,
 };
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">seat_handler</span>(<span class="ident">seat</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">WlSeat</span><span class="op">&gt;</span>, <span class="ident">event</span>: <span class="ident">wl_seat::Event</span>, <span class="kw">_</span>: <span class="ident">DispatchData</span>) {
-    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">wl_seat::Event::Name</span> { <span class="ident">name</span> } <span class="op">=</span> <span class="ident">event</span> {
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">seat</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">SeatData</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>();
-        <span class="ident">data</span>.<span class="ident">borrow_mut</span>().<span class="ident">set_name</span>(<span class="ident">name</span>);
+<span class="kw">use crate</span>::{
+    copy::ServeRequests,
+    seat_data::SeatData,
+    utils::{<span class="self">self</span>, copy_data},
+};
+
+<span class="kw">pub fn </span>seat_handler(seat: Main&lt;WlSeat&gt;, event: wl_seat::Event, <span class="kw">_</span>: DispatchData) {
+    <span class="kw">if let </span>wl_seat::Event::Name { name } = event {
+        <span class="kw">let </span>data = seat.as_ref().user_data().get::&lt;RefCell&lt;SeatData&gt;&gt;().unwrap();
+        data.borrow_mut().set_name(name);
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">new</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DataDeviceHandler</span> {
-    <span class="ident">seat</span>: <span class="ident">WlSeat</span>,
-    <span class="ident">primary</span>: <span class="ident">bool</span>,
-    <span class="ident">got_primary_selection</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(new)]
+</span><span class="kw">pub struct </span>DataDeviceHandler {
+    seat: WlSeat,
+    primary: bool,
+    got_primary_selection: Rc&lt;Cell&lt;bool&gt;&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">DataDeviceHandler</span> {
-    <span class="kw">fn</span> <span class="ident">set_offer</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">offer</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ZwlrDataControlOfferV1</span><span class="op">&gt;</span>) {
-        <span class="comment">// Replace the existing offer with the new one.</span>
-        <span class="kw">let</span> <span class="ident">seat_data</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">seat</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">SeatData</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>();
-        <span class="ident">seat_data</span>.<span class="ident">borrow_mut</span>().<span class="ident">set_offer</span>(<span class="ident">offer</span>);
+<span class="kw">impl </span>DataDeviceHandler {
+    <span class="kw">fn </span>set_offer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, offer: <span class="prelude-ty">Option</span>&lt;ZwlrDataControlOfferV1&gt;) {
+        <span class="comment">// Replace the existing offer with the new one.
+        </span><span class="kw">let </span>seat_data = <span class="self">self</span>.seat.as_ref().user_data().get::&lt;RefCell&lt;SeatData&gt;&gt;().unwrap();
+        seat_data.borrow_mut().set_offer(offer);
     }
 
-    <span class="kw">fn</span> <span class="ident">data_offer</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">offer</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">ZwlrDataControlOfferV1</span><span class="op">&gt;</span>) {
-        <span class="comment">// Make a container for the new offer&#39;s mime types.</span>
-        <span class="kw">let</span> <span class="ident">mime_types</span> <span class="op">=</span> <span class="ident">RefCell::new</span>(<span class="ident">HashSet</span>::<span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="ident">::with_capacity</span>(<span class="number">1</span>));
+    <span class="kw">fn </span>data_offer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, offer: Main&lt;ZwlrDataControlOfferV1&gt;) {
+        <span class="comment">// Make a container for the new offer&#39;s mime types.
+        </span><span class="kw">let </span>mime_types = RefCell::new(HashSet::&lt;String&gt;::with_capacity(<span class="number">1</span>));
 
-        <span class="comment">// Bind the new offer with a handler that fills out mime types.</span>
-        <span class="ident">offer</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">set</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="ident">mime_types</span>);
-        <span class="ident">offer</span>.<span class="ident">quick_assign</span>(<span class="ident">data_offer_handler</span>);
+        <span class="comment">// Bind the new offer with a handler that fills out mime types.
+        </span>offer.as_ref().user_data().set(<span class="kw">move </span>|| mime_types);
+        offer.quick_assign(data_offer_handler);
     }
 
-    <span class="kw">fn</span> <span class="ident">selection</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">offer</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ZwlrDataControlOfferV1</span><span class="op">&gt;</span>) {
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">primary</span> {
-            <span class="self">self</span>.<span class="ident">set_offer</span>(<span class="ident">offer</span>);
+    <span class="kw">fn </span>selection(<span class="kw-2">&amp;mut </span><span class="self">self</span>, offer: <span class="prelude-ty">Option</span>&lt;ZwlrDataControlOfferV1&gt;) {
+        <span class="kw">if </span>!<span class="self">self</span>.primary {
+            <span class="self">self</span>.set_offer(offer);
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">primary_selection</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">offer</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ZwlrDataControlOfferV1</span><span class="op">&gt;</span>) {
-        <span class="self">self</span>.<span class="ident">got_primary_selection</span>.<span class="ident">set</span>(<span class="bool-val">true</span>);
+    <span class="kw">fn </span>primary_selection(<span class="kw-2">&amp;mut </span><span class="self">self</span>, offer: <span class="prelude-ty">Option</span>&lt;ZwlrDataControlOfferV1&gt;) {
+        <span class="self">self</span>.got_primary_selection.set(<span class="bool-val">true</span>);
 
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">primary</span> {
-            <span class="self">self</span>.<span class="ident">set_offer</span>(<span class="ident">offer</span>);
+        <span class="kw">if </span><span class="self">self</span>.primary {
+            <span class="self">self</span>.set_offer(offer);
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">finished</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="comment">// Destroy the device stored in the seat as it&#39;s no longer valid.</span>
-        <span class="kw">let</span> <span class="ident">seat_data</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">seat</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">SeatData</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>();
-        <span class="ident">seat_data</span>.<span class="ident">borrow_mut</span>().<span class="ident">set_device</span>(<span class="prelude-val">None</span>);
+    <span class="kw">fn </span>finished(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="comment">// Destroy the device stored in the seat as it&#39;s no longer valid.
+        </span><span class="kw">let </span>seat_data = <span class="self">self</span>.seat.as_ref().user_data().get::&lt;RefCell&lt;SeatData&gt;&gt;().unwrap();
+        seat_data.borrow_mut().set_device(<span class="prelude-val">None</span>);
     }
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">data_device_handler</span>(<span class="ident">handler</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DataDeviceHandler</span>,
-                           <span class="kw">_</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">ZwlrDataControlDeviceV1</span><span class="op">&gt;</span>,
-                           <span class="ident">event</span>: <span class="ident">zwlr_data_control_device_v1::Event</span>,
-                           <span class="kw">_</span>: <span class="ident">DispatchData</span>) {
-    <span class="kw">use</span> <span class="ident">zwlr_data_control_device_v1::Event</span>::<span class="kw-2">*</span>;
-    <span class="kw">match</span> <span class="ident">event</span> {
-        <span class="ident">DataOffer</span> { <span class="ident">id</span> } =&gt; <span class="ident">handler</span>.<span class="ident">data_offer</span>(<span class="ident">id</span>),
-        <span class="ident">Selection</span> { <span class="ident">id</span> } =&gt; <span class="ident">handler</span>.<span class="ident">selection</span>(<span class="ident">id</span>),
-        <span class="ident">Finished</span> =&gt; <span class="ident">handler</span>.<span class="ident">finished</span>(),
-        <span class="ident">PrimarySelection</span> { <span class="ident">id</span> } =&gt; <span class="ident">handler</span>.<span class="ident">primary_selection</span>(<span class="ident">id</span>),
-        <span class="kw">_</span> =&gt; (),
+<span class="kw">pub fn </span>data_device_handler(handler: <span class="kw-2">&amp;mut </span>DataDeviceHandler,
+                           <span class="kw">_</span>: Main&lt;ZwlrDataControlDeviceV1&gt;,
+                           event: zwlr_data_control_device_v1::Event,
+                           <span class="kw">_</span>: DispatchData) {
+    <span class="kw">use </span>zwlr_data_control_device_v1::Event::<span class="kw-2">*</span>;
+    <span class="kw">match </span>event {
+        DataOffer { id } =&gt; handler.data_offer(id),
+        Selection { id } =&gt; handler.selection(id),
+        Finished =&gt; handler.finished(),
+        PrimarySelection { id } =&gt; handler.primary_selection(id),
+        <span class="kw">_ </span>=&gt; (),
     }
 }
 
-<span class="kw">fn</span> <span class="ident">data_offer_handler</span>(<span class="ident">offer</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">ZwlrDataControlOfferV1</span><span class="op">&gt;</span>, <span class="ident">event</span>: <span class="ident">zwlr_data_control_offer_v1::Event</span>, <span class="kw">_</span>: <span class="ident">DispatchData</span>) {
-    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">zwlr_data_control_offer_v1::Event::Offer</span> { <span class="ident">mime_type</span> } <span class="op">=</span> <span class="ident">event</span> {
-        <span class="kw">let</span> <span class="ident">mime_types</span> <span class="op">=</span> <span class="ident">offer</span>.<span class="ident">as_ref</span>().<span class="ident">user_data</span>().<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>();
-        <span class="ident">mime_types</span>.<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">mime_type</span>);
+<span class="kw">fn </span>data_offer_handler(offer: Main&lt;ZwlrDataControlOfferV1&gt;, event: zwlr_data_control_offer_v1::Event, <span class="kw">_</span>: DispatchData) {
+    <span class="kw">if let </span>zwlr_data_control_offer_v1::Event::Offer { mime_type } = event {
+        <span class="kw">let </span>mime_types = offer.as_ref().user_data().get::&lt;RefCell&lt;HashSet&lt;<span class="kw">_</span>&gt;&gt;&gt;().unwrap();
+        mime_types.borrow_mut().insert(mime_type);
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">thiserror::Error</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DataSourceError</span> {
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t open the data file&quot;</span>)]</span>
-    <span class="ident">FileOpen</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">io::Error</span>),
+<span class="attribute">#[derive(thiserror::Error, Debug)]
+</span><span class="kw">pub enum </span>DataSourceError {
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t open the data file&quot;</span>)]
+    </span>FileOpen(<span class="attribute">#[source] </span>io::Error),
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Couldn&#39;t copy the data to the target file descriptor&quot;</span>)]</span>
-    <span class="ident">Copy</span>(<span class="attribute">#[<span class="ident">source</span>]</span> <span class="ident">utils::CopyDataError</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Couldn&#39;t copy the data to the target file descriptor&quot;</span>)]
+    </span>Copy(<span class="attribute">#[source] </span>utils::CopyDataError),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">new</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DataSourceHandler</span> {
-    <span class="ident">data_paths</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">should_quit</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">serve_requests</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">ServeRequests</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(new)]
+</span><span class="kw">pub struct </span>DataSourceHandler {
+    data_paths: HashMap&lt;String, Rc&lt;RefCell&lt;PathBuf&gt;&gt;&gt;,
+    should_quit: Rc&lt;Cell&lt;bool&gt;&gt;,
+    serve_requests: Rc&lt;Cell&lt;ServeRequests&gt;&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">DataSourceHandler</span> {
-    <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">source</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">ZwlrDataControlSourceV1</span><span class="op">&gt;</span>, <span class="ident">mime_type</span>: <span class="ident">String</span>, <span class="ident">target_fd</span>: <span class="ident">RawFd</span>) {
-        <span class="comment">// Check if some other source already handled a paste request and indicated that we should</span>
-        <span class="comment">// quit.</span>
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">should_quit</span>.<span class="ident">get</span>() {
-            <span class="ident">source</span>.<span class="ident">destroy</span>();
+<span class="kw">impl </span>DataSourceHandler {
+    <span class="kw">fn </span>send(<span class="kw-2">&amp;mut </span><span class="self">self</span>, source: Main&lt;ZwlrDataControlSourceV1&gt;, mime_type: String, target_fd: RawFd) {
+        <span class="comment">// Check if some other source already handled a paste request and indicated that we should
+        // quit.
+        </span><span class="kw">if </span><span class="self">self</span>.should_quit.get() {
+            source.destroy();
             <span class="kw">return</span>;
         }
 
-        <span class="comment">// I&#39;m not sure if it&#39;s the compositor&#39;s responsibility to check that the mime type is</span>
-        <span class="comment">// valid. Let&#39;s check here just in case.</span>
-        <span class="kw">if</span> <span class="op">!</span><span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">data_paths</span>.<span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="ident">mime_type</span>) {
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">close</span>(<span class="ident">target_fd</span>);
+        <span class="comment">// I&#39;m not sure if it&#39;s the compositor&#39;s responsibility to check that the mime type is
+        // valid. Let&#39;s check here just in case.
+        </span><span class="kw">if </span>!<span class="kw-2">&amp;</span><span class="self">self</span>.data_paths.contains_key(<span class="kw-2">&amp;</span>mime_type) {
+            <span class="kw">let _ </span>= close(target_fd);
             <span class="kw">return</span>;
         }
 
-        <span class="kw">let</span> <span class="ident">data_path</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">data_paths</span>[<span class="kw-2">&amp;</span><span class="ident">mime_type</span>];
+        <span class="kw">let </span>data_path = <span class="kw-2">&amp;</span><span class="self">self</span>.data_paths[<span class="kw-2">&amp;</span>mime_type];
 
-        <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::open</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">data_path</span>.<span class="ident">borrow</span>()).<span class="ident">map_err</span>(<span class="ident">DataSourceError::FileOpen</span>);
-        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">file</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">data_file</span><span class="op">|</span> {
-                             <span class="kw">let</span> <span class="ident">data_fd</span> <span class="op">=</span> <span class="ident">data_file</span>.<span class="ident">into_raw_fd</span>();
-                             <span class="ident">copy_data</span>(<span class="prelude-val">Some</span>(<span class="ident">data_fd</span>), <span class="ident">target_fd</span>, <span class="bool-val">true</span>).<span class="ident">map_err</span>(<span class="ident">DataSourceError::Copy</span>)
+        <span class="kw">let </span>file = File::open(<span class="kw-2">&amp;*</span>data_path.borrow()).map_err(DataSourceError::FileOpen);
+        <span class="kw">let </span>result = file.and_then(|data_file| {
+                             <span class="kw">let </span>data_fd = data_file.into_raw_fd();
+                             copy_data(<span class="prelude-val">Some</span>(data_fd), target_fd, <span class="bool-val">true</span>).map_err(DataSourceError::Copy)
                          });
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">error</span> <span class="op">=</span> <span class="ident">source</span>.<span class="ident">as_ref</span>()
-                              .<span class="ident">user_data</span>()
-                              .<span class="ident">get</span>::<span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DataSourceError</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-                              .<span class="ident">unwrap</span>()
-                              .<span class="ident">borrow_mut</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">result</span> {
-            <span class="kw-2">*</span><span class="ident">error</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">err</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>error = source.as_ref()
+                              .user_data()
+                              .get::&lt;Rc&lt;RefCell&lt;<span class="prelude-ty">Option</span>&lt;DataSourceError&gt;&gt;&gt;&gt;()
+                              .unwrap()
+                              .borrow_mut();
+        <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = result {
+            <span class="kw-2">*</span>error = <span class="prelude-val">Some</span>(err);
         }
 
-        <span class="kw">let</span> <span class="ident">done</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ServeRequests::Only</span>(<span class="ident">left</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">serve_requests</span>.<span class="ident">get</span>() {
-            <span class="kw">let</span> <span class="ident">left</span> <span class="op">=</span> <span class="ident">left</span>.<span class="ident">checked_sub</span>(<span class="number">1</span>).<span class="ident">unwrap</span>();
-            <span class="self">self</span>.<span class="ident">serve_requests</span>.<span class="ident">set</span>(<span class="ident">ServeRequests::Only</span>(<span class="ident">left</span>));
-            <span class="ident">left</span> <span class="op">==</span> <span class="number">0</span>
-        } <span class="kw">else</span> {
-            <span class="bool-val">false</span>
-        };
+        <span class="kw">let </span>done = <span class="kw">if let </span>ServeRequests::Only(left) = <span class="self">self</span>.serve_requests.get() {
+            <span class="kw">let </span>left = left.checked_sub(<span class="number">1</span>).unwrap();
+            <span class="self">self</span>.serve_requests.set(ServeRequests::Only(left));
+            left == <span class="number">0
+        </span>} <span class="kw">else </span>{
+            <span class="bool-val">false
+        </span>};
 
-        <span class="kw">if</span> <span class="ident">done</span> <span class="op">|</span><span class="op">|</span> <span class="ident">error</span>.<span class="ident">is_some</span>() {
-            <span class="self">self</span>.<span class="ident">should_quit</span>.<span class="ident">set</span>(<span class="bool-val">true</span>);
-            <span class="ident">source</span>.<span class="ident">destroy</span>();
+        <span class="kw">if </span>done || error.is_some() {
+            <span class="self">self</span>.should_quit.set(<span class="bool-val">true</span>);
+            source.destroy();
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">cancelled</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">source</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">ZwlrDataControlSourceV1</span><span class="op">&gt;</span>) {
-        <span class="ident">source</span>.<span class="ident">destroy</span>();
+    <span class="kw">fn </span>cancelled(<span class="kw-2">&amp;mut </span><span class="self">self</span>, source: Main&lt;ZwlrDataControlSourceV1&gt;) {
+        source.destroy();
     }
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">data_source_handler</span>(<span class="ident">handler</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DataSourceHandler</span>,
-                           <span class="ident">source</span>: <span class="ident">Main</span><span class="op">&lt;</span><span class="ident">ZwlrDataControlSourceV1</span><span class="op">&gt;</span>,
-                           <span class="ident">event</span>: <span class="ident">zwlr_data_control_source_v1::Event</span>,
-                           <span class="kw">_</span>: <span class="ident">DispatchData</span>) {
-    <span class="kw">use</span> <span class="ident">zwlr_data_control_source_v1::Event</span>::<span class="kw-2">*</span>;
-    <span class="kw">match</span> <span class="ident">event</span> {
-        <span class="ident">Send</span> { <span class="ident">mime_type</span>, <span class="ident">fd</span> } =&gt; <span class="ident">handler</span>.<span class="ident">send</span>(<span class="ident">source</span>, <span class="ident">mime_type</span>, <span class="ident">fd</span>),
-        <span class="ident">Cancelled</span> =&gt; <span class="ident">handler</span>.<span class="ident">cancelled</span>(<span class="ident">source</span>),
-        <span class="kw">_</span> =&gt; (),
+<span class="kw">pub fn </span>data_source_handler(handler: <span class="kw-2">&amp;mut </span>DataSourceHandler,
+                           source: Main&lt;ZwlrDataControlSourceV1&gt;,
+                           event: zwlr_data_control_source_v1::Event,
+                           <span class="kw">_</span>: DispatchData) {
+    <span class="kw">use </span>zwlr_data_control_source_v1::Event::<span class="kw-2">*</span>;
+    <span class="kw">match </span>event {
+        Send { mime_type, fd } =&gt; handler.send(source, mime_type, fd),
+        Cancelled =&gt; handler.cancelled(source),
+        <span class="kw">_ </span>=&gt; (),
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wl_clipboard_rs" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wl_clipboard_rs" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>
