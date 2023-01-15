@@ -290,9 +290,6 @@ impl Options {
         self
     }
 
-    /// Omit additional text mime types which are offered by default if at least one text mime type is provided.
-    ///
-    
     /// Sets the flag for omitting additional text mime types which are offered by default if at least one text mime type is provided.
     ///
     /// Omits additionally offered `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
