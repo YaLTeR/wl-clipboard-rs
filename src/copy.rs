@@ -142,6 +142,12 @@ pub struct Options {
     /// that certain apps may have issues pasting when this option is used, in particular XWayland
     /// clients are known to suffer from this.
     serve_requests: ServeRequests,
+
+    /// Omit additional text mime types which are offered by default if at least one text mime type is provided.
+    ///
+    /// Omits additionally offered `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
+    /// `TEXT` mime types which are offered by default if at least one text mime type is provided.
+    omit_additional_text_mime_types: bool,
 }
 
 /// A copy operation ready to start serving requests.
@@ -281,6 +287,16 @@ impl Options {
     #[inline]
     pub fn serve_requests(&mut self, serve_requests: ServeRequests) -> &mut Self {
         self.serve_requests = serve_requests;
+        self
+    }
+
+    /// Sets the flag for omitting additional text mime types which are offered by default if at least one text mime type is provided.
+    ///
+    /// Omits additionally offered `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
+    /// `TEXT` mime types which are offered by default if at least one text mime type is provided.
+    #[inline]
+    pub fn omit_additional_text_mime_types(&mut self, omit_additional_text_mime_types: bool) -> &mut Self {
+        self.omit_additional_text_mime_types = omit_additional_text_mime_types;
         self
     }
 
@@ -734,7 +750,7 @@ fn prepare_copy_internal(options: Options,
                 Entry::Vacant(entry) => {
                     let data_path = Rc::new(RefCell::new(data_path));
 
-                    if text_data_path.is_none() && mime_type_is_text {
+                    if !options.omit_additional_text_mime_types && text_data_path.is_none() && mime_type_is_text {
                         text_data_path = Some(data_path.clone());
                     }
 
