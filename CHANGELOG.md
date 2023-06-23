@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added `copy::Options::omit_additional_text_mime_types` to disable wl-
+  clipboard-rs offering several known text MIME types when a text MIME type is
+  copied.
+
 ## v0.7.0 (23rd Sep 2022)
 
 - Fixed `paste::get_contents()` leaving behind zombie `cat` processes.
