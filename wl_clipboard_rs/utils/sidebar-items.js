@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["CopyDataError","Errors that can occur in `copy_data()`."],["PrimarySelectionCheckError","Errors that can occur when checking whether the primary selection is supported."]],"fn":[["copy_data","Copies data from one file to another."],["is_primary_selection_supported","Checks if the compositor supports the primary selection."],["is_text","Checks if the given MIME type represents plain text."]]};
+window.SIDEBAR_ITEMS = {"enum":["CopyDataError","PrimarySelectionCheckError"],"fn":["copy_data","is_primary_selection_supported","is_text"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"derive":[["new",""]]};
+window.SIDEBAR_ITEMS = {"derive":["new"]};

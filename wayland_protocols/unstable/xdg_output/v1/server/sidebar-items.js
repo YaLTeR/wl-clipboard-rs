@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":[["zxdg_output_manager_v1","manage xdg_output objects"],["zxdg_output_v1","compositor logical output region"]]};

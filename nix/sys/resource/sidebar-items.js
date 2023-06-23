@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["Resource","Types of process resources."]],"fn":[["getrlimit","Get the current processes resource limits"],["setrlimit","Set the current processes resource limits"]],"type":[["rlim_t",""]]};
+window.SIDEBAR_ITEMS = {"constant":["RLIM_INFINITY"],"enum":["Resource","UsageWho"],"fn":["getrlimit","getrusage","setrlimit"],"struct":["Usage"],"type":["rlim_t"]};

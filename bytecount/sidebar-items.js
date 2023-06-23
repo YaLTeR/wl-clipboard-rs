@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["count","Count occurrences of a byte in a slice of bytes, fast"],["naive_count","Count occurrences of a byte in a slice of bytes, simple"],["naive_count_32","Count up to `(2^32)-1` occurrences of a byte in a slice of bytes, simple"],["naive_num_chars","Count the number of UTF-8 encoded Unicode codepoints in a slice of bytes, simple"],["num_chars","Count the number of UTF-8 encoded Unicode codepoints in a slice of bytes, fast"]]};
+window.SIDEBAR_ITEMS = {"fn":["count","naive_count","naive_count_32","naive_num_chars","num_chars"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":[["unstable","Unstable protocols from wlr-protocols"]]};

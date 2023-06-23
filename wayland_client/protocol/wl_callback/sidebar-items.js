@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":[["EVT_DONE_SINCE","The minimal object version supporting this event"]],"enum":[["Event",""],["Request",""]],"static":[["wl_callback_events","C-representation of the messages of this interface, for interop"],["wl_callback_interface","C representation of this interface, for interop"]],"struct":[["WlCallback",""]]};
+window.SIDEBAR_ITEMS = {"constant":["EVT_DONE_OPCODE","EVT_DONE_SINCE"],"enum":["Event","Request"],"struct":["WlCallback"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["ClipboardType","The clipboard to operate on."],["Error","Errors that can occur for pasting and listing MIME types."],["MimeType","MIME types that can be requested from the clipboard."],["Seat","Seat to operate on."]],"fn":[["get_contents","Retrieves the clipboard contents."],["get_mime_types","Retrieves the offered MIME types."]]};
+window.SIDEBAR_ITEMS = {"enum":["ClipboardType","Error","MimeType","Seat"],"fn":["get_contents","get_mime_types"]};

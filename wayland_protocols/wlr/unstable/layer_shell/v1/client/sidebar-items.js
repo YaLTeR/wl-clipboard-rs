@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":[["zwlr_layer_shell_v1","create surfaces that are layers of the desktop"],["zwlr_layer_surface_v1","layer metadata interface"]]};

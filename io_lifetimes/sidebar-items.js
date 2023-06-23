@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["example_ffi","raw","views"],"struct":["BorrowedFd","OwnedFd"],"trait":["AsFd","AsFilelike","AsSocketlike","FromFd","FromFilelike","FromSocketlike","IntoFd","IntoFilelike","IntoSocketlike"],"type":["BorrowedFilelike","BorrowedSocketlike","OwnedFilelike","OwnedSocketlike"]};

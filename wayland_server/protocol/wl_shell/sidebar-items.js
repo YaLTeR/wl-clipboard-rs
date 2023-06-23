@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":[["REQ_GET_SHELL_SURFACE_SINCE","The minimal object version supporting this request"]],"enum":[["Error",""],["Event",""],["Request",""]],"static":[["wl_shell_interface","C representation of this interface, for interop"],["wl_shell_requests","C-representation of the messages of this interface, for interop"]],"struct":[["WlShell",""]]};
+window.SIDEBAR_ITEMS = {"constant":["REQ_GET_SHELL_SURFACE_OPCODE","REQ_GET_SHELL_SURFACE_SINCE"],"enum":["Error","Event","Request"],"struct":["WlShell"]};
