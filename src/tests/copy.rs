@@ -1,453 +1,275 @@
-use std::{
-    cell::{Cell, RefCell},
-    ffi::OsString,
-    io::Read,
-    mem,
-    os::unix::io::AsRawFd,
-    rc::Rc,
-    thread,
-    time::Duration,
-};
+use std::collections::HashMap;
+use std::io::Read;
+use std::sync::mpsc::channel;
+use std::sync::{Arc, Mutex};
 
-use nix::fcntl::{fcntl, FcntlArg, OFlag};
-use os_pipe::pipe;
-use wayland_protocols::wlr::unstable::data_control::v1::server::{
-    zwlr_data_control_device_v1::{Request as ServerDeviceRequest, ZwlrDataControlDeviceV1 as ServerDevice},
-    zwlr_data_control_manager_v1::{Request as ServerManagerRequest, ZwlrDataControlManagerV1 as ServerManager},
-    zwlr_data_control_source_v1::{Request as ServerSourceRequest, ZwlrDataControlSourceV1 as ServerSource},
-};
-use wayland_server::{protocol::wl_seat::WlSeat as ServerSeat, Filter, Main};
+use proptest::prelude::*;
+use wayland_protocols_wlr::data_control::v1::server::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
 
-use crate::{copy::*, tests::TestServer};
+use crate::copy::*;
+use crate::paste;
+use crate::paste::get_contents_internal;
+use crate::tests::state::*;
+use crate::tests::TestServer;
 
 #[test]
 fn clear_test() {
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, Filter::new(|_: (_, _), _, _| {}));
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
 
-    let pass = Rc::new(Cell::new(false));
-    {
-        let pass = pass.clone();
-        server.display
-              .create_global::<ServerManager, _>(
-                                                 1,
-                                                 Filter::new(move |(manager, _): (Main<ServerManager>, _), _, _| {
-                                                     let pass = pass.clone();
-                                                     manager.quick_assign(move |_, request, _| {
-                                                                if let ServerManagerRequest::GetDataDevice { id, .. } =
-                                                                    request
-                                                                {
-                                                                    let pass = pass.clone();
-                                                                    id.quick_assign(move |_, request, _| {
-                                       if let ServerDeviceRequest::SetSelection { source: None } =
-                                           request
-                                       {
-                                           pass.set(true);
-                                       }
-                                   });
-                                                                }
-                                                            });
-                                                 }),
-        );
-    }
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                offer: Some(OfferInfo::Buffered {
+                    data: HashMap::from([("regular".into(), vec![1, 2, 3])]),
+                }),
+                primary_offer: Some(OfferInfo::Buffered {
+                    data: HashMap::from([("primary".into(), vec![1, 2, 3])]),
+                }),
+            },
+        )]),
+        ..Default::default()
+    };
+    state.create_seats(&server);
+    let state = Arc::new(Mutex::new(state));
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child = thread::spawn(move || clear_internal(ClipboardType::Regular, Seat::All, Some(socket_name)));
+    let socket_name = server.socket_name().to_owned();
+    server.run_mutex(state.clone());
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    clear_internal(ClipboardType::Regular, Seat::All, Some(socket_name)).unwrap();
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    child.join().unwrap().unwrap();
-
-    assert!(pass.get());
+    let state = state.lock().unwrap();
+    assert!(state.seats["seat0"].offer.is_none());
+    assert!(state.seats["seat0"].primary_offer.is_some());
 }
 
 #[test]
 fn copy_test() {
-    struct ServerManagerHandler {
-        selection: Rc<RefCell<Option<ServerSource>>>,
-    }
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
 
-    impl ServerManagerHandler {
-        fn create_data_source(&mut self, id: Main<ServerSource>) {
-            id.as_ref().user_data().set(|| RefCell::new(Vec::<String>::new()));
-            id.quick_assign(|source, request, _| {
-                  if let ServerSourceRequest::Offer { mime_type } = request {
-                      source.as_ref()
-                            .user_data()
-                            .get::<RefCell<Vec<_>>>()
-                            .unwrap()
-                            .borrow_mut()
-                            .push(mime_type);
-                  }
-              });
-        }
+    let (tx, rx) = channel();
 
-        fn get_data_device(&mut self, id: Main<ServerDevice>) {
-            let selection = self.selection.clone();
-            id.quick_assign(move |_, request, _| {
-                  if let ServerDeviceRequest::SetSelection { source } = request {
-                      *selection.borrow_mut() = source;
-                  }
-              });
-        }
-    }
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                ..Default::default()
+            },
+        )]),
+        selection_updated_sender: Some(tx),
+        ..Default::default()
+    };
+    state.create_seats(&server);
 
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, Filter::new(|_: (_, _), _, _| {}));
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    let selection = Rc::new(RefCell::new(None));
-    {
-        let selection = selection.clone();
-        server.display
-              .create_global::<ServerManager, _>(1,
-                                                 Filter::new(move |(manager, _): (Main<ServerManager>, _), _, _| {
-                                                     let mut handler =
-                                                         ServerManagerHandler { selection: selection.clone() };
-                                                     manager.quick_assign(move |_, request, _| match request {
-                                                                ServerManagerRequest::CreateDataSource { id } => {
-                                                                    handler.create_data_source(id)
-                                                                }
-                                                                ServerManagerRequest::GetDataDevice { id, .. } => {
-                                                                    handler.get_data_device(id)
-                                                                }
-                                                                _ => unreachable!(),
-                                                            });
-                                                 }));
-    }
+    let sources = vec![MimeSource {
+        source: Source::Bytes([1, 3, 3, 7][..].into()),
+        mime_type: MimeType::Specific("test".into()),
+    }];
+    copy_internal(Options::new(), sources, Some(socket_name.clone())).unwrap();
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child = thread::spawn(move || {
-        let mut opts = Options::new();
-        opts.foreground(true);
-        let sources = vec![MimeSource { source: Source::Bytes([1, 3, 3, 7][..].into()),
-                                        mime_type: MimeType::Specific("test".to_string()) }];
-        copy_internal(opts, sources, Some(socket_name))
-    });
+    // Wait for the copy.
+    let mime_types = rx.recv().unwrap().unwrap();
+    assert_eq!(mime_types, ["test"]);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let mime_types = selection.borrow().as_ref().map(|x| {
-                                                    x.as_ref()
-                                                     .user_data()
-                                                     .get::<RefCell<Vec<String>>>()
-                                                     .unwrap()
-                                                     .borrow()
-                                                     .clone()
-                                                });
-
-    let (mut read, write) = pipe().unwrap();
-
-    if let Some(source) = selection.borrow().as_ref() {
-        source.send("test".to_string(), write.as_raw_fd());
-        drop(write);
-        source.cancelled();
-    }
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let (mut read, mime_type) = get_contents_internal(
+        paste::ClipboardType::Regular,
+        paste::Seat::Unspecified,
+        paste::MimeType::Any,
+        Some(socket_name.clone()),
+    )
+    .unwrap();
 
     let mut contents = vec![];
     read.read_to_end(&mut contents).unwrap();
 
-    child.join().unwrap().unwrap();
-
-    assert_eq!(mime_types, Some(vec!["test".to_string()]));
+    assert_eq!(mime_type, "test");
     assert_eq!(contents, [1, 3, 3, 7]);
+
+    clear_internal(ClipboardType::Both, Seat::All, Some(socket_name)).unwrap();
 }
 
 #[test]
 fn copy_multi_test() {
-    struct ServerManagerHandler {
-        selection: Rc<RefCell<Option<ServerSource>>>,
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
+
+    let (tx, rx) = channel();
+
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                ..Default::default()
+            },
+        )]),
+        selection_updated_sender: Some(tx),
+        ..Default::default()
+    };
+    state.create_seats(&server);
+
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
+
+    let sources = vec![
+        MimeSource {
+            source: Source::Bytes([1, 3, 3, 7][..].into()),
+            mime_type: MimeType::Specific("test".into()),
+        },
+        MimeSource {
+            source: Source::Bytes([2, 4, 4][..].into()),
+            mime_type: MimeType::Specific("test2".into()),
+        },
+        // Ignored because it's the second "test" MIME type.
+        MimeSource {
+            source: Source::Bytes([4, 3, 2, 1][..].into()),
+            mime_type: MimeType::Specific("test".into()),
+        },
+        // The first text source, additional text types should fall back here.
+        MimeSource {
+            source: Source::Bytes(b"hello fallback"[..].into()),
+            mime_type: MimeType::Text,
+        },
+        // A specific override of an additional text type.
+        MimeSource {
+            source: Source::Bytes(b"hello TEXT"[..].into()),
+            mime_type: MimeType::Specific("TEXT".into()),
+        },
+    ];
+    copy_internal(Options::new(), sources, Some(socket_name.clone())).unwrap();
+
+    // Wait for the copy.
+    let mut mime_types = rx.recv().unwrap().unwrap();
+    mime_types.sort_unstable();
+    assert_eq!(
+        mime_types,
+        [
+            "STRING",
+            "TEXT",
+            "UTF8_STRING",
+            "test",
+            "test2",
+            "text/plain",
+            "text/plain;charset=utf-8",
+        ]
+    );
+
+    let expected = [
+        ("test", &[1, 3, 3, 7][..]),
+        ("test2", &[2, 4, 4][..]),
+        ("STRING", &b"hello fallback"[..]),
+        ("TEXT", &b"hello TEXT"[..]),
+    ];
+
+    for (mime_type, expected_contents) in expected {
+        let mut read = get_contents_internal(
+            paste::ClipboardType::Regular,
+            paste::Seat::Unspecified,
+            paste::MimeType::Specific(mime_type),
+            Some(socket_name.clone()),
+        )
+        .unwrap()
+        .0;
+
+        let mut contents = vec![];
+        read.read_to_end(&mut contents).unwrap();
+
+        assert_eq!(contents, expected_contents);
     }
 
-    impl ServerManagerHandler {
-        fn create_data_source(&mut self, id: Main<ServerSource>) {
-            id.as_ref().user_data().set(|| RefCell::new(Vec::<String>::new()));
-            id.quick_assign(|source, request, _| {
-                  if let ServerSourceRequest::Offer { mime_type } = request {
-                      source.as_ref()
-                            .user_data()
-                            .get::<RefCell<Vec<_>>>()
-                            .unwrap()
-                            .borrow_mut()
-                            .push(mime_type);
-                  }
-              });
-        }
-
-        fn get_data_device(&mut self, id: Main<ServerDevice>) {
-            let selection = self.selection.clone();
-            id.quick_assign(move |_, request, _| {
-                  if let ServerDeviceRequest::SetSelection { source } = request {
-                      *selection.borrow_mut() = source;
-                  }
-              });
-        }
-    }
-
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, Filter::new(|_: (_, _), _, _| {}));
-
-    let selection = Rc::new(RefCell::new(None));
-    {
-        let selection = selection.clone();
-        server.display
-              .create_global::<ServerManager, _>(1,
-                                                 Filter::new(move |(manager, _): (Main<ServerManager>, _), _, _| {
-                                                     let mut handler =
-                                                         ServerManagerHandler { selection: selection.clone() };
-                                                     manager.quick_assign(move |_, request, _| match request {
-                                                                ServerManagerRequest::CreateDataSource { id } => {
-                                                                    handler.create_data_source(id)
-                                                                }
-                                                                ServerManagerRequest::GetDataDevice { id, .. } => {
-                                                                    handler.get_data_device(id)
-                                                                }
-                                                                _ => unreachable!(),
-                                                            });
-                                                 }));
-    }
-
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child = thread::spawn(move || {
-        let mut opts = Options::new();
-        opts.foreground(true);
-        let sources = vec![MimeSource { source: Source::Bytes([1, 3, 3, 7][..].into()),
-                                        mime_type: MimeType::Specific("test".to_string()) },
-                           MimeSource { source: Source::Bytes([2, 4, 4][..].into()),
-                                        mime_type: MimeType::Specific("test2".to_string()) },
-                           // Ignored because it's the second "test" MIME type.
-                           MimeSource { source: Source::Bytes([4, 3, 2, 1][..].into()),
-                                        mime_type: MimeType::Specific("test".to_string()) },
-                           // The first text source, additional text types should fall back here.
-                           MimeSource { source: Source::Bytes(b"hello fallback"[..].into()),
-                                        mime_type: MimeType::Text },
-                           // A specific override of an additional text type.
-                           MimeSource { source: Source::Bytes(b"hello TEXT"[..].into()),
-                                        mime_type: MimeType::Specific("TEXT".to_string()) },];
-        copy_internal(opts, sources, Some(socket_name))
-    });
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let mime_types = selection.borrow().as_ref().map(|x| {
-                                                    x.as_ref()
-                                                     .user_data()
-                                                     .get::<RefCell<Vec<String>>>()
-                                                     .unwrap()
-                                                     .borrow()
-                                                     .clone()
-                                                });
-
-    let (mut read_test, write_test) = pipe().unwrap();
-    let (mut read_test2, write_test2) = pipe().unwrap();
-    let (mut read_fallback, write_fallback) = pipe().unwrap();
-    let (mut read_text, write_text) = pipe().unwrap();
-
-    if let Some(source) = selection.borrow().as_ref() {
-        source.send("test".to_string(), write_test.as_raw_fd());
-        drop(write_test);
-        source.send("test2".to_string(), write_test2.as_raw_fd());
-        drop(write_test2);
-        source.send("STRING".to_string(), write_fallback.as_raw_fd());
-        drop(write_fallback);
-        source.send("TEXT".to_string(), write_text.as_raw_fd());
-        drop(write_text);
-        source.cancelled();
-    }
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let mut contents_test = vec![];
-    read_test.read_to_end(&mut contents_test).unwrap();
-    let mut contents_test2 = vec![];
-    read_test2.read_to_end(&mut contents_test2).unwrap();
-    let mut contents_fallback = vec![];
-    read_fallback.read_to_end(&mut contents_fallback).unwrap();
-    let mut contents_text = vec![];
-    read_text.read_to_end(&mut contents_text).unwrap();
-
-    child.join().unwrap().unwrap();
-
-    assert!(mime_types.is_some());
-    let mut mimes = mime_types.unwrap();
-    mimes.sort();
-    assert_eq!(mimes,
-               ["STRING",
-                "TEXT",
-                "UTF8_STRING",
-                "test",
-                "test2",
-                "text/plain",
-                "text/plain;charset=utf-8"]);
-    assert_eq!(contents_test, [1, 3, 3, 7]);
-    assert_eq!(contents_test2, [2, 4, 4]);
-    assert_eq!(contents_fallback, b"hello fallback");
-    assert_eq!(contents_text, b"hello TEXT");
+    clear_internal(ClipboardType::Both, Seat::All, Some(socket_name)).unwrap();
 }
 
 #[test]
 fn copy_multi_no_additional_text_mime_types_test() {
-    struct ServerManagerHandler {
-        selection: Rc<RefCell<Option<ServerSource>>>,
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
+
+    let (tx, rx) = channel();
+
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                ..Default::default()
+            },
+        )]),
+        selection_updated_sender: Some(tx),
+        ..Default::default()
+    };
+    state.create_seats(&server);
+
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
+
+    let mut opts = Options::new();
+    opts.omit_additional_text_mime_types(true);
+    let sources = vec![
+        MimeSource {
+            source: Source::Bytes([1, 3, 3, 7][..].into()),
+            mime_type: MimeType::Specific("test".into()),
+        },
+        MimeSource {
+            source: Source::Bytes([2, 4, 4][..].into()),
+            mime_type: MimeType::Specific("test2".into()),
+        },
+        // Ignored because it's the second "test" MIME type.
+        MimeSource {
+            source: Source::Bytes([4, 3, 2, 1][..].into()),
+            mime_type: MimeType::Specific("test".into()),
+        },
+        // A specific override of an additional text type.
+        MimeSource {
+            source: Source::Bytes(b"hello TEXT"[..].into()),
+            mime_type: MimeType::Specific("TEXT".into()),
+        },
+    ];
+    copy_internal(opts, sources, Some(socket_name.clone())).unwrap();
+
+    // Wait for the copy.
+    let mut mime_types = rx.recv().unwrap().unwrap();
+    mime_types.sort_unstable();
+    assert_eq!(mime_types, ["TEXT", "test", "test2"]);
+
+    let expected = [
+        ("test", &[1, 3, 3, 7][..]),
+        ("test2", &[2, 4, 4][..]),
+        ("TEXT", &b"hello TEXT"[..]),
+    ];
+
+    for (mime_type, expected_contents) in expected {
+        let mut read = get_contents_internal(
+            paste::ClipboardType::Regular,
+            paste::Seat::Unspecified,
+            paste::MimeType::Specific(mime_type),
+            Some(socket_name.clone()),
+        )
+        .unwrap()
+        .0;
+
+        let mut contents = vec![];
+        read.read_to_end(&mut contents).unwrap();
+
+        assert_eq!(contents, expected_contents);
     }
 
-    impl ServerManagerHandler {
-        fn create_data_source(&mut self, id: Main<ServerSource>) {
-            id.as_ref().user_data().set(|| RefCell::new(Vec::<String>::new()));
-            id.quick_assign(|source, request, _| {
-                  if let ServerSourceRequest::Offer { mime_type } = request {
-                      source.as_ref()
-                            .user_data()
-                            .get::<RefCell<Vec<_>>>()
-                            .unwrap()
-                            .borrow_mut()
-                            .push(mime_type);
-                  }
-              });
-        }
-
-        fn get_data_device(&mut self, id: Main<ServerDevice>) {
-            let selection = self.selection.clone();
-            id.quick_assign(move |_, request, _| {
-                  if let ServerDeviceRequest::SetSelection { source } = request {
-                      *selection.borrow_mut() = source;
-                  }
-              });
-        }
-    }
-
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, Filter::new(|_: (_, _), _, _| {}));
-
-    let selection = Rc::new(RefCell::new(None));
-    {
-        let selection = selection.clone();
-        server.display
-              .create_global::<ServerManager, _>(1,
-                                                 Filter::new(move |(manager, _): (Main<ServerManager>, _), _, _| {
-                                                     let mut handler =
-                                                         ServerManagerHandler { selection: selection.clone() };
-                                                     manager.quick_assign(move |_, request, _| match request {
-                                                                ServerManagerRequest::CreateDataSource { id } => {
-                                                                    handler.create_data_source(id)
-                                                                }
-                                                                ServerManagerRequest::GetDataDevice { id, .. } => {
-                                                                    handler.get_data_device(id)
-                                                                }
-                                                                _ => unreachable!(),
-                                                            });
-                                                 }));
-    }
-
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child = thread::spawn(move || {
-        let mut opts = Options::new();
-        opts.foreground(true);
-        opts.omit_additional_text_mime_types(true);
-        let sources = vec![MimeSource { source: Source::Bytes([1, 3, 3, 7][..].into()),
-                                        mime_type: MimeType::Specific("test".to_string()) },
-                           MimeSource { source: Source::Bytes([2, 4, 4][..].into()),
-                                        mime_type: MimeType::Specific("test2".to_string()) },
-                           // Ignored because it's the second "test" MIME type.
-                           MimeSource { source: Source::Bytes([4, 3, 2, 1][..].into()),
-                                        mime_type: MimeType::Specific("test".to_string()) },
-                           // A specific override of an additional text type.
-                           MimeSource { source: Source::Bytes(b"hello TEXT"[..].into()),
-                                        mime_type: MimeType::Specific("TEXT".to_string()) },];
-        copy_internal(opts, sources, Some(socket_name))
-    });
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let mime_types = selection.borrow().as_ref().map(|x| {
-                                                    x.as_ref()
-                                                     .user_data()
-                                                     .get::<RefCell<Vec<String>>>()
-                                                     .unwrap()
-                                                     .borrow()
-                                                     .clone()
-                                                });
-
-    let (mut read_test, write_test) = pipe().unwrap();
-    let (mut read_test2, write_test2) = pipe().unwrap();
-    let (mut read_text, write_text) = pipe().unwrap();
-
-    if let Some(source) = selection.borrow().as_ref() {
-        source.send("test".to_string(), write_test.as_raw_fd());
-        drop(write_test);
-        source.send("test2".to_string(), write_test2.as_raw_fd());
-        drop(write_test2);
-        source.send("TEXT".to_string(), write_text.as_raw_fd());
-        drop(write_text);
-        source.cancelled();
-    }
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let mut contents_test = vec![];
-    read_test.read_to_end(&mut contents_test).unwrap();
-    let mut contents_test2 = vec![];
-    read_test2.read_to_end(&mut contents_test2).unwrap();
-    let mut contents_text = vec![];
-    read_text.read_to_end(&mut contents_text).unwrap();
-
-    child.join().unwrap().unwrap();
-
-    assert!(mime_types.is_some());
-    let mut mimes = mime_types.unwrap();
-    mimes.sort();
-    assert_eq!(mimes, ["TEXT", "test", "test2"]);
-    assert_eq!(contents_test, [1, 3, 3, 7]);
-    assert_eq!(contents_test2, [2, 4, 4]);
-    assert_eq!(contents_text, b"hello TEXT");
+    clear_internal(ClipboardType::Both, Seat::All, Some(socket_name)).unwrap();
 }
 
 // The idea here is to exceed the pipe capacity. This fails unless O_NONBLOCK is cleared when
@@ -460,103 +282,139 @@ fn copy_large() {
         bytes_to_copy.push((i % 256) as u8);
     }
 
-    struct ServerManagerHandler {
-        selection: Rc<RefCell<Option<ServerSource>>>,
-    }
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
 
-    impl ServerManagerHandler {
-        fn create_data_source(&mut self, id: Main<ServerSource>) {
-            id.as_ref().user_data().set(|| RefCell::new(Vec::<String>::new()));
-            id.quick_assign(|source, request, _| {
-                  if let ServerSourceRequest::Offer { mime_type } = request {
-                      source.as_ref()
-                            .user_data()
-                            .get::<RefCell<Vec<_>>>()
-                            .unwrap()
-                            .borrow_mut()
-                            .push(mime_type);
-                  }
-              });
-        }
+    let (tx, rx) = channel();
 
-        fn get_data_device(&mut self, id: Main<ServerDevice>) {
-            let selection = self.selection.clone();
-            id.quick_assign(move |_, request, _| {
-                  if let ServerDeviceRequest::SetSelection { source } = request {
-                      *selection.borrow_mut() = source;
-                  }
-              });
-        }
-    }
-
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, Filter::new(|_: (_, _), _, _| {}));
-
-    let selection = Rc::new(RefCell::new(None));
-    {
-        let selection = selection.clone();
-        server.display
-              .create_global::<ServerManager, _>(1,
-                                                 Filter::new(move |(manager, _): (Main<ServerManager>, _), _, _| {
-                                                     let mut handler =
-                                                         ServerManagerHandler { selection: selection.clone() };
-                                                     manager.quick_assign(move |_, request, _| match request {
-                                                                ServerManagerRequest::CreateDataSource { id } => {
-                                                                    handler.create_data_source(id)
-                                                                }
-                                                                ServerManagerRequest::GetDataDevice { id, .. } => {
-                                                                    handler.get_data_device(id)
-                                                                }
-                                                                _ => unreachable!(),
-                                                            });
-                                                 }));
-    }
-
-    let child = {
-        let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-        let bytes_to_copy = bytes_to_copy.clone();
-        thread::spawn(move || {
-            let mut opts = Options::new();
-            opts.foreground(true);
-            let sources = vec![MimeSource { source: Source::Bytes(bytes_to_copy.into()),
-                                            mime_type: MimeType::Specific("test".to_string()) }];
-            copy_internal(opts, sources, Some(socket_name))
-        })
-    };
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let (mut read, write) = pipe().unwrap();
-
-    if let Some(source) = selection.borrow().as_ref() {
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                ..Default::default()
+            },
+        )]),
+        selection_updated_sender: Some(tx),
         // Emulate what XWayland does and set O_NONBLOCK.
-        let fd = write.as_raw_fd();
-        fcntl(fd, FcntlArg::F_SETFL(OFlag::O_NONBLOCK)).unwrap();
+        set_nonblock_on_write_fd: true,
+        ..Default::default()
+    };
+    state.create_seats(&server);
 
-        source.send("test".to_string(), fd);
-        drop(write);
-        source.cancelled();
-    }
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let sources = vec![MimeSource {
+        source: Source::Bytes(bytes_to_copy.clone().into_boxed_slice()),
+        mime_type: MimeType::Specific("test".into()),
+    }];
+    copy_internal(Options::new(), sources, Some(socket_name.clone())).unwrap();
+
+    // Wait for the copy.
+    let mime_types = rx.recv().unwrap().unwrap();
+    assert_eq!(mime_types, ["test"]);
+
+    let (mut read, mime_type) = get_contents_internal(
+        paste::ClipboardType::Regular,
+        paste::Seat::Unspecified,
+        paste::MimeType::Any,
+        Some(socket_name.clone()),
+    )
+    .unwrap();
 
     let mut contents = vec![];
     read.read_to_end(&mut contents).unwrap();
 
-    child.join().unwrap().unwrap();
-
+    assert_eq!(mime_type, "test");
     assert_eq!(contents.len(), bytes_to_copy.len());
     assert_eq!(contents, bytes_to_copy);
+
+    clear_internal(ClipboardType::Both, Seat::All, Some(socket_name)).unwrap();
+}
+
+proptest! {
+    #[test]
+    fn copy_randomized(
+        mut state: State,
+        clipboard_type: ClipboardType,
+        source: Source,
+        mime_type: MimeType,
+        seat_index: prop::sample::Index,
+        clipboard_type_index: prop::sample::Index,
+    ) {
+        prop_assume!(!state.seats.is_empty());
+
+        let server = TestServer::new();
+        server
+            .display
+            .handle()
+            .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
+
+        let (tx, rx) = channel();
+        state.selection_updated_sender = Some(tx);
+
+        state.create_seats(&server);
+
+        let seat_index = seat_index.index(state.seats.len());
+        let seat_name = state.seats.keys().nth(seat_index).unwrap();
+        let seat_name = seat_name.to_owned();
+
+        let paste_clipboard_type = match clipboard_type {
+            ClipboardType::Regular => paste::ClipboardType::Regular,
+            ClipboardType::Primary => paste::ClipboardType::Primary,
+            ClipboardType::Both => *clipboard_type_index
+                .get(&[paste::ClipboardType::Regular, paste::ClipboardType::Primary]),
+        };
+
+        let socket_name = server.socket_name().to_owned();
+        server.run(state);
+
+        let expected_contents = match &source {
+            Source::Bytes(bytes) => bytes.clone(),
+            Source::StdIn => unreachable!(),
+        };
+
+        let sources = vec![MimeSource {
+            source,
+            mime_type: mime_type.clone(),
+        }];
+        let mut opts = Options::new();
+        opts.clipboard(clipboard_type);
+        opts.seat(Seat::Specific(seat_name.clone()));
+        opts.omit_additional_text_mime_types(true);
+        copy_internal(opts, sources, Some(socket_name.clone())).unwrap();
+
+        // Wait for the copy.
+        let mut mime_types = rx.recv().unwrap().unwrap();
+        mime_types.sort_unstable();
+        match &mime_type {
+            MimeType::Autodetect => unreachable!(),
+            MimeType::Text => assert_eq!(mime_types, ["text/plain"]),
+            MimeType::Specific(mime) => assert_eq!(mime_types, [mime.clone()]),
+        }
+
+        let paste_mime_type = match mime_type {
+            MimeType::Autodetect => unreachable!(),
+            MimeType::Text => "text/plain".into(),
+            MimeType::Specific(mime) => mime,
+        };
+        let (mut read, mime_type) = get_contents_internal(
+            paste_clipboard_type,
+            paste::Seat::Specific(&seat_name),
+            paste::MimeType::Specific(&paste_mime_type),
+            Some(socket_name.clone()),
+        )
+        .unwrap();
+
+        let mut contents = vec![];
+        read.read_to_end(&mut contents).unwrap();
+
+        assert_eq!(mime_type, paste_mime_type);
+        assert_eq!(contents.into_boxed_slice(), expected_contents);
+
+        clear_internal(clipboard_type, Seat::Specific(seat_name), Some(socket_name)).unwrap();
+    }
 }

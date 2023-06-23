@@ -1,12 +1,11 @@
-use std::{ffi::OsString, os::unix::ffi::OsStringExt};
+use std::ffi::OsString;
+use std::os::unix::ffi::OsStringExt;
 
 use libc::{STDIN_FILENO, STDOUT_FILENO};
-use nix::{
-    fcntl::OFlag,
-    unistd::{close, dup2, fork, ForkResult},
-};
-use structopt::{clap::AppSettings, StructOpt};
-
+use nix::fcntl::OFlag;
+use nix::unistd::{close, dup2, fork, ForkResult};
+use structopt::clap::AppSettings;
+use structopt::StructOpt;
 use wl_clipboard_rs::copy::{self, clear, ClipboardType, MimeType, Seat, ServeRequests, Source};
 
 #[derive(StructOpt)]
@@ -59,7 +58,12 @@ struct Options {
     seat: Option<String>,
 
     /// Override the inferred MIME type for the content
-    #[structopt(name = "mime-type", long = "type", short = "t", conflicts_with = "clear")]
+    #[structopt(
+        name = "mime-type",
+        long = "type",
+        short = "t",
+        conflicts_with = "clear"
+    )]
     mime_type: Option<String>,
 
     /// Text to copy
@@ -77,22 +81,22 @@ impl From<Options> for copy::Options {
     fn from(x: Options) -> Self {
         let mut opts = copy::Options::new();
         opts.serve_requests(if x.paste_once {
-                                ServeRequests::Only(1)
-                            } else {
-                                ServeRequests::Unlimited
-                            })
-            .foreground(true) // We fork manually to support background mode.
-            .clipboard(if x.primary {
-                           if x.regular {
-                               ClipboardType::Both
-                           } else {
-                               ClipboardType::Primary
-                           }
-                       } else {
-                           ClipboardType::Regular
-                       })
-            .trim_newline(x.trim_newline)
-            .seat(x.seat.map(Seat::Specific).unwrap_or_default());
+            ServeRequests::Only(1)
+        } else {
+            ServeRequests::Unlimited
+        })
+        .foreground(true) // We fork manually to support background mode.
+        .clipboard(if x.primary {
+            if x.regular {
+                ClipboardType::Both
+            } else {
+                ClipboardType::Primary
+            }
+        } else {
+            ClipboardType::Regular
+        })
+        .trim_newline(x.trim_newline)
+        .seat(x.seat.map(Seat::Specific).unwrap_or_default());
         opts
     }
 }
@@ -101,9 +105,10 @@ fn main() -> Result<(), anyhow::Error> {
     // Parse command-line options.
     let mut options = Options::from_args();
 
-    stderrlog::new().verbosity(options.verbose.saturating_add(1))
-                    .init()
-                    .unwrap();
+    stderrlog::new()
+        .verbosity(options.verbose.saturating_add(1))
+        .init()
+        .unwrap();
 
     if options.clear {
         let clipboard = if options.primary {
@@ -111,7 +116,10 @@ fn main() -> Result<(), anyhow::Error> {
         } else {
             ClipboardType::Regular
         };
-        clear(clipboard, options.seat.map(Seat::Specific).unwrap_or_default())?;
+        clear(
+            clipboard,
+            options.seat.map(Seat::Specific).unwrap_or_default(),
+        )?;
         return Ok(());
     }
 
@@ -156,7 +164,9 @@ fn main() -> Result<(), anyhow::Error> {
             // is hangs a potential pipeline (i.e. wl-copy hello | cat). Also, simply closing the
             // file descriptors is a bad idea because then they get reused by subsequent temp file
             // opens, which breaks the dup2/close logic during data copying.
-            if let Ok(dev_null) = nix::fcntl::open("/dev/null", OFlag::O_RDWR, nix::sys::stat::Mode::empty()) {
+            if let Ok(dev_null) =
+                nix::fcntl::open("/dev/null", OFlag::O_RDWR, nix::sys::stat::Mode::empty())
+            {
                 let _ = dup2(dev_null, STDIN_FILENO);
                 let _ = dup2(dev_null, STDOUT_FILENO);
                 let _ = close(dev_null);

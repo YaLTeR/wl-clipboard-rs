@@ -1,23 +1,16 @@
-use std::{
-    env::args_os,
-    ffi::OsString,
-    fs::File,
-    io::{stdout, Read, Write},
-    process,
-};
+use std::env::args_os;
+use std::ffi::OsString;
+use std::fs::File;
+use std::io::{stdout, Read, Write};
+use std::process;
 
 use anyhow::{Context, Error};
 use libc::{STDIN_FILENO, STDOUT_FILENO};
-use nix::{
-    fcntl::OFlag,
-    unistd::{close, dup2, fork, ForkResult},
-};
-
-use wl_clipboard_rs::{
-    copy::{self, ServeRequests, Source},
-    paste::{self, get_contents},
-    utils::is_text,
-};
+use nix::fcntl::OFlag;
+use nix::unistd::{close, dup2, fork, ForkResult};
+use wl_clipboard_rs::copy::{self, ServeRequests, Source};
+use wl_clipboard_rs::paste::{self, get_contents};
+use wl_clipboard_rs::utils::is_text;
 
 #[derive(Clone, Copy, Eq, PartialEq)]
 enum Verbosity {
@@ -38,13 +31,15 @@ struct Options {
 
 impl Default for Options {
     fn default() -> Self {
-        Self { files: Vec::new(),
-               out: false,
-               loops: 0,
-               target: None,
-               rmlastnl: false,
-               verbosity: Verbosity::Silent,
-               primary: true }
+        Self {
+            files: Vec::new(),
+            out: false,
+            loops: 0,
+            target: None,
+            rmlastnl: false,
+            verbosity: Verbosity::Silent,
+            primary: true,
+        }
     }
 }
 
@@ -153,7 +148,7 @@ impl Options {
         match print {
             Some(Print::Help) => {
                 eprintln!(
-                          "\
+                    "\
 Usage: {} [OPTION] [FILE]...
 Access Wayland clipboard for reading or writing, with an xclip interface.
 
@@ -174,9 +169,10 @@ Unsupported xclip options:
   -f, -filter
       -selection secondary, buffer-cut
       -noutf8",
-                          args_os().next()
-                                   .and_then(|x| x.into_string().ok())
-                                   .unwrap_or_else(|| "wl-clip".to_string())
+                    args_os()
+                        .next()
+                        .and_then(|x| x.into_string().ok())
+                        .unwrap_or_else(|| "wl-clip".to_string())
                 );
                 process::exit(0);
             }
@@ -196,17 +192,17 @@ impl From<Options> for copy::Options {
     fn from(x: Options) -> Self {
         let mut opts = copy::Options::new();
         opts.serve_requests(if x.loops == 0 {
-                                ServeRequests::Unlimited
-                            } else {
-                                ServeRequests::Only(x.loops)
-                            })
-            .foreground(true) // We fork manually to support background mode.
-            .clipboard(if x.primary {
-                           copy::ClipboardType::Primary
-                       } else {
-                           copy::ClipboardType::Regular
-                       })
-            .trim_newline(x.rmlastnl);
+            ServeRequests::Unlimited
+        } else {
+            ServeRequests::Only(x.loops)
+        })
+        .foreground(true) // We fork manually to support background mode.
+        .clipboard(if x.primary {
+            copy::ClipboardType::Primary
+        } else {
+            copy::ClipboardType::Regular
+        })
+        .trim_newline(x.rmlastnl);
         opts
     }
 }
@@ -215,9 +211,14 @@ fn main() -> Result<(), Error> {
     // Parse command-line options.
     let mut options = Options::from_args()?;
 
-    stderrlog::new().verbosity(if options.verbosity == Verbosity::Verbose { 2 } else { 1 })
-                    .init()
-                    .unwrap();
+    stderrlog::new()
+        .verbosity(if options.verbosity == Verbosity::Verbose {
+            2
+        } else {
+            1
+        })
+        .init()
+        .unwrap();
 
     if options.out {
         // Paste.
@@ -232,7 +233,8 @@ fn main() -> Result<(), Error> {
             paste::ClipboardType::Regular
         };
 
-        let (mut read, mime_type) = get_contents(clipboard_type, paste::Seat::Unspecified, mime_type)?;
+        let (mut read, mime_type) =
+            get_contents(clipboard_type, paste::Seat::Unspecified, mime_type)?;
 
         // Read the contents.
         let mut contents = vec![];
@@ -246,8 +248,9 @@ fn main() -> Result<(), Error> {
         }
 
         // Write everything to stdout.
-        stdout().write_all(&contents)
-                .context("Couldn't write contents to stdout")?;
+        stdout()
+            .write_all(&contents)
+            .context("Couldn't write contents to stdout")?;
     } else {
         // Copy.
         let data = if options.files.is_empty() {
@@ -256,7 +259,8 @@ fn main() -> Result<(), Error> {
             let mut data = vec![];
 
             for filename in &options.files {
-                let mut file = File::open(filename).context(format!("Couldn't open {}", filename.to_string_lossy()))?;
+                let mut file = File::open(filename)
+                    .context(format!("Couldn't open {}", filename.to_string_lossy()))?;
                 file.read_to_end(&mut data)?;
             }
 
@@ -291,7 +295,9 @@ fn main() -> Result<(), Error> {
                 // is hangs a potential pipeline (i.e. wl-copy hello | cat). Also, simply closing the
                 // file descriptors is a bad idea because then they get reused by subsequent temp file
                 // opens, which breaks the dup2/close logic during data copying.
-                if let Ok(dev_null) = nix::fcntl::open("/dev/null", OFlag::O_RDWR, nix::sys::stat::Mode::empty()) {
+                if let Ok(dev_null) =
+                    nix::fcntl::open("/dev/null", OFlag::O_RDWR, nix::sys::stat::Mode::empty())
+                {
                     let _ = dup2(dev_null, STDIN_FILENO);
                     let _ = dup2(dev_null, STDOUT_FILENO);
                     let _ = close(dev_null);

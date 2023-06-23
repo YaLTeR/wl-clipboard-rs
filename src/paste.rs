@@ -1,42 +1,40 @@
 //! Getting the offered MIME types and the clipboard contents.
 
-use std::{
-    cell::{Cell, RefCell},
-    collections::HashSet,
-    ffi::OsString,
-    io, mem,
-    os::unix::io::AsRawFd,
-    rc::Rc,
-};
+use std::collections::{HashMap, HashSet};
+use std::ffi::OsString;
+use std::io;
+use std::os::unix::io::AsRawFd;
 
 use os_pipe::{pipe, PipeReader};
-use wayland_client::{ConnectError, EventQueue};
-use wayland_protocols::wlr::unstable::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1;
-
-use crate::{
-    common::{self, initialize, CommonData},
-    handlers::{data_device_handler, DataDeviceHandler},
-    seat_data::SeatData,
-    utils::is_text,
+use wayland_client::globals::GlobalListContents;
+use wayland_client::protocol::wl_registry::WlRegistry;
+use wayland_client::protocol::wl_seat::WlSeat;
+use wayland_client::{
+    delegate_dispatch, event_created_child, ConnectError, Dispatch, DispatchError, EventQueue,
+};
+use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_device_v1::{
+    self, ZwlrDataControlDeviceV1,
+};
+use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
+use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_offer_v1::{
+    self, ZwlrDataControlOfferV1,
 };
 
+use crate::common::{self, initialize};
+use crate::utils::is_text;
+
 /// The clipboard to operate on.
-#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord, Default)]
+#[cfg_attr(test, derive(proptest_derive::Arbitrary))]
 pub enum ClipboardType {
     /// The regular clipboard.
+    #[default]
     Regular,
     /// The "primary" clipboard.
     ///
     /// Working with the "primary" clipboard requires the compositor to support the data-control
     /// protocol of version 2 or above.
     Primary,
-}
-
-impl Default for ClipboardType {
-    #[inline]
-    fn default() -> Self {
-        ClipboardType::Regular
-    }
 }
 
 /// MIME types that can be requested from the clipboard.
@@ -63,20 +61,30 @@ pub enum MimeType<'a> {
 }
 
 /// Seat to operate on.
-#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord, Default)]
 pub enum Seat<'a> {
     /// Operate on one of the existing seats depending on the order returned by the compositor.
     ///
     /// This is perfectly fine when only a single seat is present, so for most configurations.
+    #[default]
     Unspecified,
     /// Operate on a seat with the given name.
     Specific(&'a str),
 }
 
-impl Default for Seat<'_> {
-    #[inline]
-    fn default() -> Self {
-        Seat::Unspecified
+struct State {
+    common: common::State,
+    // The value is the set of MIME types in the offer.
+    // TODO: We never remove offers from here, even if we don't use them or after destroying them.
+    offers: HashMap<ZwlrDataControlOfferV1, HashSet<String>>,
+    got_primary_selection: bool,
+}
+
+delegate_dispatch!(State: [WlSeat: ()] => common::State);
+
+impl AsMut<common::State> for State {
+    fn as_mut(&mut self) -> &mut common::State {
+        &mut self.common
     }
 }
 
@@ -96,15 +104,20 @@ pub enum Error {
     #[error("No suitable type of content copied")]
     NoMimeType,
 
+    #[error("Couldn't open the provided Wayland socket")]
+    SocketOpenError(#[source] io::Error),
+
     #[error("Couldn't connect to the Wayland compositor")]
     WaylandConnection(#[source] ConnectError),
 
     #[error("Wayland compositor communication error")]
-    WaylandCommunication(#[source] io::Error),
+    WaylandCommunication(#[source] DispatchError),
 
-    #[error("A required Wayland protocol ({} version {}) is not supported by the compositor",
-            name,
-            version)]
+    #[error(
+        "A required Wayland protocol ({} version {}) is not supported by the compositor",
+        name,
+        version
+    )]
     MissingProtocol { name: &'static str, version: u32 },
 
     #[error("The compositor does not support primary selection")]
@@ -122,72 +135,152 @@ impl From<common::Error> for Error {
         use common::Error::*;
 
         match x {
+            SocketOpenError(err) => Error::SocketOpenError(err),
             WaylandConnection(err) => Error::WaylandConnection(err),
-            WaylandCommunication(err) => Error::WaylandCommunication(err),
+            WaylandCommunication(err) => Error::WaylandCommunication(err.into()),
             MissingProtocol { name, version } => Error::MissingProtocol { name, version },
         }
     }
 }
 
-fn get_offer(primary: bool,
-             seat: Seat<'_>,
-             socket_name: Option<OsString>)
-             -> Result<(EventQueue, ZwlrDataControlOfferV1), Error> {
-    let CommonData { mut queue,
-                     clipboard_manager,
-                     seats, } = initialize(primary, socket_name)?;
+impl Dispatch<WlRegistry, GlobalListContents> for State {
+    fn event(
+        _state: &mut Self,
+        _proxy: &WlRegistry,
+        _event: <WlRegistry as wayland_client::Proxy>::Event,
+        _data: &GlobalListContents,
+        _conn: &wayland_client::Connection,
+        _qhandle: &wayland_client::QueueHandle<Self>,
+    ) {
+    }
+}
+
+impl Dispatch<ZwlrDataControlManagerV1, ()> for State {
+    fn event(
+        _state: &mut Self,
+        _proxy: &ZwlrDataControlManagerV1,
+        _event: <ZwlrDataControlManagerV1 as wayland_client::Proxy>::Event,
+        _data: &(),
+        _conn: &wayland_client::Connection,
+        _qhandle: &wayland_client::QueueHandle<Self>,
+    ) {
+    }
+}
+
+impl Dispatch<ZwlrDataControlDeviceV1, WlSeat> for State {
+    fn event(
+        state: &mut Self,
+        _device: &ZwlrDataControlDeviceV1,
+        event: <ZwlrDataControlDeviceV1 as wayland_client::Proxy>::Event,
+        seat: &WlSeat,
+        _conn: &wayland_client::Connection,
+        _qh: &wayland_client::QueueHandle<Self>,
+    ) {
+        match event {
+            zwlr_data_control_device_v1::Event::DataOffer { id } => {
+                state.offers.insert(id, HashSet::new());
+            }
+            zwlr_data_control_device_v1::Event::Selection { id } => {
+                state.common.seats.get_mut(seat).unwrap().set_offer(id);
+            }
+            zwlr_data_control_device_v1::Event::Finished => {
+                // Destroy the device stored in the seat as it's no longer valid.
+                state.common.seats.get_mut(seat).unwrap().set_device(None);
+            }
+            zwlr_data_control_device_v1::Event::PrimarySelection { id } => {
+                state.got_primary_selection = true;
+                state
+                    .common
+                    .seats
+                    .get_mut(seat)
+                    .unwrap()
+                    .set_primary_offer(id);
+            }
+            _ => (),
+        }
+    }
+
+    event_created_child!(State, ZwlrDataControlDeviceV1, [
+        zwlr_data_control_device_v1::EVT_DATA_OFFER_OPCODE => (ZwlrDataControlOfferV1, ()),
+    ]);
+}
+
+impl Dispatch<ZwlrDataControlOfferV1, ()> for State {
+    fn event(
+        state: &mut Self,
+        offer: &ZwlrDataControlOfferV1,
+        event: <ZwlrDataControlOfferV1 as wayland_client::Proxy>::Event,
+        _data: &(),
+        _conn: &wayland_client::Connection,
+        _qhandle: &wayland_client::QueueHandle<Self>,
+    ) {
+        if let zwlr_data_control_offer_v1::Event::Offer { mime_type } = event {
+            state.offers.get_mut(offer).unwrap().insert(mime_type);
+        }
+    }
+}
+
+fn get_offer(
+    primary: bool,
+    seat: Seat<'_>,
+    socket_name: Option<OsString>,
+) -> Result<(EventQueue<State>, State, ZwlrDataControlOfferV1), Error> {
+    let (mut queue, mut common) = initialize(primary, socket_name)?;
 
     // Check if there are no seats.
-    if seats.borrow_mut().is_empty() {
+    if common.seats.is_empty() {
         return Err(Error::NoSeats);
     }
 
-    let supports_primary = Rc::new(Cell::new(false));
-
     // Go through the seats and get their data devices.
-    for seat in &*seats.borrow_mut() {
-        let mut handler = DataDeviceHandler::new(seat.detach(), primary, supports_primary.clone());
-        let device = clipboard_manager.get_data_device(seat);
-        device.quick_assign(move |data_device, event, dispatch_data| {
-                  data_device_handler(&mut handler, data_device, event, dispatch_data)
-              });
+    for (seat, data) in &mut common.seats {
+        let device = common
+            .clipboard_manager
+            .get_data_device(seat, &queue.handle(), seat.clone());
+        data.set_device(Some(device));
     }
 
+    let mut state = State {
+        common,
+        offers: HashMap::new(),
+        got_primary_selection: false,
+    };
+
     // Retrieve all seat names and offers.
-    queue.sync_roundtrip(&mut (), |_, _, _| {})
-         .map_err(Error::WaylandCommunication)?;
+    queue
+        .roundtrip(&mut state)
+        .map_err(Error::WaylandCommunication)?;
 
     // Check if the compositor supports primary selection.
-    if primary && !supports_primary.get() {
+    if primary && !state.got_primary_selection {
         return Err(Error::PrimarySelectionUnsupported);
     }
 
     // Figure out which offer we're interested in.
-    let offer = seats.borrow_mut()
-                     .iter()
-                     .map(|seat| seat.as_ref().user_data().get::<RefCell<SeatData>>().unwrap().borrow())
-                     .find_map(|data| {
-                         let SeatData { name, offer, .. } = &*data;
-                         match seat {
-                             Seat::Unspecified => return Some(offer.clone()),
-                             Seat::Specific(desired_name) => {
-                                 if let Some(name) = name {
-                                     if name == desired_name {
-                                         return Some(offer.clone());
-                                     }
-                                 }
-                             }
-                         }
+    let data = match seat {
+        Seat::Unspecified => state.common.seats.values().next(),
+        Seat::Specific(name) => state
+            .common
+            .seats
+            .values()
+            .find(|data| data.name.as_deref() == Some(name)),
+    };
 
-                         None
-                     });
-
-    // Check if we found any seat.
-    if offer.is_none() {
+    let Some(data) = data else {
         return Err(Error::SeatNotFound);
-    }
+    };
 
-    offer.unwrap().map(|x| (queue, x)).ok_or(Error::ClipboardEmpty)
+    let offer = if primary {
+        &data.primary_offer
+    } else {
+        &data.offer
+    };
+
+    // Check if we found anything.
+    match offer.clone() {
+        Some(offer) => Ok((queue, state, offer)),
+        None => Err(Error::ClipboardEmpty),
+    }
 }
 
 /// Retrieves the offered MIME types.
@@ -217,21 +310,14 @@ pub fn get_mime_types(clipboard: ClipboardType, seat: Seat<'_>) -> Result<HashSe
 }
 
 // The internal function accepts the socket name, used for tests.
-pub(crate) fn get_mime_types_internal(clipboard: ClipboardType,
-                                      seat: Seat<'_>,
-                                      socket_name: Option<OsString>)
-                                      -> Result<HashSet<String>, Error> {
+pub(crate) fn get_mime_types_internal(
+    clipboard: ClipboardType,
+    seat: Seat<'_>,
+    socket_name: Option<OsString>,
+) -> Result<HashSet<String>, Error> {
     let primary = clipboard == ClipboardType::Primary;
-    let (_, offer) = get_offer(primary, seat, socket_name)?;
-
-    let mut mime_types = offer.as_ref()
-                              .user_data()
-                              .get::<RefCell<HashSet<String>>>()
-                              .unwrap()
-                              .borrow_mut();
-
-    let empty_hash_set = HashSet::new();
-    Ok(mem::replace(&mut *mime_types, empty_hash_set))
+    let (_, mut state, offer) = get_offer(primary, seat, socket_name)?;
+    Ok(state.offers.remove(&offer).unwrap())
 }
 
 /// Retrieves the clipboard contents.
@@ -271,41 +357,42 @@ pub(crate) fn get_mime_types_internal(clipboard: ClipboardType,
 /// # }
 /// ```
 #[inline]
-pub fn get_contents(clipboard: ClipboardType,
-                    seat: Seat<'_>,
-                    mime_type: MimeType<'_>)
-                    -> Result<(PipeReader, String), Error> {
+pub fn get_contents(
+    clipboard: ClipboardType,
+    seat: Seat<'_>,
+    mime_type: MimeType<'_>,
+) -> Result<(PipeReader, String), Error> {
     get_contents_internal(clipboard, seat, mime_type, None)
 }
 
 // The internal function accepts the socket name, used for tests.
-pub(crate) fn get_contents_internal(clipboard: ClipboardType,
-                                    seat: Seat<'_>,
-                                    mime_type: MimeType<'_>,
-                                    socket_name: Option<OsString>)
-                                    -> Result<(PipeReader, String), Error> {
+pub(crate) fn get_contents_internal(
+    clipboard: ClipboardType,
+    seat: Seat<'_>,
+    mime_type: MimeType<'_>,
+    socket_name: Option<OsString>,
+) -> Result<(PipeReader, String), Error> {
     let primary = clipboard == ClipboardType::Primary;
-    let (mut queue, offer) = get_offer(primary, seat, socket_name)?;
+    let (mut queue, mut state, offer) = get_offer(primary, seat, socket_name)?;
 
-    let mut mime_types = offer.as_ref()
-                              .user_data()
-                              .get::<RefCell<HashSet<String>>>()
-                              .unwrap()
-                              .borrow_mut();
+    let mut mime_types = state.offers.remove(&offer).unwrap();
 
     // Find the desired MIME type.
     let mime_type = match mime_type {
-        MimeType::Any => mime_types.take("text/plain;charset=utf-8")
-                                   .or_else(|| mime_types.take("UTF8_STRING"))
-                                   .or_else(|| mime_types.iter().find(|x| is_text(x)).cloned())
-                                   .or_else(|| mime_types.drain().next()),
-        MimeType::Text => mime_types.take("text/plain;charset=utf-8")
-                                    .or_else(|| mime_types.take("UTF8_STRING"))
-                                    .or_else(|| mime_types.drain().find(|x| is_text(x))),
-        MimeType::TextWithPriority(priority) => mime_types.take(priority)
-                                                          .or_else(|| mime_types.take("text/plain;charset=utf-8"))
-                                                          .or_else(|| mime_types.take("UTF8_STRING"))
-                                                          .or_else(|| mime_types.drain().find(|x| is_text(x))),
+        MimeType::Any => mime_types
+            .take("text/plain;charset=utf-8")
+            .or_else(|| mime_types.take("UTF8_STRING"))
+            .or_else(|| mime_types.iter().find(|x| is_text(x)).cloned())
+            .or_else(|| mime_types.drain().next()),
+        MimeType::Text => mime_types
+            .take("text/plain;charset=utf-8")
+            .or_else(|| mime_types.take("UTF8_STRING"))
+            .or_else(|| mime_types.drain().find(|x| is_text(x))),
+        MimeType::TextWithPriority(priority) => mime_types
+            .take(priority)
+            .or_else(|| mime_types.take("text/plain;charset=utf-8"))
+            .or_else(|| mime_types.take("UTF8_STRING"))
+            .or_else(|| mime_types.drain().find(|x| is_text(x))),
         MimeType::Specific(mime_type) => mime_types.take(mime_type),
     };
 
@@ -322,8 +409,13 @@ pub(crate) fn get_contents_internal(clipboard: ClipboardType,
     // Start the transfer.
     offer.receive(mime_type.clone(), write.as_raw_fd());
     drop(write);
-    queue.sync_roundtrip(&mut (), |_, _, _| {})
-         .map_err(Error::WaylandCommunication)?;
+
+    // A flush() is not enough here, it will result in sometimes pasting empty contents. I suspect this is due to a
+    // race between the compositor reacting to the receive request, and the compositor reacting to wl-paste
+    // disconnecting after queue is dropped. The roundtrip solves that race.
+    queue
+        .roundtrip(&mut state)
+        .map_err(Error::WaylandCommunication)?;
 
     Ok((read, mime_type))
 }

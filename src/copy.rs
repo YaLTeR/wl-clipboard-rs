@@ -1,37 +1,42 @@
 //! Copying and clearing clipboard contents.
 
-use std::{
-    cell::{Cell, RefCell},
-    collections::{hash_map::Entry, HashMap, HashSet},
-    ffi::OsString,
-    fs::{remove_dir, remove_file, File, OpenOptions},
-    io::{self, Read, Seek, SeekFrom, Write},
-    iter,
-    os::unix::io::IntoRawFd,
-    path::PathBuf,
-    rc::Rc,
-    sync::mpsc::sync_channel,
-    thread,
-};
+use std::collections::hash_map::Entry;
+use std::collections::{HashMap, HashSet};
+use std::ffi::OsString;
+use std::fs::{remove_dir, remove_file, File, OpenOptions};
+use std::io::{self, Read, Seek, SeekFrom, Write};
+use std::os::unix::io::IntoRawFd;
+use std::path::PathBuf;
+use std::sync::mpsc::sync_channel;
+use std::{iter, thread};
 
 use log::trace;
-use wayland_client::{ConnectError, EventQueue, Main, Proxy};
-use wayland_protocols::wlr::unstable::data_control::v1::client::{
-    zwlr_data_control_device_v1::ZwlrDataControlDeviceV1, zwlr_data_control_manager_v1::ZwlrDataControlManagerV1,
-    zwlr_data_control_source_v1::ZwlrDataControlSourceV1,
+use wayland_client::globals::GlobalListContents;
+use wayland_client::protocol::wl_registry::WlRegistry;
+use wayland_client::protocol::wl_seat::WlSeat;
+use wayland_client::{
+    delegate_dispatch, event_created_child, ConnectError, Dispatch, DispatchError, EventQueue,
+    Proxy,
+};
+use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_device_v1::{
+    self, ZwlrDataControlDeviceV1,
+};
+use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
+use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1;
+use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_source_v1::{
+    self, ZwlrDataControlSourceV1,
 };
 
-use crate::{
-    common::{self, initialize, CommonData},
-    handlers::{data_device_handler, data_source_handler, DataDeviceHandler, DataSourceError, DataSourceHandler},
-    seat_data::SeatData,
-    utils::{self, copy_data, is_text},
-};
+use crate::common::{self, initialize};
+use crate::seat_data::SeatData;
+use crate::utils::{self, copy_data, is_text};
 
 /// The clipboard to operate on.
-#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord, Default)]
+#[cfg_attr(test, derive(proptest_derive::Arbitrary))]
 pub enum ClipboardType {
     /// The regular clipboard.
+    #[default]
     Regular,
     /// The "primary" clipboard.
     ///
@@ -45,17 +50,12 @@ pub enum ClipboardType {
     Both,
 }
 
-impl Default for ClipboardType {
-    #[inline]
-    fn default() -> Self {
-        ClipboardType::Regular
-    }
-}
-
 /// MIME type to offer the copied data under.
 #[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+#[cfg_attr(test, derive(proptest_derive::Arbitrary))]
 pub enum MimeType {
     /// Detect the MIME type automatically from the data.
+    #[cfg_attr(test, proptest(skip))]
     Autodetect,
     /// Offer a number of common plain text MIME types.
     Text,
@@ -65,8 +65,10 @@ pub enum MimeType {
 
 /// Source for copying.
 #[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+#[cfg_attr(test, derive(proptest_derive::Arbitrary))]
 pub enum Source {
     /// Copy contents of the standard input.
+    #[cfg_attr(test, proptest(skip))]
     StdIn,
     /// Copy the given bytes.
     Bytes(Box<[u8]>),
@@ -84,35 +86,23 @@ pub struct MimeSource {
 }
 
 /// Seat to operate on.
-#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+#[derive(Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord, Default)]
 pub enum Seat {
     /// Operate on all existing seats at once.
+    #[default]
     All,
     /// Operate on a seat with the given name.
     Specific(String),
 }
 
-impl Default for Seat {
-    #[inline]
-    fn default() -> Self {
-        Seat::All
-    }
-}
-
 /// Number of paste requests to serve.
-#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord, Default)]
 pub enum ServeRequests {
     /// Serve requests indefinitely.
+    #[default]
     Unlimited,
     /// Serve only the given number of requests.
     Only(usize),
-}
-
-impl Default for ServeRequests {
-    #[inline]
-    fn default() -> Self {
-        ServeRequests::Unlimited
-    }
 }
 
 /// Options and flags that are used to customize the copying.
@@ -152,11 +142,9 @@ pub struct Options {
 
 /// A copy operation ready to start serving requests.
 pub struct PreparedCopy {
-    should_quit: Rc<Cell<bool>>,
-    queue: EventQueue,
-    sources: Vec<Proxy<ZwlrDataControlSourceV1>>,
-    data_paths: HashMap<String, Rc<RefCell<PathBuf>>>,
-    error: Rc<RefCell<Option<DataSourceError>>>,
+    queue: EventQueue<State>,
+    state: State,
+    sources: Vec<ZwlrDataControlSourceV1>,
 }
 
 /// Errors that can occur for copying the source data to a temporary file.
@@ -196,15 +184,20 @@ pub enum Error {
     #[error("There are no seats")]
     NoSeats,
 
+    #[error("Couldn't open the provided Wayland socket")]
+    SocketOpenError(#[source] io::Error),
+
     #[error("Couldn't connect to the Wayland compositor")]
     WaylandConnection(#[source] ConnectError),
 
     #[error("Wayland compositor communication error")]
-    WaylandCommunication(#[source] io::Error),
+    WaylandCommunication(#[source] DispatchError),
 
-    #[error("A required Wayland protocol ({} version {}) is not supported by the compositor",
-            name,
-            version)]
+    #[error(
+        "A required Wayland protocol ({} version {}) is not supported by the compositor",
+        name,
+        version
+    )]
     MissingProtocol { name: &'static str, version: u32 },
 
     #[error("The compositor does not support primary selection")]
@@ -231,9 +224,156 @@ impl From<common::Error> for Error {
         use common::Error::*;
 
         match x {
+            SocketOpenError(err) => Error::SocketOpenError(err),
             WaylandConnection(err) => Error::WaylandConnection(err),
-            WaylandCommunication(err) => Error::WaylandCommunication(err),
+            WaylandCommunication(err) => Error::WaylandCommunication(err.into()),
             MissingProtocol { name, version } => Error::MissingProtocol { name, version },
+        }
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum DataSourceError {
+    #[error("Couldn't open the data file")]
+    FileOpen(#[source] io::Error),
+
+    #[error("Couldn't copy the data to the target file descriptor")]
+    Copy(#[source] utils::CopyDataError),
+}
+
+struct State {
+    common: common::State,
+    got_primary_selection: bool,
+    // This bool can be set to true when serving a request: either if an error occurs, or if the
+    // number of requests to serve was limited and the last request was served.
+    should_quit: bool,
+    data_paths: HashMap<String, PathBuf>,
+    serve_requests: ServeRequests,
+    // An error that occurred while serving a request, if any.
+    error: Option<DataSourceError>,
+}
+
+delegate_dispatch!(State: [WlSeat: ()] => common::State);
+
+impl AsMut<common::State> for State {
+    fn as_mut(&mut self) -> &mut common::State {
+        &mut self.common
+    }
+}
+
+impl Dispatch<WlRegistry, GlobalListContents> for State {
+    fn event(
+        _state: &mut Self,
+        _proxy: &WlRegistry,
+        _event: <WlRegistry as wayland_client::Proxy>::Event,
+        _data: &GlobalListContents,
+        _conn: &wayland_client::Connection,
+        _qhandle: &wayland_client::QueueHandle<Self>,
+    ) {
+    }
+}
+
+impl Dispatch<ZwlrDataControlManagerV1, ()> for State {
+    fn event(
+        _state: &mut Self,
+        _proxy: &ZwlrDataControlManagerV1,
+        _event: <ZwlrDataControlManagerV1 as wayland_client::Proxy>::Event,
+        _data: &(),
+        _conn: &wayland_client::Connection,
+        _qhandle: &wayland_client::QueueHandle<Self>,
+    ) {
+    }
+}
+
+impl Dispatch<ZwlrDataControlDeviceV1, WlSeat> for State {
+    fn event(
+        state: &mut Self,
+        _device: &ZwlrDataControlDeviceV1,
+        event: <ZwlrDataControlDeviceV1 as Proxy>::Event,
+        seat: &WlSeat,
+        _conn: &wayland_client::Connection,
+        _qhandle: &wayland_client::QueueHandle<Self>,
+    ) {
+        match event {
+            zwlr_data_control_device_v1::Event::DataOffer { id } => id.destroy(),
+            zwlr_data_control_device_v1::Event::Finished => {
+                state.common.seats.get_mut(seat).unwrap().set_device(None);
+            }
+            zwlr_data_control_device_v1::Event::PrimarySelection { .. } => {
+                state.got_primary_selection = true;
+            }
+            _ => (),
+        }
+    }
+
+    event_created_child!(State, ZwlrDataControlDeviceV1, [
+        zwlr_data_control_device_v1::EVT_DATA_OFFER_OPCODE => (ZwlrDataControlOfferV1, ()),
+    ]);
+}
+
+impl Dispatch<ZwlrDataControlOfferV1, ()> for State {
+    fn event(
+        _state: &mut Self,
+        _offer: &ZwlrDataControlOfferV1,
+        _event: <ZwlrDataControlOfferV1 as wayland_client::Proxy>::Event,
+        _data: &(),
+        _conn: &wayland_client::Connection,
+        _qhandle: &wayland_client::QueueHandle<Self>,
+    ) {
+    }
+}
+
+impl Dispatch<ZwlrDataControlSourceV1, ()> for State {
+    fn event(
+        state: &mut Self,
+        source: &ZwlrDataControlSourceV1,
+        event: <ZwlrDataControlSourceV1 as Proxy>::Event,
+        _data: &(),
+        _conn: &wayland_client::Connection,
+        _qhandle: &wayland_client::QueueHandle<Self>,
+    ) {
+        match event {
+            zwlr_data_control_source_v1::Event::Send { mime_type, fd } => {
+                // Check if some other source already handled a paste request and indicated that we should
+                // quit.
+                if state.should_quit {
+                    source.destroy();
+                    return;
+                }
+
+                // I'm not sure if it's the compositor's responsibility to check that the mime type is
+                // valid. Let's check here just in case.
+                if !state.data_paths.contains_key(&mime_type) {
+                    return;
+                }
+
+                let data_path = &state.data_paths[&mime_type];
+
+                let file = File::open(data_path).map_err(DataSourceError::FileOpen);
+                let result = file.and_then(|data_file| {
+                    let data_fd = data_file.into_raw_fd();
+                    copy_data(Some(data_fd), fd.into_raw_fd(), true).map_err(DataSourceError::Copy)
+                });
+
+                if let Err(err) = result {
+                    state.error = Some(err);
+                }
+
+                let done = if let ServeRequests::Only(left) = state.serve_requests {
+                    let left = left.checked_sub(1).unwrap();
+                    state.serve_requests = ServeRequests::Only(left);
+                    left == 0
+                } else {
+                    false
+                };
+
+                if done || state.error.is_some() {
+                    state.should_quit = true;
+                    source.destroy();
+                }
+            }
+            zwlr_data_control_source_v1::Event::Cancelled => source.destroy(),
+            _ => (),
         }
     }
 }
@@ -295,7 +435,10 @@ impl Options {
     /// Omits additionally offered `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
     /// `TEXT` mime types which are offered by default if at least one text mime type is provided.
     #[inline]
-    pub fn omit_additional_text_mime_types(&mut self, omit_additional_text_mime_types: bool) -> &mut Self {
+    pub fn omit_additional_text_mime_types(
+        &mut self,
+        omit_additional_text_mime_types: bool,
+    ) -> &mut Self {
         self.omit_additional_text_mime_types = omit_additional_text_mime_types;
         self
     }
@@ -410,15 +553,15 @@ impl PreparedCopy {
     /// some other application.
     pub fn serve(mut self) -> Result<(), Error> {
         // Loop until we're done.
-        while !self.should_quit.get() {
+        while !self.state.should_quit {
             self.queue
-                .dispatch(&mut (), |_, _, _| {})
+                .blocking_dispatch(&mut self.state)
                 .map_err(Error::WaylandCommunication)?;
 
             // Check if all sources have been destroyed.
             let all_destroyed = self.sources.iter().all(|x| !x.is_alive());
             if all_destroyed {
-                self.should_quit.set(true);
+                self.state.should_quit = true;
             }
         }
 
@@ -428,19 +571,17 @@ impl PreparedCopy {
         // collect them into a vector without interruption, and then return the first one.
         let mut results = Vec::new();
         let mut dropped = HashSet::new();
-        for data_path in self.data_paths.values() {
-            let buf = data_path.as_ptr();
+        for data_path in self.state.data_paths.values_mut() {
             // data_paths can contain duplicate items, we want to free each only once.
-            if dropped.contains(&buf) {
+            if dropped.contains(data_path) {
                 continue;
             };
-            dropped.insert(buf);
+            dropped.insert(data_path.clone());
 
-            let mut data_path = data_path.borrow_mut();
-            match remove_file(&*data_path).map_err(Error::TempFileRemove) {
+            match remove_file(&data_path).map_err(Error::TempFileRemove) {
                 Ok(()) => {
                     data_path.pop();
-                    results.push(remove_dir(&*data_path).map_err(Error::TempDirRemove));
+                    results.push(remove_dir(&data_path).map_err(Error::TempDirRemove));
                 }
                 result @ Err(_) => results.push(result),
             }
@@ -451,7 +592,7 @@ impl PreparedCopy {
         result?;
 
         // Check if an error occurred during data transfer.
-        if let Some(err) = self.error.borrow_mut().take() {
+        if let Some(err) = self.state.error.take() {
             return Err(Error::Paste(err));
         }
 
@@ -459,31 +600,36 @@ impl PreparedCopy {
     }
 }
 
-fn make_source(source: Source,
-               mime_type: MimeType,
-               trim_newline: bool)
-               -> Result<(String, PathBuf), SourceCreationError> {
+fn make_source(
+    source: Source,
+    mime_type: MimeType,
+    trim_newline: bool,
+) -> Result<(String, PathBuf), SourceCreationError> {
     let temp_dir = tempfile::tempdir().map_err(SourceCreationError::TempDirCreate)?;
     let mut temp_filename = temp_dir.into_path();
     temp_filename.push("stdin");
     trace!("Temp filename: {}", temp_filename.to_string_lossy());
-    let mut temp_file = File::create(&temp_filename).map_err(SourceCreationError::TempFileCreate)?;
+    let mut temp_file =
+        File::create(&temp_filename).map_err(SourceCreationError::TempFileCreate)?;
 
     if let Source::Bytes(data) = source {
-        temp_file.write_all(&data).map_err(SourceCreationError::TempFileWrite)?;
+        temp_file
+            .write_all(&data)
+            .map_err(SourceCreationError::TempFileWrite)?;
     } else {
         // Copy the standard input into the target file.
         copy_data(None, temp_file.into_raw_fd(), true).map_err(SourceCreationError::DataCopy)?;
     }
 
     let mime_type = match mime_type {
-        MimeType::Autodetect => {
-            match tree_magic_mini::from_filepath(&temp_filename) {
-                Some(magic) => Ok(magic),
-                None => Err(SourceCreationError::TempFileOpen(std::io::Error::new(std::io::ErrorKind::Other,
-                                                                                  "problem with temp file"))),
-            }?.to_string()
-        }
+        MimeType::Autodetect => match tree_magic_mini::from_filepath(&temp_filename) {
+            Some(magic) => Ok(magic),
+            None => Err(SourceCreationError::TempFileOpen(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "problem with temp file",
+            ))),
+        }?
+        .to_string(),
         MimeType::Text => "text/plain".to_string(),
         MimeType::Specific(mime_type) => mime_type,
     };
@@ -492,22 +638,28 @@ fn make_source(source: Source,
 
     // Trim the trailing newline if needed.
     if trim_newline && is_text(&mime_type) {
-        let mut temp_file = OpenOptions::new().read(true)
-                                              .write(true)
-                                              .open(&temp_filename)
-                                              .map_err(SourceCreationError::TempFileOpen)?;
-        let metadata = temp_file.metadata().map_err(SourceCreationError::TempFileMetadata)?;
+        let mut temp_file = OpenOptions::new()
+            .read(true)
+            .write(true)
+            .open(&temp_filename)
+            .map_err(SourceCreationError::TempFileOpen)?;
+        let metadata = temp_file
+            .metadata()
+            .map_err(SourceCreationError::TempFileMetadata)?;
         let length = metadata.len();
         if length > 0 {
-            temp_file.seek(SeekFrom::End(-1))
-                     .map_err(SourceCreationError::TempFileSeek)?;
+            temp_file
+                .seek(SeekFrom::End(-1))
+                .map_err(SourceCreationError::TempFileSeek)?;
 
             let mut buf = [0];
-            temp_file.read_exact(&mut buf)
-                     .map_err(SourceCreationError::TempFileRead)?;
+            temp_file
+                .read_exact(&mut buf)
+                .map_err(SourceCreationError::TempFileRead)?;
             if buf[0] == b'\n' {
-                temp_file.set_len(length - 1)
-                         .map_err(SourceCreationError::TempFileTruncate)?;
+                temp_file
+                    .set_len(length - 1)
+                    .map_err(SourceCreationError::TempFileTruncate)?;
             }
         }
     }
@@ -515,81 +667,79 @@ fn make_source(source: Source,
     Ok((mime_type, temp_filename))
 }
 
-fn get_devices(primary: bool,
-               seat: Seat,
-               socket_name: Option<OsString>)
-               -> Result<(EventQueue, Main<ZwlrDataControlManagerV1>, Vec<ZwlrDataControlDeviceV1>), Error> {
-    let CommonData { mut queue,
-                     clipboard_manager,
-                     seats, } = initialize(primary, socket_name)?;
+fn get_devices(
+    primary: bool,
+    seat: Seat,
+    socket_name: Option<OsString>,
+) -> Result<(EventQueue<State>, State, Vec<ZwlrDataControlDeviceV1>), Error> {
+    let (mut queue, mut common) = initialize(primary, socket_name)?;
 
     // Check if there are no seats.
-    if seats.borrow_mut().is_empty() {
+    if common.seats.is_empty() {
         return Err(Error::NoSeats);
     }
 
-    let supports_primary = Rc::new(Cell::new(false));
-
     // Go through the seats and get their data devices.
-    for seat in &*seats.borrow_mut() {
-        // TODO: fast path here if all seats.
-        let mut handler = DataDeviceHandler::new(seat.detach(), true, supports_primary.clone());
-        let device = clipboard_manager.get_data_device(seat);
-        device.quick_assign(move |data_device, event, dispatch_data| {
-                  data_device_handler(&mut handler, data_device, event, dispatch_data)
-              });
-
-        let seat_data = seat.as_ref().user_data().get::<RefCell<SeatData>>().unwrap();
-        seat_data.borrow_mut().set_device(Some(device.detach()));
+    for (seat, data) in &mut common.seats {
+        let device = common
+            .clipboard_manager
+            .get_data_device(seat, &queue.handle(), seat.clone());
+        data.set_device(Some(device));
     }
 
+    let mut state = State {
+        common,
+        got_primary_selection: false,
+        should_quit: false,
+        data_paths: HashMap::new(),
+        serve_requests: ServeRequests::default(),
+        error: None,
+    };
+
     // Retrieve all seat names.
-    queue.sync_roundtrip(&mut (), |_, _, _| {})
-         .map_err(Error::WaylandCommunication)?;
+    queue
+        .roundtrip(&mut state)
+        .map_err(Error::WaylandCommunication)?;
 
     // Check if the compositor supports primary selection.
-    if primary && !supports_primary.get() {
+    if primary && !state.got_primary_selection {
         return Err(Error::PrimarySelectionUnsupported);
     }
 
     // Figure out which devices we're interested in.
-    let devices = seats.borrow_mut()
-                       .iter()
-                       .map(|seat| seat.as_ref().user_data().get::<RefCell<SeatData>>().unwrap().borrow())
-                       .filter_map(|data| {
-                           let SeatData { name, device, .. } = &*data;
+    let devices = state
+        .common
+        .seats
+        .values()
+        .filter_map(|data| {
+            let SeatData { name, device, .. } = data;
 
-                           if device.is_none() {
-                               // Can't handle seats without devices.
-                               return None;
-                           }
+            let device = device.clone();
 
-                           let device = device.as_ref().cloned().unwrap();
+            match seat {
+                Seat::All => {
+                    // If no seat was specified, handle all of them.
+                    return device;
+                }
+                Seat::Specific(ref desired_name) => {
+                    if name.as_deref() == Some(desired_name) {
+                        return device;
+                    }
+                }
+            }
 
-                           match seat {
-                               Seat::All => {
-                                   // If no seat was specified, handle all of them.
-                                   return Some(device);
-                               }
-                               Seat::Specific(ref desired_name) => {
-                                   if let Some(name) = name {
-                                       if name == desired_name {
-                                           return Some(device);
-                                       }
-                                   }
-                               }
-                           }
-
-                           None
-                       })
-                       .collect::<Vec<_>>();
+            None
+        })
+        .collect::<Vec<_>>();
 
     // If we didn't find the seat, print an error message and exit.
+    //
+    // This also triggers when we found the seat but it had no data device; is this what we want?
     if devices.is_empty() {
         return Err(Error::SeatNotFound);
     }
 
-    Ok((queue, clipboard_manager, devices))
+    Ok((queue, state, devices))
 }
 
 /// Clears the clipboard for the given seat.
@@ -613,9 +763,13 @@ pub fn clear(clipboard: ClipboardType, seat: Seat) -> Result<(), Error> {
     clear_internal(clipboard, seat, None)
 }
 
-pub(crate) fn clear_internal(clipboard: ClipboardType, seat: Seat, socket_name: Option<OsString>) -> Result<(), Error> {
+pub(crate) fn clear_internal(
+    clipboard: ClipboardType,
+    seat: Seat,
+    socket_name: Option<OsString>,
+) -> Result<(), Error> {
     let primary = clipboard != ClipboardType::Regular;
-    let (mut queue, _, devices) = get_devices(primary, seat, socket_name)?;
+    let (mut queue, mut state, devices) = get_devices(primary, seat, socket_name)?;
 
     for device in devices {
         if clipboard == ClipboardType::Primary || clipboard == ClipboardType::Both {
@@ -627,8 +781,9 @@ pub(crate) fn clear_internal(clipboard: ClipboardType, seat: Seat, socket_name: 
     }
 
     // We're clearing the clipboard so just do one roundtrip and quit.
-    queue.sync_roundtrip(&mut (), |_, _, _| {})
-         .map_err(Error::WaylandCommunication)?;
+    queue
+        .roundtrip(&mut state)
+        .map_err(Error::WaylandCommunication)?;
 
     Ok(())
 }
@@ -665,7 +820,11 @@ pub(crate) fn clear_internal(clipboard: ClipboardType, seat: Seat, socket_name: 
 /// # }
 /// ```
 #[inline]
-pub fn prepare_copy(options: Options, source: Source, mime_type: MimeType) -> Result<PreparedCopy, Error> {
+pub fn prepare_copy(
+    options: Options,
+    source: Source,
+    mime_type: MimeType,
+) -> Result<PreparedCopy, Error> {
     assert!(options.foreground);
 
     let sources = vec![MimeSource { source, mime_type }];
@@ -712,31 +871,40 @@ pub fn prepare_copy(options: Options, source: Source, mime_type: MimeType) -> Re
 /// # }
 /// ```
 #[inline]
-pub fn prepare_copy_multi(options: Options, sources: Vec<MimeSource>) -> Result<PreparedCopy, Error> {
+pub fn prepare_copy_multi(
+    options: Options,
+    sources: Vec<MimeSource>,
+) -> Result<PreparedCopy, Error> {
     assert!(options.foreground);
 
     prepare_copy_internal(options, sources, None)
 }
 
-fn prepare_copy_internal(options: Options,
-                         sources: Vec<MimeSource>,
-                         socket_name: Option<OsString>)
-                         -> Result<PreparedCopy, Error> {
-    let Options { clipboard,
-                  seat,
-                  trim_newline,
-                  serve_requests,
-                  .. } = options;
+fn prepare_copy_internal(
+    options: Options,
+    sources: Vec<MimeSource>,
+    socket_name: Option<OsString>,
+) -> Result<PreparedCopy, Error> {
+    let Options {
+        clipboard,
+        seat,
+        trim_newline,
+        serve_requests,
+        ..
+    } = options;
 
     let primary = clipboard != ClipboardType::Regular;
-    let (queue, clipboard_manager, devices) = get_devices(primary, seat, socket_name)?;
+    let (queue, mut state, devices) = get_devices(primary, seat, socket_name)?;
+
+    state.serve_requests = serve_requests;
 
     // Collect the source data to copy.
-    let data_paths = {
+    state.data_paths = {
         let mut data_paths = HashMap::new();
         let mut text_data_path = None;
         for MimeSource { source, mime_type } in sources.into_iter() {
-            let (mime_type, mut data_path) = make_source(source, mime_type, trim_newline).map_err(Error::TempCopy)?;
+            let (mime_type, mut data_path) =
+                make_source(source, mime_type, trim_newline).map_err(Error::TempCopy)?;
 
             let mime_type_is_text = is_text(&mime_type);
 
@@ -748,9 +916,10 @@ fn prepare_copy_internal(options: Options,
                     remove_dir(&*data_path).map_err(Error::TempDirRemove)?;
                 }
                 Entry::Vacant(entry) => {
-                    let data_path = Rc::new(RefCell::new(data_path));
-
-                    if !options.omit_additional_text_mime_types && text_data_path.is_none() && mime_type_is_text {
+                    if !options.omit_additional_text_mime_types
+                        && text_data_path.is_none()
+                        && mime_type_is_text
+                    {
                         text_data_path = Some(data_path.clone());
                     }
 
@@ -761,11 +930,13 @@ fn prepare_copy_internal(options: Options,
 
         // If the MIME type is text, offer it in some other common formats.
         if let Some(text_data_path) = text_data_path {
-            let text_mimes = ["text/plain;charset=utf-8",
-                              "text/plain",
-                              "STRING",
-                              "UTF8_STRING",
-                              "TEXT"];
+            let text_mimes = [
+                "text/plain;charset=utf-8",
+                "text/plain",
+                "STRING",
+                "UTF8_STRING",
+                "TEXT",
+            ];
             for &mime_type in &text_mimes {
                 // We don't want to overwrite an explicit mime type, because it might be bound to a
                 // different data_path
@@ -777,70 +948,58 @@ fn prepare_copy_internal(options: Options,
         data_paths
     };
 
-    // This bool can be set to true when serving a request: either if an error occurs, or if the
-    // number of requests to serve was limited and the last request was served.
-    let should_quit = Rc::new(Cell::new(false));
-    // An error that occurred while serving a request, if any.
-    let error = Rc::new(RefCell::new(None::<DataSourceError>));
-    let serve_requests = Rc::new(Cell::new(serve_requests));
-
     // Create an iterator over (device, primary) for source creation later.
     //
     // This is needed because for ClipboardType::Both each device needs to appear twice because
     // separate data sources need to be made for the regular and the primary clipboards (data
     // sources cannot be reused).
     let devices_iter = devices.iter().flat_map(|device| {
-                                         let first = match clipboard {
-                                             ClipboardType::Regular => iter::once((device, false)),
-                                             ClipboardType::Primary => iter::once((device, true)),
-                                             ClipboardType::Both => iter::once((device, false)),
-                                         };
+        let first = match clipboard {
+            ClipboardType::Regular => iter::once((device, false)),
+            ClipboardType::Primary => iter::once((device, true)),
+            ClipboardType::Both => iter::once((device, false)),
+        };
 
-                                         let second = if clipboard == ClipboardType::Both {
-                                             iter::once(Some((device, true)))
-                                         } else {
-                                             iter::once(None)
-                                         };
+        let second = if clipboard == ClipboardType::Both {
+            iter::once(Some((device, true)))
+        } else {
+            iter::once(None)
+        };
 
-                                         first.chain(second.flatten())
-                                     });
+        first.chain(second.flatten())
+    });
 
     // Create the data sources and set them as selections.
-    let sources = devices_iter.map(|(device, primary)| {
-                                  let mut handler = DataSourceHandler::new(data_paths.clone(),
-                                                                           should_quit.clone(),
-                                                                           serve_requests.clone());
-                                  let data_source = clipboard_manager.create_data_source();
-                                  let error = error.clone();
-                                  data_source.as_ref().user_data().set(move || error);
-                                  data_source.quick_assign(move |data_source, event, dispatch_data| {
-                                                 data_source_handler(&mut handler, data_source, event, dispatch_data)
-                                             });
+    let sources = devices_iter
+        .map(|(device, primary)| {
+            let data_source = state
+                .common
+                .clipboard_manager
+                .create_data_source(&queue.handle(), ());
 
-                                  for mime_type in data_paths.keys() {
-                                      data_source.offer(mime_type.clone());
-                                  }
+            for mime_type in state.data_paths.keys() {
+                data_source.offer(mime_type.clone());
+            }
 
-                                  if primary {
-                                      device.set_primary_selection(Some(&data_source));
-                                  } else {
-                                      device.set_selection(Some(&data_source));
-                                  }
+            if primary {
+                device.set_primary_selection(Some(&data_source));
+            } else {
+                device.set_selection(Some(&data_source));
+            }
 
-                                  // If we need to serve 0 requests, kill the data source right away.
-                                  if let ServeRequests::Only(0) = serve_requests.get() {
-                                      data_source.destroy();
-                                  }
+            // If we need to serve 0 requests, kill the data source right away.
+            if let ServeRequests::Only(0) = state.serve_requests {
+                data_source.destroy();
+            }
+            data_source
+        })
+        .collect::<Vec<_>>();
 
-                                  data_source.detach().into()
-                              })
-                              .collect::<Vec<Proxy<_>>>();
-
-    Ok(PreparedCopy { should_quit,
-                      queue,
-                      sources,
-                      data_paths,
-                      error })
+    Ok(PreparedCopy {
+        queue,
+        state,
+        sources,
+    })
 }
 
 /// Copies data to the clipboard.
@@ -897,10 +1056,11 @@ pub fn copy_multi(options: Options, sources: Vec<MimeSource>) -> Result<(), Erro
     copy_internal(options, sources, None)
 }
 
-pub(crate) fn copy_internal(options: Options,
-                            sources: Vec<MimeSource>,
-                            socket_name: Option<OsString>)
-                            -> Result<(), Error> {
+pub(crate) fn copy_internal(
+    options: Options,
+    sources: Vec<MimeSource>,
+    socket_name: Option<OsString>,
+) -> Result<(), Error> {
     if options.foreground {
         prepare_copy_internal(options, sources, socket_name)?.serve()
     } else {
@@ -908,16 +1068,18 @@ pub(crate) fn copy_internal(options: Options,
         // To receive errors from prepare_copy, use a channel.
         let (tx, rx) = sync_channel(1);
 
-        thread::spawn(move || match prepare_copy_internal(options, sources, socket_name) {
-            Ok(prepared_copy) => {
-                // prepare_copy completed successfully, report that.
-                drop(tx.send(None));
+        thread::spawn(
+            move || match prepare_copy_internal(options, sources, socket_name) {
+                Ok(prepared_copy) => {
+                    // prepare_copy completed successfully, report that.
+                    drop(tx.send(None));
 
-                // There's nobody listening for errors at this point, just drop it.
-                drop(prepared_copy.serve());
-            }
-            Err(err) => drop(tx.send(Some(err))),
-        });
+                    // There's nobody listening for errors at this point, just drop it.
+                    drop(prepared_copy.serve());
+                }
+                Err(err) => drop(tx.send(Some(err))),
+            },
+        );
 
         if let Some(err) = rx.recv().unwrap() {
             return Err(err);

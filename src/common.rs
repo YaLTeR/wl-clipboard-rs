@@ -1,65 +1,130 @@
-use std::{cell::RefCell, ffi::OsString, io, rc::Rc};
+use std::collections::HashMap;
+use std::ffi::OsString;
+use std::os::unix::net::UnixStream;
+use std::path::PathBuf;
+use std::{env, io};
 
-use wayland_client::{
-    global_filter, protocol::wl_seat::WlSeat, ConnectError, Display, EventQueue, GlobalManager, Interface, Main,
-};
-use wayland_protocols::wlr::unstable::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
+use wayland_backend::client::WaylandError;
+use wayland_client::globals::{registry_queue_init, BindError, GlobalError, GlobalListContents};
+use wayland_client::protocol::wl_registry::WlRegistry;
+use wayland_client::protocol::wl_seat::{self, WlSeat};
+use wayland_client::{ConnectError, Connection, Dispatch, EventQueue, Proxy};
+use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
 
-use crate::{handlers::seat_handler, seat_data::SeatData};
+use crate::seat_data::SeatData;
 
-pub struct CommonData {
-    pub queue: EventQueue,
-    pub clipboard_manager: Main<ZwlrDataControlManagerV1>,
-    pub seats: Rc<RefCell<Vec<Main<WlSeat>>>>,
+pub struct State {
+    pub seats: HashMap<WlSeat, SeatData>,
+    pub clipboard_manager: ZwlrDataControlManagerV1,
 }
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
+    #[error("Couldn't open the provided Wayland socket")]
+    SocketOpenError(#[source] io::Error),
+
     #[error("Couldn't connect to the Wayland compositor")]
     WaylandConnection(#[source] ConnectError),
 
     #[error("Wayland compositor communication error")]
-    WaylandCommunication(#[source] io::Error),
+    WaylandCommunication(#[source] WaylandError),
 
-    #[error("A required Wayland protocol ({name} version {version}) is not supported by the compositor")]
+    #[error(
+        "A required Wayland protocol ({name} version {version}) is not supported by the compositor"
+    )]
     MissingProtocol { name: &'static str, version: u32 },
 }
 
-pub fn initialize(primary: bool, socket_name: Option<OsString>) -> Result<CommonData, Error> {
+impl<S> Dispatch<WlSeat, (), S> for State
+where
+    S: Dispatch<WlSeat, ()> + AsMut<State>,
+{
+    fn event(
+        parent: &mut S,
+        seat: &WlSeat,
+        event: <WlSeat as wayland_client::Proxy>::Event,
+        _data: &(),
+        _conn: &wayland_client::Connection,
+        _qh: &wayland_client::QueueHandle<S>,
+    ) {
+        let state = parent.as_mut();
+
+        if let wl_seat::Event::Name { name } = event {
+            state.seats.get_mut(seat).unwrap().set_name(name);
+        }
+    }
+}
+
+pub fn initialize<S>(
+    primary: bool,
+    socket_name: Option<OsString>,
+) -> Result<(EventQueue<S>, State), Error>
+where
+    S: Dispatch<WlRegistry, GlobalListContents> + 'static,
+    S: Dispatch<ZwlrDataControlManagerV1, ()>,
+    S: Dispatch<WlSeat, ()>,
+    S: AsMut<State>,
+{
     // Connect to the Wayland compositor.
-    let display = match socket_name {
-                      Some(name) => Display::connect_to_name(name),
-                      None => Display::connect_to_env(),
-                  }.map_err(Error::WaylandConnection)?;
-    let mut queue = display.create_event_queue();
-    let display = display.attach(queue.token());
+    let conn = match socket_name {
+        Some(name) => {
+            let mut socket_path = env::var_os("XDG_RUNTIME_DIR")
+                .map(Into::<PathBuf>::into)
+                .ok_or(ConnectError::NoCompositor)
+                .map_err(Error::WaylandConnection)?;
+            if !socket_path.is_absolute() {
+                return Err(Error::WaylandConnection(ConnectError::NoCompositor));
+            }
+            socket_path.push(name);
 
-    let seats = Rc::new(RefCell::new(Vec::<Main<WlSeat>>::new()));
-
-    let seats_2 = seats.clone();
-    let global_manager =
-        GlobalManager::new_with_cb(&display,
-                                   global_filter!([WlSeat, 2, move |seat: Main<WlSeat>, _: DispatchData| {
-                                                      let seat_data = RefCell::new(SeatData::default());
-                                                      seat.as_ref().user_data().set(move || seat_data);
-                                                      seat.quick_assign(seat_handler);
-                                                      seats_2.borrow_mut().push(seat);
-                                                  }]));
+            let stream = UnixStream::connect(socket_path).map_err(Error::SocketOpenError)?;
+            Connection::from_socket(stream)
+        }
+        None => Connection::connect_to_env(),
+    }
+    .map_err(Error::WaylandConnection)?;
 
     // Retrieve the global interfaces.
-    queue.sync_roundtrip(&mut (), |_, _, _| {})
-         .map_err(Error::WaylandCommunication)?;
+    let (globals, queue) =
+        registry_queue_init::<S>(&conn).map_err(|err| match err {
+                                           GlobalError::Backend(err) => Error::WaylandCommunication(err),
+                                           GlobalError::InvalidId(err) => panic!("How's this possible? \
+                                                                                  Is there no wl_registry? \
+                                                                                  {:?}",
+                                                                                 err),
+                                       })?;
+    let qh = &queue.handle();
 
-    // Check that we have our interfaces.
     let data_control_version = if primary { 2 } else { 1 };
 
-    let clipboard_manager = global_manager.instantiate_exact(data_control_version).map_err(|_| {
-                                                                                       Error::MissingProtocol { name:
-                                                                ZwlrDataControlManagerV1::NAME,
-                                                            version: data_control_version }
-                                                                                   })?;
+    // Verify that we got the clipboard manager.
+    let clipboard_manager = match globals.bind(qh, data_control_version..=data_control_version, ())
+    {
+        Ok(manager) => manager,
+        Err(BindError::NotPresent | BindError::UnsupportedVersion) => {
+            return Err(Error::MissingProtocol {
+                name: ZwlrDataControlManagerV1::interface().name,
+                version: data_control_version,
+            })
+        }
+    };
 
-    Ok(CommonData { queue,
-                    clipboard_manager,
-                    seats })
+    let registry = globals.registry();
+    let seats = globals.contents().with_list(|globals| {
+        globals
+            .iter()
+            .filter(|global| global.interface == WlSeat::interface().name && global.version >= 2)
+            .map(|global| {
+                let seat = registry.bind(global.name, 2, qh, ());
+                (seat, SeatData::default())
+            })
+            .collect()
+    });
+
+    let state = State {
+        seats,
+        clipboard_manager,
+    };
+
+    Ok((queue, state))
 }

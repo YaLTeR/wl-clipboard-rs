@@ -1,29 +1,26 @@
 //! Helper functions.
 
-use std::{
-    cell::{Cell, RefCell},
-    ffi::{CString, OsString},
-    io,
-    os::unix::io::RawFd,
-    process::abort,
-    rc::Rc,
-};
+use std::ffi::{CString, OsString};
+use std::os::unix::io::RawFd;
+use std::os::unix::net::UnixStream;
+use std::path::PathBuf;
+use std::process::abort;
+use std::{env, io};
 
 use libc::{STDIN_FILENO, STDOUT_FILENO};
-use nix::{
-    fcntl::{fcntl, FcntlArg, OFlag},
-    sys::wait::{waitpid, WaitStatus},
-    unistd::{close, dup2, execv, fork, ForkResult},
-};
+use nix::fcntl::{fcntl, FcntlArg, OFlag};
+use nix::sys::wait::{waitpid, WaitStatus};
+use nix::unistd::{close, dup2, execv, fork, ForkResult};
+use wayland_client::protocol::wl_registry::{self, WlRegistry};
+use wayland_client::protocol::wl_seat::WlSeat;
 use wayland_client::{
-    global_filter, protocol::wl_seat::WlSeat, ConnectError, Display, GlobalError, GlobalManager, Interface, Main,
+    event_created_child, ConnectError, Connection, Dispatch, DispatchError, Proxy,
 };
-use wayland_protocols::wlr::unstable::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
-
-use crate::{
-    handlers::{data_device_handler, seat_handler, DataDeviceHandler},
-    seat_data::SeatData,
+use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_device_v1::{
+    self, ZwlrDataControlDeviceV1,
 };
+use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
+use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1;
 
 /// Checks if the given MIME type represents plain text.
 ///
@@ -64,7 +61,10 @@ pub enum CopyDataError {
     #[error("Couldn't wait for the child process")]
     Wait(#[source] nix::Error),
 
-    #[error("Received an unexpected status when waiting for the child process: {:?}", _0)]
+    #[error(
+        "Received an unexpected status when waiting for the child process: {:?}",
+        _0
+    )]
     WaitUnexpected(WaitStatus),
 
     #[error("The child process exited with a non-zero error code: {}", _0)]
@@ -105,7 +105,8 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(),
 
     // Clear O_NONBLOCK because cat doesn't know how to deal with it.
     if let Some(from_fd) = from_fd {
-        fcntl(from_fd, FcntlArg::F_SETFL(OFlag::empty())).map_err(CopyDataError::SetSourceFdFlags)?;
+        fcntl(from_fd, FcntlArg::F_SETFL(OFlag::empty()))
+            .map_err(CopyDataError::SetSourceFdFlags)?;
     }
     fcntl(to_fd, FcntlArg::F_SETFL(OFlag::empty())).map_err(CopyDataError::SetTargetFdFlags)?;
 
@@ -173,21 +174,123 @@ pub fn copy_data(from_fd: Option<RawFd>, to_fd: RawFd, wait: bool) -> Result<(),
     Ok(())
 }
 
+struct PrimarySelectionState {
+    // Any seat that we get from the compositor.
+    seat: Option<WlSeat>,
+    clipboard_manager: Option<ZwlrDataControlManagerV1>,
+    clipboard_manager_was_v1: bool,
+    got_primary_selection: bool,
+}
+
+impl Dispatch<WlRegistry, ()> for PrimarySelectionState {
+    fn event(
+        state: &mut Self,
+        registry: &WlRegistry,
+        event: <WlRegistry as wayland_client::Proxy>::Event,
+        _data: &(),
+        _conn: &Connection,
+        qh: &wayland_client::QueueHandle<Self>,
+    ) {
+        if let wl_registry::Event::Global {
+            name,
+            interface,
+            version,
+        } = event
+        {
+            if interface == WlSeat::interface().name && version >= 2 && state.seat.is_none() {
+                let seat = registry.bind(name, 2, qh, ());
+                state.seat = Some(seat);
+            }
+
+            if interface == ZwlrDataControlManagerV1::interface().name {
+                assert_eq!(state.clipboard_manager, None);
+
+                if version == 1 {
+                    state.clipboard_manager_was_v1 = true;
+                } else {
+                    let manager = registry.bind(name, 2, qh, ());
+                    state.clipboard_manager = Some(manager);
+                }
+            }
+        }
+    }
+}
+
+impl Dispatch<WlSeat, ()> for PrimarySelectionState {
+    fn event(
+        _state: &mut Self,
+        _proxy: &WlSeat,
+        _event: <WlSeat as Proxy>::Event,
+        _data: &(),
+        _conn: &Connection,
+        _qhandle: &wayland_client::QueueHandle<Self>,
+    ) {
+    }
+}
+
+impl Dispatch<ZwlrDataControlManagerV1, ()> for PrimarySelectionState {
+    fn event(
+        _state: &mut Self,
+        _proxy: &ZwlrDataControlManagerV1,
+        _event: <ZwlrDataControlManagerV1 as Proxy>::Event,
+        _data: &(),
+        _conn: &Connection,
+        _qhandle: &wayland_client::QueueHandle<Self>,
+    ) {
+    }
+}
+
+impl Dispatch<ZwlrDataControlDeviceV1, ()> for PrimarySelectionState {
+    fn event(
+        state: &mut Self,
+        _device: &ZwlrDataControlDeviceV1,
+        event: <ZwlrDataControlDeviceV1 as wayland_client::Proxy>::Event,
+        _data: &(),
+        _conn: &wayland_client::Connection,
+        _qh: &wayland_client::QueueHandle<Self>,
+    ) {
+        if let zwlr_data_control_device_v1::Event::PrimarySelection { id: _ } = event {
+            state.got_primary_selection = true;
+        }
+    }
+
+    event_created_child!(PrimarySelectionState, ZwlrDataControlDeviceV1, [
+        zwlr_data_control_device_v1::EVT_DATA_OFFER_OPCODE => (ZwlrDataControlOfferV1, ()),
+    ]);
+}
+
+impl Dispatch<ZwlrDataControlOfferV1, ()> for PrimarySelectionState {
+    fn event(
+        _state: &mut Self,
+        _offer: &ZwlrDataControlOfferV1,
+        _event: <ZwlrDataControlOfferV1 as wayland_client::Proxy>::Event,
+        _data: &(),
+        _conn: &wayland_client::Connection,
+        _qhandle: &wayland_client::QueueHandle<Self>,
+    ) {
+    }
+}
+
 /// Errors that can occur when checking whether the primary selection is supported.
 #[derive(thiserror::Error, Debug)]
 pub enum PrimarySelectionCheckError {
     #[error("There are no seats")]
     NoSeats,
 
+    #[error("Couldn't open the provided Wayland socket")]
+    SocketOpenError(#[source] io::Error),
+
     #[error("Couldn't connect to the Wayland compositor")]
     WaylandConnection(#[source] ConnectError),
 
     #[error("Wayland compositor communication error")]
-    WaylandCommunication(#[source] io::Error),
+    WaylandCommunication(#[source] DispatchError),
 
-    #[error("A required Wayland protocol ({} version {}) is not supported by the compositor",
-            name,
-            version)]
+    #[error(
+        "A required Wayland protocol ({} version {}) is not supported by the compositor",
+        name,
+        version
+    )]
     MissingProtocol { name: &'static str, version: u32 },
 }
 
@@ -230,63 +333,69 @@ pub fn is_primary_selection_supported() -> Result<bool, PrimarySelectionCheckErr
     is_primary_selection_supported_internal(None)
 }
 
-pub(crate) fn is_primary_selection_supported_internal(socket_name: Option<OsString>)
-                                                      -> Result<bool, PrimarySelectionCheckError> {
+pub(crate) fn is_primary_selection_supported_internal(
+    socket_name: Option<OsString>,
+) -> Result<bool, PrimarySelectionCheckError> {
     // Connect to the Wayland compositor.
-    let display = match socket_name {
-                      Some(name) => Display::connect_to_name(name),
-                      None => Display::connect_to_env(),
-                  }.map_err(PrimarySelectionCheckError::WaylandConnection)?;
-    let mut queue = display.create_event_queue();
-    let display = display.attach(queue.token());
+    let conn = match socket_name {
+        Some(name) => {
+            let mut socket_path = env::var_os("XDG_RUNTIME_DIR")
+                .map(Into::<PathBuf>::into)
+                .ok_or(ConnectError::NoCompositor)
+                .map_err(PrimarySelectionCheckError::WaylandConnection)?;
+            if !socket_path.is_absolute() {
+                return Err(PrimarySelectionCheckError::WaylandConnection(
+                    ConnectError::NoCompositor,
+                ));
+            }
+            socket_path.push(name);
 
-    let seats = Rc::new(RefCell::new(Vec::<Main<WlSeat>>::new()));
+            let stream = UnixStream::connect(socket_path)
+                .map_err(PrimarySelectionCheckError::SocketOpenError)?;
+            Connection::from_socket(stream)
+        }
+        None => Connection::connect_to_env(),
+    }
+    .map_err(PrimarySelectionCheckError::WaylandConnection)?;
+    let display = conn.display();
 
-    let seats_2 = seats.clone();
-    let global_manager =
-        GlobalManager::new_with_cb(&display,
-                                   global_filter!([WlSeat, 2, move |seat: Main<WlSeat>, _: DispatchData| {
-                                                      let seat_data = RefCell::new(SeatData::default());
-                                                      seat.as_ref().user_data().set(move || seat_data);
-                                                      seat.quick_assign(seat_handler);
-                                                      seats_2.borrow_mut().push(seat);
-                                                  }]));
+    let mut queue = conn.new_event_queue();
+    let qh = queue.handle();
+
+    let mut state = PrimarySelectionState {
+        seat: None,
+        clipboard_manager: None,
+        clipboard_manager_was_v1: false,
+        got_primary_selection: false,
+    };
 
     // Retrieve the global interfaces.
-    queue.sync_roundtrip(&mut (), |_, _, _| {})
-         .map_err(PrimarySelectionCheckError::WaylandCommunication)?;
+    let _registry = display.get_registry(&qh, ());
+    queue
+        .roundtrip(&mut state)
+        .map_err(PrimarySelectionCheckError::WaylandCommunication)?;
 
-    // Try instantiating data control version 2. If data control is missing altogether, return a
-    // missing protocol error, but if it's present with version 1 then return false as version 1
-    // does not support primary clipboard.
-    let clipboard_manager = match global_manager.instantiate_exact::<ZwlrDataControlManagerV1>(2) {
-        Ok(manager) => manager,
-        Err(GlobalError::Missing) => {
-            return Err(PrimarySelectionCheckError::MissingProtocol { name: ZwlrDataControlManagerV1::NAME,
-                                                                     version: 1 })
-        }
-        Err(GlobalError::VersionTooLow(_)) => return Ok(false),
+    // If data control is present but is version 1, then return false as version 1 does not support primary clipboard.
+    if state.clipboard_manager_was_v1 {
+        return Ok(false);
+    }
+
+    // Verify that we got the clipboard manager.
+    let Some(ref clipboard_manager) = state.clipboard_manager else {
+        return Err(PrimarySelectionCheckError::MissingProtocol { name: ZwlrDataControlManagerV1::interface().name,
+                                                                 version: 1 });
     };
 
     // Check if there are no seats.
-    if seats.borrow_mut().is_empty() {
+    let Some(ref seat) = state.seat else {
         return Err(PrimarySelectionCheckError::NoSeats);
-    }
+    };
 
-    let supports_primary = Rc::new(Cell::new(false));
+    clipboard_manager.get_data_device(seat, &qh, ());
 
-    // Go through the seats and get their data devices. They will listen for the primary_selection
-    // event and set supports_primary on receiving one.
-    for seat in &*seats.borrow_mut() {
-        let mut handler = DataDeviceHandler::new(seat.detach(), true, supports_primary.clone());
-        let device = clipboard_manager.get_data_device(seat);
-        device.quick_assign(move |data_device, event, dispatch_data| {
-                  data_device_handler(&mut handler, data_device, event, dispatch_data)
-              });
-    }
+    queue
+        .roundtrip(&mut state)
+        .map_err(PrimarySelectionCheckError::WaylandCommunication)?;
 
-    queue.sync_roundtrip(&mut (), |_, _, _| {})
-         .map_err(PrimarySelectionCheckError::WaylandCommunication)?;
-
-    Ok(supports_primary.get())
+    Ok(state.got_primary_selection)
 }

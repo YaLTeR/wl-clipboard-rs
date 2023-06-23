@@ -24,28 +24,20 @@ os_pipe = "1.1.4"
 tempfile = "3.6.0"
 thiserror = "1"
 tree_magic_mini = "3.0.3"
-wayland-client = "0.29.4"
-
-[dependencies.wayland-protocols]
-version = "0.29.4"
-features = ["client", "unstable_protocols"]
+wayland-backend = "0.1.2"
+wayland-client = "0.30.2"
+wayland-protocols = { version = "0.30.0", features = ["client"] }
+wayland-protocols-wlr = { version = "0.1.0", features = ["client"] }
 
 [dev-dependencies]
-wayland-server = "0.29.4"
-
-[dev-dependencies.wayland-protocols]
-version = "0.29.4"
-features = ["server", "unstable_protocols"]
+wayland-server = "0.30.1"
+wayland-protocols = { version = "0.30.0", features = ["server"] }
+wayland-protocols-wlr = { version = "0.1.0", features = ["server"] }
+proptest = "1.2.0"
+proptest-derive = "0.3.0"
 
 [features]
 # Link to libwayland-client.so instead of using the Rust implementation.
-native_lib = [
-    "wayland-client/use_system_lib",
-    "wayland-server/use_system_lib",
-]
+native_lib = ["wayland-backend/client_system", "wayland-backend/server_system"]
 
-dlopen = [
-    "native_lib",
-    "wayland-client/dlopen",
-    "wayland-server/dlopen",
-]
+dlopen = ["native_lib", "wayland-backend/dlopen", "wayland-backend/dlopen"]

@@ -1,6 +1,5 @@
-use wayland_protocols::wlr::unstable::data_control::v1::client::{
-    zwlr_data_control_device_v1::ZwlrDataControlDeviceV1, zwlr_data_control_offer_v1::ZwlrDataControlOfferV1,
-};
+use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_device_v1::ZwlrDataControlDeviceV1;
+use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1;
 
 #[derive(Default)]
 pub struct SeatData {
@@ -11,9 +10,10 @@ pub struct SeatData {
     pub device: Option<ZwlrDataControlDeviceV1>,
 
     /// The data offer of this seat, if any.
-    ///
-    /// Contains mime types in its user data.
     pub offer: Option<ZwlrDataControlOfferV1>,
+
+    /// The primary-selection data offer of this seat, if any.
+    pub primary_offer: Option<ZwlrDataControlOfferV1>,
 }
 
 impl SeatData {
@@ -40,6 +40,18 @@ impl SeatData {
     pub fn set_offer(&mut self, new_offer: Option<ZwlrDataControlOfferV1>) {
         let old_offer = self.offer.take();
         self.offer = new_offer;
+
+        if let Some(offer) = old_offer {
+            offer.destroy();
+        }
+    }
+
+    /// Sets this seat's primary-selection data offer.
+    ///
+    /// Destroys the old one, if any.
+    pub fn set_primary_offer(&mut self, new_offer: Option<ZwlrDataControlOfferV1>) {
+        let old_offer = self.primary_offer.take();
+        self.primary_offer = new_offer;
 
         if let Some(offer) = old_offer {
             offer.destroy();

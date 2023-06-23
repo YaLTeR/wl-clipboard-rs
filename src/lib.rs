@@ -109,7 +109,6 @@
 #![deny(unsafe_code)]
 
 mod common;
-mod handlers;
 mod seat_data;
 
 #[cfg(test)]

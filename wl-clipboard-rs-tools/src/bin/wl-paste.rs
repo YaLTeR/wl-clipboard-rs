@@ -1,16 +1,16 @@
 #![deny(unsafe_code)]
 
-use std::{
-    fs::read_link,
-    io::{stdout, Read, Write},
-};
+use std::fs::read_link;
+use std::io::{stdout, Read, Write};
 
 use anyhow::Context;
 use libc::STDOUT_FILENO;
 use log::trace;
 use mime_guess::Mime;
-use structopt::{clap::AppSettings, StructOpt};
-use wl_clipboard_rs::{paste::*, utils::is_text};
+use structopt::clap::AppSettings;
+use structopt::StructOpt;
+use wl_clipboard_rs::paste::*;
+use wl_clipboard_rs::utils::is_text;
 
 #[derive(StructOpt)]
 #[structopt(name = "wl-paste",
@@ -47,7 +47,12 @@ struct Options {
     ///
     /// As a special case, specifying "text" will look for a number of plain text types,
     /// prioritizing ones that are known to give UTF-8 text.
-    #[structopt(name = "mime-type", long = "type", short = "t", conflicts_with = "list-types")]
+    #[structopt(
+        name = "mime-type",
+        long = "type",
+        short = "t",
+        conflicts_with = "list-types"
+    )]
     mime_type: Option<String>,
 
     /// Enable verbose logging
@@ -71,11 +76,16 @@ fn main() -> Result<(), anyhow::Error> {
     } else {
         ClipboardType::Regular
     };
-    let seat = options.seat.as_ref().map(|x| Seat::Specific(x)).unwrap_or_default();
+    let seat = options
+        .seat
+        .as_ref()
+        .map(|x| Seat::Specific(x))
+        .unwrap_or_default();
 
-    stderrlog::new().verbosity(options.verbose.saturating_add(1))
-                    .init()
-                    .unwrap();
+    stderrlog::new()
+        .verbosity(options.verbose.saturating_add(1))
+        .init()
+        .unwrap();
 
     // If listing types is requested, do just that.
     if options.list_types {
@@ -128,8 +138,9 @@ fn main() -> Result<(), anyhow::Error> {
     }
 
     // Write everything to stdout.
-    stdout().write_all(&contents)
-            .context("Couldn't write contents to stdout")?;
+    stdout()
+        .write_all(&contents)
+        .context("Couldn't write contents to stdout")?;
 
     Ok(())
 }

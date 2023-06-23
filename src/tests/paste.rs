@@ -1,241 +1,274 @@
-use std::{
-    collections::HashSet,
-    ffi::OsString,
-    io::{Read, Write},
-    mem,
-    os::unix::io::FromRawFd,
-    thread,
-    time::Duration,
-};
+use std::collections::{HashMap, HashSet};
+use std::io::Read;
 
-use os_pipe::PipeWriter;
-use wayland_protocols::wlr::unstable::data_control::v1::server::{
-    zwlr_data_control_manager_v1::{Request as ServerManagerRequest, ZwlrDataControlManagerV1 as ServerManager},
-    zwlr_data_control_offer_v1::{Request as ServerOfferRequest, ZwlrDataControlOfferV1 as ServerOffer},
-};
-use wayland_server::{protocol::wl_seat::WlSeat as ServerSeat, Filter, Main};
+use proptest::prelude::*;
+use wayland_protocols_wlr::data_control::v1::server::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
 
-use crate::{paste::*, tests::TestServer};
+use crate::paste::*;
+use crate::tests::state::*;
+use crate::tests::TestServer;
 
 #[test]
 fn get_mime_types_test() {
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, Filter::new(|_: (_, _), _, _| {}));
-    server.display
-          .create_global::<ServerManager, _>(
-                                             1,
-                                             Filter::new(move |(manager, _): (Main<ServerManager>, _), _, _| {
-                                                 manager.quick_assign(move |_, request, _| match request {
-                                                            ServerManagerRequest::GetDataDevice { id: device, .. } => {
-                                                                let offer =
-                                 device.as_ref()
-                                       .client()
-                                       .unwrap()
-                                       .create_resource::<ServerOffer>(device.as_ref().version())
-                                       .unwrap();
-                                                                device.data_offer(&offer);
-                                                                offer.offer("first".to_string());
-                                                                offer.offer("second".to_string());
-                                                                offer.offer("third".to_string());
-                                                                device.selection(Some(&offer));
-                                                            }
-                                                            _ => unreachable!(),
-                                                        });
-                                             }),
-    );
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child =
-        thread::spawn(move || get_mime_types_internal(ClipboardType::Regular, Seat::Unspecified, Some(socket_name)));
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                offer: Some(OfferInfo::Buffered {
+                    data: HashMap::from([
+                        ("first".into(), vec![]),
+                        ("second".into(), vec![]),
+                        ("third".into(), vec![]),
+                    ]),
+                }),
+                ..Default::default()
+            },
+        )]),
+        ..Default::default()
+    };
+    state.create_seats(&server);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let mime_types =
+        get_mime_types_internal(ClipboardType::Regular, Seat::Unspecified, Some(socket_name))
+            .unwrap();
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let mime_types = child.join().unwrap().unwrap();
-
-    let mut expected = HashSet::new();
-    expected.insert("first".to_string());
-    expected.insert("second".to_string());
-    expected.insert("third".to_string());
+    let expected = HashSet::from(["first", "second", "third"].map(String::from));
     assert_eq!(mime_types, expected);
 }
 
 #[test]
 fn get_mime_types_no_data_control() {
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, Filter::new(|_: (_, _), _, _| {}));
+    let server = TestServer::new();
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child =
-        thread::spawn(move || get_mime_types_internal(ClipboardType::Regular, Seat::Unspecified, Some(socket_name)));
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                ..Default::default()
+            },
+        )]),
+        ..Default::default()
+    };
+    state.create_seats(&server);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let error = child.join().unwrap().unwrap_err();
-    if let Error::MissingProtocol { name, version } = error {
-        assert_eq!(name, "zwlr_data_control_manager_v1");
-        assert_eq!(version, 1);
-    } else {
-        panic!("Invalid error: {:?}", error);
-    }
+    let result =
+        get_mime_types_internal(ClipboardType::Regular, Seat::Unspecified, Some(socket_name));
+    assert!(matches!(
+        result,
+        Err(Error::MissingProtocol {
+            name: "zwlr_data_control_manager_v1",
+            version: 1
+        })
+    ));
 }
 
 #[test]
 fn get_mime_types_no_data_control_2() {
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, Filter::new(|_: (_, _), _, _| {}));
+    let server = TestServer::new();
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child =
-        thread::spawn(move || get_mime_types_internal(ClipboardType::Primary, Seat::Unspecified, Some(socket_name)));
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                ..Default::default()
+            },
+        )]),
+        ..Default::default()
+    };
+    state.create_seats(&server);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let error = child.join().unwrap().unwrap_err();
-    if let Error::MissingProtocol { name, version } = error {
-        assert_eq!(name, "zwlr_data_control_manager_v1");
-        assert_eq!(version, 2);
-    } else {
-        panic!("Invalid error: {:?}", error);
-    }
+    let result =
+        get_mime_types_internal(ClipboardType::Primary, Seat::Unspecified, Some(socket_name));
+    assert!(matches!(
+        result,
+        Err(Error::MissingProtocol {
+            name: "zwlr_data_control_manager_v1",
+            version: 2
+        })
+    ));
 }
 
 #[test]
 fn get_mime_types_no_seats() {
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerManager, _>(1, Filter::new(|_: (_, _), _, _| {}));
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child =
-        thread::spawn(move || get_mime_types_internal(ClipboardType::Regular, Seat::Unspecified, Some(socket_name)));
+    let state = State {
+        ..Default::default()
+    };
+    state.create_seats(&server);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let error = child.join().unwrap().unwrap_err();
-    if let Error::NoSeats = error {
-        // Pass
-    } else {
-        panic!("Invalid error: {:?}", error);
-    }
+    let result =
+        get_mime_types_internal(ClipboardType::Primary, Seat::Unspecified, Some(socket_name));
+    assert!(matches!(result, Err(Error::NoSeats)));
 }
 
 #[test]
 fn get_mime_types_empty_clipboard() {
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, Filter::new(|_: (_, _), _, _| {}));
-    server.display.create_global::<ServerManager, _>(1,
-                                                     Filter::new(|(manager, _): (Main<ServerManager>, _), _, _| {
-                                                         manager.quick_assign(|_, request, _| match request {
-                                                                    ServerManagerRequest::GetDataDevice { id:
-                                                                                                              device,
-                                                                                                          .. } => {
-                                                                        device.selection(None);
-                                                                    }
-                                                                    _ => unreachable!(),
-                                                                });
-                                                     }));
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child =
-        thread::spawn(move || get_mime_types_internal(ClipboardType::Regular, Seat::Unspecified, Some(socket_name)));
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                ..Default::default()
+            },
+        )]),
+        ..Default::default()
+    };
+    state.create_seats(&server);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let result =
+        get_mime_types_internal(ClipboardType::Primary, Seat::Unspecified, Some(socket_name));
+    assert!(matches!(result, Err(Error::ClipboardEmpty)));
+}
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+#[test]
+fn get_mime_types_specific_seat() {
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
 
-    let error = child.join().unwrap().unwrap_err();
-    if let Error::ClipboardEmpty = error {
-        // Pass
-    } else {
-        panic!("Invalid error: {:?}", error);
-    }
+    let state = State {
+        seats: HashMap::from([
+            (
+                "seat0".into(),
+                SeatInfo {
+                    ..Default::default()
+                },
+            ),
+            (
+                "yay".into(),
+                SeatInfo {
+                    offer: Some(OfferInfo::Buffered {
+                        data: HashMap::from([
+                            ("first".into(), vec![]),
+                            ("second".into(), vec![]),
+                            ("third".into(), vec![]),
+                        ]),
+                    }),
+                    ..Default::default()
+                },
+            ),
+        ]),
+        ..Default::default()
+    };
+    state.create_seats(&server);
+
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
+
+    let mime_types = get_mime_types_internal(
+        ClipboardType::Regular,
+        Seat::Specific("yay"),
+        Some(socket_name),
+    )
+    .unwrap();
+
+    let expected = HashSet::from(["first", "second", "third"].map(String::from));
+    assert_eq!(mime_types, expected);
+}
+
+#[test]
+fn get_mime_types_primary() {
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
+
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                primary_offer: Some(OfferInfo::Buffered {
+                    data: HashMap::from([
+                        ("first".into(), vec![]),
+                        ("second".into(), vec![]),
+                        ("third".into(), vec![]),
+                    ]),
+                }),
+                ..Default::default()
+            },
+        )]),
+        ..Default::default()
+    };
+    state.create_seats(&server);
+
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
+
+    let mime_types =
+        get_mime_types_internal(ClipboardType::Primary, Seat::Unspecified, Some(socket_name))
+            .unwrap();
+
+    let expected = HashSet::from(["first", "second", "third"].map(String::from));
+    assert_eq!(mime_types, expected);
 }
 
 #[test]
 fn get_contents_test() {
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, Filter::new(|_: (_, _), _, _| {}));
-    server.display.create_global::<ServerManager, _>(
-                                                     1,
-                                                     Filter::new(|(manager, _): (Main<ServerManager>, _), _, _| {
-                                                         manager.quick_assign(move |_, request, _| match request {
-                                                             ServerManagerRequest::GetDataDevice { id: device, .. } => {
-                                                                 let offer =
-                                 device.as_ref()
-                                       .client()
-                                       .unwrap()
-                                       .create_resource::<ServerOffer>(device.as_ref().version())
-                                       .unwrap();
-                                                                 offer.quick_assign(|_, request, _| {
-                                                                          if let ServerOfferRequest::Receive { fd,
-                                                                                                               .. } =
-                                                                              request
-                                                                          {
-                                                                              let mut write = unsafe {
-                                                                                  PipeWriter::from_raw_fd(fd)
-                                                                              };
-                                                                              let _ = write.write_all(&[1, 3, 3, 7]);
-                                                                          }
-                                                                      });
-                                                                 device.data_offer(&offer);
-                                                                 offer.offer("application/octet-stream".to_string());
-                                                                 device.selection(Some(&offer));
-                                                             }
-                                                             _ => unreachable!(),
-                                                         });
-                                                     }),
-    );
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child = thread::spawn(move || {
-        get_contents_internal(ClipboardType::Regular,
-                              Seat::Unspecified,
-                              MimeType::Any,
-                              Some(socket_name))
-    });
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                offer: Some(OfferInfo::Buffered {
+                    data: HashMap::from([("application/octet-stream".into(), vec![1, 3, 3, 7])]),
+                }),
+                ..Default::default()
+            },
+        )]),
+        ..Default::default()
+    };
+    state.create_seats(&server);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let (mut read, mime_type) = get_contents_internal(
+        ClipboardType::Regular,
+        Seat::Unspecified,
+        MimeType::Any,
+        Some(socket_name),
+    )
+    .unwrap();
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let (mut read, mime_type) = child.join().unwrap().unwrap();
     assert_eq!(mime_type, "application/octet-stream");
 
     let mut contents = vec![];
@@ -245,61 +278,151 @@ fn get_contents_test() {
 
 #[test]
 fn get_contents_wrong_mime_type() {
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, Filter::new(|_: (_, _), _, _| {}));
-    server.display.create_global::<ServerManager, _>(
-                                                     1,
-                                                     Filter::new(|(manager, _): (Main<ServerManager>, _), _, _| {
-                                                         manager.quick_assign(move |_, request, _| match request {
-                                                             ServerManagerRequest::GetDataDevice { id: device, .. } => {
-                                                                 let offer =
-                                 device.as_ref()
-                                       .client()
-                                       .unwrap()
-                                       .create_resource::<ServerOffer>(device.as_ref().version())
-                                       .unwrap();
-                                                                 offer.quick_assign(|_, request, _| {
-                                                                          if let ServerOfferRequest::Receive { fd,
-                                                                                                               .. } =
-                                                                              request
-                                                                          {
-                                                                              let mut write = unsafe {
-                                                                                  PipeWriter::from_raw_fd(fd)
-                                                                              };
-                                                                              let _ = write.write_all(&[1, 3, 3, 7]);
-                                                                          }
-                                                                      });
-                                                                 device.data_offer(&offer);
-                                                                 offer.offer("application/octet-stream".to_string());
-                                                                 device.selection(Some(&offer));
-                                                             }
-                                                             _ => unreachable!(),
-                                                         });
-                                                     }),
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
+
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                offer: Some(OfferInfo::Buffered {
+                    data: HashMap::from([("application/octet-stream".into(), vec![1, 3, 3, 7])]),
+                }),
+                ..Default::default()
+            },
+        )]),
+        ..Default::default()
+    };
+    state.create_seats(&server);
+
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
+
+    let result = get_contents_internal(
+        ClipboardType::Regular,
+        Seat::Unspecified,
+        MimeType::Specific("wrong"),
+        Some(socket_name),
     );
+    assert!(matches!(result, Err(Error::NoMimeType)));
+}
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child = thread::spawn(move || {
-        get_contents_internal(ClipboardType::Regular,
-                              Seat::Unspecified,
-                              MimeType::Specific("wrong"),
-                              Some(socket_name))
-    });
+proptest! {
+    #[test]
+    fn get_mime_types_randomized(
+        mut state: State,
+        clipboard_type: ClipboardType,
+        seat_index: prop::sample::Index,
+    ) {
+        let server = TestServer::new();
+        let socket_name = server.socket_name().to_owned();
+        server
+            .display
+            .handle()
+            .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+        state.create_seats(&server);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+        if state.seats.is_empty() {
+            server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+            let result = get_mime_types_internal(clipboard_type, Seat::Unspecified, Some(socket_name));
+            prop_assert!(matches!(result, Err(Error::NoSeats)));
+        } else {
+            let seat_index = seat_index.index(state.seats.len());
+            let (seat_name, seat_info) = state.seats.iter().nth(seat_index).unwrap();
+            let seat_name = seat_name.to_owned();
+            let seat_info = (*seat_info).clone();
 
-    let error = child.join().unwrap().unwrap_err();
-    if let Error::NoMimeType = error {
-        // Pass
-    } else {
-        panic!("Invalid error: {:?}", error);
+            server.run(state);
+
+            let result = get_mime_types_internal(
+                clipboard_type,
+                Seat::Specific(&seat_name),
+                Some(socket_name),
+            );
+
+            let expected_offer = match clipboard_type {
+                ClipboardType::Regular => &seat_info.offer,
+                ClipboardType::Primary => &seat_info.primary_offer,
+            };
+            match expected_offer {
+                None => prop_assert!(matches!(result, Err(Error::ClipboardEmpty))),
+                Some(offer) => prop_assert_eq!(result.unwrap(), offer.data().keys().cloned().collect()),
+            }
+        }
+    }
+
+    #[test]
+    fn get_contents_randomized(
+        mut state: State,
+        clipboard_type: ClipboardType,
+        seat_index: prop::sample::Index,
+        mime_index: prop::sample::Index,
+    ) {
+        let server = TestServer::new();
+        let socket_name = server.socket_name().to_owned();
+        server
+            .display
+            .handle()
+            .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
+
+        state.create_seats(&server);
+
+        if state.seats.is_empty() {
+            server.run(state);
+
+            let result = get_mime_types_internal(clipboard_type, Seat::Unspecified, Some(socket_name));
+            prop_assert!(matches!(result, Err(Error::NoSeats)));
+        } else {
+            let seat_index = seat_index.index(state.seats.len());
+            let (seat_name, seat_info) = state.seats.iter().nth(seat_index).unwrap();
+            let seat_name = seat_name.to_owned();
+            let seat_info = (*seat_info).clone();
+
+            let expected_offer = match clipboard_type {
+                ClipboardType::Regular => &seat_info.offer,
+                ClipboardType::Primary => &seat_info.primary_offer,
+            };
+
+            let mime_type = match expected_offer {
+                Some(offer) if !offer.data().is_empty() => {
+                    let mime_index = mime_index.index(offer.data().len());
+                    Some(offer.data().keys().nth(mime_index).unwrap())
+                }
+                _ => None,
+            };
+
+            server.run(state);
+
+            let result = get_contents_internal(
+                clipboard_type,
+                Seat::Specific(&seat_name),
+                mime_type.map_or(MimeType::Any, |name| MimeType::Specific(name)),
+                Some(socket_name),
+            );
+
+            match expected_offer {
+                None => prop_assert!(matches!(result, Err(Error::ClipboardEmpty))),
+                Some(offer) => {
+                    if offer.data().is_empty() {
+                        prop_assert!(matches!(result, Err(Error::NoMimeType)));
+                    } else {
+                        let mime_type = mime_type.unwrap();
+
+                        let (mut read, recv_mime_type) = result.unwrap();
+                        prop_assert_eq!(&recv_mime_type, mime_type);
+
+                        let mut contents = vec![];
+                        read.read_to_end(&mut contents).unwrap();
+                        prop_assert_eq!(&contents, &offer.data()[mime_type]);
+                    }
+                },
+            }
+
+        }
     }
 }

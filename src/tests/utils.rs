@@ -1,165 +1,173 @@
-use std::{ffi::OsString, mem, thread, time::Duration};
-
-use wayland_protocols::wlr::unstable::data_control::v1::server::zwlr_data_control_manager_v1::{
-    Request as ServerManagerRequest, ZwlrDataControlManagerV1 as ServerManager,
+use wayland_protocols_wlr::data_control::v1::server::zwlr_data_control_device_v1::ZwlrDataControlDeviceV1;
+use wayland_protocols_wlr::data_control::v1::server::zwlr_data_control_manager_v1::{
+    self, ZwlrDataControlManagerV1,
 };
-use wayland_server::{protocol::wl_seat::WlSeat as ServerSeat, Filter, Main};
+use wayland_server::protocol::wl_seat::WlSeat;
+use wayland_server::Dispatch;
 
-use crate::{tests::TestServer, utils::*};
+use crate::tests::TestServer;
+use crate::utils::*;
+use crate::{server_ignore_global_impl, server_ignore_impl};
+
+struct State {
+    advertise_primary_selection: bool,
+}
+
+server_ignore_global_impl!(State => [WlSeat, ZwlrDataControlManagerV1]);
+server_ignore_impl!(State => [WlSeat, ZwlrDataControlDeviceV1]);
+
+impl Dispatch<ZwlrDataControlManagerV1, ()> for State {
+    fn request(
+        state: &mut Self,
+        _client: &wayland_server::Client,
+        _resource: &ZwlrDataControlManagerV1,
+        request: <ZwlrDataControlManagerV1 as wayland_server::Resource>::Request,
+        _data: &(),
+        _dhandle: &wayland_server::DisplayHandle,
+        data_init: &mut wayland_server::DataInit<'_, Self>,
+    ) {
+        if let zwlr_data_control_manager_v1::Request::GetDataDevice { id, .. } = request {
+            let data_device = data_init.init(id, ());
+
+            if state.advertise_primary_selection {
+                data_device.primary_selection(None);
+            }
+        }
+    }
+}
 
 #[test]
 fn is_primary_selection_supported_test() {
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, Filter::new(|_: (_, _), _, _| {}));
-    server.display.create_global::<ServerManager, _>(2,
-                                                     Filter::new(|(manager, _): (Main<ServerManager>, _), _, _| {
-                                                         manager.quick_assign(|_, request, _| match request {
-                                                                    ServerManagerRequest::GetDataDevice { id:
-                                                                                                              device,
-                                                                                                          .. } => {
-                                                                        device.primary_selection(None);
-                                                                    }
-                                                                    _ => unreachable!(),
-                                                                });
-                                                     }));
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, WlSeat, ()>(6, ());
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child = thread::spawn(move || is_primary_selection_supported_internal(Some(socket_name)));
+    let state = State {
+        advertise_primary_selection: true,
+    };
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let result = child.join().unwrap().unwrap();
+    let result = is_primary_selection_supported_internal(Some(socket_name)).unwrap();
     assert!(result);
 }
 
 #[test]
 fn is_primary_selection_supported_primary_selection_unsupported() {
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(6, Filter::new(|_: (_, _), _, _| {}));
-    server.display.create_global::<ServerManager, _>(2,
-                                                     Filter::new(|(manager, _): (Main<ServerManager>, _), _, _| {
-                                                         manager.quick_assign(|_, request, _| match request {
-                                                                    ServerManagerRequest::GetDataDevice { .. } => {
-                                                                        // Not sending primary_selection means it's not
-                                                                        // supported.
-                                                                    }
-                                                                    _ => unreachable!(),
-                                                                });
-                                                     }));
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, WlSeat, ()>(6, ());
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child = thread::spawn(move || is_primary_selection_supported_internal(Some(socket_name)));
+    let state = State {
+        advertise_primary_selection: false,
+    };
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let result = child.join().unwrap().unwrap();
+    let result = is_primary_selection_supported_internal(Some(socket_name)).unwrap();
     assert!(!result);
 }
 
 #[test]
 fn is_primary_selection_supported_data_control_v1() {
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerManager, _>(1, Filter::new(|_: (_, _), _, _| {}));
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, WlSeat, ()>(6, ());
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(1, ());
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child = thread::spawn(move || is_primary_selection_supported_internal(Some(socket_name)));
+    let state = State {
+        advertise_primary_selection: false,
+    };
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let result = child.join().unwrap().unwrap();
+    let result = is_primary_selection_supported_internal(Some(socket_name)).unwrap();
     assert!(!result);
 }
 
 #[test]
 fn is_primary_selection_supported_no_seats() {
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerManager, _>(2, Filter::new(|_: (_, _), _, _| {}));
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child = thread::spawn(move || is_primary_selection_supported_internal(Some(socket_name)));
+    let state = State {
+        advertise_primary_selection: true,
+    };
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let error = child.join().unwrap().unwrap_err();
-    if let PrimarySelectionCheckError::NoSeats = error {
-        // Pass
-    } else {
-        panic!("Invalid error: {:?}", error);
-    }
+    let result = is_primary_selection_supported_internal(Some(socket_name));
+    assert!(matches!(result, Err(PrimarySelectionCheckError::NoSeats)));
 }
 
 #[test]
 fn supports_v2_seats() {
-    let mut server = TestServer::new();
-    server.display
-          .create_global::<ServerSeat, _>(2, Filter::new(|_: (_, _), _, _| {}));
-    server.display.create_global::<ServerManager, _>(2,
-                                                     Filter::new(|(manager, _): (Main<ServerManager>, _), _, _| {
-                                                         manager.quick_assign(|_, _, _| {})
-                                                     }));
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, WlSeat, ()>(2, ());
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child = thread::spawn(move || is_primary_selection_supported_internal(Some(socket_name)));
+    let state = State {
+        advertise_primary_selection: true,
+    };
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let res = child.join().unwrap();
-    if let Err(PrimarySelectionCheckError::NoSeats) = res {
-        panic!("Invalid error: {:?}", res);
-    }
+    let result = is_primary_selection_supported_internal(Some(socket_name)).unwrap();
+    assert!(result);
 }
 
 #[test]
 fn is_primary_selection_supported_no_data_control() {
-    let mut server = TestServer::new();
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, WlSeat, ()>(6, ());
 
-    let socket_name = mem::replace(&mut server.socket_name, OsString::new());
-    let child = thread::spawn(move || is_primary_selection_supported_internal(Some(socket_name)));
+    let state = State {
+        advertise_primary_selection: false,
+    };
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
 
-    thread::sleep(Duration::from_millis(100));
-    server.answer();
-
-    let error = child.join().unwrap().unwrap_err();
-    if let PrimarySelectionCheckError::MissingProtocol { name, version } = error {
-        assert_eq!(name, "zwlr_data_control_manager_v1");
-        assert_eq!(version, 1);
-    } else {
-        panic!("Invalid error: {:?}", error);
-    }
+    let result = is_primary_selection_supported_internal(Some(socket_name));
+    assert!(matches!(
+        result,
+        Err(PrimarySelectionCheckError::MissingProtocol {
+            name: "zwlr_data_control_manager_v1",
+            version: 1
+        })
+    ));
 }
