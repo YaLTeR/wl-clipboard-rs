@@ -382,8 +382,10 @@ pub(crate) fn is_primary_selection_supported_internal(
 
     // Verify that we got the clipboard manager.
     let Some(ref clipboard_manager) = state.clipboard_manager else {
-        return Err(PrimarySelectionCheckError::MissingProtocol { name: ZwlrDataControlManagerV1::interface().name,
-                                                                 version: 1 });
+        return Err(PrimarySelectionCheckError::MissingProtocol {
+            name: ZwlrDataControlManagerV1::interface().name,
+            version: 1,
+        });
     };
 
     // Check if there are no seats.
