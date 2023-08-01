@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.37.20/src/backend/linux_raw/conv.rs`."><title>conv.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0 (90c541806 2023-05-31)" data-search-js="search-e077946657036a58.js" data-settings-js="settings-298e1ea74db45b39.js" data-settings-css="settings-7bfb4c59cc6bc502.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../../static.files/source-script-905937fbbdc8e9ea.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-f61008743c98d196.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../rustix/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.4/src/backend/linux_raw/conv.rs`."><title>conv.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-f3501f0f5ae15dfb.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0 (8ede3aae2 2023-07-12)" data-search-js="search-4926e5fc22a5646a.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../rustix/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -883,6 +883,71 @@
 <a href="#883" id="883">883</a>
 <a href="#884" id="884">884</a>
 <a href="#885" id="885">885</a>
+<a href="#886" id="886">886</a>
+<a href="#887" id="887">887</a>
+<a href="#888" id="888">888</a>
+<a href="#889" id="889">889</a>
+<a href="#890" id="890">890</a>
+<a href="#891" id="891">891</a>
+<a href="#892" id="892">892</a>
+<a href="#893" id="893">893</a>
+<a href="#894" id="894">894</a>
+<a href="#895" id="895">895</a>
+<a href="#896" id="896">896</a>
+<a href="#897" id="897">897</a>
+<a href="#898" id="898">898</a>
+<a href="#899" id="899">899</a>
+<a href="#900" id="900">900</a>
+<a href="#901" id="901">901</a>
+<a href="#902" id="902">902</a>
+<a href="#903" id="903">903</a>
+<a href="#904" id="904">904</a>
+<a href="#905" id="905">905</a>
+<a href="#906" id="906">906</a>
+<a href="#907" id="907">907</a>
+<a href="#908" id="908">908</a>
+<a href="#909" id="909">909</a>
+<a href="#910" id="910">910</a>
+<a href="#911" id="911">911</a>
+<a href="#912" id="912">912</a>
+<a href="#913" id="913">913</a>
+<a href="#914" id="914">914</a>
+<a href="#915" id="915">915</a>
+<a href="#916" id="916">916</a>
+<a href="#917" id="917">917</a>
+<a href="#918" id="918">918</a>
+<a href="#919" id="919">919</a>
+<a href="#920" id="920">920</a>
+<a href="#921" id="921">921</a>
+<a href="#922" id="922">922</a>
+<a href="#923" id="923">923</a>
+<a href="#924" id="924">924</a>
+<a href="#925" id="925">925</a>
+<a href="#926" id="926">926</a>
+<a href="#927" id="927">927</a>
+<a href="#928" id="928">928</a>
+<a href="#929" id="929">929</a>
+<a href="#930" id="930">930</a>
+<a href="#931" id="931">931</a>
+<a href="#932" id="932">932</a>
+<a href="#933" id="933">933</a>
+<a href="#934" id="934">934</a>
+<a href="#935" id="935">935</a>
+<a href="#936" id="936">936</a>
+<a href="#937" id="937">937</a>
+<a href="#938" id="938">938</a>
+<a href="#939" id="939">939</a>
+<a href="#940" id="940">940</a>
+<a href="#941" id="941">941</a>
+<a href="#942" id="942">942</a>
+<a href="#943" id="943">943</a>
+<a href="#944" id="944">944</a>
+<a href="#945" id="945">945</a>
+<a href="#946" id="946">946</a>
+<a href="#947" id="947">947</a>
+<a href="#948" id="948">948</a>
+<a href="#949" id="949">949</a>
+<a href="#950" id="950">950</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Convert values to [`ArgReg`] and from [`RetReg`].
 //!
 //! System call arguments and return values are all communicated with inline
@@ -905,22 +970,27 @@
 <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
 </span><span class="kw">use </span><span class="kw">super</span>::io::errno::try_decode_u64;
 <span class="attr">#[cfg(not(debug_assertions))]
-</span><span class="kw">use </span><span class="kw">super</span>::io::errno::{decode_c_uint_infallible, decode_usize_infallible};
+</span><span class="kw">use </span><span class="kw">super</span>::io::errno::{
+    decode_c_int_infallible, decode_c_uint_infallible, decode_usize_infallible,
+};
 <span class="kw">use </span><span class="kw">super</span>::io::errno::{
     try_decode_c_int, try_decode_c_uint, try_decode_raw_fd, try_decode_usize, try_decode_void,
     try_decode_void_star,
 };
 <span class="kw">use </span><span class="kw">super</span>::reg::{raw_arg, ArgNumber, ArgReg, RetReg, R0};
-<span class="attr">#[cfg(any(feature = <span class="string">&quot;thread&quot;</span>, feature = <span class="string">&quot;time&quot;</span>, target_arch = <span class="string">&quot;x86&quot;</span>))]
-</span><span class="kw">use </span><span class="kw">super</span>::time::types::ClockId;
 <span class="attr">#[cfg(feature = <span class="string">&quot;time&quot;</span>)]
 </span><span class="kw">use </span><span class="kw">super</span>::time::types::TimerfdClockId;
+<span class="attr">#[cfg(any(feature = <span class="string">&quot;thread&quot;</span>, feature = <span class="string">&quot;time&quot;</span>, target_arch = <span class="string">&quot;x86&quot;</span>))]
+</span><span class="kw">use </span><span class="kw">crate</span>::clockid::ClockId;
 <span class="kw">use </span><span class="kw">crate</span>::fd::OwnedFd;
 <span class="kw">use </span><span class="kw">crate</span>::ffi::CStr;
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">use </span><span class="kw">crate</span>::fs::{FileType, Mode, OFlags};
 <span class="kw">use </span><span class="kw">crate</span>::io;
-<span class="kw">use </span><span class="kw">crate</span>::process::{Pid, Resource, Signal};
+<span class="attr">#[cfg(any(feature = <span class="string">&quot;process&quot;</span>, feature = <span class="string">&quot;runtime&quot;</span>, feature = <span class="string">&quot;termios&quot;</span>))]
+</span><span class="kw">use </span><span class="kw">crate</span>::pid::Pid;
+<span class="attr">#[cfg(feature = <span class="string">&quot;process&quot;</span>)]
+</span><span class="kw">use </span><span class="kw">crate</span>::process::Resource;
+<span class="attr">#[cfg(any(feature = <span class="string">&quot;process&quot;</span>, feature = <span class="string">&quot;runtime&quot;</span>))]
+</span><span class="kw">use </span><span class="kw">crate</span>::signal::Signal;
 <span class="kw">use </span><span class="kw">crate</span>::utils::{as_mut_ptr, as_ptr};
 <span class="kw">use </span>core::mem::MaybeUninit;
 <span class="kw">use </span>core::ptr::null_mut;
@@ -929,10 +999,7 @@
 <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
 </span><span class="kw">use </span>linux_raw_sys::general::__kernel_loff_t;
 <span class="attr">#[cfg(feature = <span class="string">&quot;net&quot;</span>)]
-</span><span class="kw">use </span>linux_raw_sys::general::socklen_t;
-<span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
-#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">use </span>linux_raw_sys::general::O_LARGEFILE;
+</span><span class="kw">use </span>linux_raw_sys::net::socklen_t;
 
 <span class="doccomment">/// Convert `SYS_*` constants for socketcall.
 </span><span class="attr">#[cfg(target_arch = <span class="string">&quot;x86&quot;</span>)]
@@ -1045,7 +1112,7 @@
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">unsafe fn </span>raw_fd&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt;(fd: RawFd) -&gt; ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     <span class="comment">// Use `no_fd` when passing `-1` is intended.
     </span><span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-    </span><span class="macro">debug_assert!</span>(fd == <span class="kw">crate</span>::fs::cwd().as_raw_fd() || fd &gt;= <span class="number">0</span>);
+    </span><span class="macro">debug_assert!</span>(fd == <span class="kw">crate</span>::fs::CWD.as_raw_fd() || fd &gt;= <span class="number">0</span>);
 
     <span class="comment">// Don&#39;t pass the `io_uring_register_files_skip` sentry value this way.
     </span><span class="attr">#[cfg(feature = <span class="string">&quot;io_uring&quot;</span>)]
@@ -1179,75 +1246,159 @@
     pass_usize(i <span class="kw">as </span>usize)
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;Mode&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(mode: Mode) -&gt; <span class="self">Self </span>{
-        pass_usize(mode.bits() <span class="kw">as </span>usize)
-    }
-}
+<span class="attr">#[cfg(any(
+    feature = <span class="string">&quot;fs&quot;</span>,
+    all(
+        not(feature = <span class="string">&quot;use-libc-auxv&quot;</span>),
+        not(target_vendor = <span class="string">&quot;mustang&quot;</span>),
+        any(
+            feature = <span class="string">&quot;param&quot;</span>,
+            feature = <span class="string">&quot;runtime&quot;</span>,
+            feature = <span class="string">&quot;time&quot;</span>,
+            target_arch = <span class="string">&quot;x86&quot;</span>,
+        )
+    )
+))]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>fs {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::fs::{FileType, Mode, OFlags};
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    </span><span class="kw">use </span>linux_raw_sys::general::O_LARGEFILE;
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;(Mode, FileType)&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(pair: (Mode, FileType)) -&gt; <span class="self">Self </span>{
-        pass_usize(pair.<span class="number">0</span>.as_raw_mode() <span class="kw">as </span>usize | pair.<span class="number">1</span>.as_raw_mode() <span class="kw">as </span>usize)
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;Mode&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(mode: Mode) -&gt; <span class="self">Self </span>{
+            pass_usize(mode.bits() <span class="kw">as </span>usize)
+        }
     }
-}
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::AtFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::AtFlags) -&gt; <span class="self">Self </span>{
-        c_uint(flags.bits())
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;(Mode, FileType)&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(pair: (Mode, FileType)) -&gt; <span class="self">Self </span>{
+            pass_usize(pair.<span class="number">0</span>.as_raw_mode() <span class="kw">as </span>usize | pair.<span class="number">1</span>.as_raw_mode() <span class="kw">as </span>usize)
+        }
     }
-}
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::XattrFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::XattrFlags) -&gt; <span class="self">Self </span>{
-        c_uint(flags.bits())
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::AtFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::AtFlags) -&gt; <span class="self">Self </span>{
+            c_uint(flags.bits())
+        }
     }
-}
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::inotify::CreateFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::inotify::CreateFlags) -&gt; <span class="self">Self </span>{
-        c_uint(flags.bits())
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::XattrFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::XattrFlags) -&gt; <span class="self">Self </span>{
+            c_uint(flags.bits())
+        }
     }
-}
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::inotify::WatchFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::inotify::WatchFlags) -&gt; <span class="self">Self </span>{
-        c_uint(flags.bits())
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::inotify::CreateFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::inotify::CreateFlags) -&gt; <span class="self">Self </span>{
+            c_uint(flags.bits())
+        }
     }
-}
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::MemfdFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::MemfdFlags) -&gt; <span class="self">Self </span>{
-        c_uint(flags.bits())
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::inotify::WatchFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::inotify::WatchFlags) -&gt; <span class="self">Self </span>{
+            c_uint(flags.bits())
+        }
     }
-}
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::RenameFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::RenameFlags) -&gt; <span class="self">Self </span>{
-        c_uint(flags.bits())
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::MemfdFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::MemfdFlags) -&gt; <span class="self">Self </span>{
+            c_uint(flags.bits())
+        }
     }
-}
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::StatxFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::StatxFlags) -&gt; <span class="self">Self </span>{
-        c_uint(flags.bits())
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::RenameFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::RenameFlags) -&gt; <span class="self">Self </span>{
+            c_uint(flags.bits())
+        }
+    }
+
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::StatxFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::StatxFlags) -&gt; <span class="self">Self </span>{
+            c_uint(flags.bits())
+        }
+    }
+
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    #[inline]
+    </span><span class="kw">fn </span>oflags_bits(oflags: OFlags) -&gt; c::c_uint {
+        <span class="kw">let </span><span class="kw-2">mut </span>bits = oflags.bits();
+        <span class="comment">// Add `O_LARGEFILE`, unless `O_PATH` is set, as Linux returns `EINVAL`
+        // when both are set.
+        </span><span class="kw">if </span>!oflags.contains(OFlags::PATH) {
+            bits |= O_LARGEFILE;
+        }
+        bits
+    }
+
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    #[inline]
+    </span><span class="kw">const fn </span>oflags_bits(oflags: OFlags) -&gt; c::c_uint {
+        oflags.bits()
+    }
+
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;OFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(oflags: OFlags) -&gt; <span class="self">Self </span>{
+            pass_usize(oflags_bits(oflags) <span class="kw">as </span>usize)
+        }
+    }
+
+    <span class="doccomment">/// Convert an `OFlags` into a `u64` for use in the `open_how` struct.
+    </span><span class="attr">#[inline]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>oflags_for_open_how(oflags: OFlags) -&gt; u64 {
+        u64::from(oflags_bits(oflags))
+    }
+
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::FallocateFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::FallocateFlags) -&gt; <span class="self">Self </span>{
+            c_uint(flags.bits())
+        }
+    }
+
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::Advice&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(advice: <span class="kw">crate</span>::fs::Advice) -&gt; <span class="self">Self </span>{
+            c_uint(advice <span class="kw">as </span>c::c_uint)
+        }
+    }
+
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::SealFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::SealFlags) -&gt; <span class="self">Self </span>{
+            c_uint(flags.bits())
+        }
+    }
+
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::Access&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(access: <span class="kw">crate</span>::fs::Access) -&gt; <span class="self">Self </span>{
+            c_uint(access.bits())
+        }
+    }
+
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::fs::types::MountFlagsArg&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::fs::types::MountFlagsArg) -&gt; <span class="self">Self </span>{
+            c_uint(flags.<span class="number">0</span>)
+        }
+    }
+
+    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::fs::types::UnmountFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::fs::types::UnmountFlags) -&gt; <span class="self">Self </span>{
+            c_uint(flags.bits())
+        }
     }
 }
 
@@ -1258,9 +1409,18 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::io::PipeFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+<span class="attr">#[cfg(feature = <span class="string">&quot;pipe&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::pipe::PipeFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::io::PipeFlags) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::pipe::PipeFlags) -&gt; <span class="self">Self </span>{
+        c_uint(flags.bits())
+    }
+}
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;pipe&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::pipe::SpliceFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::pipe::SpliceFlags) -&gt; <span class="self">Self </span>{
         c_uint(flags.bits())
     }
 }
@@ -1279,16 +1439,42 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::io::EventfdFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+<span class="attr">#[cfg(feature = <span class="string">&quot;process&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::process::PidfdFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::io::EventfdFlags) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::process::PidfdFlags) -&gt; <span class="self">Self </span>{
         c_uint(flags.bits())
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::io::epoll::CreateFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+<span class="attr">#[cfg(feature = <span class="string">&quot;pty&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::pty::OpenptFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::io::epoll::CreateFlags) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::pty::OpenptFlags) -&gt; <span class="self">Self </span>{
+        c_uint(flags.bits())
+    }
+}
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;thread&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::thread::UnshareFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::thread::UnshareFlags) -&gt; <span class="self">Self </span>{
+        c_uint(flags.bits())
+    }
+}
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;event&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::event::EventfdFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::event::EventfdFlags) -&gt; <span class="self">Self </span>{
+        c_uint(flags.bits())
+    }
+}
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;event&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::event::epoll::CreateFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::event::epoll::CreateFlags) -&gt; <span class="self">Self </span>{
         c_uint(flags.bits())
     }
 }
@@ -1349,7 +1535,8 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::process::types::MembarrierCommand&gt;
+<span class="attr">#[cfg(feature = <span class="string">&quot;process&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::process::types::MembarrierCommand&gt;
     <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt;
 {
     <span class="attr">#[inline]
@@ -1358,7 +1545,8 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::process::Cpuid&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+<span class="attr">#[cfg(feature = <span class="string">&quot;process&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::process::Cpuid&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>from(cpuid: <span class="kw">crate</span>::process::Cpuid) -&gt; <span class="self">Self </span>{
         c_uint(cpuid.as_raw())
@@ -1374,54 +1562,11 @@
 <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
 #[inline]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>dev_t&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt;(dev: u64) -&gt; io::Result&lt;ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt;&gt; {
-    <span class="kw">use </span>core::convert::TryInto;
     <span class="prelude-val">Ok</span>(pass_usize(dev.try_into().map_err(|_err| io::Errno::INVAL)<span class="question-mark">?</span>))
 }
 
-<span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
-#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-#[inline]
-</span><span class="kw">fn </span>oflags_bits(oflags: OFlags) -&gt; c::c_uint {
-    <span class="kw">let </span><span class="kw-2">mut </span>bits = oflags.bits();
-    <span class="comment">// Add `O_LARGEFILE`, unless `O_PATH` is set, as Linux returns `EINVAL`
-    // when both are set.
-    </span><span class="kw">if </span>!oflags.contains(OFlags::PATH) {
-        bits |= O_LARGEFILE;
-    }
-    bits
-}
-
-<span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
-#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-#[inline]
-</span><span class="kw">const fn </span>oflags_bits(oflags: OFlags) -&gt; c::c_uint {
-    oflags.bits()
-}
-
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;OFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(oflags: OFlags) -&gt; <span class="self">Self </span>{
-        pass_usize(oflags_bits(oflags) <span class="kw">as </span>usize)
-    }
-}
-
-<span class="doccomment">/// Convert an `OFlags` into a `u64` for use in the `open_how` struct.
-</span><span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-#[inline]
-</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>oflags_for_open_how(oflags: OFlags) -&gt; u64 {
-    u64::from(oflags_bits(oflags))
-}
-
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::FallocateFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::FallocateFlags) -&gt; <span class="self">Self </span>{
-        c_uint(flags.bits())
-    }
-}
-
 <span class="doccomment">/// Convert a `Resource` into a syscall argument.
+</span><span class="attr">#[cfg(feature = <span class="string">&quot;process&quot;</span>)]
 </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;Resource&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>from(resource: Resource) -&gt; <span class="self">Self </span>{
@@ -1429,38 +1574,25 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;Pid&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+<span class="attr">#[cfg(any(feature = <span class="string">&quot;process&quot;</span>, feature = <span class="string">&quot;runtime&quot;</span>, feature = <span class="string">&quot;termios&quot;</span>))]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;Pid&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>from(pid: Pid) -&gt; <span class="self">Self </span>{
         pass_usize(pid.as_raw_nonzero().get() <span class="kw">as </span>usize)
     }
 }
 
-<span class="attr">#[inline]
+<span class="attr">#[cfg(feature = <span class="string">&quot;process&quot;</span>)]
+#[inline]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>negative_pid&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt;(pid: Pid) -&gt; ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     pass_usize(pid.as_raw_nonzero().get().wrapping_neg() <span class="kw">as </span>usize)
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;Signal&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+<span class="attr">#[cfg(any(feature = <span class="string">&quot;process&quot;</span>, feature = <span class="string">&quot;runtime&quot;</span>))]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;Signal&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>from(sig: Signal) -&gt; <span class="self">Self </span>{
         pass_usize(sig <span class="kw">as </span>usize)
-    }
-}
-
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::Advice&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(advice: <span class="kw">crate</span>::fs::Advice) -&gt; <span class="self">Self </span>{
-        c_uint(advice <span class="kw">as </span>c::c_uint)
-    }
-}
-
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::SealFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::fs::SealFlags) -&gt; <span class="self">Self </span>{
-        c_uint(flags.bits())
     }
 }
 
@@ -1548,14 +1680,6 @@
     }
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::fs::Access&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(access: <span class="kw">crate</span>::fs::Access) -&gt; <span class="self">Self </span>{
-        c_uint(access.bits())
-    }
-}
-
 <span class="attr">#[cfg(feature = <span class="string">&quot;net&quot;</span>)]
 </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::net::SocketType&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     <span class="attr">#[inline]
@@ -1565,10 +1689,13 @@
 }
 
 <span class="attr">#[cfg(feature = <span class="string">&quot;net&quot;</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::net::Protocol&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw">crate</span>::net::Protocol&gt;&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(protocol: <span class="kw">crate</span>::net::Protocol) -&gt; <span class="self">Self </span>{
-        c_uint(protocol.<span class="number">0</span>)
+    </span><span class="kw">fn </span>from(protocol: <span class="prelude-ty">Option</span>&lt;<span class="kw">crate</span>::net::Protocol&gt;) -&gt; <span class="self">Self </span>{
+        c_uint(<span class="kw">match </span>protocol {
+            <span class="prelude-val">Some</span>(p) =&gt; p.<span class="number">0</span>.get(),
+            <span class="prelude-val">None </span>=&gt; <span class="number">0</span>,
+        })
     }
 }
 
@@ -1586,34 +1713,18 @@
     }
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-#[cfg(linux_kernel)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::fs::types::MountFlagsArg&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+<span class="attr">#[cfg(any(feature = <span class="string">&quot;process&quot;</span>, feature = <span class="string">&quot;thread&quot;</span>))]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::ugid::Uid&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::fs::types::MountFlagsArg) -&gt; <span class="self">Self </span>{
-        c_uint(flags.<span class="number">0</span>)
-    }
-}
-
-<span class="attr">#[cfg(feature = <span class="string">&quot;fs&quot;</span>)]
-#[cfg(linux_kernel)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::fs::types::UnmountFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::fs::types::UnmountFlags) -&gt; <span class="self">Self </span>{
-        c_uint(flags.bits())
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::process::Uid&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(t: <span class="kw">crate</span>::process::Uid) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">fn </span>from(t: <span class="kw">crate</span>::ugid::Uid) -&gt; <span class="self">Self </span>{
         c_uint(t.as_raw())
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::process::Gid&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+<span class="attr">#[cfg(any(feature = <span class="string">&quot;process&quot;</span>, feature = <span class="string">&quot;thread&quot;</span>))]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::ugid::Gid&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>from(t: <span class="kw">crate</span>::process::Gid) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">fn </span>from(t: <span class="kw">crate</span>::ugid::Gid) -&gt; <span class="self">Self </span>{
         c_uint(t.as_raw())
     }
 }
@@ -1712,6 +1823,25 @@
     <span class="attr">#[cfg(not(debug_assertions))]
     </span>{
         decode_usize_infallible(raw)
+    }
+}
+
+<span class="doccomment">/// Convert a `c_int` returned from a syscall that effectively always
+/// returns a `c_int`.
+///
+/// # Safety
+///
+/// This function must only be used with return values from infallible
+/// syscalls.
+</span><span class="attr">#[inline]
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">unsafe fn </span>ret_c_int_infallible(raw: RetReg&lt;R0&gt;) -&gt; c::c_int {
+    <span class="attr">#[cfg(debug_assertions)]
+    </span>{
+        try_decode_c_int(raw).unwrap()
+    }
+    <span class="attr">#[cfg(not(debug_assertions))]
+    </span>{
+        decode_c_int_infallible(raw)
     }
 }
 
