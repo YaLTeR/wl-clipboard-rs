@@ -155,6 +155,7 @@ fn main() -> Result<(), anyhow::Error> {
     let prepared_copy = copy::Options::from(options).prepare_copy(source, mime_type)?;
 
     if foreground {
+        gag();
         prepared_copy.serve()?;
     } else {
         // SAFETY: We don't spawn any threads, so doing things after forking is safe.
@@ -164,17 +165,20 @@ fn main() -> Result<(), anyhow::Error> {
             // is hangs a potential pipeline (i.e. wl-copy hello | cat). Also, simply closing the
             // file descriptors is a bad idea because then they get reused by subsequent temp file
             // opens, which breaks the dup2/close logic during data copying.
-            if let Ok(dev_null) =
-                nix::fcntl::open("/dev/null", OFlag::O_RDWR, nix::sys::stat::Mode::empty())
-            {
-                let _ = dup2(dev_null, STDIN_FILENO);
-                let _ = dup2(dev_null, STDOUT_FILENO);
-                let _ = close(dev_null);
-            }
-
+            gag();
             drop(prepared_copy.serve());
         }
     }
 
     Ok(())
+}
+
+fn gag() {
+    if let Ok(dev_null) =
+        nix::fcntl::open("/dev/null", OFlag::O_RDWR, nix::sys::stat::Mode::empty())
+    {
+        let _ = dup2(dev_null, STDIN_FILENO);
+        let _ = dup2(dev_null, STDOUT_FILENO);
+        let _ = close(dev_null);
+    }
 }
