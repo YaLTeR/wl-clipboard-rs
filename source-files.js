@@ -11,7 +11,6 @@ var sourcesIndex = JSON.parse('{\
 "fnv":["",[],["lib.rs"]],\
 "hashbrown":["",[["external_trait_impls",[],["mod.rs"]],["raw",[],["alloc.rs","bitmask.rs","mod.rs","sse2.rs"]]],["lib.rs","macros.rs","map.rs","scopeguard.rs","set.rs"]],\
 "indexmap":["",[["map",[["core",[],["raw.rs"]]],["core.rs","iter.rs","slice.rs"]],["set",[],["iter.rs","slice.rs"]]],["arbitrary.rs","lib.rs","macros.rs","map.rs","mutable_keys.rs","set.rs","util.rs"]],\
-"io_lifetimes":["",[],["example_ffi.rs","lib.rs","portability.rs","raw.rs","traits.rs","views.rs"]],\
 "lazy_static":["",[],["inline_lazy.rs","lib.rs"]],\
 "libc":["",[["unix",[["linux_like",[["linux",[["arch",[["generic",[],["mod.rs"]]],["mod.rs"]],["gnu",[["b64",[["x86_64",[],["align.rs","mod.rs","not_x32.rs"]]],["mod.rs"]]],["align.rs","mod.rs"]]],["align.rs","mod.rs","non_exhaustive.rs"]]],["mod.rs"]]],["align.rs","mod.rs"]]],["fixed_width_ints.rs","lib.rs","macros.rs"]],\
 "libloading":["",[["os",[["unix",[],["consts.rs","mod.rs"]]],["mod.rs"]]],["changelog.rs","error.rs","lib.rs","safe.rs","util.rs"]],\
@@ -42,7 +41,6 @@ var sourcesIndex = JSON.parse('{\
 "wayland_protocols":["",[],["ext.rs","lib.rs","protocol_macro.rs","wp.rs","xdg.rs","xwayland.rs"]],\
 "wayland_protocols_wlr":["",[],["lib.rs","protocol_macro.rs"]],\
 "wayland_scanner":["",[],["c_interfaces.rs","client_gen.rs","common.rs","interfaces.rs","lib.rs","parse.rs","protocol.rs","server_gen.rs","token.rs","util.rs"]],\
-"wayland_server":["",[],["client.rs","dispatch.rs","display.rs","global.rs","lib.rs","socket.rs"]],\
 "wayland_sys":["",[],["client.rs","common.rs","lib.rs","server.rs"]],\
 "wl_clipboard_rs":["",[],["common.rs","copy.rs","lib.rs","paste.rs","seat_data.rs","utils.rs"]]\
 }');

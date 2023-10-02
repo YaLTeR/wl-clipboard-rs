@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["BindError","DispatchError","WEnum"],"macro":["delegate_dispatch","delegate_global_dispatch"],"mod":["backend","protocol"],"struct":["Client","DataInit","Display","DisplayHandle","ListeningSocket","New","ResourceData","Weak"],"trait":["Dispatch","GlobalDispatch","Resource"]};

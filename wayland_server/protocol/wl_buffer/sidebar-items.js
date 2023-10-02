@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["EVT_RELEASE_OPCODE","EVT_RELEASE_SINCE","REQ_DESTROY_OPCODE","REQ_DESTROY_SINCE"],"enum":["Event","Request"],"struct":["WlBuffer"]};
