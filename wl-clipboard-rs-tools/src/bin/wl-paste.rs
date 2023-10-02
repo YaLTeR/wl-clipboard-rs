@@ -61,7 +61,7 @@ struct Options {
 }
 
 fn infer_mime_type() -> Option<Mime> {
-    if let Ok(stdout_path) = read_link(&format!("/dev/fd/{}", STDOUT_FILENO)) {
+    if let Ok(stdout_path) = read_link(format!("/dev/fd/{}", STDOUT_FILENO)) {
         mime_guess::from_path(stdout_path).first()
     } else {
         None

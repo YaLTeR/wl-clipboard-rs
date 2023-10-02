@@ -7,7 +7,7 @@
 
 use std::collections::HashMap;
 use std::io::Write;
-use std::os::fd::{AsRawFd, FromRawFd, IntoRawFd};
+use std::os::fd::{AsFd, AsRawFd};
 use std::sync::atomic::AtomicU8;
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::mpsc::Sender;
@@ -256,7 +256,7 @@ impl Dispatch<ZwlrDataControlOfferV1, (String, bool)> for State {
 
             match offer_info {
                 OfferInfo::Buffered { data } => {
-                    let mut write = unsafe { PipeWriter::from_raw_fd(fd.into_raw_fd()) };
+                    let mut write = PipeWriter::from(fd);
                     let _ = write.write_all(&data[mime_type.as_str()]);
                 }
                 OfferInfo::Runtime { source } => {
@@ -264,7 +264,7 @@ impl Dispatch<ZwlrDataControlOfferV1, (String, bool)> for State {
                         fcntl(fd.as_raw_fd(), FcntlArg::F_SETFL(OFlag::O_NONBLOCK)).unwrap();
                     }
 
-                    source.send(mime_type, fd.as_raw_fd())
+                    source.send(mime_type, fd.as_fd())
                 }
             }
         }

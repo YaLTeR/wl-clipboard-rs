@@ -1,5 +1,5 @@
 use std::ffi::OsStr;
-use std::os::fd::{AsRawFd, FromRawFd};
+use std::os::fd::{AsRawFd, FromRawFd, OwnedFd};
 use std::sync::atomic::AtomicU8;
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::{Arc, Mutex};
@@ -8,7 +8,6 @@ use std::thread;
 use nix::sys::epoll::{
     epoll_create1, epoll_ctl, epoll_wait, EpollCreateFlags, EpollEvent, EpollFlags, EpollOp,
 };
-use wayland_backend::io_lifetimes::OwnedFd;
 use wayland_backend::server::ClientData;
 use wayland_server::{Display, ListeningSocket};
 

@@ -5,7 +5,7 @@
 - Added `copy::Options::omit_additional_text_mime_types` to disable wl-
   clipboard-rs offering several known text MIME types when a text MIME type is
   copied.
-- Updated `wayland-rs` to 0.30.
+- Updated `wayland-rs` to 0.31.
   - **Breaking** This changed the error types slightly. However, most uses of
     wl-clipboard-rs should be completely unaffected.
 - Updated other dependencies.

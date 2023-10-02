@@ -3,7 +3,7 @@
 use std::collections::{HashMap, HashSet};
 use std::ffi::OsString;
 use std::io;
-use std::os::unix::io::AsRawFd;
+use std::os::fd::AsFd;
 
 use os_pipe::{pipe, PipeReader};
 use wayland_client::globals::GlobalListContents;
@@ -407,7 +407,7 @@ pub(crate) fn get_contents_internal(
     let (read, write) = pipe().map_err(Error::PipeCreation)?;
 
     // Start the transfer.
-    offer.receive(mime_type.clone(), write.as_raw_fd());
+    offer.receive(mime_type.clone(), write.as_fd());
     drop(write);
 
     // A flush() is not enough here, it will result in sometimes pasting empty contents. I suspect this is due to a
