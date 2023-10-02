@@ -17,25 +17,22 @@ jobs:
         features: ['', dlopen]
 
     name: ${{ matrix.rust }} - ${{ matrix.features }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          show-progress: false
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          override: true
-          toolchain: ${{ matrix.rust }}
+        run: |
+          rustup set auto-self-update check-only
+          rustup toolchain install ${{ matrix.rust }} --profile minimal
 
-      - uses: Swatinem/rust-cache@v1
+      - uses: Swatinem/rust-cache@v2
 
       - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --all --features=${{ matrix.features }}
+        run: cargo build --all --features=${{ matrix.features }}
 
       - name: Set up XDG_RUNTIME_DIR
         run: |
@@ -43,16 +40,10 @@ jobs:
           echo "XDG_RUNTIME_DIR=$PWD/.runtime" >> $GITHUB_ENV
 
       - name: Test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --all --features=${{ matrix.features }}
+        run: cargo test --all --features=${{ matrix.features }}
 
       - name: Generate documentation
-        uses: actions-rs/cargo@v1
-        with:
-          command: doc
-          args: --features=${{ matrix.features }}
+        run: cargo doc --features=${{ matrix.features }}
 
       - name: Copy documentation index
         run: cp doc/index.html target/doc/
@@ -70,43 +61,36 @@ jobs:
 
   clippy:
     name: clippy
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
         with:
-          profile: minimal
-          override: true
-          toolchain: stable
-          components: clippy
+          show-progress: false
 
-      - uses: Swatinem/rust-cache@v1
+      - name: Install Rust
+        run: |
+          rustup set auto-self-update check-only
+          rustup toolchain install stable --profile minimal --component clippy
+
+      - uses: Swatinem/rust-cache@v2
 
       - name: Run clippy
-        uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all
+        run: cargo clippy --all --all-targets
 
   rustfmt:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          show-progress: false
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          override: true
-          toolchain: nightly
-          components: rustfmt
+        run: |
+          rustup set auto-self-update check-only
+          rustup toolchain install nightly --profile minimal --component rustfmt
+          rustup override set nightly
 
       - name: Run rustfmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
+        run: cargo fmt --all -- --check
