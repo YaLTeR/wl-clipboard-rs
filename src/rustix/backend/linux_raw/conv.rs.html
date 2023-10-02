@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.4/src/backend/linux_raw/conv.rs`."><title>conv.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-f3501f0f5ae15dfb.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0 (8ede3aae2 2023-07-12)" data-search-js="search-4926e5fc22a5646a.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../rustix/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.15/src/backend/linux_raw/conv.rs`."><title>conv.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-9bb858ba049f1f21.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.72.1 (d5c2e9c34 2023-09-13)" data-channel="1.72.1" data-search-js="search-f6292fe389d70017.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ><script src="../../../../static.files/storage-59fd9b8ccb335783.js"></script><script defer src="../../../../static.files/source-script-106908c7a7964ba4.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../rustix/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -948,6 +948,66 @@
 <a href="#948" id="948">948</a>
 <a href="#949" id="949">949</a>
 <a href="#950" id="950">950</a>
+<a href="#951" id="951">951</a>
+<a href="#952" id="952">952</a>
+<a href="#953" id="953">953</a>
+<a href="#954" id="954">954</a>
+<a href="#955" id="955">955</a>
+<a href="#956" id="956">956</a>
+<a href="#957" id="957">957</a>
+<a href="#958" id="958">958</a>
+<a href="#959" id="959">959</a>
+<a href="#960" id="960">960</a>
+<a href="#961" id="961">961</a>
+<a href="#962" id="962">962</a>
+<a href="#963" id="963">963</a>
+<a href="#964" id="964">964</a>
+<a href="#965" id="965">965</a>
+<a href="#966" id="966">966</a>
+<a href="#967" id="967">967</a>
+<a href="#968" id="968">968</a>
+<a href="#969" id="969">969</a>
+<a href="#970" id="970">970</a>
+<a href="#971" id="971">971</a>
+<a href="#972" id="972">972</a>
+<a href="#973" id="973">973</a>
+<a href="#974" id="974">974</a>
+<a href="#975" id="975">975</a>
+<a href="#976" id="976">976</a>
+<a href="#977" id="977">977</a>
+<a href="#978" id="978">978</a>
+<a href="#979" id="979">979</a>
+<a href="#980" id="980">980</a>
+<a href="#981" id="981">981</a>
+<a href="#982" id="982">982</a>
+<a href="#983" id="983">983</a>
+<a href="#984" id="984">984</a>
+<a href="#985" id="985">985</a>
+<a href="#986" id="986">986</a>
+<a href="#987" id="987">987</a>
+<a href="#988" id="988">988</a>
+<a href="#989" id="989">989</a>
+<a href="#990" id="990">990</a>
+<a href="#991" id="991">991</a>
+<a href="#992" id="992">992</a>
+<a href="#993" id="993">993</a>
+<a href="#994" id="994">994</a>
+<a href="#995" id="995">995</a>
+<a href="#996" id="996">996</a>
+<a href="#997" id="997">997</a>
+<a href="#998" id="998">998</a>
+<a href="#999" id="999">999</a>
+<a href="#1000" id="1000">1000</a>
+<a href="#1001" id="1001">1001</a>
+<a href="#1002" id="1002">1002</a>
+<a href="#1003" id="1003">1003</a>
+<a href="#1004" id="1004">1004</a>
+<a href="#1005" id="1005">1005</a>
+<a href="#1006" id="1006">1006</a>
+<a href="#1007" id="1007">1007</a>
+<a href="#1008" id="1008">1008</a>
+<a href="#1009" id="1009">1009</a>
+<a href="#1010" id="1010">1010</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Convert values to [`ArgReg`] and from [`RetReg`].
 //!
 //! System call arguments and return values are all communicated with inline
@@ -1136,45 +1196,45 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>slice_just_addr&lt;T: Sized, Num: ArgNumber&gt;(v: <span class="kw-2">&amp;</span>[T]) -&gt; ArgReg&lt;Num&gt; {
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>slice_just_addr&lt;T: Sized, Num: ArgNumber&gt;(v: <span class="kw-2">&amp;</span>[T]) -&gt; ArgReg&lt;<span class="lifetime">&#39;_</span>, Num&gt; {
     <span class="kw">let </span>mut_ptr = v.as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>T;
     raw_arg(mut_ptr.cast())
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>slice_just_addr_mut&lt;T: Sized, Num: ArgNumber&gt;(v: <span class="kw-2">&amp;mut </span>[T]) -&gt; ArgReg&lt;Num&gt; {
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>slice_just_addr_mut&lt;T: Sized, Num: ArgNumber&gt;(v: <span class="kw-2">&amp;mut </span>[T]) -&gt; ArgReg&lt;<span class="lifetime">&#39;_</span>, Num&gt; {
     raw_arg(v.as_mut_ptr().cast())
 }
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>slice&lt;T: Sized, Num0: ArgNumber, Num1: ArgNumber&gt;(
     v: <span class="kw-2">&amp;</span>[T],
-) -&gt; (ArgReg&lt;Num0&gt;, ArgReg&lt;Num1&gt;) {
+) -&gt; (ArgReg&lt;<span class="lifetime">&#39;_</span>, Num0&gt;, ArgReg&lt;<span class="lifetime">&#39;_</span>, Num1&gt;) {
     (slice_just_addr(v), pass_usize(v.len()))
 }
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>slice_mut&lt;T: Sized, Num0: ArgNumber, Num1: ArgNumber&gt;(
     v: <span class="kw-2">&amp;mut </span>[T],
-) -&gt; (ArgReg&lt;Num0&gt;, ArgReg&lt;Num1&gt;) {
+) -&gt; (ArgReg&lt;<span class="lifetime">&#39;_</span>, Num0&gt;, ArgReg&lt;<span class="lifetime">&#39;_</span>, Num1&gt;) {
     (raw_arg(v.as_mut_ptr().cast()), pass_usize(v.len()))
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>by_ref&lt;T: Sized, Num: ArgNumber&gt;(t: <span class="kw-2">&amp;</span>T) -&gt; ArgReg&lt;Num&gt; {
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>by_ref&lt;T: Sized, Num: ArgNumber&gt;(t: <span class="kw-2">&amp;</span>T) -&gt; ArgReg&lt;<span class="lifetime">&#39;_</span>, Num&gt; {
     <span class="kw">let </span>mut_ptr = as_ptr(t) <span class="kw">as </span><span class="kw-2">*mut </span>T;
     raw_arg(mut_ptr.cast())
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>by_mut&lt;T: Sized, Num: ArgNumber&gt;(t: <span class="kw-2">&amp;mut </span>T) -&gt; ArgReg&lt;Num&gt; {
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>by_mut&lt;T: Sized, Num: ArgNumber&gt;(t: <span class="kw-2">&amp;mut </span>T) -&gt; ArgReg&lt;<span class="lifetime">&#39;_</span>, Num&gt; {
     raw_arg(as_mut_ptr(t).cast())
 }
 
 <span class="doccomment">/// Convert an optional mutable reference into a `usize` for passing to a
 /// syscall.
 </span><span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>opt_mut&lt;T: Sized, Num: ArgNumber&gt;(t: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>T&gt;) -&gt; ArgReg&lt;Num&gt; {
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>opt_mut&lt;T: Sized, Num: ArgNumber&gt;(t: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>T&gt;) -&gt; ArgReg&lt;<span class="lifetime">&#39;_</span>, Num&gt; {
     <span class="comment">// This optimizes into the equivalent of `transmute(t)`, and has the
     // advantage of not requiring `unsafe`.
     </span><span class="kw">match </span>t {
@@ -1187,7 +1247,7 @@
 /// syscall.
 </span><span class="attr">#[cfg(any(target_arch = <span class="string">&quot;aarch64&quot;</span>, target_arch = <span class="string">&quot;riscv64&quot;</span>))]
 #[inline]
-</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>opt_ref&lt;T: Sized, Num: ArgNumber&gt;(t: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt;) -&gt; ArgReg&lt;Num&gt; {
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>opt_ref&lt;T: Sized, Num: ArgNumber&gt;(t: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt;) -&gt; ArgReg&lt;<span class="lifetime">&#39;_</span>, Num&gt; {
     <span class="comment">// This optimizes into the equivalent of `transmute(t)`, and has the
     // advantage of not requiring `unsafe`.
     </span><span class="kw">match </span>t {
@@ -1250,7 +1310,7 @@
     feature = <span class="string">&quot;fs&quot;</span>,
     all(
         not(feature = <span class="string">&quot;use-libc-auxv&quot;</span>),
-        not(target_vendor = <span class="string">&quot;mustang&quot;</span>),
+        not(feature = <span class="string">&quot;use-explicitly-provided-auxv&quot;</span>),
         any(
             feature = <span class="string">&quot;param&quot;</span>,
             feature = <span class="string">&quot;runtime&quot;</span>,
@@ -1386,19 +1446,79 @@
             c_uint(access.bits())
         }
     }
+}
 
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::fs::types::MountFlagsArg&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-        <span class="attr">#[inline]
-        </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::fs::types::MountFlagsArg) -&gt; <span class="self">Self </span>{
-            c_uint(flags.<span class="number">0</span>)
-        }
+<span class="attr">#[cfg(any(feature = <span class="string">&quot;fs&quot;</span>, feature = <span class="string">&quot;mount&quot;</span>))]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::mount::types::MountFlagsArg&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::mount::types::MountFlagsArg) -&gt; <span class="self">Self </span>{
+        c_uint(flags.<span class="number">0</span>)
     }
+}
 
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::fs::types::UnmountFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
-        <span class="attr">#[inline]
-        </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::fs::types::UnmountFlags) -&gt; <span class="self">Self </span>{
-            c_uint(flags.bits())
-        }
+<span class="comment">// When the deprecated &quot;fs&quot; aliases are removed, we can remove the &quot;fs&quot;
+// here too.
+</span><span class="attr">#[cfg(any(feature = <span class="string">&quot;fs&quot;</span>, feature = <span class="string">&quot;mount&quot;</span>))]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::mount::types::UnmountFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::mount::types::UnmountFlags) -&gt; <span class="self">Self </span>{
+        c_uint(flags.bits())
+    }
+}
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;mount&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::mount::FsConfigCmd&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(cmd: <span class="kw">crate</span>::mount::FsConfigCmd) -&gt; <span class="self">Self </span>{
+        c_uint(cmd <span class="kw">as </span>c::c_uint)
+    }
+}
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;mount&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::mount::types::FsOpenFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::mount::types::FsOpenFlags) -&gt; <span class="self">Self </span>{
+        c_uint(flags.bits())
+    }
+}
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;mount&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::mount::types::FsMountFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::mount::types::FsMountFlags) -&gt; <span class="self">Self </span>{
+        c_uint(flags.bits())
+    }
+}
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;mount&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::mount::types::MountAttrFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::mount::types::MountAttrFlags) -&gt; <span class="self">Self </span>{
+        c_uint(flags.bits())
+    }
+}
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;mount&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::mount::types::OpenTreeFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::mount::types::OpenTreeFlags) -&gt; <span class="self">Self </span>{
+        c_uint(flags.bits())
+    }
+}
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;mount&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::mount::types::FsPickFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::mount::types::FsPickFlags) -&gt; <span class="self">Self </span>{
+        c_uint(flags.bits())
+    }
+}
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;mount&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::backend::mount::types::MoveMountFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::backend::mount::types::MoveMountFlags) -&gt; <span class="self">Self </span>{
+        c_uint(flags.bits())
     }
 }
 
@@ -1471,7 +1591,7 @@
     }
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;event&quot;</span>)]
+<span class="attr">#[cfg(all(feature = <span class="string">&quot;alloc&quot;</span>, feature = <span class="string">&quot;event&quot;</span>))]
 </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; From&lt;<span class="kw">crate</span>::event::epoll::CreateFlags&gt; <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>from(flags: <span class="kw">crate</span>::event::epoll::CreateFlags) -&gt; <span class="self">Self </span>{

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nix-0.26.2/src/sys/socket/addr.rs`."><title>addr.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-f3501f0f5ae15dfb.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="nix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0 (8ede3aae2 2023-07-12)" data-search-js="search-4926e5fc22a5646a.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../nix/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nix-0.26.4/src/sys/socket/addr.rs`."><title>addr.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-9bb858ba049f1f21.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="nix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.72.1 (d5c2e9c34 2023-09-13)" data-channel="1.72.1" data-search-js="search-f6292fe389d70017.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ><script src="../../../../static.files/storage-59fd9b8ccb335783.js"></script><script defer src="../../../../static.files/source-script-106908c7a7964ba4.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../nix/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -3245,6 +3245,50 @@
 <a href="#3245" id="3245">3245</a>
 <a href="#3246" id="3246">3246</a>
 <a href="#3247" id="3247">3247</a>
+<a href="#3248" id="3248">3248</a>
+<a href="#3249" id="3249">3249</a>
+<a href="#3250" id="3250">3250</a>
+<a href="#3251" id="3251">3251</a>
+<a href="#3252" id="3252">3252</a>
+<a href="#3253" id="3253">3253</a>
+<a href="#3254" id="3254">3254</a>
+<a href="#3255" id="3255">3255</a>
+<a href="#3256" id="3256">3256</a>
+<a href="#3257" id="3257">3257</a>
+<a href="#3258" id="3258">3258</a>
+<a href="#3259" id="3259">3259</a>
+<a href="#3260" id="3260">3260</a>
+<a href="#3261" id="3261">3261</a>
+<a href="#3262" id="3262">3262</a>
+<a href="#3263" id="3263">3263</a>
+<a href="#3264" id="3264">3264</a>
+<a href="#3265" id="3265">3265</a>
+<a href="#3266" id="3266">3266</a>
+<a href="#3267" id="3267">3267</a>
+<a href="#3268" id="3268">3268</a>
+<a href="#3269" id="3269">3269</a>
+<a href="#3270" id="3270">3270</a>
+<a href="#3271" id="3271">3271</a>
+<a href="#3272" id="3272">3272</a>
+<a href="#3273" id="3273">3273</a>
+<a href="#3274" id="3274">3274</a>
+<a href="#3275" id="3275">3275</a>
+<a href="#3276" id="3276">3276</a>
+<a href="#3277" id="3277">3277</a>
+<a href="#3278" id="3278">3278</a>
+<a href="#3279" id="3279">3279</a>
+<a href="#3280" id="3280">3280</a>
+<a href="#3281" id="3281">3281</a>
+<a href="#3282" id="3282">3282</a>
+<a href="#3283" id="3283">3283</a>
+<a href="#3284" id="3284">3284</a>
+<a href="#3285" id="3285">3285</a>
+<a href="#3286" id="3286">3286</a>
+<a href="#3287" id="3287">3287</a>
+<a href="#3288" id="3288">3288</a>
+<a href="#3289" id="3289">3289</a>
+<a href="#3290" id="3290">3290</a>
+<a href="#3291" id="3291">3291</a>
 </pre></div><pre class="rust"><code><span class="attr">#[cfg(any(
     target_os = <span class="string">&quot;android&quot;</span>,
     target_os = <span class="string">&quot;dragonfly&quot;</span>,
@@ -3288,21 +3332,16 @@
 <span class="doccomment">/// Convert a std::net::Ipv4Addr into the libc form.
 </span><span class="attr">#[cfg(feature = <span class="string">&quot;net&quot;</span>)]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const fn </span>ipv4addr_to_libc(addr: net::Ipv4Addr) -&gt; libc::in_addr {
-    <span class="macro">static_assertions::assert_eq_size!</span>(net::Ipv4Addr, libc::in_addr);
-    <span class="comment">// Safe because both types have the same memory layout, and no fancy Drop
-    // impls.
-    </span><span class="kw">unsafe </span>{
-        mem::transmute(addr)
+    libc::in_addr {
+        s_addr: u32::from_ne_bytes(addr.octets())
     }
 }
 
 <span class="doccomment">/// Convert a std::net::Ipv6Addr into the libc form.
 </span><span class="attr">#[cfg(feature = <span class="string">&quot;net&quot;</span>)]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const fn </span>ipv6addr_to_libc(addr: <span class="kw-2">&amp;</span>net::Ipv6Addr) -&gt; libc::in6_addr {
-    <span class="macro">static_assertions::assert_eq_size!</span>(net::Ipv6Addr, libc::in6_addr);
-    <span class="comment">// Safe because both are Newtype wrappers around the same libc type
-    </span><span class="kw">unsafe </span>{
-        mem::transmute(<span class="kw-2">*</span>addr)
+    libc::in6_addr {
+        s6_addr: addr.octets()
     }
 }
 
@@ -4022,6 +4061,7 @@
 }
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; UnixAddrKind&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="doccomment">/// Safety: sun &amp; sun_len must be valid
+    </span><span class="attr">#[allow(clippy::unnecessary_cast)]   </span><span class="comment">// Not unnecessary on all platforms
     </span><span class="kw">unsafe fn </span>get(sun: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>libc::sockaddr_un, sun_len: u8) -&gt; <span class="self">Self </span>{
         <span class="macro">assert!</span>(sun_len <span class="kw">as </span>usize &gt;= <span class="macro">offset_of!</span>(libc::sockaddr_un, sun_path));
         <span class="kw">let </span>path_len =
@@ -4058,6 +4098,7 @@
 
 <span class="kw">impl </span>UnixAddr {
     <span class="doccomment">/// Create a new sockaddr_un representing a filesystem path.
+    </span><span class="attr">#[allow(clippy::unnecessary_cast)]   </span><span class="comment">// Not unnecessary on all platforms
     </span><span class="kw">pub fn </span>new&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(path: <span class="kw-2">&amp;</span>P) -&gt; <span class="prelude-ty">Result</span>&lt;UnixAddr&gt; {
         path.with_nix_path(|cstr| <span class="kw">unsafe </span>{
             <span class="kw">let </span><span class="kw-2">mut </span>ret = libc::sockaddr_un {
@@ -4105,6 +4146,7 @@
     /// processes to communicate with processes having a different filesystem view.
     </span><span class="attr">#[cfg(any(target_os = <span class="string">&quot;android&quot;</span>, target_os = <span class="string">&quot;linux&quot;</span>))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
+    #[allow(clippy::unnecessary_cast)]   </span><span class="comment">// Not unnecessary on all platforms
     </span><span class="kw">pub fn </span>new_abstract(path: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;UnixAddr&gt; {
         <span class="kw">unsafe </span>{
             <span class="kw">let </span><span class="kw-2">mut </span>ret = libc::sockaddr_un {
@@ -4296,6 +4338,22 @@
     {
         mem::size_of::&lt;libc::sockaddr_un&gt;() <span class="kw">as </span>libc::socklen_t
     }
+
+    <span class="kw">unsafe fn </span>set_length(<span class="kw-2">&amp;mut </span><span class="self">self</span>, new_length: usize) -&gt; std::result::Result&lt;(), SocketAddressLengthNotDynamic&gt; {
+        <span class="comment">// `new_length` is only used on some platforms, so it must be provided even when not used
+        </span><span class="attr">#![allow(unused_variables)]
+        </span><span class="macro">cfg_if! </span>{
+            <span class="kw">if </span><span class="attr">#[cfg(any(target_os = <span class="string">&quot;android&quot;</span>,
+                         target_os = <span class="string">&quot;fuchsia&quot;</span>,
+                         target_os = <span class="string">&quot;illumos&quot;</span>,
+                         target_os = <span class="string">&quot;linux&quot;</span>,
+                         target_os = <span class="string">&quot;redox&quot;</span>,
+                ))] </span>{
+                <span class="self">self</span>.sun_len = new_length <span class="kw">as </span>u8;
+            }
+        };
+        <span class="prelude-val">Ok</span>(())
+    }
 }
 
 <span class="kw">impl </span>AsRef&lt;libc::sockaddr_un&gt; <span class="kw">for </span>UnixAddr {
@@ -4445,7 +4503,32 @@
     {
         mem::size_of::&lt;<span class="self">Self</span>&gt;() <span class="kw">as </span>libc::socklen_t
     }
+
+    <span class="doccomment">/// Set the length of this socket address
+    ///
+    /// This method may only be called on socket addresses whose lengths are dynamic, and it
+    /// returns an error if called on a type whose length is static.
+    ///
+    /// # Safety
+    ///
+    /// `new_length` must be a valid length for this type of address. Specifically, reads of that
+    /// length from `self` must be valid.
+    </span><span class="attr">#[doc(hidden)]
+    </span><span class="kw">unsafe fn </span>set_length(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _new_length: usize) -&gt; std::result::Result&lt;(), SocketAddressLengthNotDynamic&gt; {
+        <span class="prelude-val">Err</span>(SocketAddressLengthNotDynamic)
+    }
 }
+
+<span class="doccomment">/// The error returned by [`SockaddrLike::set_length`] on an address whose length is statically
+/// fixed.
+</span><span class="attr">#[derive(Copy, Clone, Debug)]
+</span><span class="kw">pub struct </span>SocketAddressLengthNotDynamic;
+<span class="kw">impl </span>fmt::Display <span class="kw">for </span>SocketAddressLengthNotDynamic {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        f.write_str(<span class="string">&quot;Attempted to set length on socket whose length is statically fixed&quot;</span>)
+    }
+}
+<span class="kw">impl </span>std::error::Error <span class="kw">for </span>SocketAddressLengthNotDynamic {}
 
 <span class="kw">impl </span>private::SockaddrLikePriv <span class="kw">for </span>() {
     <span class="kw">fn </span>as_mut_ptr(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">*mut </span>libc::sockaddr {
@@ -4482,9 +4565,6 @@
 }
 
 <span class="doccomment">/// An IPv4 socket address
-</span><span class="comment">// This is identical to net::SocketAddrV4.  But the standard library
-// doesn&#39;t allow direct access to the libc fields, which we need.  So we
-// reimplement it here.
 </span><span class="attr">#[cfg(feature = <span class="string">&quot;net&quot;</span>)]
 #[repr(transparent)]
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
@@ -4892,6 +4972,15 @@
             </span><span class="prelude-val">None </span>=&gt; mem::size_of_val(<span class="self">self</span>) <span class="kw">as </span>libc::socklen_t
         }
     }
+
+    <span class="kw">unsafe fn </span>set_length(<span class="kw-2">&amp;mut </span><span class="self">self</span>, new_length: usize) -&gt; std::result::Result&lt;(), SocketAddressLengthNotDynamic&gt; {
+        <span class="kw">match </span><span class="self">self</span>.as_unix_addr_mut() {
+            <span class="prelude-val">Some</span>(addr) =&gt; {
+                addr.set_length(new_length)
+            },
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(SocketAddressLengthNotDynamic),
+        }
+    }
 }
 
 <span class="macro">macro_rules! </span>accessors {
@@ -5208,7 +5297,7 @@
     }
 }
 
-<span class="kw">mod </span>private {
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">mod </span>private {
     <span class="kw">pub trait </span>SockaddrLikePriv {
         <span class="doccomment">/// Returns a mutable raw pointer to the inner structure.
         ///
@@ -6097,7 +6186,6 @@
             <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
         </span>}
     }
-
     }
 }
 

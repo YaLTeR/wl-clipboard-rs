@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nix-0.26.2/src/sys/socket/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-f3501f0f5ae15dfb.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="nix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0 (8ede3aae2 2023-07-12)" data-search-js="search-4926e5fc22a5646a.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../nix/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nix-0.26.4/src/sys/socket/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-9bb858ba049f1f21.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="nix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.72.1 (d5c2e9c34 2023-09-13)" data-channel="1.72.1" data-search-js="search-f6292fe389d70017.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ><script src="../../../../static.files/storage-59fd9b8ccb335783.js"></script><script defer src="../../../../static.files/source-script-106908c7a7964ba4.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../nix/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2485,6 +2485,11 @@
 <a href="#2485" id="2485">2485</a>
 <a href="#2486" id="2486">2486</a>
 <a href="#2487" id="2487">2487</a>
+<a href="#2488" id="2488">2488</a>
+<a href="#2489" id="2489">2489</a>
+<a href="#2490" id="2490">2490</a>
+<a href="#2491" id="2491">2491</a>
+<a href="#2492" id="2492">2492</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Socket interface functions
 //!
 //! [Further reading](https://man7.org/linux/man-pages/man7/socket.7.html)
@@ -2713,10 +2718,10 @@
     </span><span class="comment">// The protocol number is fed into the socket syscall in network byte order.
     </span><span class="attr">#[cfg(any(target_os = <span class="string">&quot;android&quot;</span>, target_os = <span class="string">&quot;linux&quot;</span>))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
-    </span>EthAll = libc::ETH_P_ALL.to_be(),
+    </span>EthAll = (libc::ETH_P_ALL <span class="kw">as </span>u16).to_be() <span class="kw">as </span>i32,
 }
 
-<span class="attr">#[cfg(any(target_os = <span class="string">&quot;linux&quot;</span>))]
+<span class="attr">#[cfg(target_os = <span class="string">&quot;linux&quot;</span>)]
 </span><span class="macro">libc_bitflags! </span>{
     <span class="doccomment">/// Configuration flags for `SO_TIMESTAMPING` interface
     ///
@@ -4022,7 +4027,7 @@
 
 
     <span class="kw">for </span>(i, ((slice, addr), mmsghdr)) <span class="kw">in </span>slices.into_iter().zip(addrs.as_ref()).zip(data.items.iter_mut() ).enumerate() {
-        <span class="kw">let </span><span class="kw-2">mut </span>p = <span class="kw-2">&amp;mut </span>mmsghdr.msg_hdr;
+        <span class="kw">let </span>p = <span class="kw-2">&amp;mut </span>mmsghdr.msg_hdr;
         p.msg_iov = slice.as_ref().as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>libc::iovec;
         p.msg_iovlen = slice.as_ref().len() <span class="kw">as _</span>;
 
@@ -4098,24 +4103,24 @@
     {
         <span class="comment">// we will be storing pointers to addresses inside mhdr - convert it into boxed
         // slice so it can&#39;be changed later by pushing anything into self.addresses
-        </span><span class="kw">let </span><span class="kw-2">mut </span>addresses = <span class="macro">vec!</span>[std::mem::MaybeUninit::uninit(); num_slices].into_boxed_slice();
+        </span><span class="kw">let </span><span class="kw-2">mut </span>addresses = <span class="macro">vec!</span>[std::mem::MaybeUninit::&lt;S&gt;::uninit(); num_slices].into_boxed_slice();
 
         <span class="kw">let </span>msg_controllen = cmsg_buffer.as_ref().map_or(<span class="number">0</span>, |v| v.capacity());
 
         <span class="comment">// we&#39;ll need a cmsg_buffer for each slice, we preallocate a vector and split
         // it into &quot;slices&quot; parts
-        </span><span class="kw">let </span>cmsg_buffers =
+        </span><span class="kw">let </span><span class="kw-2">mut </span>cmsg_buffers =
             cmsg_buffer.map(|v| <span class="macro">vec!</span>[<span class="number">0u8</span>; v.capacity() * num_slices].into_boxed_slice());
 
         <span class="kw">let </span>items = addresses
             .iter_mut()
             .enumerate()
             .map(|(ix, address)| {
-                <span class="kw">let </span>(ptr, cap) = <span class="kw">match </span><span class="kw-2">&amp;</span>cmsg_buffers {
-                    <span class="prelude-val">Some</span>(v) =&gt; ((<span class="kw-2">&amp;</span>v[ix * msg_controllen] <span class="kw">as </span><span class="kw-2">*const </span>u8), msg_controllen),
-                    <span class="prelude-val">None </span>=&gt; (std::ptr::null(), <span class="number">0</span>),
+                <span class="kw">let </span>(ptr, cap) = <span class="kw">match </span><span class="kw-2">&amp;mut </span>cmsg_buffers {
+                    <span class="prelude-val">Some</span>(v) =&gt; ((<span class="kw-2">&amp;mut </span>v[ix * msg_controllen] <span class="kw">as </span><span class="kw-2">*mut </span>u8), msg_controllen),
+                    <span class="prelude-val">None </span>=&gt; (std::ptr::null_mut(), <span class="number">0</span>),
                 };
-                <span class="kw">let </span>msg_hdr = <span class="kw">unsafe </span>{ pack_mhdr_to_receive(std::ptr::null(), <span class="number">0</span>, ptr, cap, address.as_mut_ptr()) };
+                <span class="kw">let </span>msg_hdr = <span class="kw">unsafe </span>{ pack_mhdr_to_receive(std::ptr::null_mut(), <span class="number">0</span>, ptr, cap, address.as_mut_ptr()) };
                 libc::mmsghdr {
                     msg_hdr,
                     msg_len: <span class="number">0</span>,
@@ -4176,7 +4181,7 @@
 {
     <span class="kw">let </span><span class="kw-2">mut </span>count = <span class="number">0</span>;
     <span class="kw">for </span>(i, (slice, mmsghdr)) <span class="kw">in </span>slices.into_iter().zip(data.items.iter_mut()).enumerate() {
-        <span class="kw">let </span><span class="kw-2">mut </span>p = <span class="kw-2">&amp;mut </span>mmsghdr.msg_hdr;
+        <span class="kw">let </span>p = <span class="kw-2">&amp;mut </span>mmsghdr.msg_hdr;
         p.msg_iov = slice.as_ref().as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>libc::iovec;
         p.msg_iovlen = slice.as_ref().len() <span class="kw">as _</span>;
         count = i + <span class="number">1</span>;
@@ -4403,7 +4408,7 @@
     mhdr: msghdr,
     r: isize,
     msg_controllen: usize,
-    address: S,
+    <span class="kw-2">mut </span>address: S,
 ) -&gt; RecvMsg&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;i</span>, S&gt;
     <span class="kw">where </span>S: SockaddrLike
 {
@@ -4418,6 +4423,11 @@
             ptr::null()
         }.as_ref()
     };
+
+    <span class="comment">// Ignore errors if this socket address has statically-known length
+    //
+    // This is to ensure that unix socket addresses have their length set appropriately.
+    </span><span class="kw">let _ </span>= address.set_length(mhdr.msg_namelen <span class="kw">as </span>usize);
 
     RecvMsg {
         bytes: r <span class="kw">as </span>usize,
@@ -4441,9 +4451,9 @@
 ///
 /// Buffers must remain valid for the whole lifetime of msghdr
 </span><span class="kw">unsafe fn </span>pack_mhdr_to_receive&lt;S&gt;(
-    iov_buffer: <span class="kw-2">*const </span>IoSliceMut,
+    iov_buffer: <span class="kw-2">*mut </span>IoSliceMut,
     iov_buffer_len: usize,
-    cmsg_buffer: <span class="kw-2">*const </span>u8,
+    cmsg_buffer: <span class="kw-2">*mut </span>u8,
     cmsg_capacity: usize,
     address: <span class="kw-2">*mut </span>S,
 ) -&gt; msghdr
@@ -4454,7 +4464,7 @@
     // initialize it.
     </span><span class="kw">let </span><span class="kw-2">mut </span>mhdr = mem::MaybeUninit::&lt;msghdr&gt;::zeroed();
     <span class="kw">let </span>p = mhdr.as_mut_ptr();
-    (<span class="kw-2">*</span>p).msg_name = (<span class="kw-2">*</span>address).as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_void;
+    (<span class="kw-2">*</span>p).msg_name = address <span class="kw">as </span><span class="kw-2">*mut </span>c_void;
     (<span class="kw-2">*</span>p).msg_namelen = S::size();
     (<span class="kw-2">*</span>p).msg_iov = iov_buffer <span class="kw">as </span><span class="kw-2">*mut </span>iovec;
     (<span class="kw-2">*</span>p).msg_iovlen = iov_buffer_len <span class="kw">as _</span>;
@@ -4479,7 +4489,7 @@
 
     <span class="comment">// The message header must be initialized before the individual cmsgs.
     </span><span class="kw">let </span>cmsg_ptr = <span class="kw">if </span>capacity &gt; <span class="number">0 </span>{
-        cmsg_buffer.as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_void
+        cmsg_buffer.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_void
     } <span class="kw">else </span>{
         ptr::null_mut()
     };
@@ -4533,7 +4543,7 @@
 /// [recvmsg(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html)
 </span><span class="kw">pub fn </span>recvmsg&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;outer</span>, <span class="lifetime">&#39;inner</span>, S&gt;(fd: RawFd, iov: <span class="kw-2">&amp;</span><span class="lifetime">&#39;outer </span><span class="kw-2">mut </span>[IoSliceMut&lt;<span class="lifetime">&#39;inner</span>&gt;],
                    <span class="kw-2">mut </span>cmsg_buffer: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Vec&lt;u8&gt;&gt;,
-                   flags: MsgFlags) -&gt; <span class="prelude-ty">Result</span>&lt;RecvMsg&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;inner</span>, S&gt;&gt;
+                   flags: MsgFlags) -&gt; <span class="prelude-ty">Result</span>&lt;RecvMsg&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;outer</span>, S&gt;&gt;
     <span class="kw">where </span>S: SockaddrLike + <span class="lifetime">&#39;a</span>,
     <span class="lifetime">&#39;inner</span>: <span class="lifetime">&#39;outer
 </span>{
@@ -4543,7 +4553,7 @@
         .map(|v| (v.as_mut_ptr(), v.capacity()))
         .unwrap_or((ptr::null_mut(), <span class="number">0</span>));
     <span class="kw">let </span><span class="kw-2">mut </span>mhdr = <span class="kw">unsafe </span>{
-        pack_mhdr_to_receive(iov.as_ref().as_ptr(), iov.len(), msg_control, msg_controllen, address.as_mut_ptr())
+        pack_mhdr_to_receive(iov.as_mut().as_mut_ptr(), iov.len(), msg_control, msg_controllen, address.as_mut_ptr())
     };
 
     <span class="kw">let </span>ret = <span class="kw">unsafe </span>{ libc::recvmsg(fd, <span class="kw-2">&amp;mut </span>mhdr, flags.bits()) };
@@ -4689,7 +4699,7 @@
     <span class="kw">unsafe </span>{
         <span class="kw">let </span>ret = libc::recv(
             sockfd,
-            buf.as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_void,
+            buf.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_void,
             buf.len() <span class="kw">as </span>size_t,
             flags.bits(),
         );
@@ -4713,7 +4723,7 @@
 
         <span class="kw">let </span>ret = Errno::result(libc::recvfrom(
             sockfd,
-            buf.as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_void,
+            buf.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_void,
             buf.len() <span class="kw">as </span>size_t,
             <span class="number">0</span>,
             addr.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>libc::sockaddr,
@@ -4723,7 +4733,7 @@
         <span class="prelude-val">Ok</span>((
             ret,
             T::from_raw(
-                addr.assume_init().as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>libc::sockaddr,
+                addr.assume_init().as_ptr(),
                 <span class="prelude-val">Some</span>(len),
             ),
         ))
