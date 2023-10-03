@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.8.0 (3rd Oct 2023)
+
 - Added `copy::Options::omit_additional_text_mime_types` to disable wl-
   clipboard-rs offering several known text MIME types when a text MIME type is
   copied.
