@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.1/src/raw/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9bb858ba049f1f21.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="hashbrown" data-themes="" data-resource-suffix="" data-rustdoc-version="1.72.1 (d5c2e9c34 2023-09-13)" data-channel="1.72.1" data-search-js="search-f6292fe389d70017.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ><script src="../../../static.files/storage-59fd9b8ccb335783.js"></script><script defer src="../../../static.files/source-script-106908c7a7964ba4.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../hashbrown/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="hashbrown" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../hashbrown/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -4476,6 +4476,350 @@
 <a href="#4476" id="4476">4476</a>
 <a href="#4477" id="4477">4477</a>
 <a href="#4478" id="4478">4478</a>
+<a href="#4479" id="4479">4479</a>
+<a href="#4480" id="4480">4480</a>
+<a href="#4481" id="4481">4481</a>
+<a href="#4482" id="4482">4482</a>
+<a href="#4483" id="4483">4483</a>
+<a href="#4484" id="4484">4484</a>
+<a href="#4485" id="4485">4485</a>
+<a href="#4486" id="4486">4486</a>
+<a href="#4487" id="4487">4487</a>
+<a href="#4488" id="4488">4488</a>
+<a href="#4489" id="4489">4489</a>
+<a href="#4490" id="4490">4490</a>
+<a href="#4491" id="4491">4491</a>
+<a href="#4492" id="4492">4492</a>
+<a href="#4493" id="4493">4493</a>
+<a href="#4494" id="4494">4494</a>
+<a href="#4495" id="4495">4495</a>
+<a href="#4496" id="4496">4496</a>
+<a href="#4497" id="4497">4497</a>
+<a href="#4498" id="4498">4498</a>
+<a href="#4499" id="4499">4499</a>
+<a href="#4500" id="4500">4500</a>
+<a href="#4501" id="4501">4501</a>
+<a href="#4502" id="4502">4502</a>
+<a href="#4503" id="4503">4503</a>
+<a href="#4504" id="4504">4504</a>
+<a href="#4505" id="4505">4505</a>
+<a href="#4506" id="4506">4506</a>
+<a href="#4507" id="4507">4507</a>
+<a href="#4508" id="4508">4508</a>
+<a href="#4509" id="4509">4509</a>
+<a href="#4510" id="4510">4510</a>
+<a href="#4511" id="4511">4511</a>
+<a href="#4512" id="4512">4512</a>
+<a href="#4513" id="4513">4513</a>
+<a href="#4514" id="4514">4514</a>
+<a href="#4515" id="4515">4515</a>
+<a href="#4516" id="4516">4516</a>
+<a href="#4517" id="4517">4517</a>
+<a href="#4518" id="4518">4518</a>
+<a href="#4519" id="4519">4519</a>
+<a href="#4520" id="4520">4520</a>
+<a href="#4521" id="4521">4521</a>
+<a href="#4522" id="4522">4522</a>
+<a href="#4523" id="4523">4523</a>
+<a href="#4524" id="4524">4524</a>
+<a href="#4525" id="4525">4525</a>
+<a href="#4526" id="4526">4526</a>
+<a href="#4527" id="4527">4527</a>
+<a href="#4528" id="4528">4528</a>
+<a href="#4529" id="4529">4529</a>
+<a href="#4530" id="4530">4530</a>
+<a href="#4531" id="4531">4531</a>
+<a href="#4532" id="4532">4532</a>
+<a href="#4533" id="4533">4533</a>
+<a href="#4534" id="4534">4534</a>
+<a href="#4535" id="4535">4535</a>
+<a href="#4536" id="4536">4536</a>
+<a href="#4537" id="4537">4537</a>
+<a href="#4538" id="4538">4538</a>
+<a href="#4539" id="4539">4539</a>
+<a href="#4540" id="4540">4540</a>
+<a href="#4541" id="4541">4541</a>
+<a href="#4542" id="4542">4542</a>
+<a href="#4543" id="4543">4543</a>
+<a href="#4544" id="4544">4544</a>
+<a href="#4545" id="4545">4545</a>
+<a href="#4546" id="4546">4546</a>
+<a href="#4547" id="4547">4547</a>
+<a href="#4548" id="4548">4548</a>
+<a href="#4549" id="4549">4549</a>
+<a href="#4550" id="4550">4550</a>
+<a href="#4551" id="4551">4551</a>
+<a href="#4552" id="4552">4552</a>
+<a href="#4553" id="4553">4553</a>
+<a href="#4554" id="4554">4554</a>
+<a href="#4555" id="4555">4555</a>
+<a href="#4556" id="4556">4556</a>
+<a href="#4557" id="4557">4557</a>
+<a href="#4558" id="4558">4558</a>
+<a href="#4559" id="4559">4559</a>
+<a href="#4560" id="4560">4560</a>
+<a href="#4561" id="4561">4561</a>
+<a href="#4562" id="4562">4562</a>
+<a href="#4563" id="4563">4563</a>
+<a href="#4564" id="4564">4564</a>
+<a href="#4565" id="4565">4565</a>
+<a href="#4566" id="4566">4566</a>
+<a href="#4567" id="4567">4567</a>
+<a href="#4568" id="4568">4568</a>
+<a href="#4569" id="4569">4569</a>
+<a href="#4570" id="4570">4570</a>
+<a href="#4571" id="4571">4571</a>
+<a href="#4572" id="4572">4572</a>
+<a href="#4573" id="4573">4573</a>
+<a href="#4574" id="4574">4574</a>
+<a href="#4575" id="4575">4575</a>
+<a href="#4576" id="4576">4576</a>
+<a href="#4577" id="4577">4577</a>
+<a href="#4578" id="4578">4578</a>
+<a href="#4579" id="4579">4579</a>
+<a href="#4580" id="4580">4580</a>
+<a href="#4581" id="4581">4581</a>
+<a href="#4582" id="4582">4582</a>
+<a href="#4583" id="4583">4583</a>
+<a href="#4584" id="4584">4584</a>
+<a href="#4585" id="4585">4585</a>
+<a href="#4586" id="4586">4586</a>
+<a href="#4587" id="4587">4587</a>
+<a href="#4588" id="4588">4588</a>
+<a href="#4589" id="4589">4589</a>
+<a href="#4590" id="4590">4590</a>
+<a href="#4591" id="4591">4591</a>
+<a href="#4592" id="4592">4592</a>
+<a href="#4593" id="4593">4593</a>
+<a href="#4594" id="4594">4594</a>
+<a href="#4595" id="4595">4595</a>
+<a href="#4596" id="4596">4596</a>
+<a href="#4597" id="4597">4597</a>
+<a href="#4598" id="4598">4598</a>
+<a href="#4599" id="4599">4599</a>
+<a href="#4600" id="4600">4600</a>
+<a href="#4601" id="4601">4601</a>
+<a href="#4602" id="4602">4602</a>
+<a href="#4603" id="4603">4603</a>
+<a href="#4604" id="4604">4604</a>
+<a href="#4605" id="4605">4605</a>
+<a href="#4606" id="4606">4606</a>
+<a href="#4607" id="4607">4607</a>
+<a href="#4608" id="4608">4608</a>
+<a href="#4609" id="4609">4609</a>
+<a href="#4610" id="4610">4610</a>
+<a href="#4611" id="4611">4611</a>
+<a href="#4612" id="4612">4612</a>
+<a href="#4613" id="4613">4613</a>
+<a href="#4614" id="4614">4614</a>
+<a href="#4615" id="4615">4615</a>
+<a href="#4616" id="4616">4616</a>
+<a href="#4617" id="4617">4617</a>
+<a href="#4618" id="4618">4618</a>
+<a href="#4619" id="4619">4619</a>
+<a href="#4620" id="4620">4620</a>
+<a href="#4621" id="4621">4621</a>
+<a href="#4622" id="4622">4622</a>
+<a href="#4623" id="4623">4623</a>
+<a href="#4624" id="4624">4624</a>
+<a href="#4625" id="4625">4625</a>
+<a href="#4626" id="4626">4626</a>
+<a href="#4627" id="4627">4627</a>
+<a href="#4628" id="4628">4628</a>
+<a href="#4629" id="4629">4629</a>
+<a href="#4630" id="4630">4630</a>
+<a href="#4631" id="4631">4631</a>
+<a href="#4632" id="4632">4632</a>
+<a href="#4633" id="4633">4633</a>
+<a href="#4634" id="4634">4634</a>
+<a href="#4635" id="4635">4635</a>
+<a href="#4636" id="4636">4636</a>
+<a href="#4637" id="4637">4637</a>
+<a href="#4638" id="4638">4638</a>
+<a href="#4639" id="4639">4639</a>
+<a href="#4640" id="4640">4640</a>
+<a href="#4641" id="4641">4641</a>
+<a href="#4642" id="4642">4642</a>
+<a href="#4643" id="4643">4643</a>
+<a href="#4644" id="4644">4644</a>
+<a href="#4645" id="4645">4645</a>
+<a href="#4646" id="4646">4646</a>
+<a href="#4647" id="4647">4647</a>
+<a href="#4648" id="4648">4648</a>
+<a href="#4649" id="4649">4649</a>
+<a href="#4650" id="4650">4650</a>
+<a href="#4651" id="4651">4651</a>
+<a href="#4652" id="4652">4652</a>
+<a href="#4653" id="4653">4653</a>
+<a href="#4654" id="4654">4654</a>
+<a href="#4655" id="4655">4655</a>
+<a href="#4656" id="4656">4656</a>
+<a href="#4657" id="4657">4657</a>
+<a href="#4658" id="4658">4658</a>
+<a href="#4659" id="4659">4659</a>
+<a href="#4660" id="4660">4660</a>
+<a href="#4661" id="4661">4661</a>
+<a href="#4662" id="4662">4662</a>
+<a href="#4663" id="4663">4663</a>
+<a href="#4664" id="4664">4664</a>
+<a href="#4665" id="4665">4665</a>
+<a href="#4666" id="4666">4666</a>
+<a href="#4667" id="4667">4667</a>
+<a href="#4668" id="4668">4668</a>
+<a href="#4669" id="4669">4669</a>
+<a href="#4670" id="4670">4670</a>
+<a href="#4671" id="4671">4671</a>
+<a href="#4672" id="4672">4672</a>
+<a href="#4673" id="4673">4673</a>
+<a href="#4674" id="4674">4674</a>
+<a href="#4675" id="4675">4675</a>
+<a href="#4676" id="4676">4676</a>
+<a href="#4677" id="4677">4677</a>
+<a href="#4678" id="4678">4678</a>
+<a href="#4679" id="4679">4679</a>
+<a href="#4680" id="4680">4680</a>
+<a href="#4681" id="4681">4681</a>
+<a href="#4682" id="4682">4682</a>
+<a href="#4683" id="4683">4683</a>
+<a href="#4684" id="4684">4684</a>
+<a href="#4685" id="4685">4685</a>
+<a href="#4686" id="4686">4686</a>
+<a href="#4687" id="4687">4687</a>
+<a href="#4688" id="4688">4688</a>
+<a href="#4689" id="4689">4689</a>
+<a href="#4690" id="4690">4690</a>
+<a href="#4691" id="4691">4691</a>
+<a href="#4692" id="4692">4692</a>
+<a href="#4693" id="4693">4693</a>
+<a href="#4694" id="4694">4694</a>
+<a href="#4695" id="4695">4695</a>
+<a href="#4696" id="4696">4696</a>
+<a href="#4697" id="4697">4697</a>
+<a href="#4698" id="4698">4698</a>
+<a href="#4699" id="4699">4699</a>
+<a href="#4700" id="4700">4700</a>
+<a href="#4701" id="4701">4701</a>
+<a href="#4702" id="4702">4702</a>
+<a href="#4703" id="4703">4703</a>
+<a href="#4704" id="4704">4704</a>
+<a href="#4705" id="4705">4705</a>
+<a href="#4706" id="4706">4706</a>
+<a href="#4707" id="4707">4707</a>
+<a href="#4708" id="4708">4708</a>
+<a href="#4709" id="4709">4709</a>
+<a href="#4710" id="4710">4710</a>
+<a href="#4711" id="4711">4711</a>
+<a href="#4712" id="4712">4712</a>
+<a href="#4713" id="4713">4713</a>
+<a href="#4714" id="4714">4714</a>
+<a href="#4715" id="4715">4715</a>
+<a href="#4716" id="4716">4716</a>
+<a href="#4717" id="4717">4717</a>
+<a href="#4718" id="4718">4718</a>
+<a href="#4719" id="4719">4719</a>
+<a href="#4720" id="4720">4720</a>
+<a href="#4721" id="4721">4721</a>
+<a href="#4722" id="4722">4722</a>
+<a href="#4723" id="4723">4723</a>
+<a href="#4724" id="4724">4724</a>
+<a href="#4725" id="4725">4725</a>
+<a href="#4726" id="4726">4726</a>
+<a href="#4727" id="4727">4727</a>
+<a href="#4728" id="4728">4728</a>
+<a href="#4729" id="4729">4729</a>
+<a href="#4730" id="4730">4730</a>
+<a href="#4731" id="4731">4731</a>
+<a href="#4732" id="4732">4732</a>
+<a href="#4733" id="4733">4733</a>
+<a href="#4734" id="4734">4734</a>
+<a href="#4735" id="4735">4735</a>
+<a href="#4736" id="4736">4736</a>
+<a href="#4737" id="4737">4737</a>
+<a href="#4738" id="4738">4738</a>
+<a href="#4739" id="4739">4739</a>
+<a href="#4740" id="4740">4740</a>
+<a href="#4741" id="4741">4741</a>
+<a href="#4742" id="4742">4742</a>
+<a href="#4743" id="4743">4743</a>
+<a href="#4744" id="4744">4744</a>
+<a href="#4745" id="4745">4745</a>
+<a href="#4746" id="4746">4746</a>
+<a href="#4747" id="4747">4747</a>
+<a href="#4748" id="4748">4748</a>
+<a href="#4749" id="4749">4749</a>
+<a href="#4750" id="4750">4750</a>
+<a href="#4751" id="4751">4751</a>
+<a href="#4752" id="4752">4752</a>
+<a href="#4753" id="4753">4753</a>
+<a href="#4754" id="4754">4754</a>
+<a href="#4755" id="4755">4755</a>
+<a href="#4756" id="4756">4756</a>
+<a href="#4757" id="4757">4757</a>
+<a href="#4758" id="4758">4758</a>
+<a href="#4759" id="4759">4759</a>
+<a href="#4760" id="4760">4760</a>
+<a href="#4761" id="4761">4761</a>
+<a href="#4762" id="4762">4762</a>
+<a href="#4763" id="4763">4763</a>
+<a href="#4764" id="4764">4764</a>
+<a href="#4765" id="4765">4765</a>
+<a href="#4766" id="4766">4766</a>
+<a href="#4767" id="4767">4767</a>
+<a href="#4768" id="4768">4768</a>
+<a href="#4769" id="4769">4769</a>
+<a href="#4770" id="4770">4770</a>
+<a href="#4771" id="4771">4771</a>
+<a href="#4772" id="4772">4772</a>
+<a href="#4773" id="4773">4773</a>
+<a href="#4774" id="4774">4774</a>
+<a href="#4775" id="4775">4775</a>
+<a href="#4776" id="4776">4776</a>
+<a href="#4777" id="4777">4777</a>
+<a href="#4778" id="4778">4778</a>
+<a href="#4779" id="4779">4779</a>
+<a href="#4780" id="4780">4780</a>
+<a href="#4781" id="4781">4781</a>
+<a href="#4782" id="4782">4782</a>
+<a href="#4783" id="4783">4783</a>
+<a href="#4784" id="4784">4784</a>
+<a href="#4785" id="4785">4785</a>
+<a href="#4786" id="4786">4786</a>
+<a href="#4787" id="4787">4787</a>
+<a href="#4788" id="4788">4788</a>
+<a href="#4789" id="4789">4789</a>
+<a href="#4790" id="4790">4790</a>
+<a href="#4791" id="4791">4791</a>
+<a href="#4792" id="4792">4792</a>
+<a href="#4793" id="4793">4793</a>
+<a href="#4794" id="4794">4794</a>
+<a href="#4795" id="4795">4795</a>
+<a href="#4796" id="4796">4796</a>
+<a href="#4797" id="4797">4797</a>
+<a href="#4798" id="4798">4798</a>
+<a href="#4799" id="4799">4799</a>
+<a href="#4800" id="4800">4800</a>
+<a href="#4801" id="4801">4801</a>
+<a href="#4802" id="4802">4802</a>
+<a href="#4803" id="4803">4803</a>
+<a href="#4804" id="4804">4804</a>
+<a href="#4805" id="4805">4805</a>
+<a href="#4806" id="4806">4806</a>
+<a href="#4807" id="4807">4807</a>
+<a href="#4808" id="4808">4808</a>
+<a href="#4809" id="4809">4809</a>
+<a href="#4810" id="4810">4810</a>
+<a href="#4811" id="4811">4811</a>
+<a href="#4812" id="4812">4812</a>
+<a href="#4813" id="4813">4813</a>
+<a href="#4814" id="4814">4814</a>
+<a href="#4815" id="4815">4815</a>
+<a href="#4816" id="4816">4816</a>
+<a href="#4817" id="4817">4817</a>
+<a href="#4818" id="4818">4818</a>
+<a href="#4819" id="4819">4819</a>
+<a href="#4820" id="4820">4820</a>
+<a href="#4821" id="4821">4821</a>
+<a href="#4822" id="4822">4822</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::alloc::alloc::{handle_alloc_error, Layout};
 <span class="kw">use </span><span class="kw">crate</span>::scopeguard::{guard, ScopeGuard};
 <span class="kw">use </span><span class="kw">crate</span>::TryReserveError;
@@ -4498,11 +4842,18 @@
     </span><span class="kw">if </span><span class="attr">#[cfg(all(
         target_feature = <span class="string">&quot;sse2&quot;</span>,
         any(target_arch = <span class="string">&quot;x86&quot;</span>, target_arch = <span class="string">&quot;x86_64&quot;</span>),
-        not(miri)
+        not(miri),
     ))] </span>{
         <span class="kw">mod </span>sse2;
         <span class="kw">use </span>sse2 <span class="kw">as </span>imp;
-    } <span class="kw">else if </span><span class="attr">#[cfg(all(target_arch = <span class="string">&quot;aarch64&quot;</span>, target_feature = <span class="string">&quot;neon&quot;</span>))] </span>{
+    } <span class="kw">else if </span><span class="attr">#[cfg(all(
+        target_arch = <span class="string">&quot;aarch64&quot;</span>,
+        target_feature = <span class="string">&quot;neon&quot;</span>,
+        <span class="comment">// NEON intrinsics are currently broken on big-endian targets.
+        // See https://github.com/rust-lang/stdarch/issues/1484.
+        </span>target_endian = <span class="string">&quot;little&quot;</span>,
+        not(miri),
+    ))] </span>{
         <span class="kw">mod </span>neon;
         <span class="kw">use </span>neon <span class="kw">as </span>imp;
     } <span class="kw">else </span>{
@@ -4528,14 +4879,12 @@
 <span class="attr">#[cfg(feature = <span class="string">&quot;nightly&quot;</span>)]
 </span><span class="kw">use </span>core::intrinsics::{likely, unlikely};
 
-<span class="comment">// Use strict provenance functions if available.
-</span><span class="attr">#[cfg(feature = <span class="string">&quot;nightly&quot;</span>)]
-</span><span class="kw">use </span>core::ptr::invalid_mut;
-<span class="comment">// Implement it with a cast otherwise.
-</span><span class="attr">#[cfg(not(feature = <span class="string">&quot;nightly&quot;</span>))]
-#[inline(always)]
+<span class="comment">// FIXME: use strict provenance functions once they are stable.
+// Implement it with a transmute for now.
+</span><span class="attr">#[inline(always)]
+#[allow(clippy::useless_transmute)] </span><span class="comment">// clippy is wrong, cast and transmute are different here
 </span><span class="kw">fn </span>invalid_mut&lt;T&gt;(addr: usize) -&gt; <span class="kw-2">*mut </span>T {
-    addr <span class="kw">as </span><span class="kw-2">*mut </span>T
+    <span class="kw">unsafe </span>{ core::mem::transmute(addr) }
 }
 
 <span class="attr">#[inline]
@@ -5383,10 +5732,35 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>.alloc
     }
 
-    <span class="doccomment">/// Returns pointer to one past last element of data table.
+    <span class="doccomment">/// Returns pointer to one past last `data` element in the the table as viewed from
+    /// the start point of the allocation.
+    ///
+    /// The caller must ensure that the `RawTable` outlives the returned [`NonNull&lt;T&gt;`],
+    /// otherwise using it may result in [`undefined behavior`].
+    ///
+    /// [`undefined behavior`]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub unsafe fn </span>data_end(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; NonNull&lt;T&gt; {
-        NonNull::new_unchecked(<span class="self">self</span>.table.ctrl.as_ptr().cast())
+    </span><span class="kw">pub fn </span>data_end(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; NonNull&lt;T&gt; {
+        <span class="comment">// SAFETY: `self.table.ctrl` is `NonNull`, so casting it is safe
+        //
+        //                        `self.table.ctrl.as_ptr().cast()` returns pointer that
+        //                        points here (to the end of `T0`)
+        //                          ∨
+        // [Pad], T_n, ..., T1, T0, |CT0, CT1, ..., CT_n|, CTa_0, CTa_1, ..., CTa_m
+        //                           \________  ________/
+        //                                    \/
+        //       `n = buckets - 1`, i.e. `RawTable::buckets() - 1`
+        //
+        // where: T0...T_n  - our stored data;
+        //        CT0...CT_n - control bytes or metadata for `data`.
+        //        CTa_0...CTa_m - additional control bytes, where `m = Group::WIDTH - 1` (so that the search
+        //                        with loading `Group` bytes from the heap works properly, even if the result
+        //                        of `h1(hash) &amp; self.bucket_mask` is equal to `self.bucket_mask`). See also
+        //                        `RawTableInner::set_ctrl` function.
+        //
+        // P.S. `h1(hash) &amp; self.bucket_mask` is the same as `hash as usize % self.buckets()` because the number
+        // of buckets is a power of two, and `self.bucket_mask = self.buckets() - 1`.
+        </span><span class="kw">unsafe </span>{ NonNull::new_unchecked(<span class="self">self</span>.table.ctrl.as_ptr().cast()) }
     }
 
     <span class="doccomment">/// Returns pointer to start of data table.
@@ -5418,9 +5792,56 @@
     }
 
     <span class="doccomment">/// Returns a pointer to an element in the table.
+    ///
+    /// The caller must ensure that the `RawTable` outlives the returned [`Bucket&lt;T&gt;`],
+    /// otherwise using it may result in [`undefined behavior`].
+    ///
+    /// # Safety
+    ///
+    /// If `mem::size_of::&lt;T&gt;() != 0`, then the caller of this function must observe the
+    /// following safety rules:
+    ///
+    /// * The table must already be allocated;
+    ///
+    /// * The `index` must not be greater than the number returned by the [`RawTable::buckets`]
+    ///   function, i.e. `(index + 1) &lt;= self.buckets()`.
+    ///
+    /// It is safe to call this function with index of zero (`index == 0`) on a table that has
+    /// not been allocated, but using the returned [`Bucket`] results in [`undefined behavior`].
+    ///
+    /// If `mem::size_of::&lt;T&gt;() == 0`, then the only requirement is that the `index` must
+    /// not be greater than the number returned by the [`RawTable::buckets`] function, i.e.
+    /// `(index + 1) &lt;= self.buckets()`.
+    ///
+    /// [`RawTable::buckets`]: RawTable::buckets
+    /// [`undefined behavior`]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
     </span><span class="attr">#[inline]
     </span><span class="kw">pub unsafe fn </span>bucket(<span class="kw-2">&amp;</span><span class="self">self</span>, index: usize) -&gt; Bucket&lt;T&gt; {
-        <span class="macro">debug_assert_ne!</span>(<span class="self">self</span>.table.bucket_mask, <span class="number">0</span>);
+        <span class="comment">// If mem::size_of::&lt;T&gt;() != 0 then return a pointer to the `element` in the `data part` of the table
+        // (we start counting from &quot;0&quot;, so that in the expression T[n], the &quot;n&quot; index actually one less than
+        // the &quot;buckets&quot; number of our `RawTable`, i.e. &quot;n = RawTable::buckets() - 1&quot;):
+        //
+        //           `table.bucket(3).as_ptr()` returns a pointer that points here in the `data`
+        //           part of the `RawTable`, i.e. to the start of T3 (see `Bucket::as_ptr`)
+        //                  |
+        //                  |               `base = self.data_end()` points here
+        //                  |               (to the start of CT0 or to the end of T0)
+        //                  v                 v
+        // [Pad], T_n, ..., |T3|, T2, T1, T0, |CT0, CT1, CT2, CT3, ..., CT_n, CTa_0, CTa_1, ..., CTa_m
+        //                     ^                                              \__________  __________/
+        //        `table.bucket(3)` returns a pointer that points                        \/
+        //         here in the `data` part of the `RawTable` (to              additional control bytes
+        //         the end of T3)                                              `m = Group::WIDTH - 1`
+        //
+        // where: T0...T_n  - our stored data;
+        //        CT0...CT_n - control bytes or metadata for `data`;
+        //        CTa_0...CTa_m - additional control bytes (so that the search with loading `Group` bytes from
+        //                        the heap works properly, even if the result of `h1(hash) &amp; self.table.bucket_mask`
+        //                        is equal to `self.table.bucket_mask`). See also `RawTableInner::set_ctrl` function.
+        //
+        // P.S. `h1(hash) &amp; self.table.bucket_mask` is the same as `hash as usize % self.buckets()` because the number
+        // of buckets is a power of two, and `self.table.bucket_mask = self.buckets() - 1`.
+        </span><span class="macro">debug_assert_ne!</span>(<span class="self">self</span>.table.bucket_mask, <span class="number">0</span>);
         <span class="macro">debug_assert!</span>(index &lt; <span class="self">self</span>.buckets());
         Bucket::from_base_index(<span class="self">self</span>.data_end(), index)
     }
@@ -6690,6 +7111,9 @@
     ///
     /// * The [`RawTableInner`] must have properly initialized control bytes.
     ///
+    /// The type `T` must be the actual type of the elements stored in the table,
+    /// otherwise using the returned [`RawIter`] results in [`undefined behavior`].
+    ///
     /// [`undefined behavior`]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
     </span><span class="attr">#[inline]
     </span><span class="kw">unsafe fn </span>iter&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RawIter&lt;T&gt; {
@@ -6706,13 +7130,20 @@
         //                         `ctrl` points here (to the start
         //                         of the first control byte `CT0`)
         //                          ∨
-        // [Pad], T_n, ..., T1, T0, |CT0, CT1, ..., CT_n|, Group::WIDTH
+        // [Pad], T_n, ..., T1, T0, |CT0, CT1, ..., CT_n|, CTa_0, CTa_1, ..., CTa_m
         //                           \________  ________/
         //                                    \/
-        //       `n = buckets - 1`, i.e. `RawIndexTableInner::buckets() - 1`
+        //       `n = buckets - 1`, i.e. `RawTableInner::buckets() - 1`
         //
         // where: T0...T_n  - our stored data;
         //        CT0...CT_n - control bytes or metadata for `data`.
+        //        CTa_0...CTa_m - additional control bytes, where `m = Group::WIDTH - 1` (so that the search
+        //                        with loading `Group` bytes from the heap works properly, even if the result
+        //                        of `h1(hash) &amp; self.bucket_mask` is equal to `self.bucket_mask`). See also
+        //                        `RawTableInner::set_ctrl` function.
+        //
+        // P.S. `h1(hash) &amp; self.bucket_mask` is the same as `hash as usize % self.buckets()` because the number
+        // of buckets is a power of two, and `self.bucket_mask = self.buckets() - 1`.
         </span><span class="kw">let </span>data = Bucket::from_base_index(<span class="self">self</span>.data_end(), <span class="number">0</span>);
         RawIter {
             <span class="comment">// SAFETY: See explanation above
@@ -6735,6 +7166,9 @@
     /// state.
     ///
     /// # Safety
+    ///
+    /// The type `T` must be the actual type of the elements stored in the table,
+    /// otherwise calling this function may result in [`undefined behavior`].
     ///
     /// If `T` is a type that should be dropped and **the table is not empty**,
     /// calling this function more than once results in [`undefined behavior`].
@@ -6787,6 +7221,8 @@
     ///
     /// * Calling this function more than once;
     ///
+    /// * The type `T` must be the actual type of the elements stored in the table.
+    ///
     /// * The `alloc` must be the same [`Allocator`] as the `Allocator` that was used
     ///   to allocate this table.
     ///
@@ -6826,14 +7262,117 @@
         }
     }
 
-    <span class="attr">#[inline]
+    <span class="doccomment">/// Returns a pointer to an element in the table (convenience for
+    /// `Bucket::from_base_index(self.data_end::&lt;T&gt;(), index)`).
+    ///
+    /// The caller must ensure that the `RawTableInner` outlives the returned [`Bucket&lt;T&gt;`],
+    /// otherwise using it may result in [`undefined behavior`].
+    ///
+    /// # Safety
+    ///
+    /// If `mem::size_of::&lt;T&gt;() != 0`, then the safety rules are directly derived from the
+    /// safety rules of the [`Bucket::from_base_index`] function. Therefore, when calling
+    /// this function, the following safety rules must be observed:
+    ///
+    /// * The table must already be allocated;
+    ///
+    /// * The `index` must not be greater than the number returned by the [`RawTableInner::buckets`]
+    ///   function, i.e. `(index + 1) &lt;= self.buckets()`.
+    ///
+    /// * The type `T` must be the actual type of the elements stored in the table, otherwise
+    ///   using the returned [`Bucket`] may result in [`undefined behavior`].
+    ///
+    /// It is safe to call this function with index of zero (`index == 0`) on a table that has
+    /// not been allocated, but using the returned [`Bucket`] results in [`undefined behavior`].
+    ///
+    /// If `mem::size_of::&lt;T&gt;() == 0`, then the only requirement is that the `index` must
+    /// not be greater than the number returned by the [`RawTable::buckets`] function, i.e.
+    /// `(index + 1) &lt;= self.buckets()`.
+    ///
+    /// ```none
+    /// If mem::size_of::&lt;T&gt;() != 0 then return a pointer to the `element` in the `data part` of the table
+    /// (we start counting from &quot;0&quot;, so that in the expression T[n], the &quot;n&quot; index actually one less than
+    /// the &quot;buckets&quot; number of our `RawTableInner`, i.e. &quot;n = RawTableInner::buckets() - 1&quot;):
+    ///
+    ///           `table.bucket(3).as_ptr()` returns a pointer that points here in the `data`
+    ///           part of the `RawTableInner`, i.e. to the start of T3 (see [`Bucket::as_ptr`])
+    ///                  |
+    ///                  |               `base = table.data_end::&lt;T&gt;()` points here
+    ///                  |               (to the start of CT0 or to the end of T0)
+    ///                  v                 v
+    /// [Pad], T_n, ..., |T3|, T2, T1, T0, |CT0, CT1, CT2, CT3, ..., CT_n, CTa_0, CTa_1, ..., CTa_m
+    ///                     ^                                              \__________  __________/
+    ///        `table.bucket(3)` returns a pointer that points                        \/
+    ///         here in the `data` part of the `RawTableInner`             additional control bytes
+    ///         (to the end of T3)                                          `m = Group::WIDTH - 1`
+    ///
+    /// where: T0...T_n  - our stored data;
+    ///        CT0...CT_n - control bytes or metadata for `data`;
+    ///        CTa_0...CTa_m - additional control bytes (so that the search with loading `Group` bytes from
+    ///                        the heap works properly, even if the result of `h1(hash) &amp; self.bucket_mask`
+    ///                        is equal to `self.bucket_mask`). See also `RawTableInner::set_ctrl` function.
+    ///
+    /// P.S. `h1(hash) &amp; self.bucket_mask` is the same as `hash as usize % self.buckets()` because the number
+    /// of buckets is a power of two, and `self.bucket_mask = self.buckets() - 1`.
+    /// ```
+    ///
+    /// [`Bucket::from_base_index`]: Bucket::from_base_index
+    /// [`RawTableInner::buckets`]: RawTableInner::buckets
+    /// [`undefined behavior`]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    </span><span class="attr">#[inline]
     </span><span class="kw">unsafe fn </span>bucket&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, index: usize) -&gt; Bucket&lt;T&gt; {
         <span class="macro">debug_assert_ne!</span>(<span class="self">self</span>.bucket_mask, <span class="number">0</span>);
         <span class="macro">debug_assert!</span>(index &lt; <span class="self">self</span>.buckets());
         Bucket::from_base_index(<span class="self">self</span>.data_end(), index)
     }
 
-    <span class="attr">#[inline]
+    <span class="doccomment">/// Returns a raw `*mut u8` pointer to the start of the `data` element in the table
+    /// (convenience for `self.data_end::&lt;u8&gt;().as_ptr().sub((index + 1) * size_of)`).
+    ///
+    /// The caller must ensure that the `RawTableInner` outlives the returned `*mut u8`,
+    /// otherwise using it may result in [`undefined behavior`].
+    ///
+    /// # Safety
+    ///
+    /// If any of the following conditions are violated, the result is [`undefined behavior`]:
+    ///
+    /// * The table must already be allocated;
+    ///
+    /// * The `index` must not be greater than the number returned by the [`RawTableInner::buckets`]
+    ///   function, i.e. `(index + 1) &lt;= self.buckets()`;
+    ///
+    /// * The `size_of` must be equal to the size of the elements stored in the table;
+    ///
+    /// ```none
+    /// If mem::size_of::&lt;T&gt;() != 0 then return a pointer to the `element` in the `data part` of the table
+    /// (we start counting from &quot;0&quot;, so that in the expression T[n], the &quot;n&quot; index actually one less than
+    /// the &quot;buckets&quot; number of our `RawTableInner`, i.e. &quot;n = RawTableInner::buckets() - 1&quot;):
+    ///
+    ///           `table.bucket_ptr(3, mem::size_of::&lt;T&gt;())` returns a pointer that points here in the
+    ///           `data` part of the `RawTableInner`, i.e. to the start of T3
+    ///                  |
+    ///                  |               `base = table.data_end::&lt;u8&gt;()` points here
+    ///                  |               (to the start of CT0 or to the end of T0)
+    ///                  v                 v
+    /// [Pad], T_n, ..., |T3|, T2, T1, T0, |CT0, CT1, CT2, CT3, ..., CT_n, CTa_0, CTa_1, ..., CTa_m
+    ///                                                                    \__________  __________/
+    ///                                                                               \/
+    ///                                                                    additional control bytes
+    ///                                                                     `m = Group::WIDTH - 1`
+    ///
+    /// where: T0...T_n  - our stored data;
+    ///        CT0...CT_n - control bytes or metadata for `data`;
+    ///        CTa_0...CTa_m - additional control bytes (so that the search with loading `Group` bytes from
+    ///                        the heap works properly, even if the result of `h1(hash) &amp; self.bucket_mask`
+    ///                        is equal to `self.bucket_mask`). See also `RawTableInner::set_ctrl` function.
+    ///
+    /// P.S. `h1(hash) &amp; self.bucket_mask` is the same as `hash as usize % self.buckets()` because the number
+    /// of buckets is a power of two, and `self.bucket_mask = self.buckets() - 1`.
+    /// ```
+    ///
+    /// [`RawTableInner::buckets`]: RawTableInner::buckets
+    /// [`undefined behavior`]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    </span><span class="attr">#[inline]
     </span><span class="kw">unsafe fn </span>bucket_ptr(<span class="kw-2">&amp;</span><span class="self">self</span>, index: usize, size_of: usize) -&gt; <span class="kw-2">*mut </span>u8 {
         <span class="macro">debug_assert_ne!</span>(<span class="self">self</span>.bucket_mask, <span class="number">0</span>);
         <span class="macro">debug_assert!</span>(index &lt; <span class="self">self</span>.buckets());
@@ -6841,9 +7380,47 @@
         base.sub((index + <span class="number">1</span>) * size_of)
     }
 
-    <span class="attr">#[inline]
-    </span><span class="kw">unsafe fn </span>data_end&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; NonNull&lt;T&gt; {
-        NonNull::new_unchecked(<span class="self">self</span>.ctrl.as_ptr().cast())
+    <span class="doccomment">/// Returns pointer to one past last `data` element in the the table as viewed from
+    /// the start point of the allocation (convenience for `self.ctrl.cast()`).
+    ///
+    /// This function actually returns a pointer to the end of the `data element` at
+    /// index &quot;0&quot; (zero).
+    ///
+    /// The caller must ensure that the `RawTableInner` outlives the returned [`NonNull&lt;T&gt;`],
+    /// otherwise using it may result in [`undefined behavior`].
+    ///
+    /// # Note
+    ///
+    /// The type `T` must be the actual type of the elements stored in the table, otherwise
+    /// using the returned [`NonNull&lt;T&gt;`] may result in [`undefined behavior`].
+    ///
+    /// ```none
+    ///                        `table.data_end::&lt;T&gt;()` returns pointer that points here
+    ///                        (to the end of `T0`)
+    ///                          ∨
+    /// [Pad], T_n, ..., T1, T0, |CT0, CT1, ..., CT_n|, CTa_0, CTa_1, ..., CTa_m
+    ///                           \________  ________/
+    ///                                    \/
+    ///       `n = buckets - 1`, i.e. `RawTableInner::buckets() - 1`
+    ///
+    /// where: T0...T_n  - our stored data;
+    ///        CT0...CT_n - control bytes or metadata for `data`.
+    ///        CTa_0...CTa_m - additional control bytes, where `m = Group::WIDTH - 1` (so that the search
+    ///                        with loading `Group` bytes from the heap works properly, even if the result
+    ///                        of `h1(hash) &amp; self.bucket_mask` is equal to `self.bucket_mask`). See also
+    ///                        `RawTableInner::set_ctrl` function.
+    ///
+    /// P.S. `h1(hash) &amp; self.bucket_mask` is the same as `hash as usize % self.buckets()` because the number
+    /// of buckets is a power of two, and `self.bucket_mask = self.buckets() - 1`.
+    /// ```
+    ///
+    /// [`undefined behavior`]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    </span><span class="attr">#[inline]
+    </span><span class="kw">fn </span>data_end&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; NonNull&lt;T&gt; {
+        <span class="kw">unsafe </span>{
+            <span class="comment">// SAFETY: `self.ctrl` is `NonNull`, so casting it is safe
+            </span>NonNull::new_unchecked(<span class="self">self</span>.ctrl.as_ptr().cast())
+        }
     }
 
     <span class="doccomment">/// Returns an iterator-like object for a probe sequence on the table.
@@ -7236,7 +7813,7 @@
         // [Pad], T_n, ..., T1, T0, |CT0, CT1, ..., CT_n|, Group::WIDTH
         //                           \________  ________/
         //                                    \/
-        //       `n = buckets - 1`, i.e. `RawIndexTableInner::buckets() - 1`
+        //       `n = buckets - 1`, i.e. `RawTableInner::buckets() - 1`
         //
         // where: T0...T_n  - our stored data;
         //        CT0...CT_n - control bytes or metadata for `data`.
@@ -7478,7 +8055,7 @@
     ///
     /// # Note
     ///
-    /// This function must be called only after [`drop_elements`](RawTable::drop_elements),
+    /// This function must be called only after [`drop_elements`](RawTableInner::drop_elements),
     /// else it can lead to leaking of memory. Also calling this function automatically
     /// makes invalid (dangling) all instances of buckets ([`Bucket`]) and makes invalid
     /// (dangling) the `ctrl` field of the table.
@@ -7999,6 +8576,7 @@
     ///
     /// * The `len` must be a power of two.
     ///
+    /// [valid]: https://doc.rust-lang.org/std/ptr/index.html#safety
     /// [`undefined behavior`]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
     </span><span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
     </span><span class="kw">unsafe fn </span>new(ctrl: <span class="kw-2">*const </span>u8, data: Bucket&lt;T&gt;, len: usize) -&gt; <span class="self">Self </span>{
@@ -8083,6 +8661,85 @@
             // than the group size where the trailing control bytes are all
             // EMPTY. On larger tables self.end is guaranteed to be aligned
             // to the group size (since tables are power-of-two sized).
+            </span><span class="self">self</span>.current_group = Group::load_aligned(<span class="self">self</span>.next_ctrl).match_full().into_iter();
+            <span class="self">self</span>.data = <span class="self">self</span>.data.next_n(Group::WIDTH);
+            <span class="self">self</span>.next_ctrl = <span class="self">self</span>.next_ctrl.add(Group::WIDTH);
+        }
+    }
+
+    <span class="doccomment">/// Folds every element into an accumulator by applying an operation,
+    /// returning the final result.
+    ///
+    /// `fold_impl()` takes three arguments: the number of items remaining in
+    /// the iterator, an initial value, and a closure with two arguments: an
+    /// &#39;accumulator&#39;, and an element. The closure returns the value that the
+    /// accumulator should have for the next iteration.
+    ///
+    /// The initial value is the value the accumulator will have on the first call.
+    ///
+    /// After applying this closure to every element of the iterator, `fold_impl()`
+    /// returns the accumulator.
+    ///
+    /// # Safety
+    ///
+    /// If any of the following conditions are violated, the result is
+    /// [`Undefined Behavior`]:
+    ///
+    /// * The [`RawTableInner`] / [`RawTable`] must be alive and not moved,
+    ///   i.e. table outlives the `RawIterRange`;
+    ///
+    /// * The provided `n` value must match the actual number of items
+    ///   in the table.
+    ///
+    /// [`Undefined Behavior`]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    </span><span class="attr">#[allow(clippy::while_let_on_iterator)]
+    #[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
+    </span><span class="kw">unsafe fn </span>fold_impl&lt;F, B&gt;(<span class="kw-2">mut </span><span class="self">self</span>, <span class="kw-2">mut </span>n: usize, <span class="kw-2">mut </span>acc: B, <span class="kw-2">mut </span>f: F) -&gt; B
+    <span class="kw">where
+        </span>F: FnMut(B, Bucket&lt;T&gt;) -&gt; B,
+    {
+        <span class="kw">loop </span>{
+            <span class="kw">while let </span><span class="prelude-val">Some</span>(index) = <span class="self">self</span>.current_group.next() {
+                <span class="comment">// The returned `index` will always be in the range `0..Group::WIDTH`,
+                // so that calling `self.data.next_n(index)` is safe (see detailed explanation below).
+                </span><span class="macro">debug_assert!</span>(n != <span class="number">0</span>);
+                <span class="kw">let </span>bucket = <span class="self">self</span>.data.next_n(index);
+                acc = f(acc, bucket);
+                n -= <span class="number">1</span>;
+            }
+
+            <span class="kw">if </span>n == <span class="number">0 </span>{
+                <span class="kw">return </span>acc;
+            }
+
+            <span class="comment">// SAFETY: The caller of this function ensures that:
+            //
+            // 1. The provided `n` value matches the actual number of items in the table;
+            // 2. The table is alive and did not moved.
+            //
+            // Taking the above into account, we always stay within the bounds, because:
+            //
+            // 1. For tables smaller than the group width (self.buckets() &lt;= Group::WIDTH),
+            //    we will never end up in the given branch, since we should have already
+            //    yielded all the elements of the table.
+            //
+            // 2. For tables larger than the group width. The the number of buckets is a
+            //    power of two (2 ^ n), Group::WIDTH is also power of two (2 ^ k). Sinse
+            //    `(2 ^ n) &gt; (2 ^ k)`, than `(2 ^ n) % (2 ^ k) = 0`. As we start from the
+            //    the start of the array of control bytes, and never try to iterate after
+            //    getting all the elements, the last `self.current_group` will read bytes
+            //    from the `self.buckets() - Group::WIDTH` index.  We know also that
+            //    `self.current_group.next()` will always retun indices within the range
+            //    `0..Group::WIDTH`.
+            //
+            //    Knowing all of the above and taking into account that we are synchronizing
+            //    the `self.data` index with the index we used to read the `self.current_group`,
+            //    the subsequent `self.data.next_n(index)` will always return a bucket with
+            //    an index number less than `self.buckets()`.
+            //
+            //    The last `self.next_ctrl`, whose index would be `self.buckets()`, will never
+            //    actually be read, since we should have already yielded all the elements of
+            //    the table.
             </span><span class="self">self</span>.current_group = Group::load_aligned(<span class="self">self</span>.next_ctrl).match_full().into_iter();
             <span class="self">self</span>.data = <span class="self">self</span>.data.next_n(Group::WIDTH);
             <span class="self">self</span>.next_ctrl = <span class="self">self</span>.next_ctrl.add(Group::WIDTH);
@@ -8310,6 +8967,15 @@
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
         (<span class="self">self</span>.items, <span class="prelude-val">Some</span>(<span class="self">self</span>.items))
+    }
+
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>fold&lt;B, F&gt;(<span class="self">self</span>, init: B, f: F) -&gt; B
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+        F: FnMut(B, <span class="self">Self</span>::Item) -&gt; B,
+    {
+        <span class="kw">unsafe </span>{ <span class="self">self</span>.iter.fold_impl(<span class="self">self</span>.items, init, f) }
     }
 }
 
@@ -8699,6 +9365,28 @@
             }
         }
     }
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>RawExtractIf&lt;<span class="lifetime">&#39;a</span>, T, A: Allocator&gt; {
+    <span class="kw">pub </span>iter: RawIter&lt;T&gt;,
+    <span class="kw">pub </span>table: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>RawTable&lt;T, A&gt;,
+}
+
+<span class="kw">impl</span>&lt;T, A: Allocator&gt; RawExtractIf&lt;<span class="lifetime">&#39;_</span>, T, A&gt; {
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>next&lt;F&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>f: F) -&gt; <span class="prelude-ty">Option</span>&lt;T&gt;
+    <span class="kw">where
+        </span>F: FnMut(<span class="kw-2">&amp;mut </span>T) -&gt; bool,
+    {
+        <span class="kw">unsafe </span>{
+            <span class="kw">for </span>item <span class="kw">in </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.iter {
+                <span class="kw">if </span>f(item.as_mut()) {
+                    <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="self">self</span>.table.remove(item).<span class="number">0</span>);
+                }
+            }
+        }
+        <span class="prelude-val">None
+    </span>}
 }
 
 <span class="attr">#[cfg(test)]

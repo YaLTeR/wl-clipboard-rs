@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.1/src/map.rs`."><title>map.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-9bb858ba049f1f21.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="hashbrown" data-themes="" data-resource-suffix="" data-rustdoc-version="1.72.1 (d5c2e9c34 2023-09-13)" data-channel="1.72.1" data-search-js="search-f6292fe389d70017.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ><script src="../../static.files/storage-59fd9b8ccb335783.js"></script><script defer src="../../static.files/source-script-106908c7a7964ba4.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../hashbrown/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/map.rs`."><title>map.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="hashbrown" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../hashbrown/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -8900,7 +8900,67 @@
 <a href="#8900" id="8900">8900</a>
 <a href="#8901" id="8901">8901</a>
 <a href="#8902" id="8902">8902</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::raw::{Allocator, Bucket, Global, RawDrain, RawIntoIter, RawIter, RawTable};
+<a href="#8903" id="8903">8903</a>
+<a href="#8904" id="8904">8904</a>
+<a href="#8905" id="8905">8905</a>
+<a href="#8906" id="8906">8906</a>
+<a href="#8907" id="8907">8907</a>
+<a href="#8908" id="8908">8908</a>
+<a href="#8909" id="8909">8909</a>
+<a href="#8910" id="8910">8910</a>
+<a href="#8911" id="8911">8911</a>
+<a href="#8912" id="8912">8912</a>
+<a href="#8913" id="8913">8913</a>
+<a href="#8914" id="8914">8914</a>
+<a href="#8915" id="8915">8915</a>
+<a href="#8916" id="8916">8916</a>
+<a href="#8917" id="8917">8917</a>
+<a href="#8918" id="8918">8918</a>
+<a href="#8919" id="8919">8919</a>
+<a href="#8920" id="8920">8920</a>
+<a href="#8921" id="8921">8921</a>
+<a href="#8922" id="8922">8922</a>
+<a href="#8923" id="8923">8923</a>
+<a href="#8924" id="8924">8924</a>
+<a href="#8925" id="8925">8925</a>
+<a href="#8926" id="8926">8926</a>
+<a href="#8927" id="8927">8927</a>
+<a href="#8928" id="8928">8928</a>
+<a href="#8929" id="8929">8929</a>
+<a href="#8930" id="8930">8930</a>
+<a href="#8931" id="8931">8931</a>
+<a href="#8932" id="8932">8932</a>
+<a href="#8933" id="8933">8933</a>
+<a href="#8934" id="8934">8934</a>
+<a href="#8935" id="8935">8935</a>
+<a href="#8936" id="8936">8936</a>
+<a href="#8937" id="8937">8937</a>
+<a href="#8938" id="8938">8938</a>
+<a href="#8939" id="8939">8939</a>
+<a href="#8940" id="8940">8940</a>
+<a href="#8941" id="8941">8941</a>
+<a href="#8942" id="8942">8942</a>
+<a href="#8943" id="8943">8943</a>
+<a href="#8944" id="8944">8944</a>
+<a href="#8945" id="8945">8945</a>
+<a href="#8946" id="8946">8946</a>
+<a href="#8947" id="8947">8947</a>
+<a href="#8948" id="8948">8948</a>
+<a href="#8949" id="8949">8949</a>
+<a href="#8950" id="8950">8950</a>
+<a href="#8951" id="8951">8951</a>
+<a href="#8952" id="8952">8952</a>
+<a href="#8953" id="8953">8953</a>
+<a href="#8954" id="8954">8954</a>
+<a href="#8955" id="8955">8955</a>
+<a href="#8956" id="8956">8956</a>
+<a href="#8957" id="8957">8957</a>
+<a href="#8958" id="8958">8958</a>
+<a href="#8959" id="8959">8959</a>
+<a href="#8960" id="8960">8960</a>
+</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::raw::{
+    Allocator, Bucket, Global, RawDrain, RawExtractIf, RawIntoIter, RawIter, RawTable,
+};
 <span class="kw">use crate</span>::{Equivalent, TryReserveError};
 <span class="kw">use </span>core::borrow::Borrow;
 <span class="kw">use </span>core::fmt::{<span class="self">self</span>, Debug};
@@ -9846,6 +9906,8 @@
     ///
     /// Keeps the allocated memory for reuse.
     ///
+    /// [`retain()`]: HashMap::retain
+    ///
     /// # Examples
     ///
     /// ```
@@ -9879,7 +9941,7 @@
     {
         ExtractIf {
             f,
-            inner: ExtractIfInner {
+            inner: RawExtractIf {
                 iter: <span class="kw">unsafe </span>{ <span class="self">self</span>.table.iter() },
                 table: <span class="kw-2">&amp;mut </span><span class="self">self</span>.table,
             },
@@ -11367,6 +11429,14 @@
     </span><span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
         <span class="self">self</span>.inner.size_hint()
     }
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>fold&lt;B, F&gt;(<span class="self">self</span>, init: B, <span class="kw-2">mut </span>f: F) -&gt; B
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+        F: FnMut(B, <span class="self">Self</span>::Item) -&gt; B,
+    {
+        <span class="self">self</span>.inner.fold(init, |acc, (k, <span class="kw">_</span>)| f(acc, k))
+    }
 }
 
 <span class="kw">impl</span>&lt;K, V, A: Allocator&gt; ExactSizeIterator <span class="kw">for </span>IntoKeys&lt;K, V, A&gt; {
@@ -11428,6 +11498,14 @@
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
         <span class="self">self</span>.inner.size_hint()
+    }
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>fold&lt;B, F&gt;(<span class="self">self</span>, init: B, <span class="kw-2">mut </span>f: F) -&gt; B
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+        F: FnMut(B, <span class="self">Self</span>::Item) -&gt; B,
+    {
+        <span class="self">self</span>.inner.fold(init, |acc, (<span class="kw">_</span>, v)| f(acc, v))
     }
 }
 
@@ -11624,7 +11702,7 @@
     </span>F: FnMut(<span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;mut </span>V) -&gt; bool,
 {
     f: F,
-    inner: ExtractIfInner&lt;<span class="lifetime">&#39;a</span>, K, V, A&gt;,
+    inner: RawExtractIf&lt;<span class="lifetime">&#39;a</span>, (K, V), A&gt;,
 }
 
 <span class="kw">impl</span>&lt;K, V, F, A&gt; Iterator <span class="kw">for </span>ExtractIf&lt;<span class="lifetime">&#39;_</span>, K, V, F, A&gt;
@@ -11636,7 +11714,7 @@
 
     <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
     </span><span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
-        <span class="self">self</span>.inner.next(<span class="kw-2">&amp;mut </span><span class="self">self</span>.f)
+        <span class="self">self</span>.inner.next(|<span class="kw-2">&amp;mut </span>(<span class="kw-2">ref </span>k, <span class="kw-2">ref mut </span>v)| (<span class="self">self</span>.f)(k, v))
     }
 
     <span class="attr">#[inline]
@@ -11646,30 +11724,6 @@
 }
 
 <span class="kw">impl</span>&lt;K, V, F&gt; FusedIterator <span class="kw">for </span>ExtractIf&lt;<span class="lifetime">&#39;_</span>, K, V, F&gt; <span class="kw">where </span>F: FnMut(<span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;mut </span>V) -&gt; bool {}
-
-<span class="doccomment">/// Portions of `ExtractIf` shared with `set::ExtractIf`
-</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>ExtractIfInner&lt;<span class="lifetime">&#39;a</span>, K, V, A: Allocator&gt; {
-    <span class="kw">pub </span>iter: RawIter&lt;(K, V)&gt;,
-    <span class="kw">pub </span>table: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>RawTable&lt;(K, V), A&gt;,
-}
-
-<span class="kw">impl</span>&lt;K, V, A: Allocator&gt; ExtractIfInner&lt;<span class="lifetime">&#39;_</span>, K, V, A&gt; {
-    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
-    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>next&lt;F&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>F) -&gt; <span class="prelude-ty">Option</span>&lt;(K, V)&gt;
-    <span class="kw">where
-        </span>F: FnMut(<span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;mut </span>V) -&gt; bool,
-    {
-        <span class="kw">unsafe </span>{
-            <span class="kw">for </span>item <span class="kw">in </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.iter {
-                <span class="kw">let </span><span class="kw-2">&amp;mut </span>(<span class="kw-2">ref </span>key, <span class="kw-2">ref mut </span>value) = item.as_mut();
-                <span class="kw">if </span>f(key, value) {
-                    <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="self">self</span>.table.remove(item).<span class="number">0</span>);
-                }
-            }
-        }
-        <span class="prelude-val">None
-    </span>}
-}
 
 <span class="doccomment">/// A mutable iterator over the values of a `HashMap` in arbitrary order.
 /// The iterator element type is `&amp;&#39;a mut V`.
@@ -13644,6 +13698,17 @@
     </span><span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
         <span class="self">self</span>.inner.size_hint()
     }
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
+    </span><span class="kw">fn </span>fold&lt;B, F&gt;(<span class="self">self</span>, init: B, <span class="kw-2">mut </span>f: F) -&gt; B
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+        F: FnMut(B, <span class="self">Self</span>::Item) -&gt; B,
+    {
+        <span class="self">self</span>.inner.fold(init, |acc, x| <span class="kw">unsafe </span>{
+            <span class="kw">let </span>(k, v) = x.as_ref();
+            f(acc, (k, v))
+        })
+    }
 }
 <span class="kw">impl</span>&lt;K, V&gt; ExactSizeIterator <span class="kw">for </span>Iter&lt;<span class="lifetime">&#39;_</span>, K, V&gt; {
     <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
@@ -13671,6 +13736,17 @@
     <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
     </span><span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
         <span class="self">self</span>.inner.size_hint()
+    }
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
+    </span><span class="kw">fn </span>fold&lt;B, F&gt;(<span class="self">self</span>, init: B, <span class="kw-2">mut </span>f: F) -&gt; B
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+        F: FnMut(B, <span class="self">Self</span>::Item) -&gt; B,
+    {
+        <span class="self">self</span>.inner.fold(init, |acc, x| <span class="kw">unsafe </span>{
+            <span class="kw">let </span>(k, v) = x.as_mut();
+            f(acc, (k, v))
+        })
     }
 }
 <span class="kw">impl</span>&lt;K, V&gt; ExactSizeIterator <span class="kw">for </span>IterMut&lt;<span class="lifetime">&#39;_</span>, K, V&gt; {
@@ -13702,6 +13778,14 @@
     </span><span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
         <span class="self">self</span>.inner.size_hint()
     }
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
+    </span><span class="kw">fn </span>fold&lt;B, F&gt;(<span class="self">self</span>, init: B, f: F) -&gt; B
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+        F: FnMut(B, <span class="self">Self</span>::Item) -&gt; B,
+    {
+        <span class="self">self</span>.inner.fold(init, f)
+    }
 }
 <span class="kw">impl</span>&lt;K, V, A: Allocator&gt; ExactSizeIterator <span class="kw">for </span>IntoIter&lt;K, V, A&gt; {
     <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
@@ -13732,6 +13816,14 @@
     </span><span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
         <span class="self">self</span>.inner.size_hint()
     }
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
+    </span><span class="kw">fn </span>fold&lt;B, F&gt;(<span class="self">self</span>, init: B, <span class="kw-2">mut </span>f: F) -&gt; B
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+        F: FnMut(B, <span class="self">Self</span>::Item) -&gt; B,
+    {
+        <span class="self">self</span>.inner.fold(init, |acc, (k, <span class="kw">_</span>)| f(acc, k))
+    }
 }
 <span class="kw">impl</span>&lt;K, V&gt; ExactSizeIterator <span class="kw">for </span>Keys&lt;<span class="lifetime">&#39;_</span>, K, V&gt; {
     <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
@@ -13756,6 +13848,14 @@
     </span><span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
         <span class="self">self</span>.inner.size_hint()
     }
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
+    </span><span class="kw">fn </span>fold&lt;B, F&gt;(<span class="self">self</span>, init: B, <span class="kw-2">mut </span>f: F) -&gt; B
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+        F: FnMut(B, <span class="self">Self</span>::Item) -&gt; B,
+    {
+        <span class="self">self</span>.inner.fold(init, |acc, (<span class="kw">_</span>, v)| f(acc, v))
+    }
 }
 <span class="kw">impl</span>&lt;K, V&gt; ExactSizeIterator <span class="kw">for </span>Values&lt;<span class="lifetime">&#39;_</span>, K, V&gt; {
     <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
@@ -13779,6 +13879,14 @@
     <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
     </span><span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
         <span class="self">self</span>.inner.size_hint()
+    }
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
+    </span><span class="kw">fn </span>fold&lt;B, F&gt;(<span class="self">self</span>, init: B, <span class="kw-2">mut </span>f: F) -&gt; B
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+        F: FnMut(B, <span class="self">Self</span>::Item) -&gt; B,
+    {
+        <span class="self">self</span>.inner.fold(init, |acc, (<span class="kw">_</span>, v)| f(acc, v))
     }
 }
 <span class="kw">impl</span>&lt;K, V&gt; ExactSizeIterator <span class="kw">for </span>ValuesMut&lt;<span class="lifetime">&#39;_</span>, K, V&gt; {
@@ -13807,6 +13915,14 @@
     <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
     </span><span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
         <span class="self">self</span>.inner.size_hint()
+    }
+    <span class="attr">#[cfg_attr(feature = <span class="string">&quot;inline-more&quot;</span>, inline)]
+    </span><span class="kw">fn </span>fold&lt;B, F&gt;(<span class="self">self</span>, init: B, f: F) -&gt; B
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+        F: FnMut(B, <span class="self">Self</span>::Item) -&gt; B,
+    {
+        <span class="self">self</span>.inner.fold(init, f)
     }
 }
 <span class="kw">impl</span>&lt;K, V, A: Allocator&gt; ExactSizeIterator <span class="kw">for </span>Drain&lt;<span class="lifetime">&#39;_</span>, K, V, A&gt; {
