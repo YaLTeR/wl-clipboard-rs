@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.25/src/backend/linux_raw/reg.rs`."><title>reg.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../rustix/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.31/src/backend/linux_raw/reg.rs`."><title>reg.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -256,10 +257,11 @@
 <a href="#256" id="256">256</a>
 <a href="#257" id="257">257</a>
 <a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Encapsulation for system call arguments and return values.
 //!
 //! The inline-asm code paths do some amount of reordering of arguments; to
-//! ensure that we don&#39;t accidentally misroute an argument or return value, we
+//! ensure that we don't accidentally misroute an argument or return value, we
 //! use distinct types for each argument index and return value.
 //!
 //! # Safety
@@ -282,7 +284,7 @@
     /// # Safety
     ///
     /// This should be used immediately before the syscall instruction, and the
-    /// returned value shouldn&#39;t be used for any other purpose.
+    /// returned value shouldn't be used for any other purpose.
     </span><span class="attr">#[must_use]
     </span><span class="kw">unsafe fn </span>to_asm(<span class="self">self</span>) -&gt; <span class="kw-2">*mut </span>Opaque;
 }
@@ -294,7 +296,7 @@
     /// # Safety
     ///
     /// This should be used immediately after the syscall instruction, and the
-    /// operand value shouldn&#39;t be used for any other purpose.
+    /// operand value shouldn't be used for any other purpose.
     </span><span class="attr">#[must_use]
     </span><span class="kw">unsafe fn </span>from_asm(raw: <span class="kw-2">*mut </span>Opaque) -&gt; <span class="self">Self</span>;
 }
@@ -303,6 +305,7 @@
 /// pointer types. They need a type to point to, so we define a custom private
 /// type, to prevent it from being used for anything else.
 </span><span class="attr">#[repr(transparent)]
+#[allow(dead_code)]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>Opaque(c::c_void);
 
 <span class="comment">// Argument numbers.
@@ -312,9 +315,9 @@
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>A3(());
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>A4(());
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>A5(());
-<span class="attr">#[cfg(any(target_arch = <span class="string">&quot;mips&quot;</span>, target_arch = <span class="string">&quot;mips32r6&quot;</span>))]
+<span class="attr">#[cfg(any(target_arch = <span class="string">"mips"</span>, target_arch = <span class="string">"mips32r6"</span>))]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>A6(());
-<span class="attr">#[cfg(target_arch = <span class="string">&quot;x86&quot;</span>)]
+<span class="attr">#[cfg(target_arch = <span class="string">"x86"</span>)]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>SocketArg;
 
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">trait </span>ArgNumber: private::Sealed {}
@@ -324,9 +327,9 @@
 <span class="kw">impl </span>ArgNumber <span class="kw">for </span>A3 {}
 <span class="kw">impl </span>ArgNumber <span class="kw">for </span>A4 {}
 <span class="kw">impl </span>ArgNumber <span class="kw">for </span>A5 {}
-<span class="attr">#[cfg(any(target_arch = <span class="string">&quot;mips&quot;</span>, target_arch = <span class="string">&quot;mips32r6&quot;</span>))]
+<span class="attr">#[cfg(any(target_arch = <span class="string">"mips"</span>, target_arch = <span class="string">"mips32r6"</span>))]
 </span><span class="kw">impl </span>ArgNumber <span class="kw">for </span>A6 {}
-<span class="attr">#[cfg(target_arch = <span class="string">&quot;x86&quot;</span>)]
+<span class="attr">#[cfg(target_arch = <span class="string">"x86"</span>)]
 </span><span class="kw">impl </span>ArgNumber <span class="kw">for </span>SocketArg {}
 
 <span class="comment">// Return value numbers.
@@ -338,17 +341,17 @@
 <span class="doccomment">/// Syscall arguments use register-sized types. We use a newtype to
 /// discourage accidental misuse of the raw integer values.
 ///
-/// This type doesn&#39;t implement `Clone` or `Copy`; it should be used exactly
-/// once. And it has a lifetime to ensure that it doesn&#39;t outlive any resources
+/// This type doesn't implement `Clone` or `Copy`; it should be used exactly
+/// once. And it has a lifetime to ensure that it doesn't outlive any resources
 /// it might be pointing to.
 </span><span class="attr">#[repr(transparent)]
 #[must_use]
-</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; {
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>ArgReg&lt;<span class="lifetime">'a</span>, Num: ArgNumber&gt; {
     raw: <span class="kw-2">*mut </span>Opaque,
-    _phantom: PhantomData&lt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>(), Num)&gt;,
+    _phantom: PhantomData&lt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>(), Num)&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt; ToAsm <span class="kw">for </span>ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Num: ArgNumber&gt; ToAsm <span class="kw">for </span>ArgReg&lt;<span class="lifetime">'a</span>, Num&gt; {
     <span class="attr">#[inline]
     </span><span class="kw">unsafe fn </span>to_asm(<span class="self">self</span>) -&gt; <span class="kw-2">*mut </span>Opaque {
         <span class="self">self</span>.raw
@@ -358,7 +361,7 @@
 <span class="doccomment">/// Syscall return values use register-sized types. We use a newtype to
 /// discourage accidental misuse of the raw integer values.
 ///
-/// This type doesn&#39;t implement `Clone` or `Copy`; it should be used exactly
+/// This type doesn't implement `Clone` or `Copy`; it should be used exactly
 /// once.
 </span><span class="attr">#[repr(transparent)]
 #[must_use]
@@ -412,7 +415,7 @@
         <span class="self">self</span>.raw.cast()
     }
 
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     #[inline]
     </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>decode_u64(<span class="self">self</span>) -&gt; u64 {
         <span class="self">self</span>.decode_usize() <span class="kw">as </span>u64
@@ -462,12 +465,12 @@
 }
 
 <span class="attr">#[repr(transparent)]
-</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>SyscallNumber&lt;<span class="lifetime">&#39;a</span>&gt; {
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>SyscallNumber&lt;<span class="lifetime">'a</span>&gt; {
     nr: usize,
-    _phantom: PhantomData&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>()&gt;,
+    _phantom: PhantomData&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>()&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; ToAsm <span class="kw">for </span>SyscallNumber&lt;<span class="lifetime">&#39;a</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; ToAsm <span class="kw">for </span>SyscallNumber&lt;<span class="lifetime">'a</span>&gt; {
     <span class="attr">#[inline]
     </span><span class="kw">unsafe fn </span>to_asm(<span class="self">self</span>) -&gt; <span class="kw-2">*mut </span>Opaque {
         <span class="self">self</span>.nr <span class="kw">as </span>usize <span class="kw">as </span><span class="kw-2">*mut </span>Opaque
@@ -476,7 +479,7 @@
 
 <span class="doccomment">/// Encode a system call argument as an `ArgReg`.
 </span><span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>raw_arg&lt;<span class="lifetime">&#39;a</span>, Num: ArgNumber&gt;(raw: <span class="kw-2">*mut </span>Opaque) -&gt; ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>raw_arg&lt;<span class="lifetime">'a</span>, Num: ArgNumber&gt;(raw: <span class="kw-2">*mut </span>Opaque) -&gt; ArgReg&lt;<span class="lifetime">'a</span>, Num&gt; {
     ArgReg {
         raw,
         _phantom: PhantomData,
@@ -485,7 +488,7 @@
 
 <span class="doccomment">/// Encode a system call number (a `__NR_*` constant) as a `SyscallNumber`.
 </span><span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const fn </span>nr&lt;<span class="lifetime">&#39;a</span>&gt;(nr: u32) -&gt; SyscallNumber&lt;<span class="lifetime">&#39;a</span>&gt; {
+</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const fn </span>nr&lt;<span class="lifetime">'a</span>&gt;(nr: u32) -&gt; SyscallNumber&lt;<span class="lifetime">'a</span>&gt; {
     SyscallNumber {
         nr: nr <span class="kw">as </span>usize,
         _phantom: PhantomData,
@@ -499,18 +502,18 @@
     <span class="kw">pub trait </span>Sealed {}
 
     <span class="comment">// Implement for those same types, but no others.
-    </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Num: <span class="kw">super</span>::ArgNumber&gt; Sealed <span class="kw">for </span><span class="kw">super</span>::ArgReg&lt;<span class="lifetime">&#39;a</span>, Num&gt; {}
+    </span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Num: <span class="kw">super</span>::ArgNumber&gt; Sealed <span class="kw">for </span><span class="kw">super</span>::ArgReg&lt;<span class="lifetime">'a</span>, Num&gt; {}
     <span class="kw">impl</span>&lt;Num: <span class="kw">super</span>::RetNumber&gt; Sealed <span class="kw">for </span><span class="kw">super</span>::RetReg&lt;Num&gt; {}
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Sealed <span class="kw">for </span><span class="kw">super</span>::SyscallNumber&lt;<span class="lifetime">&#39;a</span>&gt; {}
+    <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Sealed <span class="kw">for </span><span class="kw">super</span>::SyscallNumber&lt;<span class="lifetime">'a</span>&gt; {}
     <span class="kw">impl </span>Sealed <span class="kw">for </span><span class="kw">super</span>::A0 {}
     <span class="kw">impl </span>Sealed <span class="kw">for </span><span class="kw">super</span>::A1 {}
     <span class="kw">impl </span>Sealed <span class="kw">for </span><span class="kw">super</span>::A2 {}
     <span class="kw">impl </span>Sealed <span class="kw">for </span><span class="kw">super</span>::A3 {}
     <span class="kw">impl </span>Sealed <span class="kw">for </span><span class="kw">super</span>::A4 {}
     <span class="kw">impl </span>Sealed <span class="kw">for </span><span class="kw">super</span>::A5 {}
-    <span class="attr">#[cfg(any(target_arch = <span class="string">&quot;mips&quot;</span>, target_arch = <span class="string">&quot;mips32r6&quot;</span>))]
+    <span class="attr">#[cfg(any(target_arch = <span class="string">"mips"</span>, target_arch = <span class="string">"mips32r6"</span>))]
     </span><span class="kw">impl </span>Sealed <span class="kw">for </span><span class="kw">super</span>::A6 {}
-    <span class="attr">#[cfg(target_arch = <span class="string">&quot;x86&quot;</span>)]
+    <span class="attr">#[cfg(target_arch = <span class="string">"x86"</span>)]
     </span><span class="kw">impl </span>Sealed <span class="kw">for </span><span class="kw">super</span>::SocketArg {}
     <span class="kw">impl </span>Sealed <span class="kw">for </span><span class="kw">super</span>::R0 {}
 }

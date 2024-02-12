@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/petgraph-0.6.4/src/visit/filter.rs`."><title>filter.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="petgraph" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../petgraph/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/petgraph-0.6.4/src/visit/filter.rs`."><title>filter.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="petgraph" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -630,7 +631,7 @@
     }
 }
 
-<span class="comment">// Can&#39;t express these as a generic impl over all references since that would conflict with the
+<span class="comment">// Can't express these as a generic impl over all references since that would conflict with the
 // impl for Fn.
 </span><span class="kw">impl</span>&lt;N&gt; FilterNode&lt;N&gt; <span class="kw">for </span><span class="kw-2">&amp;</span>FixedBitSet
 <span class="kw">where
@@ -673,12 +674,12 @@
     <span class="kw">type </span>EdgeId = G::EdgeId;
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; IntoNeighbors <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>NodeFiltered&lt;G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; IntoNeighbors <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>NodeFiltered&lt;G, F&gt;
 <span class="kw">where
     </span>G: IntoNeighbors,
     F: FilterNode&lt;G::NodeId&gt;,
 {
-    <span class="kw">type </span>Neighbors = NodeFilteredNeighbors&lt;<span class="lifetime">&#39;a</span>, G::Neighbors, F&gt;;
+    <span class="kw">type </span>Neighbors = NodeFilteredNeighbors&lt;<span class="lifetime">'a</span>, G::Neighbors, F&gt;;
     <span class="kw">fn </span>neighbors(<span class="self">self</span>, n: G::NodeId) -&gt; <span class="self">Self</span>::Neighbors {
         NodeFilteredNeighbors {
             include_source: <span class="self">self</span>.<span class="number">1</span>.include_node(n),
@@ -690,13 +691,13 @@
 
 <span class="doccomment">/// A filtered neighbors iterator.
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>NodeFilteredNeighbors&lt;<span class="lifetime">&#39;a</span>, I, F: <span class="lifetime">&#39;a</span>&gt; {
+</span><span class="kw">pub struct </span>NodeFilteredNeighbors&lt;<span class="lifetime">'a</span>, I, F: <span class="lifetime">'a</span>&gt; {
     include_source: bool,
     iter: I,
-    f: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>F,
+    f: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>F,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, I, F&gt; Iterator <span class="kw">for </span>NodeFilteredNeighbors&lt;<span class="lifetime">&#39;a</span>, I, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, I, F&gt; Iterator <span class="kw">for </span>NodeFilteredNeighbors&lt;<span class="lifetime">'a</span>, I, F&gt;
 <span class="kw">where
     </span>I: Iterator,
     I::Item: Copy,
@@ -717,12 +718,12 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; IntoNeighborsDirected <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>NodeFiltered&lt;G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; IntoNeighborsDirected <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>NodeFiltered&lt;G, F&gt;
 <span class="kw">where
     </span>G: IntoNeighborsDirected,
     F: FilterNode&lt;G::NodeId&gt;,
 {
-    <span class="kw">type </span>NeighborsDirected = NodeFilteredNeighbors&lt;<span class="lifetime">&#39;a</span>, G::NeighborsDirected, F&gt;;
+    <span class="kw">type </span>NeighborsDirected = NodeFilteredNeighbors&lt;<span class="lifetime">'a</span>, G::NeighborsDirected, F&gt;;
     <span class="kw">fn </span>neighbors_directed(<span class="self">self</span>, n: G::NodeId, dir: Direction) -&gt; <span class="self">Self</span>::NeighborsDirected {
         NodeFilteredNeighbors {
             include_source: <span class="self">self</span>.<span class="number">1</span>.include_node(n),
@@ -732,12 +733,12 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; IntoNodeIdentifiers <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>NodeFiltered&lt;G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; IntoNodeIdentifiers <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>NodeFiltered&lt;G, F&gt;
 <span class="kw">where
     </span>G: IntoNodeIdentifiers,
     F: FilterNode&lt;G::NodeId&gt;,
 {
-    <span class="kw">type </span>NodeIdentifiers = NodeFilteredNeighbors&lt;<span class="lifetime">&#39;a</span>, G::NodeIdentifiers, F&gt;;
+    <span class="kw">type </span>NodeIdentifiers = NodeFilteredNeighbors&lt;<span class="lifetime">'a</span>, G::NodeIdentifiers, F&gt;;
     <span class="kw">fn </span>node_identifiers(<span class="self">self</span>) -&gt; <span class="self">Self</span>::NodeIdentifiers {
         NodeFilteredNeighbors {
             include_source: <span class="bool-val">true</span>,
@@ -747,13 +748,13 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; IntoNodeReferences <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>NodeFiltered&lt;G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; IntoNodeReferences <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>NodeFiltered&lt;G, F&gt;
 <span class="kw">where
     </span>G: IntoNodeReferences,
     F: FilterNode&lt;G::NodeId&gt;,
 {
     <span class="kw">type </span>NodeRef = G::NodeRef;
-    <span class="kw">type </span>NodeReferences = NodeFilteredNodes&lt;<span class="lifetime">&#39;a</span>, G::NodeReferences, F&gt;;
+    <span class="kw">type </span>NodeReferences = NodeFilteredNodes&lt;<span class="lifetime">'a</span>, G::NodeReferences, F&gt;;
     <span class="kw">fn </span>node_references(<span class="self">self</span>) -&gt; <span class="self">Self</span>::NodeReferences {
         NodeFilteredNodes {
             include_source: <span class="bool-val">true</span>,
@@ -765,13 +766,13 @@
 
 <span class="doccomment">/// A filtered node references iterator.
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>NodeFilteredNodes&lt;<span class="lifetime">&#39;a</span>, I, F: <span class="lifetime">&#39;a</span>&gt; {
+</span><span class="kw">pub struct </span>NodeFilteredNodes&lt;<span class="lifetime">'a</span>, I, F: <span class="lifetime">'a</span>&gt; {
     include_source: bool,
     iter: I,
-    f: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>F,
+    f: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>F,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, I, F&gt; Iterator <span class="kw">for </span>NodeFilteredNodes&lt;<span class="lifetime">&#39;a</span>, I, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, I, F&gt; Iterator <span class="kw">for </span>NodeFilteredNodes&lt;<span class="lifetime">'a</span>, I, F&gt;
 <span class="kw">where
     </span>I: Iterator,
     I::Item: Copy + NodeRef,
@@ -792,13 +793,13 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; IntoEdgeReferences <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>NodeFiltered&lt;G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; IntoEdgeReferences <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>NodeFiltered&lt;G, F&gt;
 <span class="kw">where
     </span>G: IntoEdgeReferences,
     F: FilterNode&lt;G::NodeId&gt;,
 {
     <span class="kw">type </span>EdgeRef = G::EdgeRef;
-    <span class="kw">type </span>EdgeReferences = NodeFilteredEdgeReferences&lt;<span class="lifetime">&#39;a</span>, G, G::EdgeReferences, F&gt;;
+    <span class="kw">type </span>EdgeReferences = NodeFilteredEdgeReferences&lt;<span class="lifetime">'a</span>, G, G::EdgeReferences, F&gt;;
     <span class="kw">fn </span>edge_references(<span class="self">self</span>) -&gt; <span class="self">Self</span>::EdgeReferences {
         NodeFilteredEdgeReferences {
             graph: PhantomData,
@@ -810,13 +811,13 @@
 
 <span class="doccomment">/// A filtered edges iterator.
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>NodeFilteredEdgeReferences&lt;<span class="lifetime">&#39;a</span>, G, I, F: <span class="lifetime">&#39;a</span>&gt; {
+</span><span class="kw">pub struct </span>NodeFilteredEdgeReferences&lt;<span class="lifetime">'a</span>, G, I, F: <span class="lifetime">'a</span>&gt; {
     graph: PhantomData&lt;G&gt;,
     iter: I,
-    f: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>F,
+    f: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>F,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, I, F&gt; Iterator <span class="kw">for </span>NodeFilteredEdgeReferences&lt;<span class="lifetime">&#39;a</span>, G, I, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, I, F&gt; Iterator <span class="kw">for </span>NodeFilteredEdgeReferences&lt;<span class="lifetime">'a</span>, G, I, F&gt;
 <span class="kw">where
     </span>F: FilterNode&lt;G::NodeId&gt;,
     G: IntoEdgeReferences,
@@ -834,12 +835,12 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; IntoEdges <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>NodeFiltered&lt;G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; IntoEdges <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>NodeFiltered&lt;G, F&gt;
 <span class="kw">where
     </span>G: IntoEdges,
     F: FilterNode&lt;G::NodeId&gt;,
 {
-    <span class="kw">type </span>Edges = NodeFilteredEdges&lt;<span class="lifetime">&#39;a</span>, G, G::Edges, F&gt;;
+    <span class="kw">type </span>Edges = NodeFilteredEdges&lt;<span class="lifetime">'a</span>, G, G::Edges, F&gt;;
     <span class="kw">fn </span>edges(<span class="self">self</span>, a: G::NodeId) -&gt; <span class="self">Self</span>::Edges {
         NodeFilteredEdges {
             graph: PhantomData,
@@ -851,12 +852,12 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; IntoEdgesDirected <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>NodeFiltered&lt;G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; IntoEdgesDirected <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>NodeFiltered&lt;G, F&gt;
 <span class="kw">where
     </span>G: IntoEdgesDirected,
     F: FilterNode&lt;G::NodeId&gt;,
 {
-    <span class="kw">type </span>EdgesDirected = NodeFilteredEdges&lt;<span class="lifetime">&#39;a</span>, G, G::EdgesDirected, F&gt;;
+    <span class="kw">type </span>EdgesDirected = NodeFilteredEdges&lt;<span class="lifetime">'a</span>, G, G::EdgesDirected, F&gt;;
     <span class="kw">fn </span>edges_directed(<span class="self">self</span>, a: G::NodeId, dir: Direction) -&gt; <span class="self">Self</span>::EdgesDirected {
         NodeFilteredEdges {
             graph: PhantomData,
@@ -870,15 +871,15 @@
 
 <span class="doccomment">/// A filtered edges iterator.
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>NodeFilteredEdges&lt;<span class="lifetime">&#39;a</span>, G, I, F: <span class="lifetime">&#39;a</span>&gt; {
+</span><span class="kw">pub struct </span>NodeFilteredEdges&lt;<span class="lifetime">'a</span>, G, I, F: <span class="lifetime">'a</span>&gt; {
     graph: PhantomData&lt;G&gt;,
     include_source: bool,
     iter: I,
-    f: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>F,
+    f: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>F,
     dir: Direction,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, I, F&gt; Iterator <span class="kw">for </span>NodeFilteredEdges&lt;<span class="lifetime">&#39;a</span>, G, I, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, I, F&gt; Iterator <span class="kw">for </span>NodeFilteredEdges&lt;<span class="lifetime">'a</span>, G, I, F&gt;
 <span class="kw">where
     </span>F: FilterNode&lt;G::NodeId&gt;,
     G: IntoEdges,
@@ -980,12 +981,12 @@
     <span class="kw">type </span>EdgeId = G::EdgeId;
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; IntoNeighbors <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>EdgeFiltered&lt;G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; IntoNeighbors <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>EdgeFiltered&lt;G, F&gt;
 <span class="kw">where
     </span>G: IntoEdges,
     F: FilterEdge&lt;G::EdgeRef&gt;,
 {
-    <span class="kw">type </span>Neighbors = EdgeFilteredNeighbors&lt;<span class="lifetime">&#39;a</span>, G, F&gt;;
+    <span class="kw">type </span>Neighbors = EdgeFilteredNeighbors&lt;<span class="lifetime">'a</span>, G, F&gt;;
     <span class="kw">fn </span>neighbors(<span class="self">self</span>, n: G::NodeId) -&gt; <span class="self">Self</span>::Neighbors {
         EdgeFilteredNeighbors {
             iter: <span class="self">self</span>.<span class="number">0</span>.edges(n),
@@ -994,12 +995,12 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; IntoNeighborsDirected <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>EdgeFiltered&lt;G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; IntoNeighborsDirected <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>EdgeFiltered&lt;G, F&gt;
 <span class="kw">where
     </span>G: IntoEdgesDirected,
     F: FilterEdge&lt;G::EdgeRef&gt;,
 {
-    <span class="kw">type </span>NeighborsDirected = EdgeFilteredNeighborsDirected&lt;<span class="lifetime">&#39;a</span>, G, F&gt;;
+    <span class="kw">type </span>NeighborsDirected = EdgeFilteredNeighborsDirected&lt;<span class="lifetime">'a</span>, G, F&gt;;
     <span class="kw">fn </span>neighbors_directed(<span class="self">self</span>, n: G::NodeId, dir: Direction) -&gt; <span class="self">Self</span>::NeighborsDirected {
         EdgeFilteredNeighborsDirected {
             iter: <span class="self">self</span>.<span class="number">0</span>.edges_directed(n, dir),
@@ -1011,15 +1012,15 @@
 
 <span class="doccomment">/// A filtered neighbors iterator.
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>EdgeFilteredNeighbors&lt;<span class="lifetime">&#39;a</span>, G, F: <span class="lifetime">&#39;a</span>&gt;
+</span><span class="kw">pub struct </span>EdgeFilteredNeighbors&lt;<span class="lifetime">'a</span>, G, F: <span class="lifetime">'a</span>&gt;
 <span class="kw">where
     </span>G: IntoEdges,
 {
     iter: G::Edges,
-    f: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>F,
+    f: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>F,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; Iterator <span class="kw">for </span>EdgeFilteredNeighbors&lt;<span class="lifetime">&#39;a</span>, G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; Iterator <span class="kw">for </span>EdgeFilteredNeighbors&lt;<span class="lifetime">'a</span>, G, F&gt;
 <span class="kw">where
     </span>F: FilterEdge&lt;G::EdgeRef&gt;,
     G: IntoEdges,
@@ -1043,13 +1044,13 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; IntoEdgeReferences <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>EdgeFiltered&lt;G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; IntoEdgeReferences <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>EdgeFiltered&lt;G, F&gt;
 <span class="kw">where
     </span>G: IntoEdgeReferences,
     F: FilterEdge&lt;G::EdgeRef&gt;,
 {
     <span class="kw">type </span>EdgeRef = G::EdgeRef;
-    <span class="kw">type </span>EdgeReferences = EdgeFilteredEdges&lt;<span class="lifetime">&#39;a</span>, G, G::EdgeReferences, F&gt;;
+    <span class="kw">type </span>EdgeReferences = EdgeFilteredEdges&lt;<span class="lifetime">'a</span>, G, G::EdgeReferences, F&gt;;
     <span class="kw">fn </span>edge_references(<span class="self">self</span>) -&gt; <span class="self">Self</span>::EdgeReferences {
         EdgeFilteredEdges {
             graph: PhantomData,
@@ -1059,12 +1060,12 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; IntoEdges <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>EdgeFiltered&lt;G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; IntoEdges <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>EdgeFiltered&lt;G, F&gt;
 <span class="kw">where
     </span>G: IntoEdges,
     F: FilterEdge&lt;G::EdgeRef&gt;,
 {
-    <span class="kw">type </span>Edges = EdgeFilteredEdges&lt;<span class="lifetime">&#39;a</span>, G, G::Edges, F&gt;;
+    <span class="kw">type </span>Edges = EdgeFilteredEdges&lt;<span class="lifetime">'a</span>, G, G::Edges, F&gt;;
     <span class="kw">fn </span>edges(<span class="self">self</span>, n: G::NodeId) -&gt; <span class="self">Self</span>::Edges {
         EdgeFilteredEdges {
             graph: PhantomData,
@@ -1074,12 +1075,12 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; IntoEdgesDirected <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>EdgeFiltered&lt;G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; IntoEdgesDirected <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>EdgeFiltered&lt;G, F&gt;
 <span class="kw">where
     </span>G: IntoEdgesDirected,
     F: FilterEdge&lt;G::EdgeRef&gt;,
 {
-    <span class="kw">type </span>EdgesDirected = EdgeFilteredEdges&lt;<span class="lifetime">&#39;a</span>, G, G::EdgesDirected, F&gt;;
+    <span class="kw">type </span>EdgesDirected = EdgeFilteredEdges&lt;<span class="lifetime">'a</span>, G, G::EdgesDirected, F&gt;;
 
     <span class="kw">fn </span>edges_directed(<span class="self">self</span>, n: G::NodeId, dir: Direction) -&gt; <span class="self">Self</span>::EdgesDirected {
         EdgeFilteredEdges {
@@ -1092,13 +1093,13 @@
 
 <span class="doccomment">/// A filtered edges iterator.
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>EdgeFilteredEdges&lt;<span class="lifetime">&#39;a</span>, G, I, F: <span class="lifetime">&#39;a</span>&gt; {
+</span><span class="kw">pub struct </span>EdgeFilteredEdges&lt;<span class="lifetime">'a</span>, G, I, F: <span class="lifetime">'a</span>&gt; {
     graph: PhantomData&lt;G&gt;,
     iter: I,
-    f: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>F,
+    f: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>F,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, I, F&gt; Iterator <span class="kw">for </span>EdgeFilteredEdges&lt;<span class="lifetime">&#39;a</span>, G, I, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, I, F&gt; Iterator <span class="kw">for </span>EdgeFilteredEdges&lt;<span class="lifetime">'a</span>, G, I, F&gt;
 <span class="kw">where
     </span>F: FilterEdge&lt;G::EdgeRef&gt;,
     G: IntoEdgeReferences,
@@ -1117,16 +1118,16 @@
 
 <span class="doccomment">/// A filtered neighbors-directed iterator.
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>EdgeFilteredNeighborsDirected&lt;<span class="lifetime">&#39;a</span>, G, F: <span class="lifetime">&#39;a</span>&gt;
+</span><span class="kw">pub struct </span>EdgeFilteredNeighborsDirected&lt;<span class="lifetime">'a</span>, G, F: <span class="lifetime">'a</span>&gt;
 <span class="kw">where
     </span>G: IntoEdgesDirected,
 {
     iter: G::EdgesDirected,
-    f: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>F,
+    f: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>F,
     from: G::NodeId,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G, F&gt; Iterator <span class="kw">for </span>EdgeFilteredNeighborsDirected&lt;<span class="lifetime">&#39;a</span>, G, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G, F&gt; Iterator <span class="kw">for </span>EdgeFilteredNeighborsDirected&lt;<span class="lifetime">'a</span>, G, F&gt;
 <span class="kw">where
     </span>F: FilterEdge&lt;G::EdgeRef&gt;,
     G: IntoEdgesDirected,
@@ -1157,8 +1158,8 @@
 
 <span class="macro">Data! </span>{delegate_impl [[G, F], G, EdgeFiltered&lt;G, F&gt;, access0]}
 <span class="macro">GraphProp! </span>{delegate_impl [[G, F], G, EdgeFiltered&lt;G, F&gt;, access0]}
-<span class="macro">IntoNodeIdentifiers! </span>{delegate_impl [[<span class="lifetime">&#39;a</span>, G, F], G, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>EdgeFiltered&lt;G, F&gt;, access0]}
-<span class="macro">IntoNodeReferences! </span>{delegate_impl [[<span class="lifetime">&#39;a</span>, G, F], G, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>EdgeFiltered&lt;G, F&gt;, access0]}
+<span class="macro">IntoNodeIdentifiers! </span>{delegate_impl [[<span class="lifetime">'a</span>, G, F], G, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>EdgeFiltered&lt;G, F&gt;, access0]}
+<span class="macro">IntoNodeReferences! </span>{delegate_impl [[<span class="lifetime">'a</span>, G, F], G, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>EdgeFiltered&lt;G, F&gt;, access0]}
 <span class="macro">NodeCompactIndexable! </span>{delegate_impl [[G, F], G, EdgeFiltered&lt;G, F&gt;, access0]}
 <span class="macro">NodeCount! </span>{delegate_impl [[G, F], G, EdgeFiltered&lt;G, F&gt;, access0]}
 <span class="macro">NodeIndexable! </span>{delegate_impl [[G, F], G, EdgeFiltered&lt;G, F&gt;, access0]}

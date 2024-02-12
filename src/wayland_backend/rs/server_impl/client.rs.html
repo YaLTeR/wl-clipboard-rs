@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wayland-backend-0.3.2/src/rs/server_impl/client.rs`."><title>client.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="wayland_backend" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../wayland_backend/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wayland-backend-0.3.3/src/rs/server_impl/client.rs`."><title>client.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="wayland_backend" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -742,15 +743,21 @@
 <a href="#742" id="742">742</a>
 <a href="#743" id="743">743</a>
 <a href="#744" id="744">744</a>
+<a href="#745" id="745">745</a>
+<a href="#746" id="746">746</a>
+<a href="#747" id="747">747</a>
+<a href="#748" id="748">748</a>
+<a href="#749" id="749">749</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::{
     ffi::CString,
-    os::unix::io::OwnedFd,
+    os::unix::io::{AsFd, BorrowedFd, OwnedFd},
     os::unix::{io::RawFd, net::UnixStream},
     sync::Arc,
 };
 
 <span class="kw">use crate</span>::{
     core_interfaces::{WL_CALLBACK_INTERFACE, WL_DISPLAY_INTERFACE, WL_REGISTRY_INTERFACE},
+    debug,
     protocol::{
         check_for_signature, same_interface, same_interface_or_anonymous, AllowNull, Argument,
         ArgumentType, Interface, Message, ObjectInfo, ProtocolError, ANONYMOUS_INTERFACE,
@@ -786,7 +793,7 @@
 }
 
 <span class="attr">#[derive(Debug)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>Client&lt;D: <span class="lifetime">&#39;static</span>&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>Client&lt;D: <span class="lifetime">'static</span>&gt; {
     socket: BufferedSocket,
     <span class="kw">pub</span>(<span class="kw">crate</span>) map: ObjectMap&lt;Data&lt;D&gt;&gt;,
     debug: bool,
@@ -829,7 +836,7 @@
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create_object(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        interface: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Interface,
+        interface: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>Interface,
         version: u32,
         user_data: Arc&lt;<span class="kw">dyn </span>ObjectData&lt;D&gt;&gt;,
     ) -&gt; InnerObjectId {
@@ -861,7 +868,7 @@
             <span class="prelude-val">Some</span>(msg) =&gt; msg,
             <span class="prelude-val">None </span>=&gt; {
                 <span class="macro">panic!</span>(
-                    <span class="string">&quot;Unknown opcode {} for object {}@{}.&quot;</span>,
+                    <span class="string">"Unknown opcode {} for object {}@{}."</span>,
                     opcode, object.interface.name, object_id.id
                 );
             }
@@ -869,7 +876,7 @@
 
         <span class="kw">if </span>!check_for_signature(message_desc.signature, <span class="kw-2">&amp;</span>args) {
             <span class="macro">panic!</span>(
-                <span class="string">&quot;Unexpected signature for event {}@{}.{}: expected {:?}, got {:?}.&quot;</span>,
+                <span class="string">"Unexpected signature for event {}@{}.{}: expected {:?}, got {:?}."</span>,
                 object.interface.name,
                 object_id.id,
                 message_desc.name,
@@ -879,11 +886,12 @@
         }
 
         <span class="kw">if </span><span class="self">self</span>.debug {
-            <span class="kw">crate</span>::rs::debug::print_send_message(
+            debug::print_send_message(
                 object.interface.name,
                 object_id.id.id,
                 message_desc.name,
                 <span class="kw-2">&amp;</span>args,
+                <span class="bool-val">false</span>,
             );
         }
 
@@ -900,18 +908,18 @@
                 Argument::NewId(o) =&gt; {
                     <span class="kw">if </span>o.id.id != <span class="number">0 </span>{
                         <span class="kw">if </span>o.id.client_id != <span class="self">self</span>.id {
-                            <span class="macro">panic!</span>(<span class="string">&quot;Attempting to send an event with objects from wrong client.&quot;</span>)
+                            <span class="macro">panic!</span>(<span class="string">"Attempting to send an event with objects from wrong client."</span>)
                         }
                         <span class="kw">let </span>object = <span class="self">self</span>.get_object(o.id.clone())<span class="question-mark">?</span>;
                         <span class="kw">let </span>child_interface = <span class="kw">match </span>message_desc.child_interface {
                             <span class="prelude-val">Some</span>(iface) =&gt; iface,
-                            <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;Trying to send event {}@{}.{} which creates an object without specifying its interface, this is unsupported.&quot;</span>, object_id.id.interface.name, object_id.id, message_desc.name),
+                            <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">"Trying to send event {}@{}.{} which creates an object without specifying its interface, this is unsupported."</span>, object_id.id.interface.name, object_id.id, message_desc.name),
                         };
                         <span class="kw">if </span>!same_interface(child_interface, object.interface) {
-                            <span class="macro">panic!</span>(<span class="string">&quot;Event {}@{}.{} expects a newid argument of interface {} but {} was provided instead.&quot;</span>, object.interface.name, object_id.id, message_desc.name, child_interface.name, object.interface.name);
+                            <span class="macro">panic!</span>(<span class="string">"Event {}@{}.{} expects a newid argument of interface {} but {} was provided instead."</span>, object.interface.name, object_id.id, message_desc.name, child_interface.name, object.interface.name);
                         }
                     } <span class="kw">else if </span>!<span class="macro">matches!</span>(message_desc.signature[i], ArgumentType::NewId) {
-                        <span class="macro">panic!</span>(<span class="string">&quot;Request {}@{}.{} expects an non-null newid argument.&quot;</span>, object.interface.name, object_id.id, message_desc.name);
+                        <span class="macro">panic!</span>(<span class="string">"Request {}@{}.{} expects an non-null newid argument."</span>, object.interface.name, object_id.id, message_desc.name);
                     }
                     Argument::Object(o.id.id)
                 },
@@ -919,14 +927,14 @@
                     <span class="kw">let </span>next_interface = arg_interfaces.next().unwrap();
                     <span class="kw">if </span>o.id.id != <span class="number">0 </span>{
                         <span class="kw">if </span>o.id.client_id != <span class="self">self</span>.id {
-                            <span class="macro">panic!</span>(<span class="string">&quot;Attempting to send an event with objects from wrong client.&quot;</span>)
+                            <span class="macro">panic!</span>(<span class="string">"Attempting to send an event with objects from wrong client."</span>)
                         }
                         <span class="kw">let </span>arg_object = <span class="self">self</span>.get_object(o.id.clone())<span class="question-mark">?</span>;
                         <span class="kw">if </span>!same_interface_or_anonymous(next_interface, arg_object.interface) {
-                            <span class="macro">panic!</span>(<span class="string">&quot;Event {}@{}.{} expects an object argument of interface {} but {} was provided instead.&quot;</span>, object.interface.name, object_id.id, message_desc.name, next_interface.name, arg_object.interface.name);
+                            <span class="macro">panic!</span>(<span class="string">"Event {}@{}.{} expects an object argument of interface {} but {} was provided instead."</span>, object.interface.name, object_id.id, message_desc.name, next_interface.name, arg_object.interface.name);
                         }
                     } <span class="kw">else if </span>!<span class="macro">matches!</span>(message_desc.signature[i], ArgumentType::Object(AllowNull::Yes)) {
-                            <span class="macro">panic!</span>(<span class="string">&quot;Request {}@{}.{} expects an non-null object argument.&quot;</span>, object.interface.name, object_id.id, message_desc.name);
+                            <span class="macro">panic!</span>(<span class="string">"Request {}@{}.{} expects an non-null object argument."</span>, object.interface.name, object_id.id, message_desc.name);
                     }
                     Argument::Object(o.id.id)
                 }
@@ -1037,18 +1045,15 @@
         }));
     }
 
-    <span class="attr">#[cfg(any(target_os = <span class="string">&quot;linux&quot;</span>, target_os = <span class="string">&quot;android&quot;</span>))]
+    <span class="attr">#[cfg(any(target_os = <span class="string">"linux"</span>, target_os = <span class="string">"android"</span>))]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_credentials(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Credentials {
-        <span class="kw">use </span>std::os::unix::io::AsRawFd;
-        <span class="kw">let </span>creds = nix::sys::socket::getsockopt(
-            <span class="self">self</span>.socket.as_raw_fd(),
-            nix::sys::socket::sockopt::PeerCredentials,
-        )
-        .expect(<span class="string">&quot;getsockopt failed!?&quot;</span>);
-        Credentials { pid: creds.pid(), uid: creds.uid(), gid: creds.gid() }
+        <span class="kw">let </span>creds =
+            rustix::net::sockopt::get_socket_peercred(<span class="kw-2">&amp;</span><span class="self">self</span>.socket).expect(<span class="string">"getsockopt failed!?"</span>);
+        <span class="kw">let </span>pid = rustix::process::Pid::as_raw(<span class="prelude-val">Some</span>(creds.pid));
+        Credentials { pid, uid: creds.uid.as_raw(), gid: creds.gid.as_raw() }
     }
 
-    <span class="attr">#[cfg(not(any(target_os = <span class="string">&quot;linux&quot;</span>, target_os = <span class="string">&quot;android&quot;</span>)))]
+    <span class="attr">#[cfg(not(any(target_os = <span class="string">"linux"</span>, target_os = <span class="string">"android"</span>)))]
     </span><span class="comment">// for now this only works on linux
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_credentials(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Credentials {
         Credentials { pid: <span class="number">0</span>, uid: <span class="number">0</span>, gid: <span class="number">0 </span>}
@@ -1063,7 +1068,7 @@
         <span class="self">self</span>.socket.flush()
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>all_objects(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = ObjectId&gt; + <span class="lifetime">&#39;_ </span>{
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>all_objects(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = ObjectId&gt; + <span class="lifetime">'_ </span>{
         <span class="kw">let </span>client_id = <span class="self">self</span>.id.clone();
         <span class="self">self</span>.map.all_objects().map(<span class="kw">move </span>|(id, obj)| ObjectId {
             id: InnerObjectId {
@@ -1080,7 +1085,7 @@
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
     ) -&gt; std::io::Result&lt;(Message&lt;u32, OwnedFd&gt;, Object&lt;Data&lt;D&gt;&gt;)&gt; {
         <span class="kw">if </span><span class="self">self</span>.killed {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(nix::errno::Errno::EPIPE.into());
+            <span class="kw">return </span><span class="prelude-val">Err</span>(rustix::io::Errno::PIPE.into());
         }
         <span class="kw">loop </span>{
             <span class="kw">let </span>map = <span class="kw-2">&amp;</span><span class="self">self</span>.map;
@@ -1102,14 +1107,14 @@
                 }
                 <span class="prelude-val">Err</span>(MessageParseError::Malformed) =&gt; {
                     <span class="self">self</span>.kill(DisconnectReason::ConnectionClosed);
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(nix::errno::Errno::EPROTO.into());
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(rustix::io::Errno::PROTO.into());
                 }
             };
 
             <span class="kw">let </span>obj = <span class="self">self</span>.map.find(msg.sender_id).unwrap();
 
             <span class="kw">if </span><span class="self">self</span>.debug {
-                <span class="kw">super</span>::<span class="kw">super</span>::debug::print_dispatched_message(
+                debug::print_dispatched_message(
                     obj.interface.name,
                     msg.sender_id,
                     obj.interface.requests.get(msg.opcode <span class="kw">as </span>usize).unwrap().name,
@@ -1172,7 +1177,7 @@
                     <span class="kw">if let </span><span class="prelude-val">Err</span>(()) = <span class="self">self</span>.map.insert_at(new_id, callback_obj) {
                         <span class="self">self</span>.post_display_error(
                             DisplayError::InvalidObject,
-                            CString::new(<span class="macro">format!</span>(<span class="string">&quot;Invalid new_id: {}.&quot;</span>, new_id)).unwrap(),
+                            CString::new(<span class="macro">format!</span>(<span class="string">"Invalid new_id: {}."</span>, new_id)).unwrap(),
                         );
                         <span class="kw">return</span>;
                     }
@@ -1208,7 +1213,7 @@
                     <span class="kw">if let </span><span class="prelude-val">Err</span>(()) = <span class="self">self</span>.map.insert_at(new_id, registry_obj) {
                         <span class="self">self</span>.post_display_error(
                             DisplayError::InvalidObject,
-                            CString::new(<span class="macro">format!</span>(<span class="string">&quot;Invalid new_id: {}.&quot;</span>, new_id)).unwrap(),
+                            CString::new(<span class="macro">format!</span>(<span class="string">"Invalid new_id: {}."</span>, new_id)).unwrap(),
                         );
                         <span class="kw">return</span>;
                     }
@@ -1222,7 +1227,7 @@
                 </span><span class="self">self</span>.post_display_error(
                     DisplayError::InvalidMethod,
                     CString::new(<span class="macro">format!</span>(
-                        <span class="string">&quot;Unknown opcode {} for interface wl_display.&quot;</span>,
+                        <span class="string">"Unknown opcode {} for interface wl_display."</span>,
                         message.opcode
                     ))
                     .unwrap(),
@@ -1255,7 +1260,7 @@
                         <span class="kw">if let </span><span class="prelude-val">Err</span>(()) = <span class="self">self</span>.map.insert_at(new_id, object) {
                             <span class="self">self</span>.post_display_error(
                                 DisplayError::InvalidObject,
-                                CString::new(<span class="macro">format!</span>(<span class="string">&quot;Invalid new_id: {}.&quot;</span>, new_id)).unwrap(),
+                                CString::new(<span class="macro">format!</span>(<span class="string">"Invalid new_id: {}."</span>, new_id)).unwrap(),
                             );
                             <span class="kw">return </span><span class="prelude-val">None</span>;
                         }
@@ -1274,7 +1279,7 @@
                         <span class="self">self</span>.post_display_error(
                             DisplayError::InvalidObject,
                             CString::new(<span class="macro">format!</span>(
-                                <span class="string">&quot;Invalid binding of {} version {} for global {}.&quot;</span>,
+                                <span class="string">"Invalid binding of {} version {} for global {}."</span>,
                                 interface_name.to_string_lossy(),
                                 version,
                                 name
@@ -1292,7 +1297,7 @@
                 </span><span class="self">self</span>.post_display_error(
                     DisplayError::InvalidMethod,
                     CString::new(<span class="macro">format!</span>(
-                        <span class="string">&quot;Unknown opcode {} for interface wl_registry.&quot;</span>,
+                        <span class="string">"Unknown opcode {} for interface wl_registry."</span>,
                         message.opcode
                     ))
                     .unwrap(),
@@ -1329,7 +1334,7 @@
                             <span class="prelude-val">None </span>=&gt; {
                                 <span class="self">self</span>.post_display_error(
                                     DisplayError::InvalidObject,
-                                    CString::new(<span class="macro">format!</span>(<span class="string">&quot;Unknown id: {}.&quot;</span>, o)).unwrap()
+                                    CString::new(<span class="macro">format!</span>(<span class="string">"Unknown id: {}."</span>, o)).unwrap()
                                 );
                                 <span class="kw">return </span><span class="prelude-val">None</span>;
                             }
@@ -1339,7 +1344,7 @@
                                 <span class="self">self</span>.post_display_error(
                                     DisplayError::InvalidObject,
                                     CString::new(<span class="macro">format!</span>(
-                                        <span class="string">&quot;Invalid object {} in request {}.{}: expected {} but got {}.&quot;</span>,
+                                        <span class="string">"Invalid object {} in request {}.{}: expected {} but got {}."</span>,
                                         o,
                                         object.interface.name,
                                         message_desc.name,
@@ -1357,7 +1362,7 @@
                         <span class="self">self</span>.post_display_error(
                             DisplayError::InvalidObject,
                             CString::new(<span class="macro">format!</span>(
-                                <span class="string">&quot;Invalid null object in request {}.{}.&quot;</span>,
+                                <span class="string">"Invalid null object in request {}.{}."</span>,
                                 object.interface.name,
                                 message_desc.name,
                             )).unwrap()
@@ -1369,7 +1374,7 @@
                     <span class="comment">// An object should be created
                     </span><span class="kw">let </span>child_interface = <span class="kw">match </span>message_desc.child_interface {
                         <span class="prelude-val">Some</span>(iface) =&gt; iface,
-                        <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;Received request {}@{}.{} which creates an object without specifying its interface, this is unsupported.&quot;</span>, object.interface.name, message.sender_id, message_desc.name),
+                        <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">"Received request {}@{}.{} which creates an object without specifying its interface, this is unsupported."</span>, object.interface.name, message.sender_id, message_desc.name),
                     };
 
                     <span class="kw">let </span>child_udata = Arc::new(UninitObjectData);
@@ -1390,7 +1395,7 @@
                         <span class="comment">// abort parsing, this is an unrecoverable error
                         </span><span class="self">self</span>.post_display_error(
                             DisplayError::InvalidObject,
-                            CString::new(<span class="macro">format!</span>(<span class="string">&quot;Invalid new_id: {}.&quot;</span>, new_id)).unwrap()
+                            CString::new(<span class="macro">format!</span>(<span class="string">"Invalid new_id: {}."</span>, new_id)).unwrap()
                         );
                         <span class="kw">return </span><span class="prelude-val">None</span>;
                     }
@@ -1403,8 +1408,14 @@
     }
 }
 
+<span class="kw">impl</span>&lt;D&gt; AsFd <span class="kw">for </span>Client&lt;D&gt; {
+    <span class="kw">fn </span>as_fd(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; BorrowedFd&lt;<span class="lifetime">'_</span>&gt; {
+        <span class="self">self</span>.socket.as_fd()
+    }
+}
+
 <span class="attr">#[derive(Debug)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>ClientStore&lt;D: <span class="lifetime">&#39;static</span>&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>ClientStore&lt;D: <span class="lifetime">'static</span>&gt; {
     clients: Vec&lt;<span class="prelude-ty">Option</span>&lt;Client&lt;D&gt;&gt;&gt;,
     last_serial: u32,
     debug: bool,
@@ -1480,7 +1491,7 @@
         <span class="self">self</span>.clients.iter_mut().flat_map(|o| o.as_mut()).filter(|c| !c.killed)
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>all_clients_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = ClientId&gt; + <span class="lifetime">&#39;_ </span>{
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>all_clients_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = ClientId&gt; + <span class="lifetime">'_ </span>{
         <span class="self">self</span>.clients.iter().flat_map(|opt| {
             opt.as_ref().filter(|c| !c.killed).map(|client| ClientId { id: client.id.clone() })
         })

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["presentation_time","viewporter"]};
+window.SIDEBAR_ITEMS = {"mod":["linux_dmabuf","presentation_time","viewporter"]};

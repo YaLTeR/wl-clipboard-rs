@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/petgraph-0.6.4/src/graph_impl/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="petgraph" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../petgraph/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/petgraph-0.6.4/src/graph_impl/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="petgraph" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2428,11 +2429,11 @@
 <span class="kw">use </span><span class="kw">crate</span>::util::enumerate;
 <span class="kw">use </span><span class="kw">crate</span>::visit;
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;serde-1&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"serde-1"</span>)]
 </span><span class="kw">mod </span>serialization;
 
 <span class="doccomment">/// The default integer type for graph indices.
-/// `u32` is the default to reduce the size of the graph&#39;s data and improve
+/// `u32` is the default to reduce the size of the graph's data and improve
 /// performance in the common case.
 ///
 /// Used for node and edge indices in `Graph` and `StableGraph`, used
@@ -2443,7 +2444,7 @@
 ///
 /// Marked `unsafe` because: the trait must faithfully preserve
 /// and convert index values.
-</span><span class="kw">pub unsafe trait </span>IndexType: Copy + Default + Hash + Ord + fmt::Debug + <span class="lifetime">&#39;static </span>{
+</span><span class="kw">pub unsafe trait </span>IndexType: Copy + Default + Hash + Ord + fmt::Debug + <span class="lifetime">'static </span>{
     <span class="kw">fn </span>new(x: usize) -&gt; <span class="self">Self</span>;
     <span class="kw">fn </span>index(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize;
     <span class="kw">fn </span>max() -&gt; <span class="self">Self</span>;
@@ -2554,7 +2555,7 @@
 
 <span class="kw">impl</span>&lt;Ix: fmt::Debug&gt; fmt::Debug <span class="kw">for </span>NodeIndex&lt;Ix&gt; {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">&quot;NodeIndex({:?})&quot;</span>, <span class="self">self</span>.<span class="number">0</span>)
+        <span class="macro">write!</span>(f, <span class="string">"NodeIndex({:?})"</span>, <span class="self">self</span>.<span class="number">0</span>)
     }
 }
 
@@ -2603,28 +2604,28 @@
 
 <span class="kw">impl</span>&lt;Ix: fmt::Debug&gt; fmt::Debug <span class="kw">for </span>EdgeIndex&lt;Ix&gt; {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">&quot;EdgeIndex({:?})&quot;</span>, <span class="self">self</span>.<span class="number">0</span>)
+        <span class="macro">write!</span>(f, <span class="string">"EdgeIndex({:?})"</span>, <span class="self">self</span>.<span class="number">0</span>)
     }
 }
 <span class="comment">/*
- * FIXME: Use this impl again, when we don&#39;t need to add so many bounds
+ * FIXME: Use this impl again, when we don't need to add so many bounds
 impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 {
     fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
-        try!(write!(f, &quot;EdgeIndex(&quot;));
+        try!(write!(f, "EdgeIndex("));
         if *self == EdgeIndex::end() {
-            try!(write!(f, &quot;End&quot;));
+            try!(write!(f, "End"));
         } else {
-            try!(write!(f, &quot;{}&quot;, self.index()));
+            try!(write!(f, "{}", self.index()));
         }
-        write!(f, &quot;)&quot;)
+        write!(f, ")")
     }
 }
 */
 
 </span><span class="kw">const </span>DIRECTIONS: [Direction; <span class="number">2</span>] = [Outgoing, Incoming];
 
-<span class="doccomment">/// The graph&#39;s node type.
+<span class="doccomment">/// The graph's node type.
 </span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>Node&lt;N, Ix = DefaultIx&gt; {
     <span class="doccomment">/// Associated node data.
@@ -2648,7 +2649,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     }
 }
 
-<span class="doccomment">/// The graph&#39;s edge type.
+<span class="doccomment">/// The graph's edge type.
 </span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>Edge&lt;E, Ix = DefaultIx&gt; {
     <span class="doccomment">/// Associated edge data.
@@ -2698,11 +2699,11 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 ///
 /// The graph uses **O(|V| + |E|)** space, and allows fast node and edge insert,
 /// efficient graph search and graph algorithms.
-/// It implements **O(e&#39;)** edge lookup and edge and node removals, where **e&#39;**
+/// It implements **O(e')** edge lookup and edge and node removals, where **e'**
 /// is some local measure of edge count.
 /// Based on the graph datastructure used in rustc.
 ///
-/// Here&#39;s an example of building a graph with directed edges, and below
+/// Here's an example of building a graph with directed edges, and below
 /// an illustration of how it could be rendered with graphviz (see
 /// [`Dot`](../dot/struct.Dot.html)):
 ///
@@ -2710,11 +2711,11 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 /// use petgraph::Graph;
 ///
 /// let mut deps = Graph::&lt;&amp;str, &amp;str&gt;::new();
-/// let pg = deps.add_node(&quot;petgraph&quot;);
-/// let fb = deps.add_node(&quot;fixedbitset&quot;);
-/// let qc = deps.add_node(&quot;quickcheck&quot;);
-/// let rand = deps.add_node(&quot;rand&quot;);
-/// let libc = deps.add_node(&quot;libc&quot;);
+/// let pg = deps.add_node("petgraph");
+/// let fb = deps.add_node("fixedbitset");
+/// let qc = deps.add_node("quickcheck");
+/// let rand = deps.add_node("rand");
+/// let libc = deps.add_node("libc");
 /// deps.extend_with_edges(&amp;[
 ///     (pg, fb), (pg, qc),
 ///     (qc, rand), (rand, libc), (qc, libc),
@@ -2752,7 +2753,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 /// * You can create several graphs using the equal node indices but with
 /// differing weights or differing edges.
 ///
-/// * Indices don&#39;t allow as much compile time checking as references.
+/// * Indices don't allow as much compile time checking as references.
 ///
 </span><span class="kw">pub struct </span>Graph&lt;N, E, Ty = Directed, Ix = DefaultIx&gt; {
     nodes: Vec&lt;Node&lt;N, Ix&gt;&gt;,
@@ -2802,34 +2803,34 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
         <span class="kw">let </span>etype = <span class="kw">if </span><span class="self">self</span>.is_directed() {
-            <span class="string">&quot;Directed&quot;
+            <span class="string">"Directed"
         </span>} <span class="kw">else </span>{
-            <span class="string">&quot;Undirected&quot;
+            <span class="string">"Undirected"
         </span>};
-        <span class="kw">let </span><span class="kw-2">mut </span>fmt_struct = f.debug_struct(<span class="string">&quot;Graph&quot;</span>);
-        fmt_struct.field(<span class="string">&quot;Ty&quot;</span>, <span class="kw-2">&amp;</span>etype);
-        fmt_struct.field(<span class="string">&quot;node_count&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.node_count());
-        fmt_struct.field(<span class="string">&quot;edge_count&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.edge_count());
+        <span class="kw">let </span><span class="kw-2">mut </span>fmt_struct = f.debug_struct(<span class="string">"Graph"</span>);
+        fmt_struct.field(<span class="string">"Ty"</span>, <span class="kw-2">&amp;</span>etype);
+        fmt_struct.field(<span class="string">"node_count"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.node_count());
+        fmt_struct.field(<span class="string">"edge_count"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.edge_count());
         <span class="kw">if </span><span class="self">self</span>.edge_count() &gt; <span class="number">0 </span>{
             fmt_struct.field(
-                <span class="string">&quot;edges&quot;</span>,
+                <span class="string">"edges"</span>,
                 <span class="kw-2">&amp;</span><span class="self">self
                     </span>.edges
                     .iter()
                     .map(|e| NoPretty((e.source().index(), e.target().index())))
-                    .format(<span class="string">&quot;, &quot;</span>),
+                    .format(<span class="string">", "</span>),
             );
         }
         <span class="comment">// skip weights if they are ZST!
         </span><span class="kw">if </span>size_of::&lt;N&gt;() != <span class="number">0 </span>{
             fmt_struct.field(
-                <span class="string">&quot;node weights&quot;</span>,
+                <span class="string">"node weights"</span>,
                 <span class="kw-2">&amp;</span>DebugMap(|| <span class="self">self</span>.nodes.iter().map(|n| <span class="kw-2">&amp;</span>n.weight).enumerate()),
             );
         }
         <span class="kw">if </span>size_of::&lt;E&gt;() != <span class="number">0 </span>{
             fmt_struct.field(
-                <span class="string">&quot;edge weights&quot;</span>,
+                <span class="string">"edge weights"</span>,
                 <span class="kw-2">&amp;</span>DebugMap(|| <span class="self">self</span>.edges.iter().map(|n| <span class="kw-2">&amp;</span>n.weight).enumerate()),
             );
         }
@@ -2946,7 +2947,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
     <span class="doccomment">/// Access the weight for node `a`.
     ///
-    /// If node `a` doesn&#39;t exist in the graph, return `None`.
+    /// If node `a` doesn't exist in the graph, return `None`.
     /// Also available with indexing syntax: `&amp;graph[a]`.
     </span><span class="kw">pub fn </span>node_weight(<span class="kw-2">&amp;</span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>N&gt; {
         <span class="self">self</span>.nodes.get(a.index()).map(|n| <span class="kw-2">&amp;</span>n.weight)
@@ -2954,7 +2955,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
     <span class="doccomment">/// Access the weight for node `a`, mutably.
     ///
-    /// If node `a` doesn&#39;t exist in the graph, return `None`.
+    /// If node `a` doesn't exist in the graph, return `None`.
     /// Also available with indexing syntax: `&amp;mut graph[a]`.
     </span><span class="kw">pub fn </span>node_weight_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>N&gt; {
         <span class="self">self</span>.nodes.get_mut(a.index()).map(|n| <span class="kw-2">&amp;mut </span>n.weight)
@@ -2967,7 +2968,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     ///
     /// Computes in **O(1)** time.
     ///
-    /// **Panics** if any of the nodes don&#39;t exist.&lt;br&gt;
+    /// **Panics** if any of the nodes don't exist.&lt;br&gt;
     /// **Panics** if the Graph is at the maximum number of edges for its index
     /// type (N/A if usize).
     ///
@@ -2982,7 +2983,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
             next: [EdgeIndex::end(); <span class="number">2</span>],
         };
         <span class="kw">match </span>index_twice(<span class="kw-2">&amp;mut </span><span class="self">self</span>.nodes, a.index(), b.index()) {
-            Pair::None =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Graph::add_edge: node indices out of bounds&quot;</span>),
+            Pair::None =&gt; <span class="macro">panic!</span>(<span class="string">"Graph::add_edge: node indices out of bounds"</span>),
             Pair::One(an) =&gt; {
                 edge.next = an.next;
                 an.next[<span class="number">0</span>] = edge_idx;
@@ -3004,10 +3005,10 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     ///
     /// Return the index of the affected edge.
     ///
-    /// Computes in **O(e&#39;)** time, where **e&#39;** is the number of edges
+    /// Computes in **O(e')** time, where **e'** is the number of edges
     /// connected to `a` (and `b`, if the graph edges are undirected).
     ///
-    /// **Panics** if any of the nodes doesn&#39;t exist.
+    /// **Panics** if any of the nodes doesn't exist.
     </span><span class="kw">pub fn </span>update_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;, b: NodeIndex&lt;Ix&gt;, weight: E) -&gt; EdgeIndex&lt;Ix&gt; {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(ix) = <span class="self">self</span>.find_edge(a, b) {
             <span class="kw">if let </span><span class="prelude-val">Some</span>(ed) = <span class="self">self</span>.edge_weight_mut(ix) {
@@ -3020,7 +3021,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
     <span class="doccomment">/// Access the weight for edge `e`.
     ///
-    /// If edge `e` doesn&#39;t exist in the graph, return `None`.
+    /// If edge `e` doesn't exist in the graph, return `None`.
     /// Also available with indexing syntax: `&amp;graph[e]`.
     </span><span class="kw">pub fn </span>edge_weight(<span class="kw-2">&amp;</span><span class="self">self</span>, e: EdgeIndex&lt;Ix&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>E&gt; {
         <span class="self">self</span>.edges.get(e.index()).map(|ed| <span class="kw-2">&amp;</span>ed.weight)
@@ -3028,7 +3029,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
     <span class="doccomment">/// Access the weight for edge `e`, mutably.
     ///
-    /// If edge `e` doesn&#39;t exist in the graph, return `None`.
+    /// If edge `e` doesn't exist in the graph, return `None`.
     /// Also available with indexing syntax: `&amp;mut graph[e]`.
     </span><span class="kw">pub fn </span>edge_weight_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>, e: EdgeIndex&lt;Ix&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>E&gt; {
         <span class="self">self</span>.edges.get_mut(e.index()).map(|ed| <span class="kw-2">&amp;mut </span>ed.weight)
@@ -3036,7 +3037,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
     <span class="doccomment">/// Access the source and target nodes for `e`.
     ///
-    /// If edge `e` doesn&#39;t exist in the graph, return `None`.
+    /// If edge `e` doesn't exist in the graph, return `None`.
     </span><span class="kw">pub fn </span>edge_endpoints(<span class="kw-2">&amp;</span><span class="self">self</span>, e: EdgeIndex&lt;Ix&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;(NodeIndex&lt;Ix&gt;, NodeIndex&lt;Ix&gt;)&gt; {
         <span class="self">self</span>.edges
             .get(e.index())
@@ -3044,14 +3045,14 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     }
 
     <span class="doccomment">/// Remove `a` from the graph if it exists, and return its weight.
-    /// If it doesn&#39;t exist in the graph, return `None`.
+    /// If it doesn't exist in the graph, return `None`.
     ///
     /// Apart from `a`, this invalidates the last node index in the graph
     /// (that node will adopt the removed node index). Edge indices are
     /// invalidated as they would be following the removal of each edge
     /// with an endpoint in `a`.
     ///
-    /// Computes in **O(e&#39;)** time, where **e&#39;** is the number of affected
+    /// Computes in **O(e')** time, where **e'** is the number of affected
     /// edges, including *n* calls to `.remove_edge()` where *n* is the number
     /// of edges with an endpoint in `a`, and including the edges with an
     /// endpoint in the displaced node.
@@ -3084,7 +3085,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
             <span class="prelude-val">Some</span>(ed) =&gt; ed.next,
         };
 
-        <span class="comment">// The swapped element&#39;s old index
+        <span class="comment">// The swapped element's old index
         </span><span class="kw">let </span>old_index = NodeIndex::new(<span class="self">self</span>.nodes.len());
         <span class="kw">let </span>new_index = a;
 
@@ -3115,7 +3116,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
                 <span class="prelude-val">None </span>=&gt; {
                     <span class="macro">debug_assert!</span>(
                         <span class="bool-val">false</span>,
-                        <span class="string">&quot;Edge&#39;s endpoint dir={:?} index={:?} not found&quot;</span>,
+                        <span class="string">"Edge's endpoint dir={:?} index={:?} not found"</span>,
                         d, edge_node[k]
                     );
                     <span class="kw">return</span>;
@@ -3123,7 +3124,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
             };
             <span class="kw">let </span>fst = node.next[k];
             <span class="kw">if </span>fst == e {
-                <span class="comment">//println!(&quot;Updating first edge 0 for node {}, set to {}&quot;, edge_node[0], edge_next[0]);
+                <span class="comment">//println!("Updating first edge 0 for node {}, set to {}", edge_node[0], edge_next[0]);
                 </span>node.next[k] = edge_next[k];
             } <span class="kw">else </span>{
                 <span class="kw">let </span><span class="kw-2">mut </span>edges = edges_walker_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>.edges, fst, d);
@@ -3137,12 +3138,12 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
         }
     }
 
-    <span class="doccomment">/// Remove an edge and return its edge weight, or `None` if it didn&#39;t exist.
+    <span class="doccomment">/// Remove an edge and return its edge weight, or `None` if it didn't exist.
     ///
     /// Apart from `e`, this invalidates the last edge index in the graph
     /// (that edge will adopt the removed edge index).
     ///
-    /// Computes in **O(e&#39;)** time, where **e&#39;** is the size of four particular edge lists, for
+    /// Computes in **O(e')** time, where **e'** is the size of four particular edge lists, for
     /// the vertices of `e` and the vertices of another affected edge.
     </span><span class="kw">pub fn </span>remove_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, e: EdgeIndex&lt;Ix&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;E&gt; {
         <span class="comment">// every edge is part of two lists,
@@ -3181,7 +3182,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     /// - `Directed`: Outgoing edges from `a`.
     /// - `Undirected`: All edges from or to `a`.
     ///
-    /// Produces an empty iterator if the node doesn&#39;t exist.&lt;br&gt;
+    /// Produces an empty iterator if the node doesn't exist.&lt;br&gt;
     /// Iterator element type is `NodeIndex&lt;Ix&gt;`.
     ///
     /// Use [`.neighbors(a).detach()`][1] to get a neighbor walker that does
@@ -3194,17 +3195,17 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
     <span class="doccomment">/// Return an iterator of all neighbors that have an edge between them and
     /// `a`, in the specified direction.
-    /// If the graph&#39;s edges are undirected, this is equivalent to *.neighbors(a)*.
+    /// If the graph's edges are undirected, this is equivalent to *.neighbors(a)*.
     ///
     /// - `Directed`, `Outgoing`: All edges from `a`.
     /// - `Directed`, `Incoming`: All edges to `a`.
     /// - `Undirected`: All edges from or to `a`.
     ///
-    /// Produces an empty iterator if the node doesn&#39;t exist.&lt;br&gt;
+    /// Produces an empty iterator if the node doesn't exist.&lt;br&gt;
     /// Iterator element type is `NodeIndex&lt;Ix&gt;`.
     ///
     /// For a `Directed` graph, neighbors are listed in reverse order of their
-    /// addition to the graph, so the most recently added edge&#39;s neighbor is
+    /// addition to the graph, so the most recently added edge's neighbor is
     /// listed first. The order in an `Undirected` graph is arbitrary.
     ///
     /// Use [`.neighbors_directed(a, dir).detach()`][1] to get a neighbor walker that does
@@ -3223,11 +3224,11 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
     <span class="doccomment">/// Return an iterator of all neighbors that have an edge between them and
     /// `a`, in either direction.
-    /// If the graph&#39;s edges are undirected, this is equivalent to *.neighbors(a)*.
+    /// If the graph's edges are undirected, this is equivalent to *.neighbors(a)*.
     ///
     /// - `Directed` and `Undirected`: All edges from or to `a`.
     ///
-    /// Produces an empty iterator if the node doesn&#39;t exist.&lt;br&gt;
+    /// Produces an empty iterator if the node doesn't exist.&lt;br&gt;
     /// Iterator element type is `NodeIndex&lt;Ix&gt;`.
     ///
     /// Use [`.neighbors_undirected(a).detach()`][1] to get a neighbor walker that does
@@ -3251,7 +3252,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     /// - `Directed`: Outgoing edges from `a`.
     /// - `Undirected`: All edges connected to `a`.
     ///
-    /// Produces an empty iterator if the node doesn&#39;t exist.&lt;br&gt;
+    /// Produces an empty iterator if the node doesn't exist.&lt;br&gt;
     /// Iterator element type is `EdgeReference&lt;E, Ix&gt;`.
     </span><span class="kw">pub fn </span>edges(<span class="kw-2">&amp;</span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;) -&gt; Edges&lt;E, Ty, Ix&gt; {
         <span class="self">self</span>.edges_directed(a, Outgoing)
@@ -3266,7 +3267,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     /// - `Undirected`, `Incoming`: All edges connected to `a`, with `a` being the target of each
     ///   edge.
     ///
-    /// Produces an empty iterator if the node `a` doesn&#39;t exist.&lt;br&gt;
+    /// Produces an empty iterator if the node `a` doesn't exist.&lt;br&gt;
     /// Iterator element type is `EdgeReference&lt;E, Ix&gt;`.
     </span><span class="kw">pub fn </span>edges_directed(<span class="kw-2">&amp;</span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;, dir: Direction) -&gt; Edges&lt;E, Ty, Ix&gt; {
         Edges {
@@ -3301,7 +3302,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
     <span class="doccomment">/// Lookup if there is an edge from `a` to `b`.
     ///
-    /// Computes in **O(e&#39;)** time, where **e&#39;** is the number of edges
+    /// Computes in **O(e')** time, where **e'** is the number of edges
     /// connected to `a` (and `b`, if the graph edges are undirected).
     </span><span class="kw">pub fn </span>contains_edge(<span class="kw-2">&amp;</span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;, b: NodeIndex&lt;Ix&gt;) -&gt; bool {
         <span class="self">self</span>.find_edge(a, b).is_some()
@@ -3309,7 +3310,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
     <span class="doccomment">/// Lookup an edge from `a` to `b`.
     ///
-    /// Computes in **O(e&#39;)** time, where **e&#39;** is the number of edges
+    /// Computes in **O(e')** time, where **e'** is the number of edges
     /// connected to `a` (and `b`, if the graph edges are undirected).
     </span><span class="kw">pub fn </span>find_edge(<span class="kw-2">&amp;</span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;, b: NodeIndex&lt;Ix&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;EdgeIndex&lt;Ix&gt;&gt; {
         <span class="kw">if </span>!<span class="self">self</span>.is_directed() {
@@ -3401,8 +3402,8 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     /// ```
     /// # use petgraph::Graph;
     /// # let mut g = Graph::&lt;&amp;str, i32&gt;::new();
-    /// # g.add_node(&quot;book&quot;);
-    /// let index = g.node_indices().find(|i| g[*i] == &quot;book&quot;).unwrap();
+    /// # g.add_node("book");
+    /// let index = g.node_indices().find(|i| g[*i] == "book").unwrap();
     /// ```
     </span><span class="kw">pub fn </span>node_indices(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; NodeIndices&lt;Ix&gt; {
         NodeIndices {
@@ -3468,7 +3469,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     }
 
     <span class="comment">// Remaining methods are of the more internal flavour, read-only access to
-    // the data structure&#39;s internals.
+    // the data structure's internals.
 
     </span><span class="doccomment">/// Access the internal node array.
     </span><span class="kw">pub fn </span>raw_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[Node&lt;N, Ix&gt;] {
@@ -3764,14 +3765,14 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     ///
     /// The resulting graph has the same structure and the same
     /// graph indices as `self`.
-    </span><span class="kw">pub fn </span>map&lt;<span class="lifetime">&#39;a</span>, F, G, N2, E2&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>,
+    </span><span class="kw">pub fn </span>map&lt;<span class="lifetime">'a</span>, F, G, N2, E2&gt;(
+        <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>,
         <span class="kw-2">mut </span>node_map: F,
         <span class="kw-2">mut </span>edge_map: G,
     ) -&gt; Graph&lt;N2, E2, Ty, Ix&gt;
     <span class="kw">where
-        </span>F: FnMut(NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>N) -&gt; N2,
-        G: FnMut(EdgeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>E) -&gt; E2,
+        </span>F: FnMut(NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>N) -&gt; N2,
+        G: FnMut(EdgeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>E) -&gt; E2,
     {
         <span class="kw">let </span><span class="kw-2">mut </span>g = Graph::with_capacity(<span class="self">self</span>.node_count(), <span class="self">self</span>.edge_count());
         g.nodes.extend(enumerate(<span class="kw-2">&amp;</span><span class="self">self</span>.nodes).map(|(i, node)| Node {
@@ -3798,14 +3799,14 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     /// If no nodes are removed, the resulting graph has compatible node
     /// indices; if neither nodes nor edges are removed, the result has
     /// the same graph indices as `self`.
-    </span><span class="kw">pub fn </span>filter_map&lt;<span class="lifetime">&#39;a</span>, F, G, N2, E2&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>,
+    </span><span class="kw">pub fn </span>filter_map&lt;<span class="lifetime">'a</span>, F, G, N2, E2&gt;(
+        <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>,
         <span class="kw-2">mut </span>node_map: F,
         <span class="kw-2">mut </span>edge_map: G,
     ) -&gt; Graph&lt;N2, E2, Ty, Ix&gt;
     <span class="kw">where
-        </span>F: FnMut(NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>N) -&gt; <span class="prelude-ty">Option</span>&lt;N2&gt;,
-        G: FnMut(EdgeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>E) -&gt; <span class="prelude-ty">Option</span>&lt;E2&gt;,
+        </span>F: FnMut(NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>N) -&gt; <span class="prelude-ty">Option</span>&lt;N2&gt;,
+        G: FnMut(EdgeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>E) -&gt; <span class="prelude-ty">Option</span>&lt;E2&gt;,
     {
         <span class="kw">let </span><span class="kw-2">mut </span>g = Graph::with_capacity(<span class="number">0</span>, <span class="number">0</span>);
         <span class="comment">// mapping from old node index to new node index, end represents removed.
@@ -3846,7 +3847,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     <span class="comment">//
     // internal methods
     //
-    </span><span class="attr">#[cfg(feature = <span class="string">&quot;serde-1&quot;</span>)]
+    </span><span class="attr">#[cfg(feature = <span class="string">"serde-1"</span>)]
     </span><span class="doccomment">/// Fix up node and edge links after deserialization
     </span><span class="kw">fn </span>link_edges(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), NodeIndex&lt;Ix&gt;&gt; {
         <span class="kw">for </span>(edge_index, edge) <span class="kw">in </span>enumerate(<span class="kw-2">&amp;mut </span><span class="self">self</span>.edges) {
@@ -3874,13 +3875,13 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
 <span class="doccomment">/// An iterator over either the nodes without edges to them or from them.
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>Externals&lt;<span class="lifetime">&#39;a</span>, N: <span class="lifetime">&#39;a</span>, Ty, Ix: IndexType = DefaultIx&gt; {
-    iter: iter::Enumerate&lt;slice::Iter&lt;<span class="lifetime">&#39;a</span>, Node&lt;N, Ix&gt;&gt;&gt;,
+</span><span class="kw">pub struct </span>Externals&lt;<span class="lifetime">'a</span>, N: <span class="lifetime">'a</span>, Ty, Ix: IndexType = DefaultIx&gt; {
+    iter: iter::Enumerate&lt;slice::Iter&lt;<span class="lifetime">'a</span>, Node&lt;N, Ix&gt;&gt;&gt;,
     dir: Direction,
     ty: PhantomData&lt;Ty&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N: <span class="lifetime">&#39;a</span>, Ty, Ix&gt; Iterator <span class="kw">for </span>Externals&lt;<span class="lifetime">&#39;a</span>, N, Ty, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N: <span class="lifetime">'a</span>, Ty, Ix&gt; Iterator <span class="kw">for </span>Externals&lt;<span class="lifetime">'a</span>, N, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
     Ix: IndexType,
@@ -3920,14 +3921,14 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 /// [2]: struct.Graph.html#method.neighbors_directed
 /// [3]: struct.Graph.html#method.neighbors_undirected
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>Neighbors&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>, Ix: <span class="lifetime">&#39;a </span>= DefaultIx&gt; {
+</span><span class="kw">pub struct </span>Neighbors&lt;<span class="lifetime">'a</span>, E: <span class="lifetime">'a</span>, Ix: <span class="lifetime">'a </span>= DefaultIx&gt; {
     <span class="doccomment">/// starting node to skip over
     </span>skip_start: NodeIndex&lt;Ix&gt;,
-    edges: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[Edge&lt;E, Ix&gt;],
+    edges: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[Edge&lt;E, Ix&gt;],
     next: [EdgeIndex&lt;Ix&gt;; <span class="number">2</span>],
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; Iterator <span class="kw">for </span>Neighbors&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ix&gt; Iterator <span class="kw">for </span>Neighbors&lt;<span class="lifetime">'a</span>, E, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
@@ -3943,8 +3944,8 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
             }
         }
         <span class="comment">// Then incoming edges
-        // For an &quot;undirected&quot; iterator (traverse both incoming
-        // and outgoing edge lists), make sure we don&#39;t double
+        // For an "undirected" iterator (traverse both incoming
+        // and outgoing edge lists), make sure we don't double
         // count selfloops by skipping them in the incoming list.
         </span><span class="kw">while let </span><span class="prelude-val">Some</span>(edge) = <span class="self">self</span>.edges.get(<span class="self">self</span>.next[<span class="number">1</span>].index()) {
             <span class="self">self</span>.next[<span class="number">1</span>] = edge.next[<span class="number">1</span>];
@@ -3956,14 +3957,14 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     </span>}
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; Clone <span class="kw">for </span>Neighbors&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ix&gt; Clone <span class="kw">for </span>Neighbors&lt;<span class="lifetime">'a</span>, E, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
     <span class="macro">clone_fields!</span>(Neighbors, skip_start, edges, next,);
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; Neighbors&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ix&gt; Neighbors&lt;<span class="lifetime">'a</span>, E, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
@@ -3971,7 +3972,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     /// neighbors and edges from the origin node.
     ///
     /// Note: The walker does not borrow from the graph, this is to allow mixing
-    /// edge walking with mutating the graph&#39;s weights.
+    /// edge walking with mutating the graph's weights.
     </span><span class="kw">pub fn </span>detach(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; WalkNeighbors&lt;Ix&gt; {
         WalkNeighbors {
             skip_start: <span class="self">self</span>.skip_start,
@@ -3980,8 +3981,8 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     }
 }
 
-<span class="kw">struct </span>EdgesWalkerMut&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>, Ix: IndexType = DefaultIx&gt; {
-    edges: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>[Edge&lt;E, Ix&gt;],
+<span class="kw">struct </span>EdgesWalkerMut&lt;<span class="lifetime">'a</span>, E: <span class="lifetime">'a</span>, Ix: IndexType = DefaultIx&gt; {
+    edges: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>[Edge&lt;E, Ix&gt;],
     next: EdgeIndex&lt;Ix&gt;,
     dir: Direction,
 }
@@ -3997,7 +3998,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     EdgesWalkerMut { edges, next, dir }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; EdgesWalkerMut&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ix&gt; EdgesWalkerMut&lt;<span class="lifetime">'a</span>, E, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
@@ -4018,23 +4019,23 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, E, Ty, Ix&gt; visit::IntoEdges <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Graph&lt;N, E, Ty, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, E, Ty, Ix&gt; visit::IntoEdges <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>Graph&lt;N, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
     Ix: IndexType,
 {
-    <span class="kw">type </span>Edges = Edges&lt;<span class="lifetime">&#39;a</span>, E, Ty, Ix&gt;;
+    <span class="kw">type </span>Edges = Edges&lt;<span class="lifetime">'a</span>, E, Ty, Ix&gt;;
     <span class="kw">fn </span>edges(<span class="self">self</span>, a: <span class="self">Self</span>::NodeId) -&gt; <span class="self">Self</span>::Edges {
         <span class="self">self</span>.edges(a)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, E, Ty, Ix&gt; visit::IntoEdgesDirected <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Graph&lt;N, E, Ty, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, E, Ty, Ix&gt; visit::IntoEdgesDirected <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>Graph&lt;N, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
     Ix: IndexType,
 {
-    <span class="kw">type </span>EdgesDirected = Edges&lt;<span class="lifetime">&#39;a</span>, E, Ty, Ix&gt;;
+    <span class="kw">type </span>EdgesDirected = Edges&lt;<span class="lifetime">'a</span>, E, Ty, Ix&gt;;
     <span class="kw">fn </span>edges_directed(<span class="self">self</span>, a: <span class="self">Self</span>::NodeId, dir: Direction) -&gt; <span class="self">Self</span>::EdgesDirected {
         <span class="self">self</span>.edges_directed(a, dir)
     }
@@ -4042,14 +4043,14 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
 <span class="doccomment">/// Iterator over the edges of from or to a node
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>Edges&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>, Ty, Ix: <span class="lifetime">&#39;a </span>= DefaultIx&gt;
+</span><span class="kw">pub struct </span>Edges&lt;<span class="lifetime">'a</span>, E: <span class="lifetime">'a</span>, Ty, Ix: <span class="lifetime">'a </span>= DefaultIx&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
     Ix: IndexType,
 {
     <span class="doccomment">/// starting node to skip over
     </span>skip_start: NodeIndex&lt;Ix&gt;,
-    edges: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[Edge&lt;E, Ix&gt;],
+    edges: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[Edge&lt;E, Ix&gt;],
 
     <span class="doccomment">/// Next edge to visit.
     </span>next: [EdgeIndex&lt;Ix&gt;; <span class="number">2</span>],
@@ -4060,12 +4061,12 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     ty: PhantomData&lt;Ty&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ty, Ix&gt; Iterator <span class="kw">for </span>Edges&lt;<span class="lifetime">&#39;a</span>, E, Ty, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ty, Ix&gt; Iterator <span class="kw">for </span>Edges&lt;<span class="lifetime">'a</span>, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
     Ix: IndexType,
 {
-    <span class="kw">type </span>Item = EdgeReference&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;;
+    <span class="kw">type </span>Item = EdgeReference&lt;<span class="lifetime">'a</span>, E, Ix&gt;;
 
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
         <span class="comment">//      type        direction    |    iterate over    reverse
@@ -4075,8 +4076,8 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
         //   Undirected     Outgoing     |        both       incoming
         //   Undirected     Incoming     |        both       outgoing
 
-        // For iterate_over, &quot;both&quot; is represented as None.
-        // For reverse, &quot;no&quot; is represented as None.
+        // For iterate_over, "both" is represented as None.
+        // For reverse, "no" is represented as None.
         </span><span class="kw">let </span>(iterate_over, reverse) = <span class="kw">if </span>Ty::is_directed() {
             (<span class="prelude-val">Some</span>(<span class="self">self</span>.direction), <span class="prelude-val">None</span>)
         } <span class="kw">else </span>{
@@ -4103,7 +4104,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
             <span class="kw">while let </span><span class="prelude-val">Some</span>(Edge { node, weight, next }) = <span class="self">self</span>.edges.get(<span class="self">self</span>.next[<span class="number">1</span>].index()) {
                 <span class="kw">let </span>edge_index = <span class="self">self</span>.next[<span class="number">1</span>];
                 <span class="self">self</span>.next[<span class="number">1</span>] = next[<span class="number">1</span>];
-                <span class="comment">// In any of the &quot;both&quot; situations, self-loops would be iterated over twice.
+                <span class="comment">// In any of the "both" situations, self-loops would be iterated over twice.
                 // Skip them here.
                 </span><span class="kw">if </span>iterate_over.is_none() &amp;&amp; node[<span class="number">0</span>] == <span class="self">self</span>.skip_start {
                     <span class="kw">continue</span>;
@@ -4127,24 +4128,24 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
 <span class="doccomment">/// Iterator over the multiple directed edges connecting a source node to a target node
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>EdgesConnecting&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>, Ty, Ix: <span class="lifetime">&#39;a </span>= DefaultIx&gt;
+</span><span class="kw">pub struct </span>EdgesConnecting&lt;<span class="lifetime">'a</span>, E: <span class="lifetime">'a</span>, Ty, Ix: <span class="lifetime">'a </span>= DefaultIx&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
     Ix: IndexType,
 {
     target_node: NodeIndex&lt;Ix&gt;,
-    edges: Edges&lt;<span class="lifetime">&#39;a</span>, E, Ty, Ix&gt;,
+    edges: Edges&lt;<span class="lifetime">'a</span>, E, Ty, Ix&gt;,
     ty: PhantomData&lt;Ty&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ty, Ix&gt; Iterator <span class="kw">for </span>EdgesConnecting&lt;<span class="lifetime">&#39;a</span>, E, Ty, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ty, Ix&gt; Iterator <span class="kw">for </span>EdgesConnecting&lt;<span class="lifetime">'a</span>, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
     Ix: IndexType,
 {
-    <span class="kw">type </span>Item = EdgeReference&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;;
+    <span class="kw">type </span>Item = EdgeReference&lt;<span class="lifetime">'a</span>, E, Ix&gt;;
 
-    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;EdgeReference&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;&gt; {
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;EdgeReference&lt;<span class="lifetime">'a</span>, E, Ix&gt;&gt; {
         <span class="kw">while let </span><span class="prelude-val">Some</span>(edge) = <span class="self">self</span>.edges.next() {
             <span class="kw">if </span>edge.node[<span class="number">1</span>] == <span class="self">self</span>.target_node {
                 <span class="kw">return </span><span class="prelude-val">Some</span>(edge);
@@ -4164,7 +4165,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     x
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ty, Ix&gt; Clone <span class="kw">for </span>Edges&lt;<span class="lifetime">&#39;a</span>, E, Ty, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ty, Ix&gt; Clone <span class="kw">for </span>Edges&lt;<span class="lifetime">'a</span>, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
     Ty: EdgeType,
@@ -4181,16 +4182,16 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 }
 
 <span class="doccomment">/// Iterator yielding immutable access to all node weights.
-</span><span class="kw">pub struct </span>NodeWeights&lt;<span class="lifetime">&#39;a</span>, N: <span class="lifetime">&#39;a</span>, Ix: IndexType = DefaultIx&gt; {
-    nodes: ::std::slice::Iter&lt;<span class="lifetime">&#39;a</span>, Node&lt;N, Ix&gt;&gt;,
+</span><span class="kw">pub struct </span>NodeWeights&lt;<span class="lifetime">'a</span>, N: <span class="lifetime">'a</span>, Ix: IndexType = DefaultIx&gt; {
+    nodes: ::std::slice::Iter&lt;<span class="lifetime">'a</span>, Node&lt;N, Ix&gt;&gt;,
 }
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt; Iterator <span class="kw">for </span>NodeWeights&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, Ix&gt; Iterator <span class="kw">for </span>NodeWeights&lt;<span class="lifetime">'a</span>, N, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
-    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>N;
+    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span>N;
 
-    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>N&gt; {
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>N&gt; {
         <span class="self">self</span>.nodes.next().map(|node| <span class="kw-2">&amp;</span>node.weight)
     }
 
@@ -4200,17 +4201,17 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 }
 <span class="doccomment">/// Iterator yielding mutable access to all node weights.
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>NodeWeightsMut&lt;<span class="lifetime">&#39;a</span>, N: <span class="lifetime">&#39;a</span>, Ix: IndexType = DefaultIx&gt; {
-    nodes: ::std::slice::IterMut&lt;<span class="lifetime">&#39;a</span>, Node&lt;N, Ix&gt;&gt;, <span class="comment">// TODO: change type to something that implements Clone?
+</span><span class="kw">pub struct </span>NodeWeightsMut&lt;<span class="lifetime">'a</span>, N: <span class="lifetime">'a</span>, Ix: IndexType = DefaultIx&gt; {
+    nodes: ::std::slice::IterMut&lt;<span class="lifetime">'a</span>, Node&lt;N, Ix&gt;&gt;, <span class="comment">// TODO: change type to something that implements Clone?
 </span>}
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt; Iterator <span class="kw">for </span>NodeWeightsMut&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, Ix&gt; Iterator <span class="kw">for </span>NodeWeightsMut&lt;<span class="lifetime">'a</span>, N, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
-    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>N;
+    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>N;
 
-    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>N&gt; {
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>N&gt; {
         <span class="self">self</span>.nodes.next().map(|node| <span class="kw-2">&amp;mut </span>node.weight)
     }
 
@@ -4220,17 +4221,17 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 }
 
 <span class="doccomment">/// Iterator yielding immutable access to all edge weights.
-</span><span class="kw">pub struct </span>EdgeWeights&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>, Ix: IndexType = DefaultIx&gt; {
-    edges: ::std::slice::Iter&lt;<span class="lifetime">&#39;a</span>, Edge&lt;E, Ix&gt;&gt;,
+</span><span class="kw">pub struct </span>EdgeWeights&lt;<span class="lifetime">'a</span>, E: <span class="lifetime">'a</span>, Ix: IndexType = DefaultIx&gt; {
+    edges: ::std::slice::Iter&lt;<span class="lifetime">'a</span>, Edge&lt;E, Ix&gt;&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; Iterator <span class="kw">for </span>EdgeWeights&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ix&gt; Iterator <span class="kw">for </span>EdgeWeights&lt;<span class="lifetime">'a</span>, E, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
-    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>E;
+    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span>E;
 
-    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>E&gt; {
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>E&gt; {
         <span class="self">self</span>.edges.next().map(|edge| <span class="kw-2">&amp;</span>edge.weight)
     }
 
@@ -4241,17 +4242,17 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
 <span class="doccomment">/// Iterator yielding mutable access to all edge weights.
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>EdgeWeightsMut&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>, Ix: IndexType = DefaultIx&gt; {
-    edges: ::std::slice::IterMut&lt;<span class="lifetime">&#39;a</span>, Edge&lt;E, Ix&gt;&gt;, <span class="comment">// TODO: change type to something that implements Clone?
+</span><span class="kw">pub struct </span>EdgeWeightsMut&lt;<span class="lifetime">'a</span>, E: <span class="lifetime">'a</span>, Ix: IndexType = DefaultIx&gt; {
+    edges: ::std::slice::IterMut&lt;<span class="lifetime">'a</span>, Edge&lt;E, Ix&gt;&gt;, <span class="comment">// TODO: change type to something that implements Clone?
 </span>}
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; Iterator <span class="kw">for </span>EdgeWeightsMut&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ix&gt; Iterator <span class="kw">for </span>EdgeWeightsMut&lt;<span class="lifetime">'a</span>, E, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
-    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>E;
+    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>E;
 
-    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>E&gt; {
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>E&gt; {
         <span class="self">self</span>.edges.next().map(|edge| <span class="kw-2">&amp;mut </span>edge.weight)
     }
 
@@ -4262,7 +4263,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
 <span class="doccomment">/// Index the `Graph` by `NodeIndex` to access node weights.
 ///
-/// **Panics** if the node doesn&#39;t exist.
+/// **Panics** if the node doesn't exist.
 </span><span class="kw">impl</span>&lt;N, E, Ty, Ix&gt; Index&lt;NodeIndex&lt;Ix&gt;&gt; <span class="kw">for </span>Graph&lt;N, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
@@ -4276,7 +4277,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
 <span class="doccomment">/// Index the `Graph` by `NodeIndex` to access node weights.
 ///
-/// **Panics** if the node doesn&#39;t exist.
+/// **Panics** if the node doesn't exist.
 </span><span class="kw">impl</span>&lt;N, E, Ty, Ix&gt; IndexMut&lt;NodeIndex&lt;Ix&gt;&gt; <span class="kw">for </span>Graph&lt;N, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
@@ -4289,7 +4290,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
 <span class="doccomment">/// Index the `Graph` by `EdgeIndex` to access edge weights.
 ///
-/// **Panics** if the edge doesn&#39;t exist.
+/// **Panics** if the edge doesn't exist.
 </span><span class="kw">impl</span>&lt;N, E, Ty, Ix&gt; Index&lt;EdgeIndex&lt;Ix&gt;&gt; <span class="kw">for </span>Graph&lt;N, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
@@ -4303,7 +4304,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
 <span class="doccomment">/// Index the `Graph` by `EdgeIndex` to access edge weights.
 ///
-/// **Panics** if the edge doesn&#39;t exist.
+/// **Panics** if the edge doesn't exist.
 </span><span class="kw">impl</span>&lt;N, E, Ty, Ix&gt; IndexMut&lt;EdgeIndex&lt;Ix&gt;&gt; <span class="kw">for </span>Graph&lt;N, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
@@ -4432,8 +4433,8 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
             }
         }
         <span class="comment">// Then incoming edges
-        // For an &quot;undirected&quot; iterator (traverse both incoming
-        // and outgoing edge lists), make sure we don&#39;t double
+        // For an "undirected" iterator (traverse both incoming
+        // and outgoing edge lists), make sure we don't double
         // count selfloops by skipping them in the incoming list.
         </span><span class="kw">while let </span><span class="prelude-val">Some</span>(edge) = g.edges.get(<span class="self">self</span>.next[<span class="number">1</span>].index()) {
             <span class="kw">let </span>ed = <span class="self">self</span>.next[<span class="number">1</span>];
@@ -4516,21 +4517,21 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
 <span class="doccomment">/// Reference to a `Graph` edge.
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>EdgeReference&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>, Ix = DefaultIx&gt; {
+</span><span class="kw">pub struct </span>EdgeReference&lt;<span class="lifetime">'a</span>, E: <span class="lifetime">'a</span>, Ix = DefaultIx&gt; {
     index: EdgeIndex&lt;Ix&gt;,
     node: [NodeIndex&lt;Ix&gt;; <span class="number">2</span>],
-    weight: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>E,
+    weight: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>E,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ix: IndexType&gt; Clone <span class="kw">for </span>EdgeReference&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ix: IndexType&gt; Clone <span class="kw">for </span>EdgeReference&lt;<span class="lifetime">'a</span>, E, Ix&gt; {
     <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw-2">*</span><span class="self">self
     </span>}
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ix: IndexType&gt; Copy <span class="kw">for </span>EdgeReference&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; {}
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ix: IndexType&gt; Copy <span class="kw">for </span>EdgeReference&lt;<span class="lifetime">'a</span>, E, Ix&gt; {}
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ix: IndexType&gt; PartialEq <span class="kw">for </span>EdgeReference&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ix: IndexType&gt; PartialEq <span class="kw">for </span>EdgeReference&lt;<span class="lifetime">'a</span>, E, Ix&gt;
 <span class="kw">where
     </span>E: PartialEq,
 {
@@ -4571,7 +4572,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     <span class="kw">type </span>EdgeType = Ty;
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, E: <span class="lifetime">&#39;a</span>, Ty, Ix&gt; visit::IntoNodeIdentifiers <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Graph&lt;N, E, Ty, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, E: <span class="lifetime">'a</span>, Ty, Ix&gt; visit::IntoNodeIdentifiers <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>Graph&lt;N, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
     Ix: IndexType,
@@ -4618,35 +4619,35 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 {
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, E: <span class="lifetime">&#39;a</span>, Ty, Ix&gt; visit::IntoNeighbors <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Graph&lt;N, E, Ty, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, E: <span class="lifetime">'a</span>, Ty, Ix&gt; visit::IntoNeighbors <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>Graph&lt;N, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
     Ix: IndexType,
 {
-    <span class="kw">type </span>Neighbors = Neighbors&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;;
-    <span class="kw">fn </span>neighbors(<span class="self">self</span>, n: NodeIndex&lt;Ix&gt;) -&gt; Neighbors&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; {
+    <span class="kw">type </span>Neighbors = Neighbors&lt;<span class="lifetime">'a</span>, E, Ix&gt;;
+    <span class="kw">fn </span>neighbors(<span class="self">self</span>, n: NodeIndex&lt;Ix&gt;) -&gt; Neighbors&lt;<span class="lifetime">'a</span>, E, Ix&gt; {
         Graph::neighbors(<span class="self">self</span>, n)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, E: <span class="lifetime">&#39;a</span>, Ty, Ix&gt; visit::IntoNeighborsDirected <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Graph&lt;N, E, Ty, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, E: <span class="lifetime">'a</span>, Ty, Ix&gt; visit::IntoNeighborsDirected <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>Graph&lt;N, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
     Ix: IndexType,
 {
-    <span class="kw">type </span>NeighborsDirected = Neighbors&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;;
-    <span class="kw">fn </span>neighbors_directed(<span class="self">self</span>, n: NodeIndex&lt;Ix&gt;, d: Direction) -&gt; Neighbors&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; {
+    <span class="kw">type </span>NeighborsDirected = Neighbors&lt;<span class="lifetime">'a</span>, E, Ix&gt;;
+    <span class="kw">fn </span>neighbors_directed(<span class="self">self</span>, n: NodeIndex&lt;Ix&gt;, d: Direction) -&gt; Neighbors&lt;<span class="lifetime">'a</span>, E, Ix&gt; {
         Graph::neighbors_directed(<span class="self">self</span>, n, d)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N: <span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>, Ty, Ix&gt; visit::IntoEdgeReferences <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Graph&lt;N, E, Ty, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N: <span class="lifetime">'a</span>, E: <span class="lifetime">'a</span>, Ty, Ix&gt; visit::IntoEdgeReferences <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>Graph&lt;N, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
     Ix: IndexType,
 {
-    <span class="kw">type </span>EdgeRef = EdgeReference&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;;
-    <span class="kw">type </span>EdgeReferences = EdgeReferences&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;;
+    <span class="kw">type </span>EdgeRef = EdgeReference&lt;<span class="lifetime">'a</span>, E, Ix&gt;;
+    <span class="kw">type </span>EdgeReferences = EdgeReferences&lt;<span class="lifetime">'a</span>, E, Ix&gt;;
     <span class="kw">fn </span>edge_references(<span class="self">self</span>) -&gt; <span class="self">Self</span>::EdgeReferences {
         (<span class="kw-2">*</span><span class="self">self</span>).edge_references()
     }
@@ -4663,13 +4664,13 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, E, Ty, Ix&gt; visit::IntoNodeReferences <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Graph&lt;N, E, Ty, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, E, Ty, Ix&gt; visit::IntoNodeReferences <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>Graph&lt;N, E, Ty, Ix&gt;
 <span class="kw">where
     </span>Ty: EdgeType,
     Ix: IndexType,
 {
-    <span class="kw">type </span>NodeRef = (NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>N);
-    <span class="kw">type </span>NodeReferences = NodeReferences&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt;;
+    <span class="kw">type </span>NodeRef = (NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>N);
+    <span class="kw">type </span>NodeReferences = NodeReferences&lt;<span class="lifetime">'a</span>, N, Ix&gt;;
     <span class="kw">fn </span>node_references(<span class="self">self</span>) -&gt; <span class="self">Self</span>::NodeReferences {
         NodeReferences {
             iter: <span class="self">self</span>.nodes.iter().enumerate(),
@@ -4679,15 +4680,15 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
 <span class="doccomment">/// Iterator over all nodes of a graph.
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>NodeReferences&lt;<span class="lifetime">&#39;a</span>, N: <span class="lifetime">&#39;a</span>, Ix: IndexType = DefaultIx&gt; {
-    iter: iter::Enumerate&lt;slice::Iter&lt;<span class="lifetime">&#39;a</span>, Node&lt;N, Ix&gt;&gt;&gt;,
+</span><span class="kw">pub struct </span>NodeReferences&lt;<span class="lifetime">'a</span>, N: <span class="lifetime">'a</span>, Ix: IndexType = DefaultIx&gt; {
+    iter: iter::Enumerate&lt;slice::Iter&lt;<span class="lifetime">'a</span>, Node&lt;N, Ix&gt;&gt;&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt; Iterator <span class="kw">for </span>NodeReferences&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, Ix&gt; Iterator <span class="kw">for </span>NodeReferences&lt;<span class="lifetime">'a</span>, N, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
-    <span class="kw">type </span>Item = (NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>N);
+    <span class="kw">type </span>Item = (NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>N);
 
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
         <span class="self">self</span>.iter
@@ -4700,7 +4701,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt; DoubleEndedIterator <span class="kw">for </span>NodeReferences&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, Ix&gt; DoubleEndedIterator <span class="kw">for </span>NodeReferences&lt;<span class="lifetime">'a</span>, N, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
@@ -4711,22 +4712,22 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt; ExactSizeIterator <span class="kw">for </span>NodeReferences&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt; <span class="kw">where </span>Ix: IndexType {}
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, Ix&gt; ExactSizeIterator <span class="kw">for </span>NodeReferences&lt;<span class="lifetime">'a</span>, N, Ix&gt; <span class="kw">where </span>Ix: IndexType {}
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Ix, E&gt; EdgeReference&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Ix, E&gt; EdgeReference&lt;<span class="lifetime">'a</span>, E, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
     <span class="doccomment">/// Access the edge’s weight.
     ///
     /// **NOTE** that this method offers a longer lifetime
-    /// than the trait (unfortunately they don&#39;t match yet).
-    </span><span class="kw">pub fn </span>weight(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>E {
+    /// than the trait (unfortunately they don't match yet).
+    </span><span class="kw">pub fn </span>weight(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>E {
         <span class="self">self</span>.weight
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Ix, E&gt; visit::EdgeRef <span class="kw">for </span>EdgeReference&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Ix, E&gt; visit::EdgeRef <span class="kw">for </span>EdgeReference&lt;<span class="lifetime">'a</span>, E, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
@@ -4750,15 +4751,15 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 
 <span class="doccomment">/// Iterator over all edges of a graph.
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>EdgeReferences&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>, Ix: IndexType = DefaultIx&gt; {
-    iter: iter::Enumerate&lt;slice::Iter&lt;<span class="lifetime">&#39;a</span>, Edge&lt;E, Ix&gt;&gt;&gt;,
+</span><span class="kw">pub struct </span>EdgeReferences&lt;<span class="lifetime">'a</span>, E: <span class="lifetime">'a</span>, Ix: IndexType = DefaultIx&gt; {
+    iter: iter::Enumerate&lt;slice::Iter&lt;<span class="lifetime">'a</span>, Edge&lt;E, Ix&gt;&gt;&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; Iterator <span class="kw">for </span>EdgeReferences&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ix&gt; Iterator <span class="kw">for </span>EdgeReferences&lt;<span class="lifetime">'a</span>, E, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
-    <span class="kw">type </span>Item = EdgeReference&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;;
+    <span class="kw">type </span>Item = EdgeReference&lt;<span class="lifetime">'a</span>, E, Ix&gt;;
 
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
         <span class="self">self</span>.iter.next().map(|(i, edge)| EdgeReference {
@@ -4773,7 +4774,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; DoubleEndedIterator <span class="kw">for </span>EdgeReferences&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ix&gt; DoubleEndedIterator <span class="kw">for </span>EdgeReferences&lt;<span class="lifetime">'a</span>, E, Ix&gt;
 <span class="kw">where
     </span>Ix: IndexType,
 {
@@ -4786,7 +4787,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; ExactSizeIterator <span class="kw">for </span>EdgeReferences&lt;<span class="lifetime">&#39;a</span>, E, Ix&gt; <span class="kw">where </span>Ix: IndexType {}
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E, Ix&gt; ExactSizeIterator <span class="kw">for </span>EdgeReferences&lt;<span class="lifetime">'a</span>, E, Ix&gt; <span class="kw">where </span>Ix: IndexType {}
 
 <span class="kw">impl</span>&lt;N, E, Ty, Ix&gt; visit::EdgeIndexable <span class="kw">for </span>Graph&lt;N, E, Ty, Ix&gt;
 <span class="kw">where
@@ -4807,7 +4808,7 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 }
 
 <span class="kw">mod </span>frozen;
-<span class="attr">#[cfg(feature = <span class="string">&quot;stable_graph&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"stable_graph"</span>)]
 </span><span class="kw">pub mod </span>stable_graph;
 
 <span class="doccomment">/// `Frozen` is a graph wrapper.
@@ -4816,10 +4817,10 @@ impl&lt;Ix: IndexType&gt; fmt::Debug for EdgeIndex&lt;Ix&gt;
 /// underlying graph `G`, but it allows mutable access to its
 /// node and edge weights.
 ///
-/// This is used to ensure immutability of the graph&#39;s structure
+/// This is used to ensure immutability of the graph's structure
 /// while permitting weights to be both read and written.
 ///
 /// See indexing implementations and the traits `Data` and `DataMap`
-/// for read-write access to the graph&#39;s weights.
-</span><span class="kw">pub struct </span>Frozen&lt;<span class="lifetime">&#39;a</span>, G: <span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>G);
+/// for read-write access to the graph's weights.
+</span><span class="kw">pub struct </span>Frozen&lt;<span class="lifetime">'a</span>, G: <span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>G);
 </code></pre></div></section></main></body></html>

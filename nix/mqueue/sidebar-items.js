@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["mq_close","mq_getattr","mq_open","mq_receive","mq_remove_nonblock","mq_send","mq_set_nonblock","mq_setattr","mq_unlink"],"struct":["MQ_OFlag","MqAttr","MqdT"],"type":["mq_attr_member_t"]};

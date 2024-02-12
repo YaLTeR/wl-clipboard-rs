@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nom-7.1.3/src/error.rs`."><title>error.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="nom" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../nom/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nom-7.1.3/src/error.rs`."><title>error.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="nom" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -871,7 +872,7 @@
   <span class="doccomment">/// Creates a new error from an input position, a static string and an existing error.
   /// This is used mainly in the [context] combinator, to add user friendly information
   /// to errors when backtracking through a parse tree
-  </span><span class="kw">fn </span>add_context(_input: I, _ctx: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+  </span><span class="kw">fn </span>add_context(_input: I, _ctx: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
     other
   }
 }
@@ -884,7 +885,7 @@
   </span><span class="kw">fn </span>from_external_error(input: I, kind: ErrorKind, e: E) -&gt; <span class="self">Self</span>;
 }
 
-<span class="doccomment">/// default error type, only contains the error&#39; location and code
+<span class="doccomment">/// default error type, only contains the error' location and code
 </span><span class="attr">#[derive(Debug, PartialEq)]
 </span><span class="kw">pub struct </span>Error&lt;I&gt; {
   <span class="doccomment">/// position of the error in the input data
@@ -921,12 +922,12 @@
 
 <span class="doccomment">/// The Display implementation allows the std::error::Error implementation
 </span><span class="kw">impl</span>&lt;I: fmt::Display&gt; fmt::Display <span class="kw">for </span>Error&lt;I&gt; {
-  <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
-    <span class="macro">write!</span>(f, <span class="string">&quot;error {:?} at: {}&quot;</span>, <span class="self">self</span>.code, <span class="self">self</span>.input)
+  <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
+    <span class="macro">write!</span>(f, <span class="string">"error {:?} at: {}"</span>, <span class="self">self</span>.code, <span class="self">self</span>.input)
   }
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;std&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
 </span><span class="kw">impl</span>&lt;I: fmt::Debug + fmt::Display&gt; std::error::Error <span class="kw">for </span>Error&lt;I&gt; {}
 
 <span class="comment">// for backward compatibility, keep those trait implementations
@@ -976,8 +977,8 @@
 <span class="doccomment">/// This error type accumulates errors and their position when backtracking
 /// through a parse tree. With some post processing (cf `examples/json.rs`),
 /// it can be used to display user friendly error messages
-</span><span class="attr">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
-#[cfg_attr(feature = <span class="string">&quot;docsrs&quot;</span>, doc(cfg(feature = <span class="string">&quot;alloc&quot;</span>)))]
+</span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+#[cfg_attr(feature = <span class="string">"docsrs"</span>, doc(cfg(feature = <span class="string">"alloc"</span>)))]
 #[derive(Clone, Debug, PartialEq)]
 </span><span class="kw">pub struct </span>VerboseError&lt;I&gt; {
   <span class="doccomment">/// List of errors accumulated by `VerboseError`, containing the affected
@@ -985,21 +986,21 @@
   </span><span class="kw">pub </span>errors: <span class="kw">crate</span>::lib::std::vec::Vec&lt;(I, VerboseErrorKind)&gt;,
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
-#[cfg_attr(feature = <span class="string">&quot;docsrs&quot;</span>, doc(cfg(feature = <span class="string">&quot;alloc&quot;</span>)))]
+<span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+#[cfg_attr(feature = <span class="string">"docsrs"</span>, doc(cfg(feature = <span class="string">"alloc"</span>)))]
 #[derive(Clone, Debug, PartialEq)]
 </span><span class="doccomment">/// Error context for `VerboseError`
 </span><span class="kw">pub enum </span>VerboseErrorKind {
   <span class="doccomment">/// Static string added by the `context` function
-  </span>Context(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str),
+  </span>Context(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str),
   <span class="doccomment">/// Indicates which character was expected by the `char` function
   </span>Char(char),
   <span class="doccomment">/// Error kind given by various nom parsers
   </span>Nom(ErrorKind),
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
-#[cfg_attr(feature = <span class="string">&quot;docsrs&quot;</span>, doc(cfg(feature = <span class="string">&quot;alloc&quot;</span>)))]
+<span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+#[cfg_attr(feature = <span class="string">"docsrs"</span>, doc(cfg(feature = <span class="string">"alloc"</span>)))]
 </span><span class="kw">impl</span>&lt;I&gt; ParseError&lt;I&gt; <span class="kw">for </span>VerboseError&lt;I&gt; {
   <span class="kw">fn </span>from_error_kind(input: I, kind: ErrorKind) -&gt; <span class="self">Self </span>{
     VerboseError {
@@ -1019,17 +1020,17 @@
   }
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
-#[cfg_attr(feature = <span class="string">&quot;docsrs&quot;</span>, doc(cfg(feature = <span class="string">&quot;alloc&quot;</span>)))]
+<span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+#[cfg_attr(feature = <span class="string">"docsrs"</span>, doc(cfg(feature = <span class="string">"alloc"</span>)))]
 </span><span class="kw">impl</span>&lt;I&gt; ContextError&lt;I&gt; <span class="kw">for </span>VerboseError&lt;I&gt; {
-  <span class="kw">fn </span>add_context(input: I, ctx: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, <span class="kw-2">mut </span>other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+  <span class="kw">fn </span>add_context(input: I, ctx: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, <span class="kw-2">mut </span>other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
     other.errors.push((input, VerboseErrorKind::Context(ctx)));
     other
   }
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
-#[cfg_attr(feature = <span class="string">&quot;docsrs&quot;</span>, doc(cfg(feature = <span class="string">&quot;alloc&quot;</span>)))]
+<span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+#[cfg_attr(feature = <span class="string">"docsrs"</span>, doc(cfg(feature = <span class="string">"alloc"</span>)))]
 </span><span class="kw">impl</span>&lt;I, E&gt; FromExternalError&lt;I, E&gt; <span class="kw">for </span>VerboseError&lt;I&gt; {
   <span class="doccomment">/// Create a new error from an input position and an external error
   </span><span class="kw">fn </span>from_external_error(input: I, kind: ErrorKind, _e: E) -&gt; <span class="self">Self </span>{
@@ -1037,15 +1038,15 @@
   }
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 </span><span class="kw">impl</span>&lt;I: fmt::Display&gt; fmt::Display <span class="kw">for </span>VerboseError&lt;I&gt; {
-  <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
-    <span class="macro">writeln!</span>(f, <span class="string">&quot;Parse error:&quot;</span>)<span class="question-mark">?</span>;
+  <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
+    <span class="macro">writeln!</span>(f, <span class="string">"Parse error:"</span>)<span class="question-mark">?</span>;
     <span class="kw">for </span>(input, error) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.errors {
       <span class="kw">match </span>error {
-        VerboseErrorKind::Nom(e) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;{:?} at: {}&quot;</span>, e, input)<span class="question-mark">?</span>,
-        VerboseErrorKind::Char(c) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;expected &#39;{}&#39; at: {}&quot;</span>, c, input)<span class="question-mark">?</span>,
-        VerboseErrorKind::Context(s) =&gt; <span class="macro">writeln!</span>(f, <span class="string">&quot;in section &#39;{}&#39;, at: {}&quot;</span>, s, input)<span class="question-mark">?</span>,
+        VerboseErrorKind::Nom(e) =&gt; <span class="macro">writeln!</span>(f, <span class="string">"{:?} at: {}"</span>, e, input)<span class="question-mark">?</span>,
+        VerboseErrorKind::Char(c) =&gt; <span class="macro">writeln!</span>(f, <span class="string">"expected '{}' at: {}"</span>, c, input)<span class="question-mark">?</span>,
+        VerboseErrorKind::Context(s) =&gt; <span class="macro">writeln!</span>(f, <span class="string">"in section '{}', at: {}"</span>, s, input)<span class="question-mark">?</span>,
       }
     }
 
@@ -1053,7 +1054,7 @@
   }
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;std&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
 </span><span class="kw">impl</span>&lt;I: fmt::Debug + fmt::Display&gt; std::error::Error <span class="kw">for </span>VerboseError&lt;I&gt; {}
 
 <span class="kw">use </span><span class="kw">crate</span>::internal::{<span class="prelude-val">Err</span>, IResult};
@@ -1062,7 +1063,7 @@
 /// This is used mainly in the [context] combinator, to add user friendly information
 /// to errors when backtracking through a parse tree
 </span><span class="kw">pub fn </span>context&lt;I: Clone, E: ContextError&lt;I&gt;, F, O&gt;(
-  context: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+  context: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
   <span class="kw-2">mut </span>f: F,
 ) -&gt; <span class="kw">impl </span>FnMut(I) -&gt; IResult&lt;I, O, E&gt;
 <span class="kw">where
@@ -1077,8 +1078,8 @@
 }
 
 <span class="doccomment">/// Transforms a `VerboseError` into a trace with input position information
-</span><span class="attr">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
-#[cfg_attr(feature = <span class="string">&quot;docsrs&quot;</span>, doc(cfg(feature = <span class="string">&quot;alloc&quot;</span>)))]
+</span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+#[cfg_attr(feature = <span class="string">"docsrs"</span>, doc(cfg(feature = <span class="string">"alloc"</span>)))]
 </span><span class="kw">pub fn </span>convert_error&lt;I: core::ops::Deref&lt;Target = str&gt;&gt;(
   input: I,
   e: VerboseError&lt;I&gt;,
@@ -1094,23 +1095,23 @@
     <span class="kw">if </span>input.is_empty() {
       <span class="kw">match </span>kind {
         VerboseErrorKind::Char(c) =&gt; {
-          <span class="macro">write!</span>(<span class="kw-2">&amp;mut </span>result, <span class="string">&quot;{}: expected &#39;{}&#39;, got empty input\n\n&quot;</span>, i, c)
+          <span class="macro">write!</span>(<span class="kw-2">&amp;mut </span>result, <span class="string">"{}: expected '{}', got empty input\n\n"</span>, i, c)
         }
-        VerboseErrorKind::Context(s) =&gt; <span class="macro">write!</span>(<span class="kw-2">&amp;mut </span>result, <span class="string">&quot;{}: in {}, got empty input\n\n&quot;</span>, i, s),
-        VerboseErrorKind::Nom(e) =&gt; <span class="macro">write!</span>(<span class="kw-2">&amp;mut </span>result, <span class="string">&quot;{}: in {:?}, got empty input\n\n&quot;</span>, i, e),
+        VerboseErrorKind::Context(s) =&gt; <span class="macro">write!</span>(<span class="kw-2">&amp;mut </span>result, <span class="string">"{}: in {}, got empty input\n\n"</span>, i, s),
+        VerboseErrorKind::Nom(e) =&gt; <span class="macro">write!</span>(<span class="kw-2">&amp;mut </span>result, <span class="string">"{}: in {:?}, got empty input\n\n"</span>, i, e),
       }
     } <span class="kw">else </span>{
       <span class="kw">let </span>prefix = <span class="kw-2">&amp;</span>input.as_bytes()[..offset];
 
       <span class="comment">// Count the number of newlines in the first `offset` bytes of input
-      </span><span class="kw">let </span>line_number = prefix.iter().filter(|&amp;&amp;b| b == <span class="string">b&#39;\n&#39;</span>).count() + <span class="number">1</span>;
+      </span><span class="kw">let </span>line_number = prefix.iter().filter(|&amp;&amp;b| b == <span class="string">b'\n'</span>).count() + <span class="number">1</span>;
 
       <span class="comment">// Find the line that includes the subslice:
       // Find the *last* newline before the substring starts
       </span><span class="kw">let </span>line_begin = prefix
         .iter()
         .rev()
-        .position(|<span class="kw-2">&amp;</span>b| b == <span class="string">b&#39;\n&#39;</span>)
+        .position(|<span class="kw-2">&amp;</span>b| b == <span class="string">b'\n'</span>)
         .map(|pos| offset - pos)
         .unwrap_or(<span class="number">0</span>);
 
@@ -1129,14 +1130,14 @@
           <span class="kw">if let </span><span class="prelude-val">Some</span>(actual) = substring.chars().next() {
             <span class="macro">write!</span>(
               <span class="kw-2">&amp;mut </span>result,
-              <span class="string">&quot;{i}: at line {line_number}:\n\
+              <span class="string">"{i}: at line {line_number}:\n\
                {line}\n\
                {caret:&gt;column$}\n\
-               expected &#39;{expected}&#39;, found {actual}\n\n&quot;</span>,
+               expected '{expected}', found {actual}\n\n"</span>,
               i = i,
               line_number = line_number,
               line = line,
-              caret = <span class="string">&#39;^&#39;</span>,
+              caret = <span class="string">'^'</span>,
               column = column_number,
               expected = c,
               actual = actual,
@@ -1144,14 +1145,14 @@
           } <span class="kw">else </span>{
             <span class="macro">write!</span>(
               <span class="kw-2">&amp;mut </span>result,
-              <span class="string">&quot;{i}: at line {line_number}:\n\
+              <span class="string">"{i}: at line {line_number}:\n\
                {line}\n\
                {caret:&gt;column$}\n\
-               expected &#39;{expected}&#39;, got end of input\n\n&quot;</span>,
+               expected '{expected}', got end of input\n\n"</span>,
               i = i,
               line_number = line_number,
               line = line,
-              caret = <span class="string">&#39;^&#39;</span>,
+              caret = <span class="string">'^'</span>,
               column = column_number,
               expected = c,
             )
@@ -1159,26 +1160,26 @@
         }
         VerboseErrorKind::Context(s) =&gt; <span class="macro">write!</span>(
           <span class="kw-2">&amp;mut </span>result,
-          <span class="string">&quot;{i}: at line {line_number}, in {context}:\n\
+          <span class="string">"{i}: at line {line_number}, in {context}:\n\
              {line}\n\
-             {caret:&gt;column$}\n\n&quot;</span>,
+             {caret:&gt;column$}\n\n"</span>,
           i = i,
           line_number = line_number,
           context = s,
           line = line,
-          caret = <span class="string">&#39;^&#39;</span>,
+          caret = <span class="string">'^'</span>,
           column = column_number,
         ),
         VerboseErrorKind::Nom(e) =&gt; <span class="macro">write!</span>(
           <span class="kw-2">&amp;mut </span>result,
-          <span class="string">&quot;{i}: at line {line_number}, in {nom_err:?}:\n\
+          <span class="string">"{i}: at line {line_number}, in {nom_err:?}:\n\
              {line}\n\
-             {caret:&gt;column$}\n\n&quot;</span>,
+             {caret:&gt;column$}\n\n"</span>,
           i = i,
           line_number = line_number,
           nom_err = e,
           line = line,
-          caret = <span class="string">&#39;^&#39;</span>,
+          caret = <span class="string">'^'</span>,
           column = column_number,
         ),
       }
@@ -1317,59 +1318,59 @@
   </span><span class="doccomment">/// Converts an ErrorKind to a text description
   </span><span class="kw">pub fn </span>description(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
     <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
-      ErrorKind::Tag                       =&gt; <span class="string">&quot;Tag&quot;</span>,
-      ErrorKind::MapRes                    =&gt; <span class="string">&quot;Map on Result&quot;</span>,
-      ErrorKind::MapOpt                    =&gt; <span class="string">&quot;Map on Option&quot;</span>,
-      ErrorKind::Alt                       =&gt; <span class="string">&quot;Alternative&quot;</span>,
-      ErrorKind::IsNot                     =&gt; <span class="string">&quot;IsNot&quot;</span>,
-      ErrorKind::IsA                       =&gt; <span class="string">&quot;IsA&quot;</span>,
-      ErrorKind::SeparatedList             =&gt; <span class="string">&quot;Separated list&quot;</span>,
-      ErrorKind::SeparatedNonEmptyList     =&gt; <span class="string">&quot;Separated non empty list&quot;</span>,
-      ErrorKind::Many0                     =&gt; <span class="string">&quot;Many0&quot;</span>,
-      ErrorKind::Many1                     =&gt; <span class="string">&quot;Many1&quot;</span>,
-      ErrorKind::Count                     =&gt; <span class="string">&quot;Count&quot;</span>,
-      ErrorKind::TakeUntil                 =&gt; <span class="string">&quot;Take until&quot;</span>,
-      ErrorKind::LengthValue               =&gt; <span class="string">&quot;Length followed by value&quot;</span>,
-      ErrorKind::TagClosure                =&gt; <span class="string">&quot;Tag closure&quot;</span>,
-      ErrorKind::Alpha                     =&gt; <span class="string">&quot;Alphabetic&quot;</span>,
-      ErrorKind::Digit                     =&gt; <span class="string">&quot;Digit&quot;</span>,
-      ErrorKind::AlphaNumeric              =&gt; <span class="string">&quot;AlphaNumeric&quot;</span>,
-      ErrorKind::Space                     =&gt; <span class="string">&quot;Space&quot;</span>,
-      ErrorKind::MultiSpace                =&gt; <span class="string">&quot;Multiple spaces&quot;</span>,
-      ErrorKind::LengthValueFn             =&gt; <span class="string">&quot;LengthValueFn&quot;</span>,
-      ErrorKind::Eof                       =&gt; <span class="string">&quot;End of file&quot;</span>,
-      ErrorKind::Switch                    =&gt; <span class="string">&quot;Switch&quot;</span>,
-      ErrorKind::TagBits                   =&gt; <span class="string">&quot;Tag on bitstream&quot;</span>,
-      ErrorKind::OneOf                     =&gt; <span class="string">&quot;OneOf&quot;</span>,
-      ErrorKind::NoneOf                    =&gt; <span class="string">&quot;NoneOf&quot;</span>,
-      ErrorKind::Char                      =&gt; <span class="string">&quot;Char&quot;</span>,
-      ErrorKind::CrLf                      =&gt; <span class="string">&quot;CrLf&quot;</span>,
-      ErrorKind::RegexpMatch               =&gt; <span class="string">&quot;RegexpMatch&quot;</span>,
-      ErrorKind::RegexpMatches             =&gt; <span class="string">&quot;RegexpMatches&quot;</span>,
-      ErrorKind::RegexpFind                =&gt; <span class="string">&quot;RegexpFind&quot;</span>,
-      ErrorKind::RegexpCapture             =&gt; <span class="string">&quot;RegexpCapture&quot;</span>,
-      ErrorKind::RegexpCaptures            =&gt; <span class="string">&quot;RegexpCaptures&quot;</span>,
-      ErrorKind::TakeWhile1                =&gt; <span class="string">&quot;TakeWhile1&quot;</span>,
-      ErrorKind::Complete                  =&gt; <span class="string">&quot;Complete&quot;</span>,
-      ErrorKind::Fix                       =&gt; <span class="string">&quot;Fix&quot;</span>,
-      ErrorKind::Escaped                   =&gt; <span class="string">&quot;Escaped&quot;</span>,
-      ErrorKind::EscapedTransform          =&gt; <span class="string">&quot;EscapedTransform&quot;</span>,
-      ErrorKind::NonEmpty                  =&gt; <span class="string">&quot;NonEmpty&quot;</span>,
-      ErrorKind::ManyMN                    =&gt; <span class="string">&quot;Many(m, n)&quot;</span>,
-      ErrorKind::HexDigit                  =&gt; <span class="string">&quot;Hexadecimal Digit&quot;</span>,
-      ErrorKind::OctDigit                  =&gt; <span class="string">&quot;Octal digit&quot;</span>,
-      ErrorKind::Not                       =&gt; <span class="string">&quot;Negation&quot;</span>,
-      ErrorKind::Permutation               =&gt; <span class="string">&quot;Permutation&quot;</span>,
-      ErrorKind::ManyTill                  =&gt; <span class="string">&quot;ManyTill&quot;</span>,
-      ErrorKind::Verify                    =&gt; <span class="string">&quot;predicate verification&quot;</span>,
-      ErrorKind::TakeTill1                 =&gt; <span class="string">&quot;TakeTill1&quot;</span>,
-      ErrorKind::TakeWhileMN               =&gt; <span class="string">&quot;TakeWhileMN&quot;</span>,
-      ErrorKind::TooLarge                  =&gt; <span class="string">&quot;Needed data size is too large&quot;</span>,
-      ErrorKind::Many0Count                =&gt; <span class="string">&quot;Count occurrence of &gt;=0 patterns&quot;</span>,
-      ErrorKind::Many1Count                =&gt; <span class="string">&quot;Count occurrence of &gt;=1 patterns&quot;</span>,
-      ErrorKind::Float                     =&gt; <span class="string">&quot;Float&quot;</span>,
-      ErrorKind::Satisfy                   =&gt; <span class="string">&quot;Satisfy&quot;</span>,
-      ErrorKind::Fail                      =&gt; <span class="string">&quot;Fail&quot;</span>,
+      ErrorKind::Tag                       =&gt; <span class="string">"Tag"</span>,
+      ErrorKind::MapRes                    =&gt; <span class="string">"Map on Result"</span>,
+      ErrorKind::MapOpt                    =&gt; <span class="string">"Map on Option"</span>,
+      ErrorKind::Alt                       =&gt; <span class="string">"Alternative"</span>,
+      ErrorKind::IsNot                     =&gt; <span class="string">"IsNot"</span>,
+      ErrorKind::IsA                       =&gt; <span class="string">"IsA"</span>,
+      ErrorKind::SeparatedList             =&gt; <span class="string">"Separated list"</span>,
+      ErrorKind::SeparatedNonEmptyList     =&gt; <span class="string">"Separated non empty list"</span>,
+      ErrorKind::Many0                     =&gt; <span class="string">"Many0"</span>,
+      ErrorKind::Many1                     =&gt; <span class="string">"Many1"</span>,
+      ErrorKind::Count                     =&gt; <span class="string">"Count"</span>,
+      ErrorKind::TakeUntil                 =&gt; <span class="string">"Take until"</span>,
+      ErrorKind::LengthValue               =&gt; <span class="string">"Length followed by value"</span>,
+      ErrorKind::TagClosure                =&gt; <span class="string">"Tag closure"</span>,
+      ErrorKind::Alpha                     =&gt; <span class="string">"Alphabetic"</span>,
+      ErrorKind::Digit                     =&gt; <span class="string">"Digit"</span>,
+      ErrorKind::AlphaNumeric              =&gt; <span class="string">"AlphaNumeric"</span>,
+      ErrorKind::Space                     =&gt; <span class="string">"Space"</span>,
+      ErrorKind::MultiSpace                =&gt; <span class="string">"Multiple spaces"</span>,
+      ErrorKind::LengthValueFn             =&gt; <span class="string">"LengthValueFn"</span>,
+      ErrorKind::Eof                       =&gt; <span class="string">"End of file"</span>,
+      ErrorKind::Switch                    =&gt; <span class="string">"Switch"</span>,
+      ErrorKind::TagBits                   =&gt; <span class="string">"Tag on bitstream"</span>,
+      ErrorKind::OneOf                     =&gt; <span class="string">"OneOf"</span>,
+      ErrorKind::NoneOf                    =&gt; <span class="string">"NoneOf"</span>,
+      ErrorKind::Char                      =&gt; <span class="string">"Char"</span>,
+      ErrorKind::CrLf                      =&gt; <span class="string">"CrLf"</span>,
+      ErrorKind::RegexpMatch               =&gt; <span class="string">"RegexpMatch"</span>,
+      ErrorKind::RegexpMatches             =&gt; <span class="string">"RegexpMatches"</span>,
+      ErrorKind::RegexpFind                =&gt; <span class="string">"RegexpFind"</span>,
+      ErrorKind::RegexpCapture             =&gt; <span class="string">"RegexpCapture"</span>,
+      ErrorKind::RegexpCaptures            =&gt; <span class="string">"RegexpCaptures"</span>,
+      ErrorKind::TakeWhile1                =&gt; <span class="string">"TakeWhile1"</span>,
+      ErrorKind::Complete                  =&gt; <span class="string">"Complete"</span>,
+      ErrorKind::Fix                       =&gt; <span class="string">"Fix"</span>,
+      ErrorKind::Escaped                   =&gt; <span class="string">"Escaped"</span>,
+      ErrorKind::EscapedTransform          =&gt; <span class="string">"EscapedTransform"</span>,
+      ErrorKind::NonEmpty                  =&gt; <span class="string">"NonEmpty"</span>,
+      ErrorKind::ManyMN                    =&gt; <span class="string">"Many(m, n)"</span>,
+      ErrorKind::HexDigit                  =&gt; <span class="string">"Hexadecimal Digit"</span>,
+      ErrorKind::OctDigit                  =&gt; <span class="string">"Octal digit"</span>,
+      ErrorKind::Not                       =&gt; <span class="string">"Negation"</span>,
+      ErrorKind::Permutation               =&gt; <span class="string">"Permutation"</span>,
+      ErrorKind::ManyTill                  =&gt; <span class="string">"ManyTill"</span>,
+      ErrorKind::Verify                    =&gt; <span class="string">"predicate verification"</span>,
+      ErrorKind::TakeTill1                 =&gt; <span class="string">"TakeTill1"</span>,
+      ErrorKind::TakeWhileMN               =&gt; <span class="string">"TakeWhileMN"</span>,
+      ErrorKind::TooLarge                  =&gt; <span class="string">"Needed data size is too large"</span>,
+      ErrorKind::Many0Count                =&gt; <span class="string">"Count occurrence of &gt;=0 patterns"</span>,
+      ErrorKind::Many1Count                =&gt; <span class="string">"Count occurrence of &gt;=1 patterns"</span>,
+      ErrorKind::Float                     =&gt; <span class="string">"Float"</span>,
+      ErrorKind::Satisfy                   =&gt; <span class="string">"Satisfy"</span>,
+      ErrorKind::Fail                      =&gt; <span class="string">"Fail"</span>,
     }
   }
 }
@@ -1398,7 +1399,7 @@
 <span class="doccomment">/// Prints a message and the input if the parser fails.
 ///
 /// The message prints the `Error` or `Incomplete`
-/// and the parser&#39;s calling code.
+/// and the parser's calling code.
 ///
 /// It also displays the input in hexdump format
 ///
@@ -1406,29 +1407,29 @@
 /// use nom::{IResult, error::dbg_dmp, bytes::complete::tag};
 ///
 /// fn f(i: &amp;[u8]) -&gt; IResult&lt;&amp;[u8], &amp;[u8]&gt; {
-///   dbg_dmp(tag(&quot;abcd&quot;), &quot;tag&quot;)(i)
+///   dbg_dmp(tag("abcd"), "tag")(i)
 /// }
 ///
-///   let a = &amp;b&quot;efghijkl&quot;[..];
+///   let a = &amp;b"efghijkl"[..];
 ///
 /// // Will print the following message:
-/// // Error(Position(0, [101, 102, 103, 104, 105, 106, 107, 108])) at l.5 by &#39; tag ! ( &quot;abcd&quot; ) &#39;
+/// // Error(Position(0, [101, 102, 103, 104, 105, 106, 107, 108])) at l.5 by ' tag ! ( "abcd" ) '
 /// // 00000000        65 66 67 68 69 6a 6b 6c         efghijkl
 /// f(a);
 /// ```
-</span><span class="attr">#[cfg(feature = <span class="string">&quot;std&quot;</span>)]
-#[cfg_attr(feature = <span class="string">&quot;docsrs&quot;</span>, doc(cfg(feature = <span class="string">&quot;std&quot;</span>)))]
-</span><span class="kw">pub fn </span>dbg_dmp&lt;<span class="lifetime">&#39;a</span>, F, O, E: std::fmt::Debug&gt;(
+</span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
+#[cfg_attr(feature = <span class="string">"docsrs"</span>, doc(cfg(feature = <span class="string">"std"</span>)))]
+</span><span class="kw">pub fn </span>dbg_dmp&lt;<span class="lifetime">'a</span>, F, O, E: std::fmt::Debug&gt;(
   f: F,
-  context: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
-) -&gt; <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8]) -&gt; IResult&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8], O, E&gt;
+  context: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
+) -&gt; <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; IResult&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], O, E&gt;
 <span class="kw">where
-  </span>F: Fn(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8]) -&gt; IResult&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8], O, E&gt;,
+  </span>F: Fn(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; IResult&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], O, E&gt;,
 {
   <span class="kw">use </span><span class="kw">crate</span>::HexDisplay;
-  <span class="kw">move </span>|i: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8]| <span class="kw">match </span>f(i) {
+  <span class="kw">move </span>|i: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]| <span class="kw">match </span>f(i) {
     <span class="prelude-val">Err</span>(e) =&gt; {
-      <span class="macro">println!</span>(<span class="string">&quot;{}: Error({:?}) at:\n{}&quot;</span>, context, e, i.to_hex(<span class="number">8</span>));
+      <span class="macro">println!</span>(<span class="string">"{}: Error({:?}) at:\n{}"</span>, context, e, i.to_hex(<span class="number">8</span>));
       <span class="prelude-val">Err</span>(e)
     }
     a =&gt; a,
@@ -1436,31 +1437,31 @@
 }
 
 <span class="attr">#[cfg(test)]
-#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
+#[cfg(feature = <span class="string">"alloc"</span>)]
 </span><span class="kw">mod </span>tests {
   <span class="kw">use super</span>::<span class="kw-2">*</span>;
   <span class="kw">use </span><span class="kw">crate</span>::character::complete::char;
 
   <span class="attr">#[test]
   </span><span class="kw">fn </span>convert_error_panic() {
-    <span class="kw">let </span>input = <span class="string">&quot;&quot;</span>;
+    <span class="kw">let </span>input = <span class="string">""</span>;
 
-    <span class="kw">let </span>_result: IResult&lt;<span class="kw">_</span>, <span class="kw">_</span>, VerboseError&lt;<span class="kw-2">&amp;</span>str&gt;&gt; = char(<span class="string">&#39;x&#39;</span>)(input);
+    <span class="kw">let </span>_result: IResult&lt;<span class="kw">_</span>, <span class="kw">_</span>, VerboseError&lt;<span class="kw-2">&amp;</span>str&gt;&gt; = char(<span class="string">'x'</span>)(input);
   }
 }
 
 <span class="comment">/*
-#[cfg(feature = &quot;alloc&quot;)]
+#[cfg(feature = "alloc")]
 use lib::std::{vec::Vec, collections::HashMap};
 
-#[cfg(feature = &quot;std&quot;)]
+#[cfg(feature = "std")]
 use lib::std::hash::Hash;
 
-#[cfg(feature = &quot;std&quot;)]
-pub fn add_error_pattern&lt;&#39;a, I: Clone + Hash + Eq, O, E: Clone + Hash + Eq&gt;(
-  h: &amp;mut HashMap&lt;VerboseError&lt;I&gt;, &amp;&#39;a str&gt;,
+#[cfg(feature = "std")]
+pub fn add_error_pattern&lt;'a, I: Clone + Hash + Eq, O, E: Clone + Hash + Eq&gt;(
+  h: &amp;mut HashMap&lt;VerboseError&lt;I&gt;, &amp;'a str&gt;,
   e: VerboseError&lt;I&gt;,
-  message: &amp;&#39;a str,
+  message: &amp;'a str,
 ) -&gt; bool {
   h.insert(e, message);
   true
@@ -1473,7 +1474,7 @@ pub fn slice_to_offsets(input: &amp;[u8], s: &amp;[u8]) -&gt; (usize, usize) {
   (off1, off2)
 }
 
-#[cfg(feature = &quot;std&quot;)]
+#[cfg(feature = "std")]
 pub fn prepare_errors&lt;O, E: Clone&gt;(input: &amp;[u8], e: VerboseError&lt;&amp;[u8]&gt;) -&gt; Option&lt;Vec&lt;(ErrorKind, usize, usize)&gt;&gt; {
   let mut v: Vec&lt;(ErrorKind, usize, usize)&gt; = Vec::new();
 
@@ -1486,18 +1487,18 @@ pub fn prepare_errors&lt;O, E: Clone&gt;(input: &amp;[u8], e: VerboseError&lt;&a
   Some(v)
 }
 
-#[cfg(feature = &quot;std&quot;)]
+#[cfg(feature = "std")]
 pub fn print_error&lt;O, E: Clone&gt;(input: &amp;[u8], res: VerboseError&lt;&amp;[u8]&gt;) {
   if let Some(v) = prepare_errors(input, res) {
     let colors = generate_colors(&amp;v);
-    println!(&quot;parser codes: {}&quot;, print_codes(&amp;colors, &amp;HashMap::new()));
-    println!(&quot;{}&quot;, print_offsets(input, 0, &amp;v));
+    println!("parser codes: {}", print_codes(&amp;colors, &amp;HashMap::new()));
+    println!("{}", print_offsets(input, 0, &amp;v));
   } else {
-    println!(&quot;not an error&quot;);
+    println!("not an error");
   }
 }
 
-#[cfg(feature = &quot;std&quot;)]
+#[cfg(feature = "std")]
 pub fn generate_colors&lt;E&gt;(v: &amp;[(ErrorKind, usize, usize)]) -&gt; HashMap&lt;u32, u8&gt; {
   let mut h: HashMap&lt;u32, u8&gt; = HashMap::new();
   let mut color = 0;
@@ -1531,28 +1532,28 @@ pub fn code_from_offset(v: &amp;[(ErrorKind, usize, usize)], offset: usize) -&gt
   }
 }
 
-#[cfg(feature = &quot;alloc&quot;)]
+#[cfg(feature = "alloc")]
 pub fn reset_color(v: &amp;mut Vec&lt;u8&gt;) {
   v.push(0x1B);
-  v.push(b&#39;[&#39;);
+  v.push(b'[');
   v.push(0);
-  v.push(b&#39;m&#39;);
+  v.push(b'm');
 }
 
-#[cfg(feature = &quot;alloc&quot;)]
+#[cfg(feature = "alloc")]
 pub fn write_color(v: &amp;mut Vec&lt;u8&gt;, color: u8) {
   v.push(0x1B);
-  v.push(b&#39;[&#39;);
+  v.push(b'[');
   v.push(1);
-  v.push(b&#39;;&#39;);
+  v.push(b';');
   let s = color.to_string();
   let bytes = s.as_bytes();
   v.extend(bytes.iter().cloned());
-  v.push(b&#39;m&#39;);
+  v.push(b'm');
 }
 
-#[cfg(feature = &quot;std&quot;)]
-#[cfg_attr(feature = &quot;cargo-clippy&quot;, allow(implicit_hasher))]
+#[cfg(feature = "std")]
+#[cfg_attr(feature = "cargo-clippy", allow(implicit_hasher))]
 pub fn print_codes(colors: &amp;HashMap&lt;u32, u8&gt;, names: &amp;HashMap&lt;u32, &amp;str&gt;) -&gt; String {
   let mut v = Vec::new();
   for (code, &amp;color) in colors {
@@ -1567,14 +1568,14 @@ pub fn print_codes(colors: &amp;HashMap&lt;u32, u8&gt;, names: &amp;HashMap&lt;u
       v.extend(bytes.iter().cloned());
     }
     reset_color(&amp;mut v);
-    v.push(b&#39; &#39;);
+    v.push(b' ');
   }
   reset_color(&amp;mut v);
 
   String::from_utf8_lossy(&amp;v[..]).into_owned()
 }
 
-#[cfg(feature = &quot;std&quot;)]
+#[cfg(feature = "std")]
 pub fn print_offsets(input: &amp;[u8], from: usize, offsets: &amp;[(ErrorKind, usize, usize)]) -&gt; String {
   let mut v = Vec::with_capacity(input.len() * 3);
   let mut i = from;
@@ -1585,11 +1586,11 @@ pub fn print_offsets(input: &amp;[u8], from: usize, offsets: &amp;[(ErrorKind, u
   let colors = generate_colors(&amp;offsets);
 
   for chunk in input.chunks(chunk_size) {
-    let s = format!(&quot;{:08x}&quot;, i);
+    let s = format!("{:08x}", i);
     for &amp;ch in s.as_bytes().iter() {
       v.push(ch);
     }
-    v.push(b&#39;\t&#39;);
+    v.push(b'\t');
 
     let mut k = i;
     let mut l = i;
@@ -1612,7 +1613,7 @@ pub fn print_offsets(input: &amp;[u8], from: usize, offsets: &amp;[(ErrorKind, u
       }
       v.push(CHARS[(byte &gt;&gt; 4) as usize]);
       v.push(CHARS[(byte &amp; 0xf) as usize]);
-      v.push(b&#39; &#39;);
+      v.push(b' ');
       k = k + 1;
     }
 
@@ -1620,12 +1621,12 @@ pub fn print_offsets(input: &amp;[u8], from: usize, offsets: &amp;[(ErrorKind, u
 
     if chunk_size &gt; chunk.len() {
       for _ in 0..(chunk_size - chunk.len()) {
-        v.push(b&#39; &#39;);
-        v.push(b&#39; &#39;);
-        v.push(b&#39; &#39;);
+        v.push(b' ');
+        v.push(b' ');
+        v.push(b' ');
       }
     }
-    v.push(b&#39;\t&#39;);
+    v.push(b'\t');
 
     for &amp;byte in chunk {
       if let Some(code) = code_from_offset(&amp;offsets, l) {
@@ -1647,13 +1648,13 @@ pub fn print_offsets(input: &amp;[u8], from: usize, offsets: &amp;[(ErrorKind, u
       if (byte &gt;= 32 &amp;&amp; byte &lt;= 126) || byte &gt;= 128 {
         v.push(byte);
       } else {
-        v.push(b&#39;.&#39;);
+        v.push(b'.');
       }
       l = l + 1;
     }
     reset_color(&amp;mut v);
 
-    v.push(b&#39;\n&#39;);
+    v.push(b'\n');
     i = i + chunk_size;
   }
 

@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/petgraph-0.6.4/src/algo/isomorphism.rs`."><title>isomorphism.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="petgraph" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../petgraph/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/petgraph-0.6.4/src/algo/isomorphism.rs`."><title>isomorphism.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="petgraph" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1015,9 +1016,9 @@
 
     <span class="attr">#[derive(Debug)]
     </span><span class="comment">// TODO: make mapping generic over the index type of the other graph.
-    </span><span class="kw">pub struct </span>Vf2State&lt;<span class="lifetime">&#39;a</span>, G: GetAdjacencyMatrix&gt; {
+    </span><span class="kw">pub struct </span>Vf2State&lt;<span class="lifetime">'a</span>, G: GetAdjacencyMatrix&gt; {
         <span class="doccomment">/// A reference to the graph this state was built from.
-        </span><span class="kw">pub </span>graph: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>G,
+        </span><span class="kw">pub </span>graph: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>G,
         <span class="doccomment">/// The current mapping M(s) of nodes from G0 → G1 and G1 → G0,
         /// `usize::MAX` for no mapping.
         </span><span class="kw">pub </span>mapping: Vec&lt;usize&gt;,
@@ -1028,7 +1029,7 @@
         <span class="doccomment">/// ins[i] is non-zero if i is in either M_0(s) or Tin_0(s)
         /// These are all the incoming vertices, those not mapped yet, but
         /// have an edge from them into the mapping.
-        /// Unused if graph is undirected -- it&#39;s identical with out in that case.
+        /// Unused if graph is undirected -- it's identical with out in that case.
         </span>ins: Vec&lt;usize&gt;,
         <span class="kw">pub </span>out_size: usize,
         <span class="kw">pub </span>ins_size: usize,
@@ -1036,11 +1037,11 @@
         generation: usize,
     }
 
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, G&gt; Vf2State&lt;<span class="lifetime">&#39;a</span>, G&gt;
+    <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, G&gt; Vf2State&lt;<span class="lifetime">'a</span>, G&gt;
     <span class="kw">where
         </span>G: GetAdjacencyMatrix + GraphProp + NodeCompactIndexable + IntoNeighborsDirected,
     {
-        <span class="kw">pub fn </span>new(g: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>G) -&gt; <span class="self">Self </span>{
+        <span class="kw">pub fn </span>new(g: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>G) -&gt; <span class="self">Self </span>{
             <span class="kw">let </span>c0 = g.node_count();
             Vf2State {
                 graph: g,
@@ -1274,7 +1275,7 @@
     }
 
     <span class="kw">fn </span>is_feasible&lt;G0, G1, NM, EM&gt;(
-        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">&#39;_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">&#39;_</span>, G1&gt;),
+        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">'_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">'_</span>, G1&gt;),
         nodes: (G0::NodeId, G1::NodeId),
         node_match: <span class="kw-2">&amp;mut </span>NM,
         edge_match: <span class="kw-2">&amp;mut </span>EM,
@@ -1308,7 +1309,7 @@
                     .neighbors_directed(<span class="macro">field!</span>(nodes, <span class="macro-nonterminal">$j</span>), Outgoing)
                 {
                     succ_count += <span class="number">1</span>;
-                    <span class="comment">// handle the self loop case; it&#39;s not in the mapping (yet)
+                    <span class="comment">// handle the self loop case; it's not in the mapping (yet)
                     </span><span class="kw">let </span>m_neigh = <span class="kw">if </span><span class="macro">field!</span>(nodes, <span class="macro-nonterminal">$j</span>) != n_neigh {
                         <span class="macro">field!</span>(st, <span class="macro-nonterminal">$j</span>).mapping[<span class="macro">field!</span>(st, <span class="macro-nonterminal">$j</span>).graph.to_index(n_neigh)]
                     } <span class="kw">else </span>{
@@ -1455,7 +1456,7 @@
     </span>}
 
     <span class="kw">fn </span>next_candidate&lt;G0, G1&gt;(
-        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">&#39;_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">&#39;_</span>, G1&gt;),
+        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">'_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">'_</span>, G1&gt;),
     ) -&gt; <span class="prelude-ty">Option</span>&lt;(G0::NodeId, G1::NodeId, OpenList)&gt;
     <span class="kw">where
         </span>G0: GetAdjacencyMatrix + GraphProp + NodeCompactIndexable + IntoNeighborsDirected,
@@ -1499,7 +1500,7 @@
     }
 
     <span class="kw">fn </span>next_from_ix&lt;G0, G1&gt;(
-        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">&#39;_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">&#39;_</span>, G1&gt;),
+        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">'_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">'_</span>, G1&gt;),
         nx: G1::NodeId,
         open_list: OpenList,
     ) -&gt; <span class="prelude-ty">Option</span>&lt;G1::NodeId&gt;
@@ -1525,7 +1526,7 @@
     }
 
     <span class="kw">fn </span>pop_state&lt;G0, G1&gt;(
-        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">&#39;_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">&#39;_</span>, G1&gt;),
+        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">'_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">'_</span>, G1&gt;),
         nodes: (G0::NodeId, G1::NodeId),
     ) <span class="kw">where
         </span>G0: GetAdjacencyMatrix + GraphProp + NodeCompactIndexable + IntoNeighborsDirected,
@@ -1536,7 +1537,7 @@
     }
 
     <span class="kw">fn </span>push_state&lt;G0, G1&gt;(
-        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">&#39;_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">&#39;_</span>, G1&gt;),
+        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">'_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">'_</span>, G1&gt;),
         nodes: (G0::NodeId, G1::NodeId),
     ) <span class="kw">where
         </span>G0: GetAdjacencyMatrix + GraphProp + NodeCompactIndexable + IntoNeighborsDirected,
@@ -1548,7 +1549,7 @@
 
     <span class="doccomment">/// Return Some(bool) if isomorphism is decided, else None.
     </span><span class="kw">pub fn </span>try_match&lt;G0, G1, NM, EM&gt;(
-        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">&#39;_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">&#39;_</span>, G1&gt;),
+        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">'_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">'_</span>, G1&gt;),
         node_match: <span class="kw-2">&amp;mut </span>NM,
         edge_match: <span class="kw-2">&amp;mut </span>EM,
         match_subgraph: bool,
@@ -1576,7 +1577,7 @@
     }
 
     <span class="kw">fn </span>isomorphisms&lt;G0, G1, NM, EM&gt;(
-        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">&#39;_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">&#39;_</span>, G1&gt;),
+        st: <span class="kw-2">&amp;mut </span>(Vf2State&lt;<span class="lifetime">'_</span>, G0&gt;, Vf2State&lt;<span class="lifetime">'_</span>, G1&gt;),
         node_match: <span class="kw-2">&amp;mut </span>NM,
         edge_match: <span class="kw-2">&amp;mut </span>EM,
         match_subgraph: bool,
@@ -1600,7 +1601,7 @@
             <span class="kw">return </span><span class="prelude-val">Some</span>(st.<span class="number">0</span>.mapping.clone());
         }
 
-        <span class="comment">// A &quot;depth first&quot; search of a valid mapping from graph 1 to graph 2
+        <span class="comment">// A "depth first" search of a valid mapping from graph 1 to graph 2
         // F(s, n, m) -- evaluate state s and add mapping n &lt;-&gt; m
         // Find least T1out node (in st.out[1] but not in M[1])
         </span><span class="kw">let </span><span class="kw-2">mut </span>result = <span class="prelude-val">None</span>;
@@ -1670,7 +1671,7 @@
         result
     }
 
-    <span class="kw">pub struct </span>GraphMatcher&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;c</span>, G0, G1, NM, EM&gt;
+    <span class="kw">pub struct </span>GraphMatcher&lt;<span class="lifetime">'a</span>, <span class="lifetime">'b</span>, <span class="lifetime">'c</span>, G0, G1, NM, EM&gt;
     <span class="kw">where
         </span>G0: NodeCompactIndexable
             + EdgeCount
@@ -1685,14 +1686,14 @@
         NM: NodeMatcher&lt;G0, G1&gt;,
         EM: EdgeMatcher&lt;G0, G1&gt;,
     {
-        st: (Vf2State&lt;<span class="lifetime">&#39;a</span>, G0&gt;, Vf2State&lt;<span class="lifetime">&#39;b</span>, G1&gt;),
-        node_match: <span class="kw-2">&amp;</span><span class="lifetime">&#39;c </span><span class="kw-2">mut </span>NM,
-        edge_match: <span class="kw-2">&amp;</span><span class="lifetime">&#39;c </span><span class="kw-2">mut </span>EM,
+        st: (Vf2State&lt;<span class="lifetime">'a</span>, G0&gt;, Vf2State&lt;<span class="lifetime">'b</span>, G1&gt;),
+        node_match: <span class="kw-2">&amp;</span><span class="lifetime">'c </span><span class="kw-2">mut </span>NM,
+        edge_match: <span class="kw-2">&amp;</span><span class="lifetime">'c </span><span class="kw-2">mut </span>EM,
         match_subgraph: bool,
         stack: Vec&lt;Frame&lt;G0, G1&gt;&gt;,
     }
 
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;c</span>, G0, G1, NM, EM&gt; GraphMatcher&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;c</span>, G0, G1, NM, EM&gt;
+    <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, <span class="lifetime">'b</span>, <span class="lifetime">'c</span>, G0, G1, NM, EM&gt; GraphMatcher&lt;<span class="lifetime">'a</span>, <span class="lifetime">'b</span>, <span class="lifetime">'c</span>, G0, G1, NM, EM&gt;
     <span class="kw">where
         </span>G0: NodeCompactIndexable
             + EdgeCount
@@ -1708,10 +1709,10 @@
         EM: EdgeMatcher&lt;G0, G1&gt;,
     {
         <span class="kw">pub fn </span>new(
-            g0: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>G0,
-            g1: <span class="kw-2">&amp;</span><span class="lifetime">&#39;b </span>G1,
-            node_match: <span class="kw-2">&amp;</span><span class="lifetime">&#39;c </span><span class="kw-2">mut </span>NM,
-            edge_match: <span class="kw-2">&amp;</span><span class="lifetime">&#39;c </span><span class="kw-2">mut </span>EM,
+            g0: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>G0,
+            g1: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>G1,
+            node_match: <span class="kw-2">&amp;</span><span class="lifetime">'c </span><span class="kw-2">mut </span>NM,
+            edge_match: <span class="kw-2">&amp;</span><span class="lifetime">'c </span><span class="kw-2">mut </span>EM,
             match_subgraph: bool,
         ) -&gt; <span class="self">Self </span>{
             <span class="kw">let </span>stack = <span class="macro">vec!</span>[Frame::Outer];
@@ -1725,7 +1726,7 @@
         }
     }
 
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;c</span>, G0, G1, NM, EM&gt; Iterator <span class="kw">for </span>GraphMatcher&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;c</span>, G0, G1, NM, EM&gt;
+    <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, <span class="lifetime">'b</span>, <span class="lifetime">'c</span>, G0, G1, NM, EM&gt; Iterator <span class="kw">for </span>GraphMatcher&lt;<span class="lifetime">'a</span>, <span class="lifetime">'b</span>, <span class="lifetime">'c</span>, G0, G1, NM, EM&gt;
     <span class="kw">where
         </span>G0: NodeCompactIndexable
             + EdgeCount
@@ -1755,7 +1756,7 @@
         <span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
             <span class="comment">// To calculate the upper bound of results we use n! where n is the
             // number of nodes in graph 1. n! values fit into a 64-bit usize up
-            // to n = 20, so we don&#39;t estimate an upper limit for n &gt; 20.
+            // to n = 20, so we don't estimate an upper limit for n &gt; 20.
             </span><span class="kw">let </span>n = <span class="self">self</span>.st.<span class="number">0</span>.graph.node_count();
 
             <span class="comment">// We hardcode n! values into an array that accounts for architectures
@@ -1954,29 +1955,29 @@
 /// them.
 ///
 /// The graphs should not be multigraphs.
-</span><span class="kw">pub fn </span>subgraph_isomorphisms_iter&lt;<span class="lifetime">&#39;a</span>, G0, G1, NM, EM&gt;(
-    g0: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>G0,
-    g1: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>G1,
-    node_match: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>NM,
-    edge_match: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>EM,
-) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw">impl </span>Iterator&lt;Item = Vec&lt;usize&gt;&gt; + <span class="lifetime">&#39;a</span>&gt;
+</span><span class="kw">pub fn </span>subgraph_isomorphisms_iter&lt;<span class="lifetime">'a</span>, G0, G1, NM, EM&gt;(
+    g0: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>G0,
+    g1: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>G1,
+    node_match: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>NM,
+    edge_match: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>EM,
+) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw">impl </span>Iterator&lt;Item = Vec&lt;usize&gt;&gt; + <span class="lifetime">'a</span>&gt;
 <span class="kw">where
-    </span>G0: <span class="lifetime">&#39;a
+    </span>G0: <span class="lifetime">'a
         </span>+ NodeCompactIndexable
         + EdgeCount
         + DataMap
         + GetAdjacencyMatrix
         + GraphProp
         + IntoEdgesDirected,
-    G1: <span class="lifetime">&#39;a
+    G1: <span class="lifetime">'a
         </span>+ NodeCompactIndexable
         + EdgeCount
         + DataMap
         + GetAdjacencyMatrix
         + GraphProp&lt;EdgeType = G0::EdgeType&gt;
         + IntoEdgesDirected,
-    NM: <span class="lifetime">&#39;a </span>+ FnMut(<span class="kw-2">&amp;</span>G0::NodeWeight, <span class="kw-2">&amp;</span>G1::NodeWeight) -&gt; bool,
-    EM: <span class="lifetime">&#39;a </span>+ FnMut(<span class="kw-2">&amp;</span>G0::EdgeWeight, <span class="kw-2">&amp;</span>G1::EdgeWeight) -&gt; bool,
+    NM: <span class="lifetime">'a </span>+ FnMut(<span class="kw-2">&amp;</span>G0::NodeWeight, <span class="kw-2">&amp;</span>G1::NodeWeight) -&gt; bool,
+    EM: <span class="lifetime">'a </span>+ FnMut(<span class="kw-2">&amp;</span>G0::EdgeWeight, <span class="kw-2">&amp;</span>G1::EdgeWeight) -&gt; bool,
 {
     <span class="kw">if </span>g0.node_count() &gt; g1.node_count() || g0.edge_count() &gt; g1.edge_count() {
         <span class="kw">return </span><span class="prelude-val">None</span>;

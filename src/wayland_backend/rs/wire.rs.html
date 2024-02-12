@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wayland-backend-0.3.2/src/rs/wire.rs`."><title>wire.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="wayland_backend" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../wayland_backend/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wayland-backend-0.3.3/src/rs/wire.rs`."><title>wire.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="wayland_backend" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -296,19 +297,13 @@
 <a href="#296" id="296">296</a>
 <a href="#297" id="297">297</a>
 <a href="#298" id="298">298</a>
-<a href="#299" id="299">299</a>
-<a href="#300" id="300">300</a>
-<a href="#301" id="301">301</a>
-<a href="#302" id="302">302</a>
-<a href="#303" id="303">303</a>
-<a href="#304" id="304">304</a>
-<a href="#305" id="305">305</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Types and routines used to manipulate arguments from the wire format
 
-</span><span class="kw">use </span>std::os::unix::io::{BorrowedFd, OwnedFd};
-<span class="kw">use </span>std::os::unix::io::{FromRawFd, RawFd};
-<span class="kw">use </span>std::ptr;
-<span class="kw">use </span>std::{ffi::CStr, os::unix::prelude::AsRawFd};
+</span><span class="kw">use </span>std::collections::VecDeque;
+<span class="kw">use </span>std::convert::TryInto;
+<span class="kw">use </span>std::ffi::CStr;
+<span class="kw">use </span>std::os::unix::io::RawFd;
+<span class="kw">use </span>std::os::unix::io::{BorrowedFd, OwnedFd};
 
 <span class="kw">use </span><span class="kw">crate</span>::protocol::{Argument, ArgumentType, Message};
 
@@ -330,12 +325,12 @@
     </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>::std::fmt::Formatter) -&gt; <span class="prelude-ty">Result</span>&lt;(), ::std::fmt::Error&gt; {
         <span class="kw">match </span><span class="self">self </span>{
             <span class="self">Self</span>::BufferTooSmall =&gt; {
-                f.write_str(<span class="string">&quot;The provided buffer is too small to hold message content.&quot;</span>)
+                f.write_str(<span class="string">"The provided buffer is too small to hold message content."</span>)
             }
             <span class="self">Self</span>::DupFdFailed(e) =&gt; {
                 <span class="macro">write!</span>(
                     f,
-                    <span class="string">&quot;The message contains a file descriptor that could not be dup()-ed ({}).&quot;</span>,
+                    <span class="string">"The message contains a file descriptor that could not be dup()-ed ({})."</span>,
                     e
                 )
             }
@@ -361,10 +356,10 @@
     </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>::std::fmt::Formatter) -&gt; <span class="prelude-ty">Result</span>&lt;(), ::std::fmt::Error&gt; {
         <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
             <span class="self">Self</span>::MissingFD =&gt; {
-                f.write_str(<span class="string">&quot;The message references a FD but the buffer FD is empty.&quot;</span>)
+                f.write_str(<span class="string">"The message references a FD but the buffer FD is empty."</span>)
             }
-            <span class="self">Self</span>::MissingData =&gt; f.write_str(<span class="string">&quot;More data is needed to deserialize the message&quot;</span>),
-            <span class="self">Self</span>::Malformed =&gt; f.write_str(<span class="string">&quot;The message is malformed and cannot be parsed&quot;</span>),
+            <span class="self">Self</span>::MissingData =&gt; f.write_str(<span class="string">"More data is needed to deserialize the message"</span>),
+            <span class="self">Self</span>::Malformed =&gt; f.write_str(<span class="string">"The message is malformed and cannot be parsed"</span>),
         }
     }
 }
@@ -376,15 +371,15 @@
 /// Any serialized Fd will be `dup()`-ed in the process
 </span><span class="kw">pub fn </span>write_to_buffers(
     msg: <span class="kw-2">&amp;</span>Message&lt;u32, RawFd&gt;,
-    payload: <span class="kw-2">&amp;mut </span>[u32],
-    <span class="kw-2">mut </span>fds: <span class="kw-2">&amp;mut </span>[RawFd],
-) -&gt; <span class="prelude-ty">Result</span>&lt;(usize, usize), MessageWriteError&gt; {
+    payload: <span class="kw-2">&amp;mut </span>[u8],
+    fds: <span class="kw-2">&amp;mut </span>Vec&lt;OwnedFd&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;usize, MessageWriteError&gt; {
     <span class="kw">let </span>orig_payload_len = payload.len();
-    <span class="kw">let </span>orig_fds_len = fds.len();
     <span class="comment">// Helper function to write a u32 or a RawFd to its buffer
-    </span><span class="kw">fn </span>write_buf&lt;T&gt;(u: T, payload: <span class="kw-2">&amp;mut </span>[T]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;mut </span>[T], MessageWriteError&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>((head, tail)) = payload.split_first_mut() {
-            <span class="kw-2">*</span>head = u;
+    </span><span class="kw">fn </span>write_buf(u: u32, payload: <span class="kw-2">&amp;mut </span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;mut </span>[u8], MessageWriteError&gt; {
+        <span class="kw">if </span>payload.len() &gt;= <span class="number">4 </span>{
+            <span class="kw">let </span>(head, tail) = payload.split_at_mut(<span class="number">4</span>);
+            head.copy_from_slice(<span class="kw-2">&amp;</span>u.to_ne_bytes());
             <span class="prelude-val">Ok</span>(tail)
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(MessageWriteError::BufferTooSmall)
@@ -392,76 +387,58 @@
     }
 
     <span class="comment">// Helper function to write byte arrays in payload
-    </span><span class="kw">fn </span>write_array_to_payload&lt;<span class="lifetime">&#39;a</span>&gt;(
+    </span><span class="kw">fn </span>write_array_to_payload&lt;<span class="lifetime">'a</span>&gt;(
         array: <span class="kw-2">&amp;</span>[u8],
-        payload: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>[u32],
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>[u32], MessageWriteError&gt; {
-        <span class="kw">let </span>array_len = array.len();
-        <span class="kw">let </span>word_len = array_len / <span class="number">4 </span>+ usize::from(array_len % <span class="number">4 </span>!= <span class="number">0</span>);
-        <span class="comment">// need enough space to store the whole array with padding and a size header
-        </span><span class="kw">if </span>payload.len() &lt; <span class="number">1 </span>+ word_len {
+        payload: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>[u8],
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>[u8], MessageWriteError&gt; {
+        <span class="comment">// size header
+        </span><span class="kw">let </span>payload = write_buf(array.len() <span class="kw">as </span>u32, payload)<span class="question-mark">?</span>;
+
+        <span class="comment">// Handle padding
+        </span><span class="kw">let </span>len = next_multiple_of(array.len(), <span class="number">4</span>);
+
+        <span class="kw">if </span>payload.len() &lt; len {
             <span class="kw">return </span><span class="prelude-val">Err</span>(MessageWriteError::BufferTooSmall);
         }
-        <span class="comment">// size header
-        </span>payload[<span class="number">0</span>] = array_len <span class="kw">as </span>u32;
-        <span class="kw">let </span>(buffer_slice, rest) = payload[<span class="number">1</span>..].split_at_mut(word_len);
-        <span class="kw">unsafe </span>{
-            ptr::copy(array.as_ptr(), buffer_slice.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>u8, array_len);
-        }
+
+        <span class="kw">let </span>(buffer_slice, rest) = payload.split_at_mut(len);
+        buffer_slice[..array.len()].copy_from_slice(array);
         <span class="prelude-val">Ok</span>(rest)
     }
 
     <span class="kw">let </span>free_size = payload.len();
-    <span class="kw">if </span>free_size &lt; <span class="number">2 </span>{
+    <span class="kw">if </span>free_size &lt; <span class="number">2 </span>* <span class="number">4 </span>{
         <span class="kw">return </span><span class="prelude-val">Err</span>(MessageWriteError::BufferTooSmall);
     }
 
-    <span class="kw">let </span>(header, <span class="kw-2">mut </span>payload) = payload.split_at_mut(<span class="number">2</span>);
-
-    <span class="kw">let </span><span class="kw-2">mut </span>pending_fds = Vec::new();
+    <span class="kw">let </span>(header, <span class="kw-2">mut </span>payload) = payload.split_at_mut(<span class="number">2 </span>* <span class="number">4</span>);
 
     <span class="comment">// write the contents in the buffer
     </span><span class="kw">for </span>arg <span class="kw">in </span><span class="kw-2">&amp;</span>msg.args {
-        <span class="comment">// Just to make the borrow checker happy
-        </span><span class="kw">let </span>old_payload = payload;
-        <span class="kw">match </span><span class="kw-2">*</span>arg {
-            Argument::Int(i) =&gt; payload = write_buf(i <span class="kw">as </span>u32, old_payload)<span class="question-mark">?</span>,
-            Argument::Uint(u) =&gt; payload = write_buf(u, old_payload)<span class="question-mark">?</span>,
-            Argument::Fixed(f) =&gt; payload = write_buf(f <span class="kw">as </span>u32, old_payload)<span class="question-mark">?</span>,
-            Argument::Str(<span class="prelude-val">Some</span>(<span class="kw-2">ref </span>s)) =&gt; {
-                payload = write_array_to_payload(s.as_bytes_with_nul(), old_payload)<span class="question-mark">?</span>;
-            }
-            Argument::Str(<span class="prelude-val">None</span>) =&gt; {
-                payload = write_array_to_payload(<span class="kw-2">&amp;</span>[], old_payload)<span class="question-mark">?</span>;
-            }
-            Argument::Object(o) =&gt; payload = write_buf(o, old_payload)<span class="question-mark">?</span>,
-            Argument::NewId(n) =&gt; payload = write_buf(n, old_payload)<span class="question-mark">?</span>,
-            Argument::Array(<span class="kw-2">ref </span>a) =&gt; {
-                payload = write_array_to_payload(a, old_payload)<span class="question-mark">?</span>;
-            }
+        payload = <span class="kw">match </span><span class="kw-2">*</span>arg {
+            Argument::Int(i) =&gt; write_buf(i <span class="kw">as </span>u32, payload)<span class="question-mark">?</span>,
+            Argument::Uint(u) =&gt; write_buf(u, payload)<span class="question-mark">?</span>,
+            Argument::Fixed(f) =&gt; write_buf(f <span class="kw">as </span>u32, payload)<span class="question-mark">?</span>,
+            Argument::Str(<span class="prelude-val">Some</span>(<span class="kw-2">ref </span>s)) =&gt; write_array_to_payload(s.as_bytes_with_nul(), payload)<span class="question-mark">?</span>,
+            Argument::Str(<span class="prelude-val">None</span>) =&gt; write_array_to_payload(<span class="kw-2">&amp;</span>[], payload)<span class="question-mark">?</span>,
+            Argument::Object(o) =&gt; write_buf(o, payload)<span class="question-mark">?</span>,
+            Argument::NewId(n) =&gt; write_buf(n, payload)<span class="question-mark">?</span>,
+            Argument::Array(<span class="kw-2">ref </span>a) =&gt; write_array_to_payload(a, payload)<span class="question-mark">?</span>,
             Argument::Fd(fd) =&gt; {
-                <span class="kw">let </span>old_fds = fds;
                 <span class="kw">let </span>dup_fd = <span class="kw">unsafe </span>{ BorrowedFd::borrow_raw(fd) }
                     .try_clone_to_owned()
                     .map_err(MessageWriteError::DupFdFailed)<span class="question-mark">?</span>;
-                <span class="kw">let </span>raw_dup_fd = dup_fd.as_raw_fd();
-                pending_fds.push(dup_fd);
-                fds = write_buf(raw_dup_fd, old_fds)<span class="question-mark">?</span>;
-                payload = old_payload;
+                fds.push(dup_fd);
+                payload
             }
-        }
+        };
     }
 
-    <span class="comment">// if we reached here, the whole message was written successfully, we can drop the pending_fds they
-    // don&#39;t need to be closed, sendmsg will take ownership of them
-    </span><span class="kw">for </span>fd <span class="kw">in </span>pending_fds {
-        std::mem::forget(fd);
-    }
-
-    <span class="kw">let </span>wrote_size = (free_size - payload.len()) * <span class="number">4</span>;
-    header[<span class="number">0</span>] = msg.sender_id;
-    header[<span class="number">1</span>] = ((wrote_size <span class="kw">as </span>u32) &lt;&lt; <span class="number">16</span>) | u32::from(msg.opcode);
-    <span class="prelude-val">Ok</span>((orig_payload_len - payload.len(), orig_fds_len - fds.len()))
+    <span class="kw">let </span>wrote_size = free_size - payload.len();
+    header[..<span class="number">4</span>].copy_from_slice(<span class="kw-2">&amp;</span>msg.sender_id.to_ne_bytes());
+    header[<span class="number">4</span>..]
+        .copy_from_slice(<span class="kw-2">&amp;</span>(((wrote_size <span class="kw">as </span>u32) &lt;&lt; <span class="number">16</span>) | u32::from(msg.opcode)).to_ne_bytes());
+    <span class="prelude-val">Ok</span>(orig_payload_len - payload.len())
 }
 
 <span class="doccomment">/// Attempts to parse a single wayland message with the given signature.
@@ -472,58 +449,59 @@
 ///
 /// Errors if the message is malformed.
 </span><span class="attr">#[allow(clippy::type_complexity)]
-</span><span class="kw">pub fn </span>parse_message&lt;<span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span>&gt;(
-    raw: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u32],
+</span><span class="kw">pub fn </span>parse_message&lt;<span class="lifetime">'a</span>&gt;(
+    raw: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8],
     signature: <span class="kw-2">&amp;</span>[ArgumentType],
-    fds: <span class="kw-2">&amp;</span><span class="lifetime">&#39;b </span>[RawFd],
-) -&gt; <span class="prelude-ty">Result</span>&lt;(Message&lt;u32, OwnedFd&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u32], <span class="kw-2">&amp;</span><span class="lifetime">&#39;b </span>[RawFd]), MessageParseError&gt; {
+    fds: <span class="kw-2">&amp;mut </span>VecDeque&lt;OwnedFd&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(Message&lt;u32, OwnedFd&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]), MessageParseError&gt; {
     <span class="comment">// helper function to read arrays
     </span><span class="kw">fn </span>read_array_from_payload(
         array_len: usize,
-        payload: <span class="kw-2">&amp;</span>[u32],
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;(<span class="kw-2">&amp;</span>[u8], <span class="kw-2">&amp;</span>[u32]), MessageParseError&gt; {
-        <span class="kw">let </span>word_len = array_len / <span class="number">4 </span>+ usize::from(array_len % <span class="number">4 </span>!= <span class="number">0</span>);
-        <span class="kw">if </span>word_len &gt; payload.len() {
+        payload: <span class="kw-2">&amp;</span>[u8],
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(<span class="kw-2">&amp;</span>[u8], <span class="kw-2">&amp;</span>[u8]), MessageParseError&gt; {
+        <span class="kw">let </span>len = next_multiple_of(array_len, <span class="number">4</span>);
+        <span class="kw">if </span>len &gt; payload.len() {
             <span class="kw">return </span><span class="prelude-val">Err</span>(MessageParseError::MissingData);
         }
-        <span class="kw">let </span>(array_contents, rest) = payload.split_at(word_len);
-        <span class="kw">let </span>array = <span class="kw">unsafe </span>{
-            ::std::slice::from_raw_parts(array_contents.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>u8, array_len)
-        };
-        <span class="prelude-val">Ok</span>((array, rest))
+        <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span>payload[..array_len], <span class="kw-2">&amp;</span>payload[len..]))
     }
 
-    <span class="kw">if </span>raw.len() &lt; <span class="number">2 </span>{
+    <span class="kw">if </span>raw.len() &lt; <span class="number">2 </span>* <span class="number">4 </span>{
         <span class="kw">return </span><span class="prelude-val">Err</span>(MessageParseError::MissingData);
     }
 
-    <span class="kw">let </span>sender_id = raw[<span class="number">0</span>];
-    <span class="kw">let </span>word_2 = raw[<span class="number">1</span>];
+    <span class="kw">let </span>sender_id = u32::from_ne_bytes([raw[<span class="number">0</span>], raw[<span class="number">1</span>], raw[<span class="number">2</span>], raw[<span class="number">3</span>]]);
+    <span class="kw">let </span>word_2 = u32::from_ne_bytes([raw[<span class="number">4</span>], raw[<span class="number">5</span>], raw[<span class="number">6</span>], raw[<span class="number">7</span>]]);
     <span class="kw">let </span>opcode = (word_2 &amp; <span class="number">0x0000_FFFF</span>) <span class="kw">as </span>u16;
-    <span class="kw">let </span>len = (word_2 &gt;&gt; <span class="number">16</span>) <span class="kw">as </span>usize / <span class="number">4</span>;
+    <span class="kw">let </span>len = (word_2 &gt;&gt; <span class="number">16</span>) <span class="kw">as </span>usize;
 
-    <span class="kw">if </span>len &lt; <span class="number">2 </span>{
+    <span class="kw">if </span>len &lt; <span class="number">2 </span>* <span class="number">4 </span>{
         <span class="kw">return </span><span class="prelude-val">Err</span>(MessageParseError::Malformed);
     } <span class="kw">else if </span>len &gt; raw.len() {
         <span class="kw">return </span><span class="prelude-val">Err</span>(MessageParseError::MissingData);
     }
 
+    <span class="kw">let </span>fd_len = signature.iter().filter(|x| <span class="macro">matches!</span>(x, ArgumentType::Fd)).count();
+    <span class="kw">if </span>fd_len &gt; fds.len() {
+        <span class="kw">return </span><span class="prelude-val">Err</span>(MessageParseError::MissingFD);
+    }
+
     <span class="kw">let </span>(<span class="kw-2">mut </span>payload, rest) = raw.split_at(len);
-    payload = <span class="kw-2">&amp;</span>payload[<span class="number">2</span>..];
-    <span class="kw">let </span><span class="kw-2">mut </span>fds = fds;
+    payload = <span class="kw-2">&amp;</span>payload[<span class="number">2 </span>* <span class="number">4</span>..];
 
     <span class="kw">let </span>arguments = signature
         .iter()
         .map(|argtype| {
             <span class="kw">if let </span>ArgumentType::Fd = <span class="kw-2">*</span>argtype {
-                <span class="comment">// don&#39;t consume input but fd
-                </span><span class="kw">if let </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>front, tail)) = fds.split_first() {
-                    fds = tail;
-                    <span class="prelude-val">Ok</span>(Argument::Fd(<span class="kw">unsafe </span>{ OwnedFd::from_raw_fd(front) }))
+                <span class="comment">// don't consume input but fd
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(front) = fds.pop_front() {
+                    <span class="prelude-val">Ok</span>(Argument::Fd(front))
                 } <span class="kw">else </span>{
                     <span class="prelude-val">Err</span>(MessageParseError::MissingFD)
                 }
-            } <span class="kw">else if let </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>front, <span class="kw-2">mut </span>tail)) = payload.split_first() {
+            } <span class="kw">else if </span>payload.len() &gt;= <span class="number">4 </span>{
+                <span class="kw">let </span>(front, <span class="kw-2">mut </span>tail) = payload.split_at(<span class="number">4</span>);
+                <span class="kw">let </span>front = u32::from_ne_bytes(front.try_into().unwrap());
                 <span class="kw">let </span>arg = <span class="kw">match </span><span class="kw-2">*</span>argtype {
                     ArgumentType::Int =&gt; <span class="prelude-val">Ok</span>(Argument::Int(front <span class="kw">as </span>i32)),
                     ArgumentType::Uint =&gt; <span class="prelude-val">Ok</span>(Argument::Uint(front)),
@@ -560,7 +538,15 @@
         .collect::&lt;<span class="prelude-ty">Result</span>&lt;SmallVec&lt;<span class="kw">_</span>&gt;, MessageParseError&gt;&gt;()<span class="question-mark">?</span>;
 
     <span class="kw">let </span>msg = Message { sender_id, opcode, args: arguments };
-    <span class="prelude-val">Ok</span>((msg, rest, fds))
+    <span class="prelude-val">Ok</span>((msg, rest))
+}
+
+<span class="comment">// Stabalized in Rust 1.73
+</span><span class="kw">fn </span>next_multiple_of(lhs: usize, rhs: usize) -&gt; usize {
+    <span class="kw">match </span>lhs % rhs {
+        <span class="number">0 </span>=&gt; lhs,
+        r =&gt; lhs + (rhs - r),
+    }
 }
 
 <span class="attr">#[cfg(test)]
@@ -573,7 +559,7 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>into_from_raw_cycle() {
         <span class="kw">let </span><span class="kw-2">mut </span>bytes_buffer = <span class="macro">vec!</span>[<span class="number">0</span>; <span class="number">1024</span>];
-        <span class="kw">let </span><span class="kw-2">mut </span>fd_buffer = [<span class="number">0</span>; <span class="number">10</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>fd_buffer = Vec::new();
 
         <span class="kw">let </span>msg = Message {
             sender_id: <span class="number">42</span>,
@@ -581,7 +567,7 @@
             args: <span class="macro">smallvec!</span>[
                 Argument::Uint(<span class="number">3</span>),
                 Argument::Fixed(-<span class="number">89</span>),
-                Argument::Str(<span class="prelude-val">Some</span>(Box::new(CString::new(<span class="kw-2">&amp;</span><span class="string">b&quot;I like trains!&quot;</span>[..]).unwrap()))),
+                Argument::Str(<span class="prelude-val">Some</span>(Box::new(CString::new(<span class="kw-2">&amp;</span><span class="string">b"I like trains!"</span>[..]).unwrap()))),
                 Argument::Array(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>].into()),
                 Argument::Object(<span class="number">88</span>),
                 Argument::NewId(<span class="number">56</span>),
@@ -589,9 +575,10 @@
             ],
         };
         <span class="comment">// write the message to the buffers
-        </span>write_to_buffers(<span class="kw-2">&amp;</span>msg, <span class="kw-2">&amp;mut </span>bytes_buffer[..], <span class="kw-2">&amp;mut </span>fd_buffer[..]).unwrap();
+        </span>write_to_buffers(<span class="kw-2">&amp;</span>msg, <span class="kw-2">&amp;mut </span>bytes_buffer[..], <span class="kw-2">&amp;mut </span>fd_buffer).unwrap();
         <span class="comment">// read them back
-        </span><span class="kw">let </span>(rebuilt, <span class="kw">_</span>, <span class="kw">_</span>) = parse_message(
+        </span><span class="kw">let </span><span class="kw-2">mut </span>fd_buffer = VecDeque::from(fd_buffer);
+        <span class="kw">let </span>(rebuilt, <span class="kw">_</span>) = parse_message(
             <span class="kw-2">&amp;</span>bytes_buffer[..],
             <span class="kw-2">&amp;</span>[
                 ArgumentType::Uint,
@@ -602,7 +589,7 @@
                 ArgumentType::NewId,
                 ArgumentType::Int,
             ],
-            <span class="kw-2">&amp;</span>fd_buffer[..],
+            <span class="kw-2">&amp;mut </span>fd_buffer,
         )
         .unwrap();
         <span class="macro">assert_eq!</span>(rebuilt.map_fd(IntoRawFd::into_raw_fd), msg);

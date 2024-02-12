@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.25/src/backend/linux_raw/fs/syscalls.rs`."><title>syscalls.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../../rustix/index.html"><img class="rust-logo" src="../../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.31/src/backend/linux_raw/fs/syscalls.rs`."><title>syscalls.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1658,10 +1659,6 @@
 <a href="#1658" id="1658">1658</a>
 <a href="#1659" id="1659">1659</a>
 <a href="#1660" id="1660">1660</a>
-<a href="#1661" id="1661">1661</a>
-<a href="#1662" id="1662">1662</a>
-<a href="#1663" id="1663">1663</a>
-<a href="#1664" id="1664">1664</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! linux_raw syscalls supporting `rustix::fs`.
 //!
 //! # Safety
@@ -1672,25 +1669,31 @@
 
 </span><span class="kw">use </span><span class="kw">crate</span>::backend::c;
 <span class="kw">use </span><span class="kw">crate</span>::backend::conv::fs::oflags_for_open_how;
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;linux_4_11&quot;</span>))]
+<span class="attr">#[cfg(any(
+    not(feature = <span class="string">"linux_4_11"</span>),
+    target_arch = <span class="string">"aarch64"</span>,
+    target_arch = <span class="string">"riscv64"</span>,
+    target_arch = <span class="string">"mips"</span>,
+    target_arch = <span class="string">"mips32r6"</span>,
+))]
 </span><span class="kw">use </span><span class="kw">crate</span>::backend::conv::zero;
 <span class="kw">use </span><span class="kw">crate</span>::backend::conv::{
     by_ref, c_int, c_uint, dev_t, opt_mut, pass_usize, raw_fd, ret, ret_c_int, ret_c_uint,
     ret_infallible, ret_owned_fd, ret_usize, size_of, slice, slice_mut,
 };
-<span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+<span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::backend::conv::{loff_t, loff_t_from_u64, ret_u64};
 <span class="attr">#[cfg(any(
-    target_arch = <span class="string">&quot;aarch64&quot;</span>,
-    target_arch = <span class="string">&quot;riscv64&quot;</span>,
-    target_arch = <span class="string">&quot;mips64&quot;</span>,
-    target_arch = <span class="string">&quot;mips64r6&quot;</span>,
-    target_pointer_width = <span class="string">&quot;32&quot;</span>,
+    target_arch = <span class="string">"aarch64"</span>,
+    target_arch = <span class="string">"riscv64"</span>,
+    target_arch = <span class="string">"mips64"</span>,
+    target_arch = <span class="string">"mips64r6"</span>,
+    target_pointer_width = <span class="string">"32"</span>,
 ))]
 </span><span class="kw">use </span><span class="kw">crate</span>::fd::AsFd;
 <span class="kw">use </span><span class="kw">crate</span>::fd::{BorrowedFd, OwnedFd};
 <span class="kw">use </span><span class="kw">crate</span>::ffi::CStr;
-<span class="attr">#[cfg(any(target_arch = <span class="string">&quot;aarch64&quot;</span>, target_arch = <span class="string">&quot;riscv64&quot;</span>))]
+<span class="attr">#[cfg(any(target_arch = <span class="string">"aarch64"</span>, target_arch = <span class="string">"riscv64"</span>))]
 </span><span class="kw">use </span><span class="kw">crate</span>::fs::CWD;
 <span class="kw">use </span><span class="kw">crate</span>::fs::{
     inotify, Access, Advice, AtFlags, FallocateFlags, FileType, FlockOperation, Gid, MemfdFlags,
@@ -1699,14 +1702,14 @@
 };
 <span class="kw">use </span><span class="kw">crate</span>::io;
 <span class="kw">use </span>core::mem::MaybeUninit;
-<span class="attr">#[cfg(any(target_arch = <span class="string">&quot;mips64&quot;</span>, target_arch = <span class="string">&quot;mips64r6&quot;</span>))]
+<span class="attr">#[cfg(any(target_arch = <span class="string">"mips64"</span>, target_arch = <span class="string">"mips64r6"</span>))]
 </span><span class="kw">use </span>linux_raw_sys::general::stat <span class="kw">as </span>linux_stat64;
 <span class="kw">use </span>linux_raw_sys::general::{
     __kernel_fsid_t, open_how, statx, AT_EACCESS, AT_FDCWD, AT_REMOVEDIR, AT_SYMLINK_NOFOLLOW,
     F_ADD_SEALS, F_GETFL, F_GET_SEALS, F_SETFL, SEEK_CUR, SEEK_DATA, SEEK_END, SEEK_HOLE, SEEK_SET,
     STATX__RESERVED,
 };
-<span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+<span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
 </span><span class="kw">use </span>{
     <span class="kw">crate</span>::backend::conv::{hi, lo, slice_just_addr},
     linux_raw_sys::general::stat64 <span class="kw">as </span>linux_stat64,
@@ -1718,11 +1721,11 @@
     <span class="comment">// Always enable support for large files.
     </span><span class="kw">let </span>flags = flags | OFlags::from_bits_retain(c::O_LARGEFILE);
 
-    <span class="attr">#[cfg(any(target_arch = <span class="string">&quot;aarch64&quot;</span>, target_arch = <span class="string">&quot;riscv64&quot;</span>))]
+    <span class="attr">#[cfg(any(target_arch = <span class="string">"aarch64"</span>, target_arch = <span class="string">"riscv64"</span>))]
     </span>{
         openat(CWD.as_fd(), path, flags, mode)
     }
-    <span class="attr">#[cfg(not(any(target_arch = <span class="string">&quot;aarch64&quot;</span>, target_arch = <span class="string">&quot;riscv64&quot;</span>)))]
+    <span class="attr">#[cfg(not(any(target_arch = <span class="string">"aarch64"</span>, target_arch = <span class="string">"riscv64"</span>)))]
     </span><span class="kw">unsafe </span>{
         ret_owned_fd(<span class="macro">syscall_readonly!</span>(__NR_open, path, flags, mode))
     }
@@ -1730,7 +1733,7 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>openat(
-    dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     path: <span class="kw-2">&amp;</span>CStr,
     flags: OFlags,
     mode: Mode,
@@ -1743,14 +1746,14 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>openat2(
-    dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     path: <span class="kw-2">&amp;</span>CStr,
     <span class="kw-2">mut </span>flags: OFlags,
     mode: Mode,
     resolve: ResolveFlags,
 ) -&gt; io::Result&lt;OwnedFd&gt; {
     <span class="comment">// Enable support for large files, but not with `O_PATH` because
-    // `openat2` doesn&#39;t like those flags together.
+    // `openat2` doesn't like those flags together.
     </span><span class="kw">if </span>!flags.contains(OFlags::PATH) {
         flags |= OFlags::from_bits_retain(c::O_LARGEFILE);
     }
@@ -1784,7 +1787,7 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>chmodat(
-    dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     path: <span class="kw-2">&amp;</span>CStr,
     mode: Mode,
     flags: AtFlags,
@@ -1799,13 +1802,13 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fchmod(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, mode: Mode) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fchmod(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, mode: Mode) -&gt; io::Result&lt;()&gt; {
     <span class="kw">unsafe </span>{ ret(<span class="macro">syscall_readonly!</span>(__NR_fchmod, fd, mode)) }
 }
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>chownat(
-    dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     path: <span class="kw-2">&amp;</span>CStr,
     owner: <span class="prelude-ty">Option</span>&lt;Uid&gt;,
     group: <span class="prelude-ty">Option</span>&lt;Gid&gt;,
@@ -1827,14 +1830,14 @@
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>chown(path: <span class="kw-2">&amp;</span>CStr, owner: <span class="prelude-ty">Option</span>&lt;Uid&gt;, group: <span class="prelude-ty">Option</span>&lt;Gid&gt;) -&gt; io::Result&lt;()&gt; {
     <span class="comment">// Most architectures have a `chown` syscall.
-    </span><span class="attr">#[cfg(not(any(target_arch = <span class="string">&quot;aarch64&quot;</span>, target_arch = <span class="string">&quot;riscv64&quot;</span>)))]
+    </span><span class="attr">#[cfg(not(any(target_arch = <span class="string">"aarch64"</span>, target_arch = <span class="string">"riscv64"</span>)))]
     </span><span class="kw">unsafe </span>{
         <span class="kw">let </span>(ow, gr) = <span class="kw">crate</span>::ugid::translate_fchown_args(owner, group);
         ret(<span class="macro">syscall_readonly!</span>(__NR_chown, path, c_uint(ow), c_uint(gr)))
     }
 
-    <span class="comment">// Aarch64 and RISC-V don&#39;t, so use `fchownat`.
-    </span><span class="attr">#[cfg(any(target_arch = <span class="string">&quot;aarch64&quot;</span>, target_arch = <span class="string">&quot;riscv64&quot;</span>))]
+    <span class="comment">// Aarch64 and RISC-V don't, so use `fchownat`.
+    </span><span class="attr">#[cfg(any(target_arch = <span class="string">"aarch64"</span>, target_arch = <span class="string">"riscv64"</span>))]
     </span><span class="kw">unsafe </span>{
         <span class="kw">let </span>(ow, gr) = <span class="kw">crate</span>::ugid::translate_fchown_args(owner, group);
         ret(<span class="macro">syscall_readonly!</span>(
@@ -1849,7 +1852,7 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fchown(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, owner: <span class="prelude-ty">Option</span>&lt;Uid&gt;, group: <span class="prelude-ty">Option</span>&lt;Gid&gt;) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fchown(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, owner: <span class="prelude-ty">Option</span>&lt;Uid&gt;, group: <span class="prelude-ty">Option</span>&lt;Gid&gt;) -&gt; io::Result&lt;()&gt; {
     <span class="kw">unsafe </span>{
         <span class="kw">let </span>(ow, gr) = <span class="kw">crate</span>::ugid::translate_fchown_args(owner, group);
         ret(<span class="macro">syscall_readonly!</span>(__NR_fchown, fd, c_uint(ow), c_uint(gr)))
@@ -1858,13 +1861,13 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>mknodat(
-    dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     path: <span class="kw-2">&amp;</span>CStr,
     file_type: FileType,
     mode: Mode,
     dev: u64,
 ) -&gt; io::Result&lt;()&gt; {
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_mknodat,
@@ -1874,7 +1877,7 @@
             dev_t(dev)<span class="question-mark">?
         </span>))
     }
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_mknodat,
@@ -1887,11 +1890,11 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>seek(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, pos: SeekFrom) -&gt; io::Result&lt;u64&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>seek(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, pos: SeekFrom) -&gt; io::Result&lt;u64&gt; {
     <span class="kw">let </span>(whence, offset) = <span class="kw">match </span>pos {
         SeekFrom::Start(pos) =&gt; {
             <span class="kw">let </span>pos: u64 = pos;
-            <span class="comment">// Silently cast; we&#39;ll get `EINVAL` if the value is negative.
+            <span class="comment">// Silently cast; we'll get `EINVAL` if the value is negative.
             </span>(SEEK_SET, pos <span class="kw">as </span>i64)
         }
         SeekFrom::End(offset) =&gt; (SEEK_END, offset),
@@ -1903,14 +1906,14 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>_seek(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, offset: i64, whence: c::c_uint) -&gt; io::Result&lt;u64&gt; {
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>_seek(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, offset: i64, whence: c::c_uint) -&gt; io::Result&lt;u64&gt; {
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>result = MaybeUninit::&lt;u64&gt;::uninit();
         ret(<span class="macro">syscall!</span>(
             __NR__llseek,
             fd,
-            <span class="comment">// Don&#39;t use the hi/lo functions here because Linux&#39;s llseek
+            <span class="comment">// Don't use the hi/lo functions here because Linux's llseek
             // takes its 64-bit argument differently from everything else.
             </span>pass_usize((offset &gt;&gt; <span class="number">32</span>) <span class="kw">as </span>usize),
             pass_usize(offset <span class="kw">as </span>usize),
@@ -1919,7 +1922,7 @@
         ))<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(result.assume_init())
     }
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret_u64(<span class="macro">syscall_readonly!</span>(
             __NR_lseek,
@@ -1931,20 +1934,20 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>tell(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; io::Result&lt;u64&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>tell(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;) -&gt; io::Result&lt;u64&gt; {
     _seek(fd, <span class="number">0</span>, SEEK_CUR).map(|x| x <span class="kw">as </span>u64)
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>ftruncate(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, length: u64) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>ftruncate(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, length: u64) -&gt; io::Result&lt;()&gt; {
     <span class="comment">// &lt;https://github.com/torvalds/linux/blob/fcadab740480e0e0e9fa9bd272acd409884d431a/arch/arm64/kernel/sys32.c#L81-L83&gt;
     </span><span class="attr">#[cfg(all(
-        target_pointer_width = <span class="string">&quot;32&quot;</span>,
+        target_pointer_width = <span class="string">"32"</span>,
         any(
-            target_arch = <span class="string">&quot;arm&quot;</span>,
-            target_arch = <span class="string">&quot;mips&quot;</span>,
-            target_arch = <span class="string">&quot;mips32r6&quot;</span>,
-            target_arch = <span class="string">&quot;powerpc&quot;
+            target_arch = <span class="string">"arm"</span>,
+            target_arch = <span class="string">"mips"</span>,
+            target_arch = <span class="string">"mips32r6"</span>,
+            target_arch = <span class="string">"powerpc"
         </span>),
     ))]
     </span><span class="kw">unsafe </span>{
@@ -1957,12 +1960,12 @@
         ))
     }
     <span class="attr">#[cfg(all(
-        target_pointer_width = <span class="string">&quot;32&quot;</span>,
+        target_pointer_width = <span class="string">"32"</span>,
         not(any(
-            target_arch = <span class="string">&quot;arm&quot;</span>,
-            target_arch = <span class="string">&quot;mips&quot;</span>,
-            target_arch = <span class="string">&quot;mips32r6&quot;</span>,
-            target_arch = <span class="string">&quot;powerpc&quot;
+            target_arch = <span class="string">"arm"</span>,
+            target_arch = <span class="string">"mips"</span>,
+            target_arch = <span class="string">"mips32r6"</span>,
+            target_arch = <span class="string">"powerpc"
         </span>)),
     ))]
     </span><span class="kw">unsafe </span>{
@@ -1973,7 +1976,7 @@
             lo(length)
         ))
     }
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_ftruncate,
@@ -1985,12 +1988,12 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fallocate(
-    fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     mode: FallocateFlags,
     offset: u64,
     len: u64,
 ) -&gt; io::Result&lt;()&gt; {
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_fallocate,
@@ -2002,7 +2005,7 @@
             lo(len)
         ))
     }
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_fallocate,
@@ -2015,10 +2018,10 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fadvise(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, pos: u64, len: u64, advice: Advice) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fadvise(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, pos: u64, len: u64, advice: Advice) -&gt; io::Result&lt;()&gt; {
     <span class="comment">// On ARM, the arguments are reordered so that the len and pos argument
     // pairs are aligned. And ARM has a custom syscall code for this.
-    </span><span class="attr">#[cfg(target_arch = <span class="string">&quot;arm&quot;</span>)]
+    </span><span class="attr">#[cfg(target_arch = <span class="string">"arm"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_arm_fadvise64_64,
@@ -2032,7 +2035,7 @@
     }
 
     <span class="comment">// On powerpc, the arguments are reordered as on ARM.
-    </span><span class="attr">#[cfg(target_arch = <span class="string">&quot;powerpc&quot;</span>)]
+    </span><span class="attr">#[cfg(target_arch = <span class="string">"powerpc"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_fadvise64_64,
@@ -2047,7 +2050,7 @@
 
     <span class="comment">// On mips, the arguments are not reordered, and padding is inserted
     // instead to ensure alignment.
-    </span><span class="attr">#[cfg(any(target_arch = <span class="string">&quot;mips&quot;</span>, target_arch = <span class="string">&quot;mips32r6&quot;</span>))]
+    </span><span class="attr">#[cfg(any(target_arch = <span class="string">"mips"</span>, target_arch = <span class="string">"mips32r6"</span>))]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_fadvise64,
@@ -2064,12 +2067,12 @@
     <span class="comment">// For all other 32-bit architectures, use `fadvise64_64` so that we get a
     // 64-bit length.
     </span><span class="attr">#[cfg(all(
-        target_pointer_width = <span class="string">&quot;32&quot;</span>,
+        target_pointer_width = <span class="string">"32"</span>,
         not(any(
-            target_arch = <span class="string">&quot;arm&quot;</span>,
-            target_arch = <span class="string">&quot;mips&quot;</span>,
-            target_arch = <span class="string">&quot;mips32r6&quot;</span>,
-            target_arch = <span class="string">&quot;powerpc&quot;
+            target_arch = <span class="string">"arm"</span>,
+            target_arch = <span class="string">"mips"</span>,
+            target_arch = <span class="string">"mips32r6"</span>,
+            target_arch = <span class="string">"powerpc"
         </span>)),
     ))]
     </span><span class="kw">unsafe </span>{
@@ -2085,7 +2088,7 @@
     }
 
     <span class="comment">// On 64-bit architectures, use `fadvise64` which is sufficient.
-    </span><span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    </span><span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_fadvise64,
@@ -2098,17 +2101,17 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fsync(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fsync(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;) -&gt; io::Result&lt;()&gt; {
     <span class="kw">unsafe </span>{ ret(<span class="macro">syscall_readonly!</span>(__NR_fsync, fd)) }
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fdatasync(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fdatasync(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;) -&gt; io::Result&lt;()&gt; {
     <span class="kw">unsafe </span>{ ret(<span class="macro">syscall_readonly!</span>(__NR_fdatasync, fd)) }
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>flock(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, operation: FlockOperation) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>flock(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, operation: FlockOperation) -&gt; io::Result&lt;()&gt; {
     <span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_flock,
@@ -2119,7 +2122,7 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>syncfs(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>syncfs(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;) -&gt; io::Result&lt;()&gt; {
     <span class="kw">unsafe </span>{ ret(<span class="macro">syscall_readonly!</span>(__NR_syncfs, fd)) }
 }
 
@@ -2129,20 +2132,20 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fstat(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; io::Result&lt;Stat&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fstat(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;) -&gt; io::Result&lt;Stat&gt; {
     <span class="comment">// 32-bit and mips64 Linux: `struct stat64` is not y2038 compatible; use
     // `statx`.
     //
-    // And, some old platforms don&#39;t support `statx`, and some fail with a
+    // And, some old platforms don't support `statx`, and some fail with a
     // confusing error code, so we call `crate::fs::statx` to handle that. If
-    // `statx` isn&#39;t available, fall back to the buggy system call.
+    // `statx` isn't available, fall back to the buggy system call.
     </span><span class="attr">#[cfg(any(
-        target_pointer_width = <span class="string">&quot;32&quot;</span>,
-        target_arch = <span class="string">&quot;mips64&quot;</span>,
-        target_arch = <span class="string">&quot;mips64r6&quot;
+        target_pointer_width = <span class="string">"32"</span>,
+        target_arch = <span class="string">"mips64"</span>,
+        target_arch = <span class="string">"mips64r6"
     </span>))]
     </span>{
-        <span class="kw">match </span><span class="kw">crate</span>::fs::statx(fd, <span class="macro">cstr!</span>(<span class="string">&quot;&quot;</span>), AtFlags::EMPTY_PATH, StatxFlags::BASIC_STATS) {
+        <span class="kw">match </span><span class="kw">crate</span>::fs::statx(fd, <span class="macro">cstr!</span>(<span class="string">""</span>), AtFlags::EMPTY_PATH, StatxFlags::BASIC_STATS) {
             <span class="prelude-val">Ok</span>(x) =&gt; statx_to_stat(x),
             <span class="prelude-val">Err</span>(io::Errno::NOSYS) =&gt; fstat_old(fd),
             <span class="prelude-val">Err</span>(err) =&gt; <span class="prelude-val">Err</span>(err),
@@ -2150,9 +2153,9 @@
     }
 
     <span class="attr">#[cfg(all(
-        target_pointer_width = <span class="string">&quot;64&quot;</span>,
-        not(target_arch = <span class="string">&quot;mips64&quot;</span>),
-        not(target_arch = <span class="string">&quot;mips64r6&quot;</span>)
+        target_pointer_width = <span class="string">"64"</span>,
+        not(target_arch = <span class="string">"mips64"</span>),
+        not(target_arch = <span class="string">"mips64r6"</span>)
     ))]
     </span><span class="kw">unsafe </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>result = MaybeUninit::&lt;Stat&gt;::uninit();
@@ -2162,20 +2165,20 @@
 }
 
 <span class="attr">#[cfg(any(
-    target_pointer_width = <span class="string">&quot;32&quot;</span>,
-    target_arch = <span class="string">&quot;mips64&quot;</span>,
-    target_arch = <span class="string">&quot;mips64r6&quot;</span>,
+    target_pointer_width = <span class="string">"32"</span>,
+    target_arch = <span class="string">"mips64"</span>,
+    target_arch = <span class="string">"mips64r6"</span>,
 ))]
-</span><span class="kw">fn </span>fstat_old(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; io::Result&lt;Stat&gt; {
+</span><span class="kw">fn </span>fstat_old(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;) -&gt; io::Result&lt;Stat&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>result = MaybeUninit::&lt;linux_stat64&gt;::uninit();
 
-    <span class="attr">#[cfg(any(target_arch = <span class="string">&quot;mips64&quot;</span>, target_arch = <span class="string">&quot;mips64r6&quot;</span>))]
+    <span class="attr">#[cfg(any(target_arch = <span class="string">"mips64"</span>, target_arch = <span class="string">"mips64r6"</span>))]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall!</span>(__NR_fstat, fd, <span class="kw-2">&amp;mut </span>result))<span class="question-mark">?</span>;
         stat_to_stat(result.assume_init())
     }
 
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall!</span>(__NR_fstat64, fd, <span class="kw-2">&amp;mut </span>result))<span class="question-mark">?</span>;
         stat_to_stat(result.assume_init())
@@ -2186,9 +2189,9 @@
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>stat(path: <span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;Stat&gt; {
     <span class="comment">// See the comments in `fstat` about using `crate::fs::statx` here.
     </span><span class="attr">#[cfg(any(
-        target_pointer_width = <span class="string">&quot;32&quot;</span>,
-        target_arch = <span class="string">&quot;mips64&quot;</span>,
-        target_arch = <span class="string">&quot;mips64r6&quot;
+        target_pointer_width = <span class="string">"32"</span>,
+        target_arch = <span class="string">"mips64"</span>,
+        target_arch = <span class="string">"mips64r6"
     </span>))]
     </span>{
         <span class="kw">match </span><span class="kw">crate</span>::fs::statx(
@@ -2204,9 +2207,9 @@
     }
 
     <span class="attr">#[cfg(all(
-        target_pointer_width = <span class="string">&quot;64&quot;</span>,
-        not(target_arch = <span class="string">&quot;mips64&quot;</span>),
-        not(target_arch = <span class="string">&quot;mips64r6&quot;</span>),
+        target_pointer_width = <span class="string">"64"</span>,
+        not(target_arch = <span class="string">"mips64"</span>),
+        not(target_arch = <span class="string">"mips64r6"</span>),
     ))]
     </span><span class="kw">unsafe </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>result = MaybeUninit::&lt;Stat&gt;::uninit();
@@ -2222,14 +2225,14 @@
 }
 
 <span class="attr">#[cfg(any(
-    target_pointer_width = <span class="string">&quot;32&quot;</span>,
-    target_arch = <span class="string">&quot;mips64&quot;</span>,
-    target_arch = <span class="string">&quot;mips64r6&quot;
+    target_pointer_width = <span class="string">"32"</span>,
+    target_arch = <span class="string">"mips64"</span>,
+    target_arch = <span class="string">"mips64r6"
 </span>))]
 </span><span class="kw">fn </span>stat_old(path: <span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;Stat&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>result = MaybeUninit::&lt;linux_stat64&gt;::uninit();
 
-    <span class="attr">#[cfg(any(target_arch = <span class="string">&quot;mips64&quot;</span>, target_arch = <span class="string">&quot;mips64r6&quot;</span>))]
+    <span class="attr">#[cfg(any(target_arch = <span class="string">"mips64"</span>, target_arch = <span class="string">"mips64r6"</span>))]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall!</span>(
             __NR_newfstatat,
@@ -2241,7 +2244,7 @@
         stat_to_stat(result.assume_init())
     }
 
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall!</span>(
             __NR_fstatat64,
@@ -2255,12 +2258,12 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>statat(dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, path: <span class="kw-2">&amp;</span>CStr, flags: AtFlags) -&gt; io::Result&lt;Stat&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>statat(dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, path: <span class="kw-2">&amp;</span>CStr, flags: AtFlags) -&gt; io::Result&lt;Stat&gt; {
     <span class="comment">// See the comments in `fstat` about using `crate::fs::statx` here.
     </span><span class="attr">#[cfg(any(
-        target_pointer_width = <span class="string">&quot;32&quot;</span>,
-        target_arch = <span class="string">&quot;mips64&quot;</span>,
-        target_arch = <span class="string">&quot;mips64r6&quot;
+        target_pointer_width = <span class="string">"32"</span>,
+        target_arch = <span class="string">"mips64"</span>,
+        target_arch = <span class="string">"mips64r6"
     </span>))]
     </span>{
         <span class="kw">match </span><span class="kw">crate</span>::fs::statx(dirfd, path, flags, StatxFlags::BASIC_STATS) {
@@ -2271,9 +2274,9 @@
     }
 
     <span class="attr">#[cfg(all(
-        target_pointer_width = <span class="string">&quot;64&quot;</span>,
-        not(target_arch = <span class="string">&quot;mips64&quot;</span>),
-        not(target_arch = <span class="string">&quot;mips64r6&quot;</span>),
+        target_pointer_width = <span class="string">"64"</span>,
+        not(target_arch = <span class="string">"mips64"</span>),
+        not(target_arch = <span class="string">"mips64r6"</span>),
     ))]
     </span><span class="kw">unsafe </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>result = MaybeUninit::&lt;Stat&gt;::uninit();
@@ -2283,20 +2286,20 @@
 }
 
 <span class="attr">#[cfg(any(
-    target_pointer_width = <span class="string">&quot;32&quot;</span>,
-    target_arch = <span class="string">&quot;mips64&quot;</span>,
-    target_arch = <span class="string">&quot;mips64r6&quot;
+    target_pointer_width = <span class="string">"32"</span>,
+    target_arch = <span class="string">"mips64"</span>,
+    target_arch = <span class="string">"mips64r6"
 </span>))]
-</span><span class="kw">fn </span>statat_old(dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, path: <span class="kw-2">&amp;</span>CStr, flags: AtFlags) -&gt; io::Result&lt;Stat&gt; {
+</span><span class="kw">fn </span>statat_old(dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, path: <span class="kw-2">&amp;</span>CStr, flags: AtFlags) -&gt; io::Result&lt;Stat&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>result = MaybeUninit::&lt;linux_stat64&gt;::uninit();
 
-    <span class="attr">#[cfg(any(target_arch = <span class="string">&quot;mips64&quot;</span>, target_arch = <span class="string">&quot;mips64r6&quot;</span>))]
+    <span class="attr">#[cfg(any(target_arch = <span class="string">"mips64"</span>, target_arch = <span class="string">"mips64r6"</span>))]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall!</span>(__NR_newfstatat, dirfd, path, <span class="kw-2">&amp;mut </span>result, flags))<span class="question-mark">?</span>;
         stat_to_stat(result.assume_init())
     }
 
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall!</span>(__NR_fstatat64, dirfd, path, <span class="kw-2">&amp;mut </span>result, flags))<span class="question-mark">?</span>;
         stat_to_stat(result.assume_init())
@@ -2306,7 +2309,7 @@
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>lstat(path: <span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;Stat&gt; {
     <span class="comment">// See the comments in `fstat` about using `crate::fs::statx` here.
-    </span><span class="attr">#[cfg(any(target_pointer_width = <span class="string">&quot;32&quot;</span>, target_arch = <span class="string">&quot;mips64&quot;</span>))]
+    </span><span class="attr">#[cfg(any(target_pointer_width = <span class="string">"32"</span>, target_arch = <span class="string">"mips64"</span>))]
     </span>{
         <span class="kw">match </span><span class="kw">crate</span>::fs::statx(
             <span class="kw">crate</span>::fs::CWD.as_fd(),
@@ -2320,7 +2323,7 @@
         }
     }
 
-    <span class="attr">#[cfg(all(target_pointer_width = <span class="string">&quot;64&quot;</span>, not(target_arch = <span class="string">&quot;mips64&quot;</span>)))]
+    <span class="attr">#[cfg(all(target_pointer_width = <span class="string">"64"</span>, not(target_arch = <span class="string">"mips64"</span>)))]
     </span><span class="kw">unsafe </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>result = MaybeUninit::&lt;Stat&gt;::uninit();
         ret(<span class="macro">syscall!</span>(
@@ -2334,11 +2337,11 @@
     }
 }
 
-<span class="attr">#[cfg(any(target_pointer_width = <span class="string">&quot;32&quot;</span>, target_arch = <span class="string">&quot;mips64&quot;</span>))]
+<span class="attr">#[cfg(any(target_pointer_width = <span class="string">"32"</span>, target_arch = <span class="string">"mips64"</span>))]
 </span><span class="kw">fn </span>lstat_old(path: <span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;Stat&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>result = MaybeUninit::&lt;linux_stat64&gt;::uninit();
 
-    <span class="attr">#[cfg(any(target_arch = <span class="string">&quot;mips64&quot;</span>, target_arch = <span class="string">&quot;mips64r6&quot;</span>))]
+    <span class="attr">#[cfg(any(target_arch = <span class="string">"mips64"</span>, target_arch = <span class="string">"mips64r6"</span>))]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall!</span>(
             __NR_newfstatat,
@@ -2350,7 +2353,7 @@
         stat_to_stat(result.assume_init())
     }
 
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall!</span>(
             __NR_fstatat64,
@@ -2363,12 +2366,13 @@
     }
 }
 
-<span class="doccomment">/// Convert from a Linux `statx` value to rustix&#39;s `Stat`.
+<span class="doccomment">/// Convert from a Linux `statx` value to rustix's `Stat`.
 </span><span class="attr">#[cfg(any(
-    target_pointer_width = <span class="string">&quot;32&quot;</span>,
-    target_arch = <span class="string">&quot;mips64&quot;</span>,
-    target_arch = <span class="string">&quot;mips64r6&quot;
+    target_pointer_width = <span class="string">"32"</span>,
+    target_arch = <span class="string">"mips64"</span>,
+    target_arch = <span class="string">"mips64r6"
 </span>))]
+#[allow(deprecated)] </span><span class="comment">// for `st_[amc]time` u64-&gt;i64 transition
 </span><span class="kw">fn </span>statx_to_stat(x: <span class="kw">crate</span>::fs::Statx) -&gt; io::Result&lt;Stat&gt; {
     <span class="prelude-val">Ok</span>(Stat {
         st_dev: <span class="kw">crate</span>::fs::makedev(x.stx_dev_major, x.stx_dev_minor),
@@ -2380,30 +2384,19 @@
         st_size: x.stx_size.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
         st_blksize: x.stx_blksize.into(),
         st_blocks: x.stx_blocks.into(),
-        st_atime: x
-            .stx_atime
-            .tv_sec
-            .try_into()
-            .map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
+        st_atime: <span class="macro">bitcast!</span>(i64::from(x.stx_atime.tv_sec)),
         st_atime_nsec: x.stx_atime.tv_nsec.into(),
-        st_mtime: x
-            .stx_mtime
-            .tv_sec
-            .try_into()
-            .map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
+        st_mtime: <span class="macro">bitcast!</span>(i64::from(x.stx_mtime.tv_sec)),
         st_mtime_nsec: x.stx_mtime.tv_nsec.into(),
-        st_ctime: x
-            .stx_ctime
-            .tv_sec
-            .try_into()
-            .map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
+        st_ctime: <span class="macro">bitcast!</span>(i64::from(x.stx_ctime.tv_sec)),
         st_ctime_nsec: x.stx_ctime.tv_nsec.into(),
         st_ino: x.stx_ino.into(),
     })
 }
 
-<span class="doccomment">/// Convert from a Linux `stat64` value to rustix&#39;s `Stat`.
-</span><span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+<span class="doccomment">/// Convert from a Linux `stat64` value to rustix's `Stat`.
+</span><span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
+#[allow(deprecated)] </span><span class="comment">// for `st_[amc]time` u64-&gt;i64 transition
 </span><span class="kw">fn </span>stat_to_stat(s64: linux_raw_sys::general::stat64) -&gt; io::Result&lt;Stat&gt; {
     <span class="prelude-val">Ok</span>(Stat {
         st_dev: s64.st_dev.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
@@ -2415,17 +2408,17 @@
         st_size: s64.st_size.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
         st_blksize: s64.st_blksize.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
         st_blocks: s64.st_blocks.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
-        st_atime: s64.st_atime.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
+        st_atime: <span class="macro">bitcast!</span>(i64::from(s64.st_atime)),
         st_atime_nsec: s64
             .st_atime_nsec
             .try_into()
             .map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
-        st_mtime: s64.st_mtime.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
+        st_mtime: <span class="macro">bitcast!</span>(i64::from(s64.st_mtime)),
         st_mtime_nsec: s64
             .st_mtime_nsec
             .try_into()
             .map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
-        st_ctime: s64.st_ctime.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
+        st_ctime: <span class="macro">bitcast!</span>(i64::from(s64.st_ctime)),
         st_ctime_nsec: s64
             .st_ctime_nsec
             .try_into()
@@ -2434,8 +2427,8 @@
     })
 }
 
-<span class="doccomment">/// Convert from a Linux `stat` value to rustix&#39;s `Stat`.
-</span><span class="attr">#[cfg(any(target_arch = <span class="string">&quot;mips64&quot;</span>, target_arch = <span class="string">&quot;mips64r6&quot;</span>))]
+<span class="doccomment">/// Convert from a Linux `stat` value to rustix's `Stat`.
+</span><span class="attr">#[cfg(any(target_arch = <span class="string">"mips64"</span>, target_arch = <span class="string">"mips64r6"</span>))]
 </span><span class="kw">fn </span>stat_to_stat(s: linux_raw_sys::general::stat) -&gt; io::Result&lt;Stat&gt; {
     <span class="prelude-val">Ok</span>(Stat {
         st_dev: s.st_dev.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
@@ -2447,17 +2440,17 @@
         st_size: s.st_size.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
         st_blksize: s.st_blksize.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
         st_blocks: s.st_blocks.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
-        st_atime: s.st_atime.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
+        st_atime: <span class="macro">bitcast!</span>(i64::from(s.st_atime)),
         st_atime_nsec: s
             .st_atime_nsec
             .try_into()
             .map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
-        st_mtime: s.st_mtime.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
+        st_mtime: <span class="macro">bitcast!</span>(i64::from(s.st_mtime)),
         st_mtime_nsec: s
             .st_mtime_nsec
             .try_into()
             .map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
-        st_ctime: s.st_ctime.try_into().map_err(|<span class="kw">_</span>| io::Errno::OVERFLOW)<span class="question-mark">?</span>,
+        st_ctime: <span class="macro">bitcast!</span>(i64::from(s.st_ctime)),
         st_ctime_nsec: s
             .st_ctime_nsec
             .try_into()
@@ -2468,7 +2461,7 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>statx(
-    dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     path: <span class="kw-2">&amp;</span>CStr,
     flags: AtFlags,
     mask: StatxFlags,
@@ -2476,16 +2469,16 @@
     <span class="comment">// If a future Linux kernel adds more fields to `struct statx` and users
     // passing flags unknown to rustix in `StatxFlags`, we could end up
     // writing outside of the buffer. To prevent this possibility, we mask off
-    // any flags that we don&#39;t know about.
+    // any flags that we don't know about.
     //
     // This includes `STATX__RESERVED`, which has a value that we know, but
     // which could take on arbitrary new meaning in the future. Linux currently
     // rejects this flag with `EINVAL`, so we do the same.
     //
-    // This doesn&#39;t rely on `STATX_ALL` because [it&#39;s deprecated] and already
-    // doesn&#39;t represent all the known flags.
+    // This doesn't rely on `STATX_ALL` because [it's deprecated] and already
+    // doesn't represent all the known flags.
     //
-    // [it&#39;s deprecated]: https://patchwork.kernel.org/project/linux-fsdevel/patch/20200505095915.11275-7-mszeredi@redhat.com/
+    // [it's deprecated]: https://patchwork.kernel.org/project/linux-fsdevel/patch/20200505095915.11275-7-mszeredi@redhat.com/
     </span><span class="kw">if </span>(mask.bits() &amp; STATX__RESERVED) == STATX__RESERVED {
         <span class="kw">return </span><span class="prelude-val">Err</span>(io::Errno::INVAL);
     }
@@ -2505,13 +2498,13 @@
     }
 }
 
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;linux_4_11&quot;</span>))]
+<span class="attr">#[cfg(not(feature = <span class="string">"linux_4_11"</span>))]
 #[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_statx_available() -&gt; bool {
     <span class="kw">unsafe </span>{
         <span class="comment">// Call `statx` with null pointers so that if it fails for any reason
-        // other than `EFAULT`, we know it&#39;s not supported. This can use
-        // &quot;readonly&quot; because we don&#39;t pass it a buffer to mutate.
+        // other than `EFAULT`, we know it's not supported. This can use
+        // "readonly" because we don't pass it a buffer to mutate.
         </span><span class="macro">matches!</span>(
             ret(<span class="macro">syscall_readonly!</span>(
                 __NR_statx,
@@ -2527,8 +2520,8 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fstatfs(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; io::Result&lt;StatFs&gt; {
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fstatfs(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;) -&gt; io::Result&lt;StatFs&gt; {
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>result = MaybeUninit::&lt;StatFs&gt;::uninit();
         ret(<span class="macro">syscall!</span>(
@@ -2540,7 +2533,7 @@
         <span class="prelude-val">Ok</span>(result.assume_init())
     }
 
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>result = MaybeUninit::&lt;StatFs&gt;::uninit();
         ret(<span class="macro">syscall!</span>(__NR_fstatfs, fd, <span class="kw-2">&amp;mut </span>result))<span class="question-mark">?</span>;
@@ -2549,8 +2542,8 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fstatvfs(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; io::Result&lt;StatVfs&gt; {
-    <span class="comment">// Linux doesn&#39;t have an `fstatvfs` syscall; we have to do `fstatfs` and
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fstatvfs(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;) -&gt; io::Result&lt;StatVfs&gt; {
+    <span class="comment">// Linux doesn't have an `fstatvfs` syscall; we have to do `fstatfs` and
     // translate the fields as best we can.
     </span><span class="kw">let </span>statfs = fstatfs(fd)<span class="question-mark">?</span>;
 
@@ -2559,7 +2552,7 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>statfs(path: <span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;StatFs&gt; {
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>result = MaybeUninit::&lt;StatFs&gt;::uninit();
         ret(<span class="macro">syscall!</span>(
@@ -2570,7 +2563,7 @@
         ))<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(result.assume_init())
     }
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>result = MaybeUninit::&lt;StatFs&gt;::uninit();
         ret(<span class="macro">syscall!</span>(__NR_statfs, path, <span class="kw-2">&amp;mut </span>result))<span class="question-mark">?</span>;
@@ -2580,7 +2573,7 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>statvfs(path: <span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;StatVfs&gt; {
-    <span class="comment">// Linux doesn&#39;t have a `statvfs` syscall; we have to do `statfs` and
+    <span class="comment">// Linux doesn't have a `statvfs` syscall; we have to do `statfs` and
     // translate the fields as best we can.
     </span><span class="kw">let </span>statfs = statfs(path)<span class="question-mark">?</span>;
 
@@ -2610,7 +2603,7 @@
     }
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 #[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>readlink(path: <span class="kw-2">&amp;</span>CStr, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; io::Result&lt;usize&gt; {
     <span class="kw">let </span>(buf_addr_mut, buf_len) = slice_mut(buf);
@@ -2627,7 +2620,7 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>readlinkat(
-    dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     path: <span class="kw-2">&amp;</span>CStr,
     buf: <span class="kw-2">&amp;mut </span>[MaybeUninit&lt;u8&gt;],
 ) -&gt; io::Result&lt;usize&gt; {
@@ -2644,41 +2637,41 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fcntl_getfl(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; io::Result&lt;OFlags&gt; {
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fcntl_getfl(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;) -&gt; io::Result&lt;OFlags&gt; {
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         ret_c_uint(<span class="macro">syscall_readonly!</span>(__NR_fcntl64, fd, c_uint(F_GETFL)))
             .map(OFlags::from_bits_retain)
     }
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret_c_uint(<span class="macro">syscall_readonly!</span>(__NR_fcntl, fd, c_uint(F_GETFL))).map(OFlags::from_bits_retain)
     }
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fcntl_setfl(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, flags: OFlags) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fcntl_setfl(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, flags: OFlags) -&gt; io::Result&lt;()&gt; {
     <span class="comment">// Always enable support for large files.
     </span><span class="kw">let </span>flags = flags | OFlags::from_bits_retain(c::O_LARGEFILE);
 
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(__NR_fcntl64, fd, c_uint(F_SETFL), flags))
     }
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(__NR_fcntl, fd, c_uint(F_SETFL), flags))
     }
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fcntl_get_seals(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; io::Result&lt;SealFlags&gt; {
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fcntl_get_seals(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;) -&gt; io::Result&lt;SealFlags&gt; {
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         ret_c_int(<span class="macro">syscall_readonly!</span>(__NR_fcntl64, fd, c_uint(F_GET_SEALS)))
             .map(|seals| SealFlags::from_bits_retain(seals <span class="kw">as </span>u32))
     }
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret_c_int(<span class="macro">syscall_readonly!</span>(__NR_fcntl, fd, c_uint(F_GET_SEALS)))
             .map(|seals| SealFlags::from_bits_retain(seals <span class="kw">as </span>u32))
@@ -2686,8 +2679,8 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fcntl_add_seals(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, seals: SealFlags) -&gt; io::Result&lt;()&gt; {
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fcntl_add_seals(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, seals: SealFlags) -&gt; io::Result&lt;()&gt; {
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_fcntl64,
@@ -2696,7 +2689,7 @@
             seals
         ))
     }
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_fcntl,
@@ -2708,10 +2701,10 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fcntl_lock(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, operation: FlockOperation) -&gt; io::Result&lt;()&gt; {
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fcntl_lock(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, operation: FlockOperation) -&gt; io::Result&lt;()&gt; {
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">use </span>linux_raw_sys::general::{flock, F_SETLK, F_SETLKW};
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">use </span>linux_raw_sys::general::{flock64 <span class="kw">as </span>flock, F_SETLK64 <span class="kw">as </span>F_SETLK, F_SETLKW64 <span class="kw">as </span>F_SETLKW};
     <span class="kw">use </span>linux_raw_sys::general::{F_RDLCK, F_UNLCK, F_WRLCK};
 
@@ -2738,7 +2731,7 @@
         </span>l_pid: <span class="number">0</span>,
     };
 
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_fcntl64,
@@ -2747,7 +2740,7 @@
             by_ref(<span class="kw-2">&amp;</span>lock)
         ))
     }
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_fcntl,
@@ -2760,7 +2753,7 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>rename(old_path: <span class="kw-2">&amp;</span>CStr, new_path: <span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;()&gt; {
-    <span class="attr">#[cfg(target_arch = <span class="string">&quot;riscv64&quot;</span>)]
+    <span class="attr">#[cfg(target_arch = <span class="string">"riscv64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_renameat2,
@@ -2771,7 +2764,7 @@
             c_uint(<span class="number">0</span>)
         ))
     }
-    <span class="attr">#[cfg(not(target_arch = <span class="string">&quot;riscv64&quot;</span>))]
+    <span class="attr">#[cfg(not(target_arch = <span class="string">"riscv64"</span>))]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_renameat,
@@ -2785,12 +2778,12 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>renameat(
-    old_dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    old_dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     old_path: <span class="kw-2">&amp;</span>CStr,
-    new_dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    new_dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     new_path: <span class="kw-2">&amp;</span>CStr,
 ) -&gt; io::Result&lt;()&gt; {
-    <span class="attr">#[cfg(target_arch = <span class="string">&quot;riscv64&quot;</span>)]
+    <span class="attr">#[cfg(target_arch = <span class="string">"riscv64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_renameat2,
@@ -2801,7 +2794,7 @@
             c_uint(<span class="number">0</span>)
         ))
     }
-    <span class="attr">#[cfg(not(target_arch = <span class="string">&quot;riscv64&quot;</span>))]
+    <span class="attr">#[cfg(not(target_arch = <span class="string">"riscv64"</span>))]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_renameat,
@@ -2815,9 +2808,9 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>renameat2(
-    old_dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    old_dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     old_path: <span class="kw-2">&amp;</span>CStr,
-    new_dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    new_dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     new_path: <span class="kw-2">&amp;</span>CStr,
     flags: RenameFlags,
 ) -&gt; io::Result&lt;()&gt; {
@@ -2846,7 +2839,7 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>unlinkat(dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, path: <span class="kw-2">&amp;</span>CStr, flags: AtFlags) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>unlinkat(dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, path: <span class="kw-2">&amp;</span>CStr, flags: AtFlags) -&gt; io::Result&lt;()&gt; {
     <span class="kw">unsafe </span>{ ret(<span class="macro">syscall_readonly!</span>(__NR_unlinkat, dirfd, path, flags)) }
 }
 
@@ -2878,9 +2871,9 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>linkat(
-    old_dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    old_dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     old_path: <span class="kw-2">&amp;</span>CStr,
-    new_dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    new_dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     new_path: <span class="kw-2">&amp;</span>CStr,
     flags: AtFlags,
 ) -&gt; io::Result&lt;()&gt; {
@@ -2909,7 +2902,7 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>symlinkat(old_path: <span class="kw-2">&amp;</span>CStr, dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, new_path: <span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>symlinkat(old_path: <span class="kw-2">&amp;</span>CStr, dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, new_path: <span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;()&gt; {
     <span class="kw">unsafe </span>{ ret(<span class="macro">syscall_readonly!</span>(__NR_symlinkat, old_path, dirfd, new_path)) }
 }
 
@@ -2926,13 +2919,13 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>mkdirat(dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, path: <span class="kw-2">&amp;</span>CStr, mode: Mode) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>mkdirat(dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, path: <span class="kw-2">&amp;</span>CStr, mode: Mode) -&gt; io::Result&lt;()&gt; {
     <span class="kw">unsafe </span>{ ret(<span class="macro">syscall_readonly!</span>(__NR_mkdirat, dirfd, path, mode)) }
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 #[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>getdents(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, dirent: <span class="kw-2">&amp;mut </span>[u8]) -&gt; io::Result&lt;usize&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>getdents(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, dirent: <span class="kw-2">&amp;mut </span>[u8]) -&gt; io::Result&lt;usize&gt; {
     <span class="kw">let </span>(dirent_addr_mut, dirent_len) = slice_mut(dirent);
 
     <span class="kw">unsafe </span>{ ret_usize(<span class="macro">syscall!</span>(__NR_getdents64, fd, dirent_addr_mut, dirent_len)) }
@@ -2940,7 +2933,7 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>getdents_uninit(
-    fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     dirent: <span class="kw-2">&amp;mut </span>[MaybeUninit&lt;u8&gt;],
 ) -&gt; io::Result&lt;usize&gt; {
     <span class="kw">let </span>(dirent_addr_mut, dirent_len) = slice_mut(dirent);
@@ -2950,7 +2943,7 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>utimensat(
-    dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     path: <span class="kw-2">&amp;</span>CStr,
     times: <span class="kw-2">&amp;</span>Timestamps,
     flags: AtFlags,
@@ -2960,14 +2953,14 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">fn </span>_utimensat(
-    dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     path: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>CStr&gt;,
     times: <span class="kw-2">&amp;</span>Timestamps,
     flags: AtFlags,
 ) -&gt; io::Result&lt;()&gt; {
     <span class="comment">// `utimensat_time64` was introduced in Linux 5.1. The old `utimensat`
     // syscall is not y2038-compatible on 32-bit architectures.
-    </span><span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    </span><span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         <span class="kw">match </span>ret(<span class="macro">syscall_readonly!</span>(
             __NR_utimensat_time64,
@@ -2980,7 +2973,7 @@
             otherwise =&gt; otherwise,
         }
     }
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(
             __NR_utimensat,
@@ -2992,9 +2985,9 @@
     }
 }
 
-<span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+<span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
 </span><span class="kw">unsafe fn </span>_utimensat_old(
-    dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     path: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>CStr&gt;,
     times: <span class="kw-2">&amp;</span>Timestamps,
     flags: AtFlags,
@@ -3039,25 +3032,25 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>futimens(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, times: <span class="kw-2">&amp;</span>Timestamps) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>futimens(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, times: <span class="kw-2">&amp;</span>Timestamps) -&gt; io::Result&lt;()&gt; {
     _utimensat(fd, <span class="prelude-val">None</span>, times, AtFlags::empty())
 }
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>access(path: <span class="kw-2">&amp;</span>CStr, access: Access) -&gt; io::Result&lt;()&gt; {
-    <span class="attr">#[cfg(any(target_arch = <span class="string">&quot;aarch64&quot;</span>, target_arch = <span class="string">&quot;riscv64&quot;</span>))]
+    <span class="attr">#[cfg(any(target_arch = <span class="string">"aarch64"</span>, target_arch = <span class="string">"riscv64"</span>))]
     </span>{
         accessat_noflags(CWD.as_fd(), path, access)
     }
 
-    <span class="attr">#[cfg(not(any(target_arch = <span class="string">&quot;aarch64&quot;</span>, target_arch = <span class="string">&quot;riscv64&quot;</span>)))]
+    <span class="attr">#[cfg(not(any(target_arch = <span class="string">"aarch64"</span>, target_arch = <span class="string">"riscv64"</span>)))]
     </span><span class="kw">unsafe </span>{
         ret(<span class="macro">syscall_readonly!</span>(__NR_access, path, access))
     }
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>accessat(
-    dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     path: <span class="kw-2">&amp;</span>CStr,
     access: Access,
     flags: AtFlags,
@@ -3069,11 +3062,11 @@
         <span class="kw">return </span><span class="prelude-val">Err</span>(io::Errno::INVAL);
     }
 
-    <span class="comment">// Linux&#39;s `faccessat` syscall doesn&#39;t have a flags argument, so if we have
+    <span class="comment">// Linux's `faccessat` syscall doesn't have a flags argument, so if we have
     // any flags, use the newer `faccessat2` introduced in Linux 5.8 which
-    // does. Unless we&#39;re on Android where using newer system calls can cause
+    // does. Unless we're on Android where using newer system calls can cause
     // seccomp to abort the process.
-    </span><span class="attr">#[cfg(not(target_os = <span class="string">&quot;android&quot;</span>))]
+    </span><span class="attr">#[cfg(not(target_os = <span class="string">"android"</span>))]
     </span><span class="kw">if </span>!flags.is_empty() {
         <span class="kw">unsafe </span>{
             <span class="kw">match </span>ret(<span class="macro">syscall_readonly!</span>(
@@ -3090,8 +3083,8 @@
         }
     }
 
-    <span class="comment">// Linux&#39;s `faccessat` doesn&#39;t have a flags parameter. If we have
-    // `AT_EACCESS` and we&#39;re not setuid or setgid, we can emulate it.
+    <span class="comment">// Linux's `faccessat` doesn't have a flags parameter. If we have
+    // `AT_EACCESS` and we're not setuid or setgid, we can emulate it.
     </span><span class="kw">if </span>flags.is_empty()
         || (flags.bits() == AT_EACCESS
             &amp;&amp; <span class="kw">crate</span>::backend::ugid::syscalls::getuid()
@@ -3106,15 +3099,15 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">fn </span>accessat_noflags(dirfd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, path: <span class="kw-2">&amp;</span>CStr, access: Access) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">fn </span>accessat_noflags(dirfd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, path: <span class="kw-2">&amp;</span>CStr, access: Access) -&gt; io::Result&lt;()&gt; {
     <span class="kw">unsafe </span>{ ret(<span class="macro">syscall_readonly!</span>(__NR_faccessat, dirfd, path, access)) }
 }
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>copy_file_range(
-    fd_in: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    fd_in: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     off_in: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>u64&gt;,
-    fd_out: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    fd_out: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     off_out: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>u64&gt;,
     len: usize,
 ) -&gt; io::Result&lt;usize&gt; {
@@ -3138,12 +3131,12 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>sendfile(
-    out_fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
-    in_fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    out_fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
+    in_fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     offset: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>u64&gt;,
     count: usize,
 ) -&gt; io::Result&lt;usize&gt; {
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;32&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
     </span><span class="kw">unsafe </span>{
         ret_usize(<span class="macro">syscall!</span>(
             __NR_sendfile64,
@@ -3153,7 +3146,7 @@
             pass_usize(count)
         ))
     }
-    <span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
     </span><span class="kw">unsafe </span>{
         ret_usize(<span class="macro">syscall!</span>(
             __NR_sendfile,
@@ -3172,7 +3165,7 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>inotify_add_watch(
-    infd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    infd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     path: <span class="kw-2">&amp;</span>CStr,
     flags: inotify::WatchFlags,
 ) -&gt; io::Result&lt;i32&gt; {
@@ -3180,7 +3173,7 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>inotify_rm_watch(infd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, wfd: i32) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>inotify_rm_watch(infd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, wfd: i32) -&gt; io::Result&lt;()&gt; {
     <span class="kw">unsafe </span>{ ret(<span class="macro">syscall_readonly!</span>(__NR_inotify_rm_watch, infd, c_int(wfd))) }
 }
 
@@ -3213,7 +3206,7 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fgetxattr(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, name: <span class="kw-2">&amp;</span>CStr, value: <span class="kw-2">&amp;mut </span>[u8]) -&gt; io::Result&lt;usize&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fgetxattr(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, name: <span class="kw-2">&amp;</span>CStr, value: <span class="kw-2">&amp;mut </span>[u8]) -&gt; io::Result&lt;usize&gt; {
     <span class="kw">let </span>(value_addr_mut, value_len) = slice_mut(value);
     <span class="kw">unsafe </span>{
         ret_usize(<span class="macro">syscall!</span>(
@@ -3268,7 +3261,7 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fsetxattr(
-    fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;,
+    fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
     name: <span class="kw-2">&amp;</span>CStr,
     value: <span class="kw-2">&amp;</span>[u8],
     flags: XattrFlags,
@@ -3299,7 +3292,7 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>flistxattr(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, list: <span class="kw-2">&amp;mut </span>[c::c_char]) -&gt; io::Result&lt;usize&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>flistxattr(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, list: <span class="kw-2">&amp;mut </span>[c::c_char]) -&gt; io::Result&lt;usize&gt; {
     <span class="kw">let </span>(list_addr_mut, list_len) = slice_mut(list);
     <span class="kw">unsafe </span>{ ret_usize(<span class="macro">syscall!</span>(__NR_flistxattr, fd, list_addr_mut, list_len)) }
 }
@@ -3315,7 +3308,7 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fremovexattr(fd: BorrowedFd&lt;<span class="lifetime">&#39;_</span>&gt;, name: <span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;()&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fremovexattr(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;, name: <span class="kw-2">&amp;</span>CStr) -&gt; io::Result&lt;()&gt; {
     <span class="kw">unsafe </span>{ ret(<span class="macro">syscall_readonly!</span>(__NR_fremovexattr, fd, name)) }
 }
 

@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/petgraph-0.6.4/src/matrix_graph.rs`."><title>matrix_graph.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="petgraph" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../petgraph/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/petgraph-0.6.4/src/matrix_graph.rs`."><title>matrix_graph.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="petgraph" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1839,7 +1840,7 @@
 <span class="kw">pub use </span><span class="kw">crate</span>::graph::IndexType;
 
 <span class="comment">// The following types are used to control the max size of the adjacency matrix. Since the maximum
-// size of the matrix vector&#39;s is the square of the maximum number of nodes, the number of nodes
+// size of the matrix vector's is the square of the maximum number of nodes, the number of nodes
 // should be reasonably picked.
 </span><span class="kw">type </span>DefaultIx = u16;
 
@@ -1897,7 +1898,7 @@
 ///
 /// Pre-requisite: edge weight should implement [`Zero`](trait.Zero.html).
 ///
-/// Note that if you&#39;re already using the standard non-zero types (such as `NonZeroU32`), you don&#39;t
+/// Note that if you're already using the standard non-zero types (such as `NonZeroU32`), you don't
 /// have to use this wrapper and can leave the default `Null` type argument.
 </span><span class="kw">pub struct </span>NotZero&lt;T&gt;(T);
 
@@ -2007,7 +2008,7 @@
 /// - Associated data `N` for nodes and `E` for edges, called *weights*.
 ///   The associated data can be of arbitrary type.
 /// - Edge type `Ty` that determines whether the graph edges are directed or undirected.
-/// - Nullable type `Null`, which denotes the edges&#39; presence (defaults to `Option&lt;E&gt;`). You may
+/// - Nullable type `Null`, which denotes the edges' presence (defaults to `Option&lt;E&gt;`). You may
 ///   specify [`NotZero&lt;E&gt;`](struct.NotZero.html) if you want to use a sentinel value (such as 0)
 ///   to mark the absence of an edge.
 /// - Index type `Ix` that sets the maximum size for the graph (defaults to `DefaultIx`).
@@ -2160,7 +2161,7 @@
     /// Computes in **O(1)** time, best case.
     /// Computes in **O(|V|^2)** time, worst case (matrix needs to be re-allocated).
     ///
-    /// **Panics** if any of the nodes don&#39;t exist.
+    /// **Panics** if any of the nodes don't exist.
     </span><span class="kw">pub fn </span>update_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;, b: NodeIndex&lt;Ix&gt;, weight: E) -&gt; <span class="prelude-ty">Option</span>&lt;E&gt; {
         <span class="self">self</span>.extend_capacity_for_edge(a, b);
         <span class="kw">let </span>p = <span class="self">self</span>.to_edge_position_unchecked(a, b);
@@ -2177,7 +2178,7 @@
     /// Computes in **O(1)** time, best case.
     /// Computes in **O(|V|^2)** time, worst case (matrix needs to be re-allocated).
     ///
-    /// **Panics** if any of the nodes don&#39;t exist.
+    /// **Panics** if any of the nodes don't exist.
     /// **Panics** if an edge already exists from `a` to `b`.
     ///
     /// **Note:** `MatrixGraph` does not allow adding parallel (“duplicate”) edges. If you want to avoid
@@ -2189,12 +2190,12 @@
 
     <span class="doccomment">/// Remove the edge from `a` to `b` to the graph.
     ///
-    /// **Panics** if any of the nodes don&#39;t exist.
+    /// **Panics** if any of the nodes don't exist.
     /// **Panics** if no edge exists between `a` and `b`.
     </span><span class="kw">pub fn </span>remove_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;, b: NodeIndex&lt;Ix&gt;) -&gt; E {
         <span class="kw">let </span>p = <span class="self">self
             </span>.to_edge_position(a, b)
-            .expect(<span class="string">&quot;No edge found between the nodes.&quot;</span>);
+            .expect(<span class="string">"No edge found between the nodes."</span>);
         <span class="kw">let </span>old_weight = mem::take(<span class="kw-2">&amp;mut </span><span class="self">self</span>.node_adjacencies[p]).into().unwrap();
         <span class="kw">let </span>old_weight: <span class="prelude-ty">Option</span>&lt;<span class="kw">_</span>&gt; = old_weight.into();
         <span class="self">self</span>.nb_edges -= <span class="number">1</span>;
@@ -2203,7 +2204,7 @@
 
     <span class="doccomment">/// Return true if there is an edge between `a` and `b`.
     ///
-    /// **Panics** if any of the nodes don&#39;t exist.
+    /// **Panics** if any of the nodes don't exist.
     </span><span class="kw">pub fn </span>has_edge(<span class="kw-2">&amp;</span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;, b: NodeIndex&lt;Ix&gt;) -&gt; bool {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(p) = <span class="self">self</span>.to_edge_position(a, b) {
             <span class="kw">return </span>!<span class="self">self</span>.node_adjacencies[p].is_null();
@@ -2215,7 +2216,7 @@
     ///
     /// Also available with indexing syntax: `&amp;graph[a]`.
     ///
-    /// **Panics** if the node doesn&#39;t exist.
+    /// **Panics** if the node doesn't exist.
     </span><span class="kw">pub fn </span>node_weight(<span class="kw-2">&amp;</span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;) -&gt; <span class="kw-2">&amp;</span>N {
         <span class="kw-2">&amp;</span><span class="self">self</span>.nodes[a.index()]
     }
@@ -2224,7 +2225,7 @@
     ///
     /// Also available with indexing syntax: `&amp;mut graph[a]`.
     ///
-    /// **Panics** if the node doesn&#39;t exist.
+    /// **Panics** if the node doesn't exist.
     </span><span class="kw">pub fn </span>node_weight_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;) -&gt; <span class="kw-2">&amp;mut </span>N {
         <span class="kw-2">&amp;mut </span><span class="self">self</span>.nodes[a.index()]
     }
@@ -2237,10 +2238,10 @@
     </span><span class="kw">pub fn </span>edge_weight(<span class="kw-2">&amp;</span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;, b: NodeIndex&lt;Ix&gt;) -&gt; <span class="kw-2">&amp;</span>E {
         <span class="kw">let </span>p = <span class="self">self
             </span>.to_edge_position(a, b)
-            .expect(<span class="string">&quot;No edge found between the nodes.&quot;</span>);
+            .expect(<span class="string">"No edge found between the nodes."</span>);
         <span class="self">self</span>.node_adjacencies[p]
             .as_ref()
-            .expect(<span class="string">&quot;No edge found between the nodes.&quot;</span>)
+            .expect(<span class="string">"No edge found between the nodes."</span>)
     }
 
     <span class="doccomment">/// Access the weight for edge `e`, mutably.
@@ -2251,10 +2252,10 @@
     </span><span class="kw">pub fn </span>edge_weight_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;, b: NodeIndex&lt;Ix&gt;) -&gt; <span class="kw-2">&amp;mut </span>E {
         <span class="kw">let </span>p = <span class="self">self
             </span>.to_edge_position(a, b)
-            .expect(<span class="string">&quot;No edge found between the nodes.&quot;</span>);
+            .expect(<span class="string">"No edge found between the nodes."</span>);
         <span class="self">self</span>.node_adjacencies[p]
             .as_mut()
-            .expect(<span class="string">&quot;No edge found between the nodes.&quot;</span>)
+            .expect(<span class="string">"No edge found between the nodes."</span>)
     }
 
     <span class="doccomment">/// Return an iterator of all nodes with an edge starting from `a`.
@@ -2262,7 +2263,7 @@
     /// - `Directed`: Outgoing edges from `a`.
     /// - `Undirected`: All edges from or to `a`.
     ///
-    /// Produces an empty iterator if the node doesn&#39;t exist.&lt;br&gt;
+    /// Produces an empty iterator if the node doesn't exist.&lt;br&gt;
     /// Iterator element type is [`NodeIndex&lt;Ix&gt;`](../graph/struct.NodeIndex.html).
     </span><span class="kw">pub fn </span>neighbors(<span class="kw-2">&amp;</span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;) -&gt; Neighbors&lt;Ty, Null, Ix&gt; {
         Neighbors(Edges::on_columns(
@@ -2277,7 +2278,7 @@
     /// - `Directed`: Outgoing edges from `a`.
     /// - `Undirected`: All edges connected to `a`.
     ///
-    /// Produces an empty iterator if the node doesn&#39;t exist.&lt;br&gt;
+    /// Produces an empty iterator if the node doesn't exist.&lt;br&gt;
     /// Iterator element type is `(NodeIndex&lt;Ix&gt;, NodeIndex&lt;Ix&gt;, &amp;E)`.
     </span><span class="kw">pub fn </span>edges(<span class="kw-2">&amp;</span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;) -&gt; Edges&lt;Ty, Null, Ix&gt; {
         Edges::on_columns(a.index(), <span class="kw-2">&amp;</span><span class="self">self</span>.node_adjacencies, <span class="self">self</span>.node_capacity)
@@ -2341,12 +2342,12 @@
 <span class="kw">impl</span>&lt;N, E, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; MatrixGraph&lt;N, E, Directed, Null, Ix&gt; {
     <span class="doccomment">/// Return an iterator of all neighbors that have an edge between them and
     /// `a`, in the specified direction.
-    /// If the graph&#39;s edges are undirected, this is equivalent to *.neighbors(a)*.
+    /// If the graph's edges are undirected, this is equivalent to *.neighbors(a)*.
     ///
     /// - `Outgoing`: All edges from `a`.
     /// - `Incoming`: All edges to `a`.
     ///
-    /// Produces an empty iterator if the node doesn&#39;t exist.&lt;br&gt;
+    /// Produces an empty iterator if the node doesn't exist.&lt;br&gt;
     /// Iterator element type is [`NodeIndex&lt;Ix&gt;`](../graph/struct.NodeIndex.html).
     </span><span class="kw">pub fn </span>neighbors_directed(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -2369,7 +2370,7 @@
     /// - `Outgoing`: All edges from `a`.
     /// - `Incoming`: All edges to `a`.
     ///
-    /// Produces an empty iterator if the node `a` doesn&#39;t exist.&lt;br&gt;
+    /// Produces an empty iterator if the node `a` doesn't exist.&lt;br&gt;
     /// Iterator element type is `(NodeIndex&lt;Ix&gt;, NodeIndex&lt;Ix&gt;, &amp;E)`.
     </span><span class="kw">pub fn </span>edges_directed(<span class="kw-2">&amp;</span><span class="self">self</span>, a: NodeIndex&lt;Ix&gt;, d: Direction) -&gt; Edges&lt;Directed, Null, Ix&gt; {
         <span class="kw">if </span>d == Outgoing {
@@ -2387,13 +2388,13 @@
 /// [1]: ../visit/trait.IntoNodeIdentifiers.html#tymethod.node_identifiers
 /// [2]: struct.MatrixGraph.html
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>NodeIdentifiers&lt;<span class="lifetime">&#39;a</span>, Ix&gt; {
-    iter: IdIterator&lt;<span class="lifetime">&#39;a</span>&gt;,
+</span><span class="kw">pub struct </span>NodeIdentifiers&lt;<span class="lifetime">'a</span>, Ix&gt; {
+    iter: IdIterator&lt;<span class="lifetime">'a</span>&gt;,
     ix: PhantomData&lt;Ix&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Ix: IndexType&gt; NodeIdentifiers&lt;<span class="lifetime">&#39;a</span>, Ix&gt; {
-    <span class="kw">fn </span>new(iter: IdIterator&lt;<span class="lifetime">&#39;a</span>&gt;) -&gt; <span class="self">Self </span>{
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Ix: IndexType&gt; NodeIdentifiers&lt;<span class="lifetime">'a</span>, Ix&gt; {
+    <span class="kw">fn </span>new(iter: IdIterator&lt;<span class="lifetime">'a</span>&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             iter,
             ix: PhantomData,
@@ -2401,7 +2402,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Ix: IndexType&gt; Iterator <span class="kw">for </span>NodeIdentifiers&lt;<span class="lifetime">&#39;a</span>, Ix&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Ix: IndexType&gt; Iterator <span class="kw">for </span>NodeIdentifiers&lt;<span class="lifetime">'a</span>, Ix&gt; {
     <span class="kw">type </span>Item = NodeIndex&lt;Ix&gt;;
 
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
@@ -2419,14 +2420,14 @@
 /// [1]: ../visit/trait.IntoNodeReferences.html#tymethod.node_references
 /// [2]: struct.MatrixGraph.html
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>NodeReferences&lt;<span class="lifetime">&#39;a</span>, N: <span class="lifetime">&#39;a</span>, Ix&gt; {
-    nodes: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>IdStorage&lt;N&gt;,
-    iter: IdIterator&lt;<span class="lifetime">&#39;a</span>&gt;,
+</span><span class="kw">pub struct </span>NodeReferences&lt;<span class="lifetime">'a</span>, N: <span class="lifetime">'a</span>, Ix&gt; {
+    nodes: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>IdStorage&lt;N&gt;,
+    iter: IdIterator&lt;<span class="lifetime">'a</span>&gt;,
     ix: PhantomData&lt;Ix&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N: <span class="lifetime">&#39;a</span>, Ix&gt; NodeReferences&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt; {
-    <span class="kw">fn </span>new(nodes: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>IdStorage&lt;N&gt;) -&gt; <span class="self">Self </span>{
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N: <span class="lifetime">'a</span>, Ix&gt; NodeReferences&lt;<span class="lifetime">'a</span>, N, Ix&gt; {
+    <span class="kw">fn </span>new(nodes: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>IdStorage&lt;N&gt;) -&gt; <span class="self">Self </span>{
         NodeReferences {
             nodes,
             iter: nodes.iter_ids(),
@@ -2435,8 +2436,8 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N: <span class="lifetime">&#39;a</span>, Ix: IndexType&gt; Iterator <span class="kw">for </span>NodeReferences&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt; {
-    <span class="kw">type </span>Item = (NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>N);
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N: <span class="lifetime">'a</span>, Ix: IndexType&gt; Iterator <span class="kw">for </span>NodeReferences&lt;<span class="lifetime">'a</span>, N, Ix&gt; {
+    <span class="kw">type </span>Item = (NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>N);
 
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
         <span class="self">self</span>.iter
@@ -2455,17 +2456,17 @@
 /// [1]: ../visit/trait.IntoEdgeReferences.html#tymethod.edge_references
 /// [2]: struct.MatrixGraph.html
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>EdgeReferences&lt;<span class="lifetime">&#39;a</span>, Ty: EdgeType, Null: <span class="lifetime">&#39;a </span>+ Nullable, Ix&gt; {
+</span><span class="kw">pub struct </span>EdgeReferences&lt;<span class="lifetime">'a</span>, Ty: EdgeType, Null: <span class="lifetime">'a </span>+ Nullable, Ix&gt; {
     row: usize,
     column: usize,
-    node_adjacencies: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[Null],
+    node_adjacencies: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[Null],
     node_capacity: usize,
     ty: PhantomData&lt;Ty&gt;,
     ix: PhantomData&lt;Ix&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Ty: EdgeType, Null: <span class="lifetime">&#39;a </span>+ Nullable, Ix&gt; EdgeReferences&lt;<span class="lifetime">&#39;a</span>, Ty, Null, Ix&gt; {
-    <span class="kw">fn </span>new(node_adjacencies: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[Null], node_capacity: usize) -&gt; <span class="self">Self </span>{
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Ty: EdgeType, Null: <span class="lifetime">'a </span>+ Nullable, Ix&gt; EdgeReferences&lt;<span class="lifetime">'a</span>, Ty, Null, Ix&gt; {
+    <span class="kw">fn </span>new(node_adjacencies: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[Null], node_capacity: usize) -&gt; <span class="self">Self </span>{
         EdgeReferences {
             row: <span class="number">0</span>,
             column: <span class="number">0</span>,
@@ -2477,10 +2478,10 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Ty: EdgeType, Null: Nullable, Ix: IndexType&gt; Iterator
-    <span class="kw">for </span>EdgeReferences&lt;<span class="lifetime">&#39;a</span>, Ty, Null, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Ty: EdgeType, Null: Nullable, Ix: IndexType&gt; Iterator
+    <span class="kw">for </span>EdgeReferences&lt;<span class="lifetime">'a</span>, Ty, Null, Ix&gt;
 {
-    <span class="kw">type </span>Item = (NodeIndex&lt;Ix&gt;, NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Null::Wrapped);
+    <span class="kw">type </span>Item = (NodeIndex&lt;Ix&gt;, NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Null::Wrapped);
 
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
         <span class="kw">loop </span>{
@@ -2491,7 +2492,7 @@
 
             <span class="comment">// By default, advance the column. Reset and advance the row if the column overflows.
             //
-            // Note that for undirected graphs, we don&#39;t want to yield the same edge twice,
+            // Note that for undirected graphs, we don't want to yield the same edge twice,
             // therefore the maximum column length should be the index new after the row index.
             </span><span class="self">self</span>.column += <span class="number">1</span>;
             <span class="kw">let </span>max_column_len = <span class="kw">if </span>!Ty::is_directed() {
@@ -2521,9 +2522,9 @@
 /// [1]: struct.MatrixGraph.html#method.neighbors
 /// [2]: struct.MatrixGraph.html#method.neighbors_directed
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>Neighbors&lt;<span class="lifetime">&#39;a</span>, Ty: EdgeType, Null: <span class="lifetime">&#39;a </span>+ Nullable, Ix&gt;(Edges&lt;<span class="lifetime">&#39;a</span>, Ty, Null, Ix&gt;);
+</span><span class="kw">pub struct </span>Neighbors&lt;<span class="lifetime">'a</span>, Ty: EdgeType, Null: <span class="lifetime">'a </span>+ Nullable, Ix&gt;(Edges&lt;<span class="lifetime">'a</span>, Ty, Null, Ix&gt;);
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Ty: EdgeType, Null: Nullable, Ix: IndexType&gt; Iterator <span class="kw">for </span>Neighbors&lt;<span class="lifetime">&#39;a</span>, Ty, Null, Ix&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Ty: EdgeType, Null: Nullable, Ix: IndexType&gt; Iterator <span class="kw">for </span>Neighbors&lt;<span class="lifetime">'a</span>, Ty, Null, Ix&gt; {
     <span class="kw">type </span>Item = NodeIndex&lt;Ix&gt;;
 
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
@@ -2547,9 +2548,9 @@
 /// [1]: struct.MatrixGraph.html#method.edges
 /// [2]: struct.MatrixGraph.html#method.edges_directed
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>Edges&lt;<span class="lifetime">&#39;a</span>, Ty: EdgeType, Null: <span class="lifetime">&#39;a </span>+ Nullable, Ix&gt; {
+</span><span class="kw">pub struct </span>Edges&lt;<span class="lifetime">'a</span>, Ty: EdgeType, Null: <span class="lifetime">'a </span>+ Nullable, Ix&gt; {
     iter_direction: NeighborIterDirection,
-    node_adjacencies: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[Null],
+    node_adjacencies: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[Null],
     node_capacity: usize,
     row: usize,
     column: usize,
@@ -2557,8 +2558,8 @@
     ix: PhantomData&lt;Ix&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Ty: EdgeType, Null: <span class="lifetime">&#39;a </span>+ Nullable, Ix&gt; Edges&lt;<span class="lifetime">&#39;a</span>, Ty, Null, Ix&gt; {
-    <span class="kw">fn </span>on_columns(row: usize, node_adjacencies: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[Null], node_capacity: usize) -&gt; <span class="self">Self </span>{
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Ty: EdgeType, Null: <span class="lifetime">'a </span>+ Nullable, Ix&gt; Edges&lt;<span class="lifetime">'a</span>, Ty, Null, Ix&gt; {
+    <span class="kw">fn </span>on_columns(row: usize, node_adjacencies: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[Null], node_capacity: usize) -&gt; <span class="self">Self </span>{
         Edges {
             iter_direction: NeighborIterDirection::Columns,
             node_adjacencies,
@@ -2570,7 +2571,7 @@
         }
     }
 
-    <span class="kw">fn </span>on_rows(column: usize, node_adjacencies: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[Null], node_capacity: usize) -&gt; <span class="self">Self </span>{
+    <span class="kw">fn </span>on_rows(column: usize, node_adjacencies: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[Null], node_capacity: usize) -&gt; <span class="self">Self </span>{
         Edges {
             iter_direction: NeighborIterDirection::Rows,
             node_adjacencies,
@@ -2583,8 +2584,8 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Ty: EdgeType, Null: Nullable, Ix: IndexType&gt; Iterator <span class="kw">for </span>Edges&lt;<span class="lifetime">&#39;a</span>, Ty, Null, Ix&gt; {
-    <span class="kw">type </span>Item = (NodeIndex&lt;Ix&gt;, NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Null::Wrapped);
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Ty: EdgeType, Null: Nullable, Ix: IndexType&gt; Iterator <span class="kw">for </span>Edges&lt;<span class="lifetime">'a</span>, Ty, Null, Ix&gt; {
+    <span class="kw">type </span>Item = (NodeIndex&lt;Ix&gt;, NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Null::Wrapped);
 
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
         <span class="kw">use </span><span class="self">self</span>::NeighborIterDirection::<span class="kw-2">*</span>;
@@ -2672,7 +2673,7 @@
             <span class="macro">debug_assert!</span>(pos + old_node_capacity &lt; node_adjacencies.len());
             <span class="macro">debug_assert!</span>(new_pos + old_node_capacity &lt; node_adjacencies.len());
             <span class="kw">let </span>ptr = node_adjacencies.as_mut_ptr();
-            <span class="comment">// SAFETY: pos + old_node_capacity &lt;= new_pos, so this won&#39;t overlap
+            <span class="comment">// SAFETY: pos + old_node_capacity &lt;= new_pos, so this won't overlap
             </span><span class="kw">unsafe </span>{
                 <span class="kw">let </span>old = ptr.add(pos);
                 <span class="kw">let </span>new = ptr.add(new_pos);
@@ -2709,7 +2710,7 @@
     new_capacity
 }
 
-<span class="doccomment">/// Grow a Vec by appending the type&#39;s default value until the `size` is reached.
+<span class="doccomment">/// Grow a Vec by appending the type's default value until the `size` is reached.
 </span><span class="kw">fn </span>ensure_len&lt;T: Default&gt;(v: <span class="kw-2">&amp;mut </span>Vec&lt;T&gt;, size: usize) {
     v.resize_with(size, T::default);
 }
@@ -2791,13 +2792,13 @@
 }
 
 <span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">struct </span>IdIterator&lt;<span class="lifetime">&#39;a</span>&gt; {
+</span><span class="kw">struct </span>IdIterator&lt;<span class="lifetime">'a</span>&gt; {
     upper_bound: usize,
-    removed_ids: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>IndexSet&lt;usize&gt;,
+    removed_ids: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>IndexSet&lt;usize&gt;,
     current: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Iterator <span class="kw">for </span>IdIterator&lt;<span class="lifetime">&#39;a</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Iterator <span class="kw">for </span>IdIterator&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">type </span>Item = usize;
 
     <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
@@ -2857,7 +2858,7 @@
 
 <span class="doccomment">/// Index the `MatrixGraph` by `NodeIndex` to access node weights.
 ///
-/// **Panics** if the node doesn&#39;t exist.
+/// **Panics** if the node doesn't exist.
 </span><span class="kw">impl</span>&lt;N, E, Ty: EdgeType, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; Index&lt;NodeIndex&lt;Ix&gt;&gt;
     <span class="kw">for </span>MatrixGraph&lt;N, E, Ty, Null, Ix&gt;
 {
@@ -2870,7 +2871,7 @@
 
 <span class="doccomment">/// Index the `MatrixGraph` by `NodeIndex` to access node weights.
 ///
-/// **Panics** if the node doesn&#39;t exist.
+/// **Panics** if the node doesn't exist.
 </span><span class="kw">impl</span>&lt;N, E, Ty: EdgeType, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IndexMut&lt;NodeIndex&lt;Ix&gt;&gt;
     <span class="kw">for </span>MatrixGraph&lt;N, E, Ty, Null, Ix&gt;
 {
@@ -2971,69 +2972,69 @@
     <span class="kw">type </span>EdgeWeight = E;
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, E: <span class="lifetime">&#39;a</span>, Ty: EdgeType, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoNodeIdentifiers
-    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>MatrixGraph&lt;N, E, Ty, Null, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, E: <span class="lifetime">'a</span>, Ty: EdgeType, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoNodeIdentifiers
+    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>MatrixGraph&lt;N, E, Ty, Null, Ix&gt;
 {
-    <span class="kw">type </span>NodeIdentifiers = NodeIdentifiers&lt;<span class="lifetime">&#39;a</span>, Ix&gt;;
+    <span class="kw">type </span>NodeIdentifiers = NodeIdentifiers&lt;<span class="lifetime">'a</span>, Ix&gt;;
 
     <span class="kw">fn </span>node_identifiers(<span class="self">self</span>) -&gt; <span class="self">Self</span>::NodeIdentifiers {
         NodeIdentifiers::new(<span class="self">self</span>.nodes.iter_ids())
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, E: <span class="lifetime">&#39;a</span>, Ty: EdgeType, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoNeighbors
-    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>MatrixGraph&lt;N, E, Ty, Null, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, E: <span class="lifetime">'a</span>, Ty: EdgeType, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoNeighbors
+    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>MatrixGraph&lt;N, E, Ty, Null, Ix&gt;
 {
-    <span class="kw">type </span>Neighbors = Neighbors&lt;<span class="lifetime">&#39;a</span>, Ty, Null, Ix&gt;;
+    <span class="kw">type </span>Neighbors = Neighbors&lt;<span class="lifetime">'a</span>, Ty, Null, Ix&gt;;
 
     <span class="kw">fn </span>neighbors(<span class="self">self</span>, a: NodeIndex&lt;Ix&gt;) -&gt; <span class="self">Self</span>::Neighbors {
         MatrixGraph::neighbors(<span class="self">self</span>, a)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, E: <span class="lifetime">&#39;a</span>, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoNeighborsDirected
-    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>MatrixGraph&lt;N, E, Directed, Null, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, E: <span class="lifetime">'a</span>, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoNeighborsDirected
+    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>MatrixGraph&lt;N, E, Directed, Null, Ix&gt;
 {
-    <span class="kw">type </span>NeighborsDirected = Neighbors&lt;<span class="lifetime">&#39;a</span>, Directed, Null, Ix&gt;;
+    <span class="kw">type </span>NeighborsDirected = Neighbors&lt;<span class="lifetime">'a</span>, Directed, Null, Ix&gt;;
 
     <span class="kw">fn </span>neighbors_directed(<span class="self">self</span>, a: NodeIndex&lt;Ix&gt;, d: Direction) -&gt; <span class="self">Self</span>::NeighborsDirected {
         MatrixGraph::neighbors_directed(<span class="self">self</span>, a, d)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, E, Ty: EdgeType, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoNodeReferences
-    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>MatrixGraph&lt;N, E, Ty, Null, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, E, Ty: EdgeType, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoNodeReferences
+    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>MatrixGraph&lt;N, E, Ty, Null, Ix&gt;
 {
-    <span class="kw">type </span>NodeRef = (NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>N);
-    <span class="kw">type </span>NodeReferences = NodeReferences&lt;<span class="lifetime">&#39;a</span>, N, Ix&gt;;
+    <span class="kw">type </span>NodeRef = (NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>N);
+    <span class="kw">type </span>NodeReferences = NodeReferences&lt;<span class="lifetime">'a</span>, N, Ix&gt;;
     <span class="kw">fn </span>node_references(<span class="self">self</span>) -&gt; <span class="self">Self</span>::NodeReferences {
         NodeReferences::new(<span class="kw-2">&amp;</span><span class="self">self</span>.nodes)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, E, Ty: EdgeType, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoEdgeReferences
-    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>MatrixGraph&lt;N, E, Ty, Null, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, E, Ty: EdgeType, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoEdgeReferences
+    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>MatrixGraph&lt;N, E, Ty, Null, Ix&gt;
 {
-    <span class="kw">type </span>EdgeRef = (NodeIndex&lt;Ix&gt;, NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>E);
-    <span class="kw">type </span>EdgeReferences = EdgeReferences&lt;<span class="lifetime">&#39;a</span>, Ty, Null, Ix&gt;;
+    <span class="kw">type </span>EdgeRef = (NodeIndex&lt;Ix&gt;, NodeIndex&lt;Ix&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>E);
+    <span class="kw">type </span>EdgeReferences = EdgeReferences&lt;<span class="lifetime">'a</span>, Ty, Null, Ix&gt;;
     <span class="kw">fn </span>edge_references(<span class="self">self</span>) -&gt; <span class="self">Self</span>::EdgeReferences {
         EdgeReferences::new(<span class="kw-2">&amp;</span><span class="self">self</span>.node_adjacencies, <span class="self">self</span>.node_capacity)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, E, Ty: EdgeType, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoEdges
-    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>MatrixGraph&lt;N, E, Ty, Null, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, E, Ty: EdgeType, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoEdges
+    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>MatrixGraph&lt;N, E, Ty, Null, Ix&gt;
 {
-    <span class="kw">type </span>Edges = Edges&lt;<span class="lifetime">&#39;a</span>, Ty, Null, Ix&gt;;
+    <span class="kw">type </span>Edges = Edges&lt;<span class="lifetime">'a</span>, Ty, Null, Ix&gt;;
     <span class="kw">fn </span>edges(<span class="self">self</span>, a: <span class="self">Self</span>::NodeId) -&gt; <span class="self">Self</span>::Edges {
         MatrixGraph::edges(<span class="self">self</span>, a)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, N, E, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoEdgesDirected
-    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>MatrixGraph&lt;N, E, Directed, Null, Ix&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, N, E, Null: Nullable&lt;Wrapped = E&gt;, Ix: IndexType&gt; IntoEdgesDirected
+    <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>MatrixGraph&lt;N, E, Directed, Null, Ix&gt;
 {
-    <span class="kw">type </span>EdgesDirected = Edges&lt;<span class="lifetime">&#39;a</span>, Directed, Null, Ix&gt;;
+    <span class="kw">type </span>EdgesDirected = Edges&lt;<span class="lifetime">'a</span>, Directed, Null, Ix&gt;;
 
     <span class="kw">fn </span>edges_directed(<span class="self">self</span>, a: <span class="self">Self</span>::NodeId, dir: Direction) -&gt; <span class="self">Self</span>::EdgesDirected {
         MatrixGraph::edges_directed(<span class="self">self</span>, a, dir)
@@ -3117,18 +3118,18 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_node_indexing() {
         <span class="kw">let </span><span class="kw-2">mut </span>g: MatrixGraph&lt;char, ()&gt; = MatrixGraph::new();
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = g.add_node(<span class="string">&#39;b&#39;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = g.add_node(<span class="string">'b'</span>);
         <span class="macro">assert_eq!</span>(g.node_count(), <span class="number">2</span>);
         <span class="macro">assert_eq!</span>(g.edge_count(), <span class="number">0</span>);
-        <span class="macro">assert_eq!</span>(g[a], <span class="string">&#39;a&#39;</span>);
-        <span class="macro">assert_eq!</span>(g[b], <span class="string">&#39;b&#39;</span>);
+        <span class="macro">assert_eq!</span>(g[a], <span class="string">'a'</span>);
+        <span class="macro">assert_eq!</span>(g[b], <span class="string">'b'</span>);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_remove_node() {
         <span class="kw">let </span><span class="kw-2">mut </span>g: MatrixGraph&lt;char, ()&gt; = MatrixGraph::new();
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
 
         g.remove_node(a);
 
@@ -3139,9 +3140,9 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_add_edge() {
         <span class="kw">let </span><span class="kw-2">mut </span>g = MatrixGraph::new();
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = g.add_node(<span class="string">&#39;b&#39;</span>);
-        <span class="kw">let </span>c = g.add_node(<span class="string">&#39;c&#39;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = g.add_node(<span class="string">'b'</span>);
+        <span class="kw">let </span>c = g.add_node(<span class="string">'c'</span>);
         g.add_edge(a, b, ());
         g.add_edge(b, c, ());
         <span class="macro">assert_eq!</span>(g.node_count(), <span class="number">3</span>);
@@ -3190,9 +3191,9 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_add_edge_with_weights() {
         <span class="kw">let </span><span class="kw-2">mut </span>g = MatrixGraph::new();
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = g.add_node(<span class="string">&#39;b&#39;</span>);
-        <span class="kw">let </span>c = g.add_node(<span class="string">&#39;c&#39;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = g.add_node(<span class="string">'b'</span>);
+        <span class="kw">let </span>c = g.add_node(<span class="string">'c'</span>);
         g.add_edge(a, b, <span class="bool-val">true</span>);
         g.add_edge(b, c, <span class="bool-val">false</span>);
         <span class="macro">assert_eq!</span>(<span class="kw-2">*</span>g.edge_weight(a, b), <span class="bool-val">true</span>);
@@ -3202,16 +3203,16 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_add_edge_with_weights_undirected() {
         <span class="kw">let </span><span class="kw-2">mut </span>g = MatrixGraph::new_undirected();
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = g.add_node(<span class="string">&#39;b&#39;</span>);
-        <span class="kw">let </span>c = g.add_node(<span class="string">&#39;c&#39;</span>);
-        <span class="kw">let </span>d = g.add_node(<span class="string">&#39;d&#39;</span>);
-        g.add_edge(a, b, <span class="string">&quot;ab&quot;</span>);
-        g.add_edge(a, a, <span class="string">&quot;aa&quot;</span>);
-        g.add_edge(b, c, <span class="string">&quot;bc&quot;</span>);
-        g.add_edge(d, d, <span class="string">&quot;dd&quot;</span>);
-        <span class="macro">assert_eq!</span>(<span class="kw-2">*</span>g.edge_weight(a, b), <span class="string">&quot;ab&quot;</span>);
-        <span class="macro">assert_eq!</span>(<span class="kw-2">*</span>g.edge_weight(b, c), <span class="string">&quot;bc&quot;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = g.add_node(<span class="string">'b'</span>);
+        <span class="kw">let </span>c = g.add_node(<span class="string">'c'</span>);
+        <span class="kw">let </span>d = g.add_node(<span class="string">'d'</span>);
+        g.add_edge(a, b, <span class="string">"ab"</span>);
+        g.add_edge(a, a, <span class="string">"aa"</span>);
+        g.add_edge(b, c, <span class="string">"bc"</span>);
+        g.add_edge(d, d, <span class="string">"dd"</span>);
+        <span class="macro">assert_eq!</span>(<span class="kw-2">*</span>g.edge_weight(a, b), <span class="string">"ab"</span>);
+        <span class="macro">assert_eq!</span>(<span class="kw-2">*</span>g.edge_weight(b, c), <span class="string">"bc"</span>);
     }
 
     <span class="doccomment">/// Shorthand for `.collect::&lt;Vec&lt;_&gt;&gt;()`
@@ -3231,9 +3232,9 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_clear() {
         <span class="kw">let </span><span class="kw-2">mut </span>g = MatrixGraph::new();
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = g.add_node(<span class="string">&#39;b&#39;</span>);
-        <span class="kw">let </span>c = g.add_node(<span class="string">&#39;c&#39;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = g.add_node(<span class="string">'b'</span>);
+        <span class="kw">let </span>c = g.add_node(<span class="string">'c'</span>);
         <span class="macro">assert_eq!</span>(g.node_count(), <span class="number">3</span>);
 
         g.add_edge(a, b, ());
@@ -3246,9 +3247,9 @@
         <span class="macro">assert_eq!</span>(g.node_count(), <span class="number">0</span>);
         <span class="macro">assert_eq!</span>(g.edge_count(), <span class="number">0</span>);
 
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = g.add_node(<span class="string">&#39;b&#39;</span>);
-        <span class="kw">let </span>c = g.add_node(<span class="string">&#39;c&#39;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = g.add_node(<span class="string">'b'</span>);
+        <span class="kw">let </span>c = g.add_node(<span class="string">'c'</span>);
         <span class="macro">assert_eq!</span>(g.node_count(), <span class="number">3</span>);
         <span class="macro">assert_eq!</span>(g.edge_count(), <span class="number">0</span>);
 
@@ -3264,9 +3265,9 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_clear_undirected() {
         <span class="kw">let </span><span class="kw-2">mut </span>g = MatrixGraph::new_undirected();
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = g.add_node(<span class="string">&#39;b&#39;</span>);
-        <span class="kw">let </span>c = g.add_node(<span class="string">&#39;c&#39;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = g.add_node(<span class="string">'b'</span>);
+        <span class="kw">let </span>c = g.add_node(<span class="string">'c'</span>);
         <span class="macro">assert_eq!</span>(g.node_count(), <span class="number">3</span>);
 
         g.add_edge(a, b, ());
@@ -3279,9 +3280,9 @@
         <span class="macro">assert_eq!</span>(g.node_count(), <span class="number">0</span>);
         <span class="macro">assert_eq!</span>(g.edge_count(), <span class="number">0</span>);
 
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = g.add_node(<span class="string">&#39;b&#39;</span>);
-        <span class="kw">let </span>c = g.add_node(<span class="string">&#39;c&#39;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = g.add_node(<span class="string">'b'</span>);
+        <span class="kw">let </span>c = g.add_node(<span class="string">'c'</span>);
         <span class="macro">assert_eq!</span>(g.node_count(), <span class="number">3</span>);
         <span class="macro">assert_eq!</span>(g.edge_count(), <span class="number">0</span>);
 
@@ -3321,9 +3322,9 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_neighbors() {
         <span class="kw">let </span><span class="kw-2">mut </span>g = MatrixGraph::new();
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = g.add_node(<span class="string">&#39;b&#39;</span>);
-        <span class="kw">let </span>c = g.add_node(<span class="string">&#39;c&#39;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = g.add_node(<span class="string">'b'</span>);
+        <span class="kw">let </span>c = g.add_node(<span class="string">'c'</span>);
         g.add_edge(a, b, ());
         g.add_edge(a, c, ());
 
@@ -3340,9 +3341,9 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_neighbors_undirected() {
         <span class="kw">let </span><span class="kw-2">mut </span>g = MatrixGraph::new_undirected();
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = g.add_node(<span class="string">&#39;b&#39;</span>);
-        <span class="kw">let </span>c = g.add_node(<span class="string">&#39;c&#39;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = g.add_node(<span class="string">'b'</span>);
+        <span class="kw">let </span>c = g.add_node(<span class="string">'c'</span>);
         g.add_edge(a, b, ());
         g.add_edge(a, c, ());
 
@@ -3359,9 +3360,9 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_remove_node_and_edges() {
         <span class="kw">let </span><span class="kw-2">mut </span>g = MatrixGraph::new();
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = g.add_node(<span class="string">&#39;b&#39;</span>);
-        <span class="kw">let </span>c = g.add_node(<span class="string">&#39;c&#39;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = g.add_node(<span class="string">'b'</span>);
+        <span class="kw">let </span>c = g.add_node(<span class="string">'c'</span>);
         g.add_edge(a, b, ());
         g.add_edge(b, c, ());
         g.add_edge(c, a, ());
@@ -3381,9 +3382,9 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_remove_node_and_edges_undirected() {
         <span class="kw">let </span><span class="kw-2">mut </span>g = UnMatrix::new_undirected();
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = g.add_node(<span class="string">&#39;b&#39;</span>);
-        <span class="kw">let </span>c = g.add_node(<span class="string">&#39;c&#39;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = g.add_node(<span class="string">'b'</span>);
+        <span class="kw">let </span>c = g.add_node(<span class="string">'c'</span>);
         g.add_edge(a, b, ());
         g.add_edge(b, c, ());
         g.add_edge(c, a, ());
@@ -3403,10 +3404,10 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_node_identifiers() {
         <span class="kw">let </span><span class="kw-2">mut </span>g = MatrixGraph::new();
-        <span class="kw">let </span>a = g.add_node(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = g.add_node(<span class="string">&#39;b&#39;</span>);
-        <span class="kw">let </span>c = g.add_node(<span class="string">&#39;c&#39;</span>);
-        <span class="kw">let </span>d = g.add_node(<span class="string">&#39;c&#39;</span>);
+        <span class="kw">let </span>a = g.add_node(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = g.add_node(<span class="string">'b'</span>);
+        <span class="kw">let </span>c = g.add_node(<span class="string">'c'</span>);
+        <span class="kw">let </span>d = g.add_node(<span class="string">'c'</span>);
         g.add_edge(a, b, ());
         g.add_edge(a, c, ());
 
@@ -3519,9 +3520,9 @@
         <span class="kw">use </span><span class="kw">super</span>::IdStorage;
 
         <span class="kw">let </span><span class="kw-2">mut </span>storage: IdStorage&lt;char&gt; = IdStorage::with_capacity(<span class="number">0</span>);
-        <span class="kw">let </span>a = storage.add(<span class="string">&#39;a&#39;</span>);
-        <span class="kw">let </span>b = storage.add(<span class="string">&#39;b&#39;</span>);
-        <span class="kw">let </span>c = storage.add(<span class="string">&#39;c&#39;</span>);
+        <span class="kw">let </span>a = storage.add(<span class="string">'a'</span>);
+        <span class="kw">let </span>b = storage.add(<span class="string">'b'</span>);
+        <span class="kw">let </span>c = storage.add(<span class="string">'c'</span>);
 
         <span class="macro">assert!</span>(a &lt; b &amp;&amp; b &lt; c);
 
@@ -3531,7 +3532,7 @@
         storage.remove(b);
 
         <span class="comment">// re-use of IDs
-        </span><span class="kw">let </span>bb = storage.add(<span class="string">&#39;B&#39;</span>);
+        </span><span class="kw">let </span>bb = storage.add(<span class="string">'B'</span>);
         <span class="macro">assert_eq!</span>(b, bb);
 
         <span class="comment">// list IDs

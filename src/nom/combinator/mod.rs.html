@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nom-7.1.3/src/combinator/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nom" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../nom/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nom-7.1.3/src/combinator/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nom" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -811,14 +812,14 @@
 
 </span><span class="attr">#![allow(unused_imports)]
 
-#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
+#[cfg(feature = <span class="string">"alloc"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::lib::std::boxed::Box;
 
 <span class="kw">use </span><span class="kw">crate</span>::error::{ErrorKind, FromExternalError, ParseError};
 <span class="kw">use </span><span class="kw">crate</span>::internal::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::lib::std::borrow::Borrow;
 <span class="kw">use </span><span class="kw">crate</span>::lib::std::convert::Into;
-<span class="attr">#[cfg(feature = <span class="string">&quot;std&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::lib::std::fmt::Debug;
 <span class="kw">use </span><span class="kw">crate</span>::lib::std::mem::transmute;
 <span class="kw">use </span><span class="kw">crate</span>::lib::std::ops::{Range, RangeFrom, RangeTo};
@@ -833,8 +834,8 @@
 /// ```rust
 /// # use nom::error::ErrorKind;
 /// use nom::combinator::rest;
-/// assert_eq!(rest::&lt;_,(_, ErrorKind)&gt;(&quot;abc&quot;), Ok((&quot;&quot;, &quot;abc&quot;)));
-/// assert_eq!(rest::&lt;_,(_, ErrorKind)&gt;(&quot;&quot;), Ok((&quot;&quot;, &quot;&quot;)));
+/// assert_eq!(rest::&lt;_,(_, ErrorKind)&gt;("abc"), Ok(("", "abc")));
+/// assert_eq!(rest::&lt;_,(_, ErrorKind)&gt;(""), Ok(("", "")));
 /// ```
 </span><span class="attr">#[inline]
 </span><span class="kw">pub fn </span>rest&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
@@ -850,8 +851,8 @@
 /// ```rust
 /// # use nom::error::ErrorKind;
 /// use nom::combinator::rest_len;
-/// assert_eq!(rest_len::&lt;_,(_, ErrorKind)&gt;(&quot;abc&quot;), Ok((&quot;abc&quot;, 3)));
-/// assert_eq!(rest_len::&lt;_,(_, ErrorKind)&gt;(&quot;&quot;), Ok((&quot;&quot;, 0)));
+/// assert_eq!(rest_len::&lt;_,(_, ErrorKind)&gt;("abc"), Ok(("abc", 3)));
+/// assert_eq!(rest_len::&lt;_,(_, ErrorKind)&gt;(""), Ok(("", 0)));
 /// ```
 </span><span class="attr">#[inline]
 </span><span class="kw">pub fn </span>rest_len&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, usize, E&gt;
@@ -873,10 +874,10 @@
 /// let mut parser = map(digit1, |s: &amp;str| s.len());
 ///
 /// // the parser will count how many characters were returned by digit1
-/// assert_eq!(parser.parse(&quot;123456&quot;), Ok((&quot;&quot;, 6)));
+/// assert_eq!(parser.parse("123456"), Ok(("", 6)));
 ///
 /// // this will fail if digit1 fails
-/// assert_eq!(parser.parse(&quot;abc&quot;), Err(Err::Error((&quot;abc&quot;, ErrorKind::Digit))));
+/// assert_eq!(parser.parse("abc"), Err(Err::Error(("abc", ErrorKind::Digit))));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>map&lt;I, O1, O2, E, F, G&gt;(<span class="kw-2">mut </span>parser: F, <span class="kw-2">mut </span>f: G) -&gt; <span class="kw">impl </span>FnMut(I) -&gt; IResult&lt;I, O2, E&gt;
@@ -901,13 +902,13 @@
 /// let mut parse = map_res(digit1, |s: &amp;str| s.parse::&lt;u8&gt;());
 ///
 /// // the parser will convert the result of digit1 to a number
-/// assert_eq!(parse(&quot;123&quot;), Ok((&quot;&quot;, 123)));
+/// assert_eq!(parse("123"), Ok(("", 123)));
 ///
 /// // this will fail if digit1 fails
-/// assert_eq!(parse(&quot;abc&quot;), Err(Err::Error((&quot;abc&quot;, ErrorKind::Digit))));
+/// assert_eq!(parse("abc"), Err(Err::Error(("abc", ErrorKind::Digit))));
 ///
 /// // this will fail if the mapped function fails (a `u8` is too small to hold `123456`)
-/// assert_eq!(parse(&quot;123456&quot;), Err(Err::Error((&quot;123456&quot;, ErrorKind::MapRes))));
+/// assert_eq!(parse("123456"), Err(Err::Error(("123456", ErrorKind::MapRes))));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>map_res&lt;I: Clone, O1, O2, E: FromExternalError&lt;I, E2&gt;, E2, F, G&gt;(
@@ -939,13 +940,13 @@
 /// let mut parse = map_opt(digit1, |s: &amp;str| s.parse::&lt;u8&gt;().ok());
 ///
 /// // the parser will convert the result of digit1 to a number
-/// assert_eq!(parse(&quot;123&quot;), Ok((&quot;&quot;, 123)));
+/// assert_eq!(parse("123"), Ok(("", 123)));
 ///
 /// // this will fail if digit1 fails
-/// assert_eq!(parse(&quot;abc&quot;), Err(Err::Error((&quot;abc&quot;, ErrorKind::Digit))));
+/// assert_eq!(parse("abc"), Err(Err::Error(("abc", ErrorKind::Digit))));
 ///
 /// // this will fail if the mapped function fails (a `u8` is too small to hold `123456`)
-/// assert_eq!(parse(&quot;123456&quot;), Err(Err::Error((&quot;123456&quot;, ErrorKind::MapOpt))));
+/// assert_eq!(parse("123456"), Err(Err::Error(("123456", ErrorKind::MapOpt))));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>map_opt&lt;I: Clone, O1, O2, E: ParseError&lt;I&gt;, F, G&gt;(
@@ -977,9 +978,9 @@
 ///
 /// let mut parse = map_parser(take(5u8), digit1);
 ///
-/// assert_eq!(parse(&quot;12345&quot;), Ok((&quot;&quot;, &quot;12345&quot;)));
-/// assert_eq!(parse(&quot;123ab&quot;), Ok((&quot;&quot;, &quot;123&quot;)));
-/// assert_eq!(parse(&quot;123&quot;), Err(Err::Error((&quot;123&quot;, ErrorKind::Eof))));
+/// assert_eq!(parse("12345"), Ok(("", "12345")));
+/// assert_eq!(parse("123ab"), Ok(("", "123")));
+/// assert_eq!(parse("123"), Err(Err::Error(("123", ErrorKind::Eof))));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>map_parser&lt;I, O1, O2, E: ParseError&lt;I&gt;, F, G&gt;(
@@ -1041,8 +1042,8 @@
 ///   opt(alpha1)(i)
 /// }
 ///
-/// assert_eq!(parser(&quot;abcd;&quot;), Ok((&quot;;&quot;, Some(&quot;abcd&quot;))));
-/// assert_eq!(parser(&quot;123;&quot;), Ok((&quot;123;&quot;, None)));
+/// assert_eq!(parser("abcd;"), Ok((";", Some("abcd"))));
+/// assert_eq!(parser("123;"), Ok(("123;", None)));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>opt&lt;I: Clone, O, E: ParseError&lt;I&gt;, F&gt;(<span class="kw-2">mut </span>f: F) -&gt; <span class="kw">impl </span>FnMut(I) -&gt; IResult&lt;I, <span class="prelude-ty">Option</span>&lt;O&gt;, E&gt;
@@ -1071,10 +1072,10 @@
 ///   cond(b, alpha1)(i)
 /// }
 ///
-/// assert_eq!(parser(true, &quot;abcd;&quot;), Ok((&quot;;&quot;, Some(&quot;abcd&quot;))));
-/// assert_eq!(parser(false, &quot;abcd;&quot;), Ok((&quot;abcd;&quot;, None)));
-/// assert_eq!(parser(true, &quot;123;&quot;), Err(Err::Error(Error::new(&quot;123;&quot;, ErrorKind::Alpha))));
-/// assert_eq!(parser(false, &quot;123;&quot;), Ok((&quot;123;&quot;, None)));
+/// assert_eq!(parser(true, "abcd;"), Ok((";", Some("abcd"))));
+/// assert_eq!(parser(false, "abcd;"), Ok(("abcd;", None)));
+/// assert_eq!(parser(true, "123;"), Err(Err::Error(Error::new("123;", ErrorKind::Alpha))));
+/// assert_eq!(parser(false, "123;"), Ok(("123;", None)));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>cond&lt;I, O, E: ParseError&lt;I&gt;, F&gt;(
@@ -1106,8 +1107,8 @@
 ///
 /// let mut parser = peek(alpha1);
 ///
-/// assert_eq!(parser(&quot;abcd;&quot;), Ok((&quot;abcd;&quot;, &quot;abcd&quot;)));
-/// assert_eq!(parser(&quot;123;&quot;), Err(Err::Error((&quot;123;&quot;, ErrorKind::Alpha))));
+/// assert_eq!(parser("abcd;"), Ok(("abcd;", "abcd")));
+/// assert_eq!(parser("123;"), Err(Err::Error(("123;", ErrorKind::Alpha))));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>peek&lt;I: Clone, O, E: ParseError&lt;I&gt;, F&gt;(<span class="kw-2">mut </span>f: F) -&gt; <span class="kw">impl </span>FnMut(I) -&gt; IResult&lt;I, O, E&gt;
@@ -1125,7 +1126,7 @@
 
 <span class="doccomment">/// returns its input if it is at the end of input data
 ///
-/// When we&#39;re at the end of the data, this combinator
+/// When we're at the end of the data, this combinator
 /// will succeed
 ///
 /// ```
@@ -1135,8 +1136,8 @@
 ///
 /// # fn main() {
 /// let parser = eof;
-/// assert_eq!(parser(&quot;abc&quot;), Err(Err::Error((&quot;abc&quot;, ErrorKind::Eof))));
-/// assert_eq!(parser(&quot;&quot;), Ok((&quot;&quot;, &quot;&quot;)));
+/// assert_eq!(parser("abc"), Err(Err::Error(("abc", ErrorKind::Eof))));
+/// assert_eq!(parser(""), Ok(("", "")));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>eof&lt;I: InputLength + Clone, E: ParseError&lt;I&gt;&gt;(input: I) -&gt; IResult&lt;I, I, E&gt; {
@@ -1158,8 +1159,8 @@
 ///
 /// let mut parser = complete(take(5u8));
 ///
-/// assert_eq!(parser(&quot;abcdefg&quot;), Ok((&quot;fg&quot;, &quot;abcde&quot;)));
-/// assert_eq!(parser(&quot;abcd&quot;), Err(Err::Error((&quot;abcd&quot;, ErrorKind::Complete))));
+/// assert_eq!(parser("abcdefg"), Ok(("fg", "abcde")));
+/// assert_eq!(parser("abcd"), Err(Err::Error(("abcd", ErrorKind::Complete))));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>complete&lt;I: Clone, O, E: ParseError&lt;I&gt;, F&gt;(<span class="kw-2">mut </span>f: F) -&gt; <span class="kw">impl </span>FnMut(I) -&gt; IResult&lt;I, O, E&gt;
@@ -1185,9 +1186,9 @@
 ///
 /// let mut parser = all_consuming(alpha1);
 ///
-/// assert_eq!(parser(&quot;abcd&quot;), Ok((&quot;&quot;, &quot;abcd&quot;)));
-/// assert_eq!(parser(&quot;abcd;&quot;),Err(Err::Error((&quot;;&quot;, ErrorKind::Eof))));
-/// assert_eq!(parser(&quot;123abcd;&quot;),Err(Err::Error((&quot;123abcd;&quot;, ErrorKind::Alpha))));
+/// assert_eq!(parser("abcd"), Ok(("", "abcd")));
+/// assert_eq!(parser("abcd;"),Err(Err::Error((";", ErrorKind::Eof))));
+/// assert_eq!(parser("123abcd;"),Err(Err::Error(("123abcd;", ErrorKind::Alpha))));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>all_consuming&lt;I, O, E: ParseError&lt;I&gt;, F&gt;(<span class="kw-2">mut </span>f: F) -&gt; <span class="kw">impl </span>FnMut(I) -&gt; IResult&lt;I, O, E&gt;
@@ -1218,9 +1219,9 @@
 ///
 /// let mut parser = verify(alpha1, |s: &amp;str| s.len() == 4);
 ///
-/// assert_eq!(parser(&quot;abcd&quot;), Ok((&quot;&quot;, &quot;abcd&quot;)));
-/// assert_eq!(parser(&quot;abcde&quot;), Err(Err::Error((&quot;abcde&quot;, ErrorKind::Verify))));
-/// assert_eq!(parser(&quot;123abcd;&quot;),Err(Err::Error((&quot;123abcd;&quot;, ErrorKind::Alpha))));
+/// assert_eq!(parser("abcd"), Ok(("", "abcd")));
+/// assert_eq!(parser("abcde"), Err(Err::Error(("abcde", ErrorKind::Verify))));
+/// assert_eq!(parser("123abcd;"),Err(Err::Error(("123abcd;", ErrorKind::Alpha))));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>verify&lt;I: Clone, O1, O2, E: ParseError&lt;I&gt;, F, G&gt;(
@@ -1255,8 +1256,8 @@
 ///
 /// let mut parser = value(1234, alpha1);
 ///
-/// assert_eq!(parser(&quot;abcd&quot;), Ok((&quot;&quot;, 1234)));
-/// assert_eq!(parser(&quot;123abcd;&quot;), Err(Err::Error((&quot;123abcd;&quot;, ErrorKind::Alpha))));
+/// assert_eq!(parser("abcd"), Ok(("", 1234)));
+/// assert_eq!(parser("123abcd;"), Err(Err::Error(("123abcd;", ErrorKind::Alpha))));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>value&lt;I, O1: Clone, O2, E: ParseError&lt;I&gt;, F&gt;(
@@ -1279,8 +1280,8 @@
 ///
 /// let mut parser = not(alpha1);
 ///
-/// assert_eq!(parser(&quot;123&quot;), Ok((&quot;123&quot;, ())));
-/// assert_eq!(parser(&quot;abcd&quot;), Err(Err::Error((&quot;abcd&quot;, ErrorKind::Not))));
+/// assert_eq!(parser("123"), Ok(("123", ())));
+/// assert_eq!(parser("abcd"), Err(Err::Error(("abcd", ErrorKind::Not))));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>not&lt;I: Clone, O, E: ParseError&lt;I&gt;, F&gt;(<span class="kw-2">mut </span>parser: F) -&gt; <span class="kw">impl </span>FnMut(I) -&gt; IResult&lt;I, (), E&gt;
@@ -1306,10 +1307,10 @@
 /// use nom::sequence::separated_pair;
 /// # fn main() {
 ///
-/// let mut parser = recognize(separated_pair(alpha1, char(&#39;,&#39;), alpha1));
+/// let mut parser = recognize(separated_pair(alpha1, char(','), alpha1));
 ///
-/// assert_eq!(parser(&quot;abcd,efgh&quot;), Ok((&quot;&quot;, &quot;abcd,efgh&quot;)));
-/// assert_eq!(parser(&quot;abcd;&quot;),Err(Err::Error((&quot;;&quot;, ErrorKind::Char))));
+/// assert_eq!(parser("abcd,efgh"), Ok(("", "abcd,efgh")));
+/// assert_eq!(parser("abcd;"),Err(Err::Error((";", ErrorKind::Char))));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>recognize&lt;I: Clone + Offset + Slice&lt;RangeTo&lt;usize&gt;&gt;, O, E: ParseError&lt;I&gt;, F&gt;(
@@ -1347,15 +1348,15 @@
 /// use nom::sequence::separated_pair;
 ///
 /// fn inner_parser(input: &amp;str) -&gt; IResult&lt;&amp;str, bool&gt; {
-///     value(true, tag(&quot;1234&quot;))(input)
+///     value(true, tag("1234"))(input)
 /// }
 ///
 /// # fn main() {
 ///
-/// let mut consumed_parser = consumed(value(true, separated_pair(alpha1, char(&#39;,&#39;), alpha1)));
+/// let mut consumed_parser = consumed(value(true, separated_pair(alpha1, char(','), alpha1)));
 ///
-/// assert_eq!(consumed_parser(&quot;abcd,efgh1&quot;), Ok((&quot;1&quot;, (&quot;abcd,efgh&quot;, true))));
-/// assert_eq!(consumed_parser(&quot;abcd;&quot;),Err(Err::Error((&quot;;&quot;, ErrorKind::Char))));
+/// assert_eq!(consumed_parser("abcd,efgh1"), Ok(("1", ("abcd,efgh", true))));
+/// assert_eq!(consumed_parser("abcd;"),Err(Err::Error((";", ErrorKind::Char))));
 ///
 ///
 /// // the first output (representing the consumed input)
@@ -1363,8 +1364,8 @@
 /// let mut recognize_parser = recognize(inner_parser);
 /// let mut consumed_parser = map(consumed(inner_parser), |(consumed, output)| consumed);
 ///
-/// assert_eq!(recognize_parser(&quot;1234&quot;), consumed_parser(&quot;1234&quot;));
-/// assert_eq!(recognize_parser(&quot;abcd&quot;), consumed_parser(&quot;abcd&quot;));
+/// assert_eq!(recognize_parser("1234"), consumed_parser("1234"));
+/// assert_eq!(recognize_parser("abcd"), consumed_parser("abcd"));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>consumed&lt;I, O, F, E&gt;(<span class="kw-2">mut </span>parser: F) -&gt; <span class="kw">impl </span>FnMut(I) -&gt; IResult&lt;I, (I, O), E&gt;
@@ -1404,14 +1405,14 @@
 ///
 /// fn parser(input: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
 ///   alt((
-///     preceded(one_of(&quot;+-&quot;), digit1),
+///     preceded(one_of("+-"), digit1),
 ///     rest
 ///   ))(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;+10 ab&quot;), Ok((&quot; ab&quot;, &quot;10&quot;)));
-/// assert_eq!(parser(&quot;ab&quot;), Ok((&quot;&quot;, &quot;ab&quot;)));
-/// assert_eq!(parser(&quot;+&quot;), Ok((&quot;&quot;, &quot;+&quot;)));
+/// assert_eq!(parser("+10 ab"), Ok((" ab", "10")));
+/// assert_eq!(parser("ab"), Ok(("", "ab")));
+/// assert_eq!(parser("+"), Ok(("", "+")));
 /// # }
 /// ```
 ///
@@ -1427,14 +1428,14 @@
 ///
 /// fn parser(input: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
 ///   alt((
-///     preceded(one_of(&quot;+-&quot;), cut(digit1)),
+///     preceded(one_of("+-"), cut(digit1)),
 ///     rest
 ///   ))(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;+10 ab&quot;), Ok((&quot; ab&quot;, &quot;10&quot;)));
-/// assert_eq!(parser(&quot;ab&quot;), Ok((&quot;&quot;, &quot;ab&quot;)));
-/// assert_eq!(parser(&quot;+&quot;), Err(Err::Failure(Error { input: &quot;&quot;, code: ErrorKind::Digit })));
+/// assert_eq!(parser("+10 ab"), Ok((" ab", "10")));
+/// assert_eq!(parser("ab"), Ok(("", "ab")));
+/// assert_eq!(parser("+"), Err(Err::Failure(Error { input: "", code: ErrorKind::Digit })));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>cut&lt;I, O, E: ParseError&lt;I&gt;, F&gt;(<span class="kw-2">mut </span>parser: F) -&gt; <span class="kw">impl </span>FnMut(I) -&gt; IResult&lt;I, O, E&gt;
@@ -1447,7 +1448,7 @@
   }
 }
 
-<span class="doccomment">/// automatically converts the child parser&#39;s result to another type
+<span class="doccomment">/// automatically converts the child parser's result to another type
 ///
 /// it will be able to convert the output value and the error value
 /// as long as the `Into` implementations are available
@@ -1465,8 +1466,8 @@
 ///  let mut parser2 = into(parser1);
 ///
 /// // the parser converts the &amp;str output of the child parser into a Vec&lt;u8&gt;
-/// let bytes: IResult&lt;&amp;str, Vec&lt;u8&gt;&gt; = parser2(&quot;abcd&quot;);
-/// assert_eq!(bytes, Ok((&quot;&quot;, vec![97, 98, 99, 100])));
+/// let bytes: IResult&lt;&amp;str, Vec&lt;u8&gt;&gt; = parser2("abcd");
+/// assert_eq!(bytes, Ok(("", vec![97, 98, 99, 100])));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>into&lt;I, O1, O2, E1, E2, F&gt;(<span class="kw-2">mut </span>parser: F) -&gt; <span class="kw">impl </span>FnMut(I) -&gt; IResult&lt;I, O2, E2&gt;
@@ -1488,7 +1489,7 @@
 
 <span class="doccomment">/// Creates an iterator from input data and a parser.
 ///
-/// Call the iterator&#39;s [ParserIterator::finish] method to get the remaining input if successful,
+/// Call the iterator's [ParserIterator::finish] method to get the remaining input if successful,
 /// or the error value if we encountered an error.
 ///
 /// On [`Err::Error`], iteration will stop. To instead chain an error up, see [`cut`].
@@ -1497,14 +1498,14 @@
 /// use nom::{combinator::iterator, IResult, bytes::complete::tag, character::complete::alpha1, sequence::terminated};
 /// use std::collections::HashMap;
 ///
-/// let data = &quot;abc|defg|hijkl|mnopqr|123&quot;;
-/// let mut it = iterator(data, terminated(alpha1, tag(&quot;|&quot;)));
+/// let data = "abc|defg|hijkl|mnopqr|123";
+/// let mut it = iterator(data, terminated(alpha1, tag("|")));
 ///
 /// let parsed = it.map(|v| (v, v.len())).collect::&lt;HashMap&lt;_,_&gt;&gt;();
 /// let res: IResult&lt;_,_&gt; = it.finish();
 ///
-/// assert_eq!(parsed, [(&quot;abc&quot;, 3usize), (&quot;defg&quot;, 4), (&quot;hijkl&quot;, 5), (&quot;mnopqr&quot;, 6)].iter().cloned().collect());
-/// assert_eq!(res, Ok((&quot;123&quot;, ())));
+/// assert_eq!(parsed, [("abc", 3usize), ("defg", 4), ("hijkl", 5), ("mnopqr", 6)].iter().cloned().collect());
+/// assert_eq!(res, Ok(("123", ())));
 /// ```
 </span><span class="kw">pub fn </span>iterator&lt;Input, Output, Error, F&gt;(input: Input, f: F) -&gt; ParserIterator&lt;Input, Error, F&gt;
 <span class="kw">where
@@ -1536,7 +1537,7 @@
   }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, Input, Output, Error, F&gt; core::iter::Iterator <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>ParserIterator&lt;Input, Error, F&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Input, Output, Error, F&gt; core::iter::Iterator <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>ParserIterator&lt;Input, Error, F&gt;
 <span class="kw">where
   </span>F: FnMut(Input) -&gt; IResult&lt;Input, Output, Error&gt;,
   Input: Clone,
@@ -1592,12 +1593,12 @@
 /// # fn main() {
 ///
 /// let mut parser = success::&lt;_,_,(_,ErrorKind)&gt;(10);
-/// assert_eq!(parser(&quot;xyz&quot;), Ok((&quot;xyz&quot;, 10)));
+/// assert_eq!(parser("xyz"), Ok(("xyz", 10)));
 ///
-/// let mut sign = alt((value(-1, char(&#39;-&#39;)), value(1, char(&#39;+&#39;)), success::&lt;_,_,(_,ErrorKind)&gt;(1)));
-/// assert_eq!(sign(&quot;+10&quot;), Ok((&quot;10&quot;, 1)));
-/// assert_eq!(sign(&quot;-10&quot;), Ok((&quot;10&quot;, -1)));
-/// assert_eq!(sign(&quot;10&quot;), Ok((&quot;10&quot;, 1)));
+/// let mut sign = alt((value(-1, char('-')), value(1, char('+')), success::&lt;_,_,(_,ErrorKind)&gt;(1)));
+/// assert_eq!(sign("+10"), Ok(("10", 1)));
+/// assert_eq!(sign("-10"), Ok(("10", -1)));
+/// assert_eq!(sign("10"), Ok(("10", 1)));
 /// # }
 /// ```
 </span><span class="kw">pub fn </span>success&lt;I, O: Clone, E: ParseError&lt;I&gt;&gt;(val: O) -&gt; <span class="kw">impl </span>Fn(I) -&gt; IResult&lt;I, O, E&gt; {
@@ -1610,7 +1611,7 @@
 /// # use nom::{Err, error::ErrorKind, IResult};
 /// use nom::combinator::fail;
 ///
-/// let s = &quot;string&quot;;
+/// let s = "string";
 /// assert_eq!(fail::&lt;_, &amp;str, _&gt;(s), Err(Err::Error((s, ErrorKind::Fail))));
 /// ```
 </span><span class="kw">pub fn </span>fail&lt;I, O, E: ParseError&lt;I&gt;&gt;(i: I) -&gt; IResult&lt;I, O, E&gt; {

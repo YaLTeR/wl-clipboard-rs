@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["aio","epoll","eventfd","inotify","ioctl","memfd","mman","personality","pthread","ptrace","quota","reboot","resource","select","sendfile","signal","signalfd","socket","stat","statfs","statvfs","sysinfo","termios","time","timer","timerfd","uio","utsname","wait"]};
+window.SIDEBAR_ITEMS = {"mod":["epoll","eventfd","memfd","prctl","signal","stat","statfs","statvfs","sysinfo","time","wait"]};

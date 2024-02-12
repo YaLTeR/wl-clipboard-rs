@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nom-7.1.3/src/character/complete.rs`."><title>complete.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nom" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../nom/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nom-7.1.3/src/character/complete.rs`."><title>complete.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nom" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1242,19 +1243,19 @@
 
 <span class="doccomment">/// Recognizes one character.
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data.
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
 /// # use nom::{Err, error::{ErrorKind, Error}, IResult};
 /// # use nom::character::complete::char;
 /// fn parser(i: &amp;str) -&gt; IResult&lt;&amp;str, char&gt; {
-///     char(&#39;a&#39;)(i)
+///     char('a')(i)
 /// }
-/// assert_eq!(parser(&quot;abc&quot;), Ok((&quot;bc&quot;, &#39;a&#39;)));
-/// assert_eq!(parser(&quot; abc&quot;), Err(Err::Error(Error::new(&quot; abc&quot;, ErrorKind::Char))));
-/// assert_eq!(parser(&quot;bc&quot;), Err(Err::Error(Error::new(&quot;bc&quot;, ErrorKind::Char))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::Char))));
+/// assert_eq!(parser("abc"), Ok(("bc", 'a')));
+/// assert_eq!(parser(" abc"), Err(Err::Error(Error::new(" abc", ErrorKind::Char))));
+/// assert_eq!(parser("bc"), Err(Err::Error(Error::new("bc", ErrorKind::Char))));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::Char))));
 /// ```
 </span><span class="kw">pub fn </span>char&lt;I, Error: ParseError&lt;I&gt;&gt;(c: char) -&gt; <span class="kw">impl </span>Fn(I) -&gt; IResult&lt;I, char, Error&gt;
 <span class="kw">where
@@ -1272,18 +1273,18 @@
 
 <span class="doccomment">/// Recognizes one character and checks that it satisfies a predicate
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data.
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
 /// # use nom::{Err, error::{ErrorKind, Error}, Needed, IResult};
 /// # use nom::character::complete::satisfy;
 /// fn parser(i: &amp;str) -&gt; IResult&lt;&amp;str, char&gt; {
-///     satisfy(|c| c == &#39;a&#39; || c == &#39;b&#39;)(i)
+///     satisfy(|c| c == 'a' || c == 'b')(i)
 /// }
-/// assert_eq!(parser(&quot;abc&quot;), Ok((&quot;bc&quot;, &#39;a&#39;)));
-/// assert_eq!(parser(&quot;cd&quot;), Err(Err::Error(Error::new(&quot;cd&quot;, ErrorKind::Satisfy))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::Satisfy))));
+/// assert_eq!(parser("abc"), Ok(("bc", 'a')));
+/// assert_eq!(parser("cd"), Err(Err::Error(Error::new("cd", ErrorKind::Satisfy))));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::Satisfy))));
 /// ```
 </span><span class="kw">pub fn </span>satisfy&lt;F, I, Error: ParseError&lt;I&gt;&gt;(cond: F) -&gt; <span class="kw">impl </span>Fn(I) -&gt; IResult&lt;I, char, Error&gt;
 <span class="kw">where
@@ -1303,15 +1304,15 @@
 
 <span class="doccomment">/// Recognizes one of the provided characters.
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data.
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
 /// # use nom::{Err, error::ErrorKind};
 /// # use nom::character::complete::one_of;
-/// assert_eq!(one_of::&lt;_, _, (&amp;str, ErrorKind)&gt;(&quot;abc&quot;)(&quot;b&quot;), Ok((&quot;&quot;, &#39;b&#39;)));
-/// assert_eq!(one_of::&lt;_, _, (&amp;str, ErrorKind)&gt;(&quot;a&quot;)(&quot;bc&quot;), Err(Err::Error((&quot;bc&quot;, ErrorKind::OneOf))));
-/// assert_eq!(one_of::&lt;_, _, (&amp;str, ErrorKind)&gt;(&quot;a&quot;)(&quot;&quot;), Err(Err::Error((&quot;&quot;, ErrorKind::OneOf))));
+/// assert_eq!(one_of::&lt;_, _, (&amp;str, ErrorKind)&gt;("abc")("b"), Ok(("", 'b')));
+/// assert_eq!(one_of::&lt;_, _, (&amp;str, ErrorKind)&gt;("a")("bc"), Err(Err::Error(("bc", ErrorKind::OneOf))));
+/// assert_eq!(one_of::&lt;_, _, (&amp;str, ErrorKind)&gt;("a")(""), Err(Err::Error(("", ErrorKind::OneOf))));
 /// ```
 </span><span class="kw">pub fn </span>one_of&lt;I, T, Error: ParseError&lt;I&gt;&gt;(list: T) -&gt; <span class="kw">impl </span>Fn(I) -&gt; IResult&lt;I, char, Error&gt;
 <span class="kw">where
@@ -1327,15 +1328,15 @@
 
 <span class="doccomment">/// Recognizes a character that is not in the provided characters.
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data.
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
 /// # use nom::{Err, error::ErrorKind};
 /// # use nom::character::complete::none_of;
-/// assert_eq!(none_of::&lt;_, _, (&amp;str, ErrorKind)&gt;(&quot;abc&quot;)(&quot;z&quot;), Ok((&quot;&quot;, &#39;z&#39;)));
-/// assert_eq!(none_of::&lt;_, _, (&amp;str, ErrorKind)&gt;(&quot;ab&quot;)(&quot;a&quot;), Err(Err::Error((&quot;a&quot;, ErrorKind::NoneOf))));
-/// assert_eq!(none_of::&lt;_, _, (&amp;str, ErrorKind)&gt;(&quot;a&quot;)(&quot;&quot;), Err(Err::Error((&quot;&quot;, ErrorKind::NoneOf))));
+/// assert_eq!(none_of::&lt;_, _, (&amp;str, ErrorKind)&gt;("abc")("z"), Ok(("", 'z')));
+/// assert_eq!(none_of::&lt;_, _, (&amp;str, ErrorKind)&gt;("ab")("a"), Err(Err::Error(("a", ErrorKind::NoneOf))));
+/// assert_eq!(none_of::&lt;_, _, (&amp;str, ErrorKind)&gt;("a")(""), Err(Err::Error(("", ErrorKind::NoneOf))));
 /// ```
 </span><span class="kw">pub fn </span>none_of&lt;I, T, Error: ParseError&lt;I&gt;&gt;(list: T) -&gt; <span class="kw">impl </span>Fn(I) -&gt; IResult&lt;I, char, Error&gt;
 <span class="kw">where
@@ -1349,9 +1350,9 @@
   }
 }
 
-<span class="doccomment">/// Recognizes the string &quot;\r\n&quot;.
+<span class="doccomment">/// Recognizes the string "\r\n".
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data.
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -1361,17 +1362,17 @@
 ///     crlf(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;\r\nc&quot;), Ok((&quot;c&quot;, &quot;\r\n&quot;)));
-/// assert_eq!(parser(&quot;ab\r\nc&quot;), Err(Err::Error(Error::new(&quot;ab\r\nc&quot;, ErrorKind::CrLf))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::CrLf))));
+/// assert_eq!(parser("\r\nc"), Ok(("c", "\r\n")));
+/// assert_eq!(parser("ab\r\nc"), Err(Err::Error(Error::new("ab\r\nc", ErrorKind::CrLf))));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::CrLf))));
 /// ```
 </span><span class="kw">pub fn </span>crlf&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
   </span>T: Slice&lt;Range&lt;usize&gt;&gt; + Slice&lt;RangeFrom&lt;usize&gt;&gt;,
   T: InputIter,
-  T: Compare&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
+  T: Compare&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;,
 {
-  <span class="kw">match </span>input.compare(<span class="string">&quot;\r\n&quot;</span>) {
+  <span class="kw">match </span>input.compare(<span class="string">"\r\n"</span>) {
     <span class="comment">//FIXME: is this the right index?
     </span>CompareResult::Ok =&gt; <span class="prelude-val">Ok</span>((input.slice(<span class="number">2</span>..), input.slice(<span class="number">0</span>..<span class="number">2</span>))),
     <span class="kw">_ </span>=&gt; {
@@ -1381,10 +1382,10 @@
   }
 }
 
-<span class="comment">//FIXME: there&#39;s still an incomplete
-</span><span class="doccomment">/// Recognizes a string of any char except &#39;\r\n&#39; or &#39;\n&#39;.
+<span class="comment">//FIXME: there's still an incomplete
+</span><span class="doccomment">/// Recognizes a string of any char except '\r\n' or '\n'.
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data.
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -1394,32 +1395,32 @@
 ///     not_line_ending(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;ab\r\nc&quot;), Ok((&quot;\r\nc&quot;, &quot;ab&quot;)));
-/// assert_eq!(parser(&quot;ab\nc&quot;), Ok((&quot;\nc&quot;, &quot;ab&quot;)));
-/// assert_eq!(parser(&quot;abc&quot;), Ok((&quot;&quot;, &quot;abc&quot;)));
-/// assert_eq!(parser(&quot;&quot;), Ok((&quot;&quot;, &quot;&quot;)));
-/// assert_eq!(parser(&quot;a\rb\nc&quot;), Err(Err::Error(Error { input: &quot;a\rb\nc&quot;, code: ErrorKind::Tag })));
-/// assert_eq!(parser(&quot;a\rbc&quot;), Err(Err::Error(Error { input: &quot;a\rbc&quot;, code: ErrorKind::Tag })));
+/// assert_eq!(parser("ab\r\nc"), Ok(("\r\nc", "ab")));
+/// assert_eq!(parser("ab\nc"), Ok(("\nc", "ab")));
+/// assert_eq!(parser("abc"), Ok(("", "abc")));
+/// assert_eq!(parser(""), Ok(("", "")));
+/// assert_eq!(parser("a\rb\nc"), Err(Err::Error(Error { input: "a\rb\nc", code: ErrorKind::Tag })));
+/// assert_eq!(parser("a\rbc"), Err(Err::Error(Error { input: "a\rbc", code: ErrorKind::Tag })));
 /// ```
 </span><span class="kw">pub fn </span>not_line_ending&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
   </span>T: Slice&lt;Range&lt;usize&gt;&gt; + Slice&lt;RangeFrom&lt;usize&gt;&gt; + Slice&lt;RangeTo&lt;usize&gt;&gt;,
   T: InputIter + InputLength,
-  T: Compare&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
+  T: Compare&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;,
   &lt;T <span class="kw">as </span>InputIter&gt;::Item: AsChar,
   &lt;T <span class="kw">as </span>InputIter&gt;::Item: AsChar,
 {
   <span class="kw">match </span>input.position(|item| {
     <span class="kw">let </span>c = item.as_char();
-    c == <span class="string">&#39;\r&#39; </span>|| c == <span class="string">&#39;\n&#39;
+    c == <span class="string">'\r' </span>|| c == <span class="string">'\n'
   </span>}) {
     <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>((input.slice(input.input_len()..), input)),
     <span class="prelude-val">Some</span>(index) =&gt; {
       <span class="kw">let </span><span class="kw-2">mut </span>it = input.slice(index..).iter_elements();
       <span class="kw">let </span>nth = it.next().unwrap().as_char();
-      <span class="kw">if </span>nth == <span class="string">&#39;\r&#39; </span>{
+      <span class="kw">if </span>nth == <span class="string">'\r' </span>{
         <span class="kw">let </span>sliced = input.slice(index..);
-        <span class="kw">let </span>comp = sliced.compare(<span class="string">&quot;\r\n&quot;</span>);
+        <span class="kw">let </span>comp = sliced.compare(<span class="string">"\r\n"</span>);
         <span class="kw">match </span>comp {
           <span class="comment">//FIXME: calculate the right index
           </span>CompareResult::Ok =&gt; <span class="prelude-val">Ok</span>((input.slice(index..), input.slice(..index))),
@@ -1435,9 +1436,9 @@
   }
 }
 
-<span class="doccomment">/// Recognizes an end of line (both &#39;\n&#39; and &#39;\r\n&#39;).
+<span class="doccomment">/// Recognizes an end of line (both '\n' and '\r\n').
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data.
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -1447,21 +1448,21 @@
 ///     line_ending(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;\r\nc&quot;), Ok((&quot;c&quot;, &quot;\r\n&quot;)));
-/// assert_eq!(parser(&quot;ab\r\nc&quot;), Err(Err::Error(Error::new(&quot;ab\r\nc&quot;, ErrorKind::CrLf))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::CrLf))));
+/// assert_eq!(parser("\r\nc"), Ok(("c", "\r\n")));
+/// assert_eq!(parser("ab\r\nc"), Err(Err::Error(Error::new("ab\r\nc", ErrorKind::CrLf))));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::CrLf))));
 /// ```
 </span><span class="kw">pub fn </span>line_ending&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
   </span>T: Slice&lt;Range&lt;usize&gt;&gt; + Slice&lt;RangeFrom&lt;usize&gt;&gt; + Slice&lt;RangeTo&lt;usize&gt;&gt;,
   T: InputIter + InputLength,
-  T: Compare&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
+  T: Compare&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;,
 {
-  <span class="kw">match </span>input.compare(<span class="string">&quot;\n&quot;</span>) {
+  <span class="kw">match </span>input.compare(<span class="string">"\n"</span>) {
     CompareResult::Ok =&gt; <span class="prelude-val">Ok</span>((input.slice(<span class="number">1</span>..), input.slice(<span class="number">0</span>..<span class="number">1</span>))),
     CompareResult::Incomplete =&gt; <span class="prelude-val">Err</span>(Err::Error(E::from_error_kind(input, ErrorKind::CrLf))),
     CompareResult::Error =&gt; {
-      <span class="kw">match </span>input.compare(<span class="string">&quot;\r\n&quot;</span>) {
+      <span class="kw">match </span>input.compare(<span class="string">"\r\n"</span>) {
         <span class="comment">//FIXME: is this the right index?
         </span>CompareResult::Ok =&gt; <span class="prelude-val">Ok</span>((input.slice(<span class="number">2</span>..), input.slice(<span class="number">0</span>..<span class="number">2</span>))),
         <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(Err::Error(E::from_error_kind(input, ErrorKind::CrLf))),
@@ -1470,9 +1471,9 @@
   }
 }
 
-<span class="doccomment">/// Matches a newline character &#39;\n&#39;.
+<span class="doccomment">/// Matches a newline character '\n'.
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data.
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -1482,21 +1483,21 @@
 ///     newline(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;\nc&quot;), Ok((&quot;c&quot;, &#39;\n&#39;)));
-/// assert_eq!(parser(&quot;\r\nc&quot;), Err(Err::Error(Error::new(&quot;\r\nc&quot;, ErrorKind::Char))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::Char))));
+/// assert_eq!(parser("\nc"), Ok(("c", '\n')));
+/// assert_eq!(parser("\r\nc"), Err(Err::Error(Error::new("\r\nc", ErrorKind::Char))));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::Char))));
 /// ```
 </span><span class="kw">pub fn </span>newline&lt;I, Error: ParseError&lt;I&gt;&gt;(input: I) -&gt; IResult&lt;I, char, Error&gt;
 <span class="kw">where
   </span>I: Slice&lt;RangeFrom&lt;usize&gt;&gt; + InputIter,
   &lt;I <span class="kw">as </span>InputIter&gt;::Item: AsChar,
 {
-  char(<span class="string">&#39;\n&#39;</span>)(input)
+  char(<span class="string">'\n'</span>)(input)
 }
 
-<span class="doccomment">/// Matches a tab character &#39;\t&#39;.
+<span class="doccomment">/// Matches a tab character '\t'.
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data.
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -1506,22 +1507,22 @@
 ///     tab(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;\tc&quot;), Ok((&quot;c&quot;, &#39;\t&#39;)));
-/// assert_eq!(parser(&quot;\r\nc&quot;), Err(Err::Error(Error::new(&quot;\r\nc&quot;, ErrorKind::Char))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::Char))));
+/// assert_eq!(parser("\tc"), Ok(("c", '\t')));
+/// assert_eq!(parser("\r\nc"), Err(Err::Error(Error::new("\r\nc", ErrorKind::Char))));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::Char))));
 /// ```
 </span><span class="kw">pub fn </span>tab&lt;I, Error: ParseError&lt;I&gt;&gt;(input: I) -&gt; IResult&lt;I, char, Error&gt;
 <span class="kw">where
   </span>I: Slice&lt;RangeFrom&lt;usize&gt;&gt; + InputIter,
   &lt;I <span class="kw">as </span>InputIter&gt;::Item: AsChar,
 {
-  char(<span class="string">&#39;\t&#39;</span>)(input)
+  char(<span class="string">'\t'</span>)(input)
 }
 
 <span class="doccomment">/// Matches one byte as a character. Note that the input type will
 /// accept a `str`, but not a `&amp;[u8]`, unlike many other nom parsers.
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data.
+/// *Complete version*: Will return an error if there's not enough input data.
 /// # Example
 ///
 /// ```
@@ -1530,8 +1531,8 @@
 ///     anychar(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;abc&quot;), Ok((&quot;bc&quot;,&#39;a&#39;)));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::Eof))));
+/// assert_eq!(parser("abc"), Ok(("bc",'a')));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::Eof))));
 /// ```
 </span><span class="kw">pub fn </span>anychar&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, char, E&gt;
 <span class="kw">where
@@ -1561,9 +1562,9 @@
 ///     alpha0(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;ab1c&quot;), Ok((&quot;1c&quot;, &quot;ab&quot;)));
-/// assert_eq!(parser(&quot;1c&quot;), Ok((&quot;1c&quot;, &quot;&quot;)));
-/// assert_eq!(parser(&quot;&quot;), Ok((&quot;&quot;, &quot;&quot;)));
+/// assert_eq!(parser("ab1c"), Ok(("1c", "ab")));
+/// assert_eq!(parser("1c"), Ok(("1c", "")));
+/// assert_eq!(parser(""), Ok(("", "")));
 /// ```
 </span><span class="kw">pub fn </span>alpha0&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
@@ -1575,7 +1576,7 @@
 
 <span class="doccomment">/// Recognizes one or more lowercase and uppercase ASCII alphabetic characters: a-z, A-Z
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found  (a non alphabetic character).
 /// # Example
 ///
@@ -1586,9 +1587,9 @@
 ///     alpha1(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;aB1c&quot;), Ok((&quot;1c&quot;, &quot;aB&quot;)));
-/// assert_eq!(parser(&quot;1c&quot;), Err(Err::Error(Error::new(&quot;1c&quot;, ErrorKind::Alpha))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::Alpha))));
+/// assert_eq!(parser("aB1c"), Ok(("1c", "aB")));
+/// assert_eq!(parser("1c"), Err(Err::Error(Error::new("1c", ErrorKind::Alpha))));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::Alpha))));
 /// ```
 </span><span class="kw">pub fn </span>alpha1&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
@@ -1600,7 +1601,7 @@
 
 <span class="doccomment">/// Recognizes zero or more ASCII numerical characters: 0-9
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non digit character).
 /// # Example
 ///
@@ -1611,10 +1612,10 @@
 ///     digit0(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;21c&quot;), Ok((&quot;c&quot;, &quot;21&quot;)));
-/// assert_eq!(parser(&quot;21&quot;), Ok((&quot;&quot;, &quot;21&quot;)));
-/// assert_eq!(parser(&quot;a21c&quot;), Ok((&quot;a21c&quot;, &quot;&quot;)));
-/// assert_eq!(parser(&quot;&quot;), Ok((&quot;&quot;, &quot;&quot;)));
+/// assert_eq!(parser("21c"), Ok(("c", "21")));
+/// assert_eq!(parser("21"), Ok(("", "21")));
+/// assert_eq!(parser("a21c"), Ok(("a21c", "")));
+/// assert_eq!(parser(""), Ok(("", "")));
 /// ```
 </span><span class="kw">pub fn </span>digit0&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
@@ -1626,7 +1627,7 @@
 
 <span class="doccomment">/// Recognizes one or more ASCII numerical characters: 0-9
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non digit character).
 /// # Example
 ///
@@ -1637,9 +1638,9 @@
 ///     digit1(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;21c&quot;), Ok((&quot;c&quot;, &quot;21&quot;)));
-/// assert_eq!(parser(&quot;c1&quot;), Err(Err::Error(Error::new(&quot;c1&quot;, ErrorKind::Digit))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::Digit))));
+/// assert_eq!(parser("21c"), Ok(("c", "21")));
+/// assert_eq!(parser("c1"), Err(Err::Error(Error::new("c1", ErrorKind::Digit))));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::Digit))));
 /// ```
 ///
 /// ## Parsing an integer
@@ -1653,9 +1654,9 @@
 ///   map_res(digit1, str::parse)(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;416&quot;), Ok((&quot;&quot;, 416)));
-/// assert_eq!(parser(&quot;12b&quot;), Ok((&quot;b&quot;, 12)));
-/// assert!(parser(&quot;b&quot;).is_err());
+/// assert_eq!(parser("416"), Ok(("", 416)));
+/// assert_eq!(parser("12b"), Ok(("b", 12)));
+/// assert!(parser("b").is_err());
 /// ```
 ///
 /// [`map_res`]: crate::combinator::map_res
@@ -1679,9 +1680,9 @@
 ///     hex_digit0(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;21cZ&quot;), Ok((&quot;Z&quot;, &quot;21c&quot;)));
-/// assert_eq!(parser(&quot;Z21c&quot;), Ok((&quot;Z21c&quot;, &quot;&quot;)));
-/// assert_eq!(parser(&quot;&quot;), Ok((&quot;&quot;, &quot;&quot;)));
+/// assert_eq!(parser("21cZ"), Ok(("Z", "21c")));
+/// assert_eq!(parser("Z21c"), Ok(("Z21c", "")));
+/// assert_eq!(parser(""), Ok(("", "")));
 /// ```
 </span><span class="kw">pub fn </span>hex_digit0&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
@@ -1692,7 +1693,7 @@
 }
 <span class="doccomment">/// Recognizes one or more ASCII hexadecimal numerical characters: 0-9, A-F, a-f
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non hexadecimal digit character).
 /// # Example
 ///
@@ -1703,9 +1704,9 @@
 ///     hex_digit1(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;21cZ&quot;), Ok((&quot;Z&quot;, &quot;21c&quot;)));
-/// assert_eq!(parser(&quot;H2&quot;), Err(Err::Error(Error::new(&quot;H2&quot;, ErrorKind::HexDigit))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::HexDigit))));
+/// assert_eq!(parser("21cZ"), Ok(("Z", "21c")));
+/// assert_eq!(parser("H2"), Err(Err::Error(Error::new("H2", ErrorKind::HexDigit))));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::HexDigit))));
 /// ```
 </span><span class="kw">pub fn </span>hex_digit1&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
@@ -1728,9 +1729,9 @@
 ///     oct_digit0(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;21cZ&quot;), Ok((&quot;cZ&quot;, &quot;21&quot;)));
-/// assert_eq!(parser(&quot;Z21c&quot;), Ok((&quot;Z21c&quot;, &quot;&quot;)));
-/// assert_eq!(parser(&quot;&quot;), Ok((&quot;&quot;, &quot;&quot;)));
+/// assert_eq!(parser("21cZ"), Ok(("cZ", "21")));
+/// assert_eq!(parser("Z21c"), Ok(("Z21c", "")));
+/// assert_eq!(parser(""), Ok(("", "")));
 /// ```
 </span><span class="kw">pub fn </span>oct_digit0&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
@@ -1742,7 +1743,7 @@
 
 <span class="doccomment">/// Recognizes one or more octal characters: 0-7
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non octal digit character).
 /// # Example
 ///
@@ -1753,9 +1754,9 @@
 ///     oct_digit1(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;21cZ&quot;), Ok((&quot;cZ&quot;, &quot;21&quot;)));
-/// assert_eq!(parser(&quot;H2&quot;), Err(Err::Error(Error::new(&quot;H2&quot;, ErrorKind::OctDigit))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::OctDigit))));
+/// assert_eq!(parser("21cZ"), Ok(("cZ", "21")));
+/// assert_eq!(parser("H2"), Err(Err::Error(Error::new("H2", ErrorKind::OctDigit))));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::OctDigit))));
 /// ```
 </span><span class="kw">pub fn </span>oct_digit1&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
@@ -1778,9 +1779,9 @@
 ///     alphanumeric0(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;21cZ%1&quot;), Ok((&quot;%1&quot;, &quot;21cZ&quot;)));
-/// assert_eq!(parser(&quot;&amp;Z21c&quot;), Ok((&quot;&amp;Z21c&quot;, &quot;&quot;)));
-/// assert_eq!(parser(&quot;&quot;), Ok((&quot;&quot;, &quot;&quot;)));
+/// assert_eq!(parser("21cZ%1"), Ok(("%1", "21cZ")));
+/// assert_eq!(parser("&amp;Z21c"), Ok(("&amp;Z21c", "")));
+/// assert_eq!(parser(""), Ok(("", "")));
 /// ```
 </span><span class="kw">pub fn </span>alphanumeric0&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
@@ -1792,7 +1793,7 @@
 
 <span class="doccomment">/// Recognizes one or more ASCII numerical and alphabetic characters: 0-9, a-z, A-Z
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non alphanumerical character).
 /// # Example
 ///
@@ -1803,9 +1804,9 @@
 ///     alphanumeric1(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;21cZ%1&quot;), Ok((&quot;%1&quot;, &quot;21cZ&quot;)));
-/// assert_eq!(parser(&quot;&amp;H2&quot;), Err(Err::Error(Error::new(&quot;&amp;H2&quot;, ErrorKind::AlphaNumeric))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::AlphaNumeric))));
+/// assert_eq!(parser("21cZ%1"), Ok(("%1", "21cZ")));
+/// assert_eq!(parser("&amp;H2"), Err(Err::Error(Error::new("&amp;H2", ErrorKind::AlphaNumeric))));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::AlphaNumeric))));
 /// ```
 </span><span class="kw">pub fn </span>alphanumeric1&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
@@ -1828,9 +1829,9 @@
 ///     space0(input)
 /// }
 ///
-/// assert_eq!(parser(&quot; \t21c&quot;), Ok((&quot;21c&quot;, &quot; \t&quot;)));
-/// assert_eq!(parser(&quot;Z21c&quot;), Ok((&quot;Z21c&quot;, &quot;&quot;)));
-/// assert_eq!(parser(&quot;&quot;), Ok((&quot;&quot;, &quot;&quot;)));
+/// assert_eq!(parser(" \t21c"), Ok(("21c", " \t")));
+/// assert_eq!(parser("Z21c"), Ok(("Z21c", "")));
+/// assert_eq!(parser(""), Ok(("", "")));
 /// ```
 </span><span class="kw">pub fn </span>space0&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
@@ -1839,13 +1840,13 @@
 {
   input.split_at_position_complete(|item| {
     <span class="kw">let </span>c = item.as_char();
-    !(c == <span class="string">&#39; &#39; </span>|| c == <span class="string">&#39;\t&#39;</span>)
+    !(c == <span class="string">' ' </span>|| c == <span class="string">'\t'</span>)
   })
 }
 
 <span class="doccomment">/// Recognizes one or more spaces and tabs.
 ///
-/// *Complete version*: Will return an error if there&#39;s not enough input data,
+/// *Complete version*: Will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non space character).
 /// # Example
 ///
@@ -1856,9 +1857,9 @@
 ///     space1(input)
 /// }
 ///
-/// assert_eq!(parser(&quot; \t21c&quot;), Ok((&quot;21c&quot;, &quot; \t&quot;)));
-/// assert_eq!(parser(&quot;H2&quot;), Err(Err::Error(Error::new(&quot;H2&quot;, ErrorKind::Space))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::Space))));
+/// assert_eq!(parser(" \t21c"), Ok(("21c", " \t")));
+/// assert_eq!(parser("H2"), Err(Err::Error(Error::new("H2", ErrorKind::Space))));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::Space))));
 /// ```
 </span><span class="kw">pub fn </span>space1&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
@@ -1868,7 +1869,7 @@
   input.split_at_position1_complete(
     |item| {
       <span class="kw">let </span>c = item.as_char();
-      !(c == <span class="string">&#39; &#39; </span>|| c == <span class="string">&#39;\t&#39;</span>)
+      !(c == <span class="string">' ' </span>|| c == <span class="string">'\t'</span>)
     },
     ErrorKind::Space,
   )
@@ -1887,9 +1888,9 @@
 ///     multispace0(input)
 /// }
 ///
-/// assert_eq!(parser(&quot; \t\n\r21c&quot;), Ok((&quot;21c&quot;, &quot; \t\n\r&quot;)));
-/// assert_eq!(parser(&quot;Z21c&quot;), Ok((&quot;Z21c&quot;, &quot;&quot;)));
-/// assert_eq!(parser(&quot;&quot;), Ok((&quot;&quot;, &quot;&quot;)));
+/// assert_eq!(parser(" \t\n\r21c"), Ok(("21c", " \t\n\r")));
+/// assert_eq!(parser("Z21c"), Ok(("Z21c", "")));
+/// assert_eq!(parser(""), Ok(("", "")));
 /// ```
 </span><span class="kw">pub fn </span>multispace0&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
@@ -1898,13 +1899,13 @@
 {
   input.split_at_position_complete(|item| {
     <span class="kw">let </span>c = item.as_char();
-    !(c == <span class="string">&#39; &#39; </span>|| c == <span class="string">&#39;\t&#39; </span>|| c == <span class="string">&#39;\r&#39; </span>|| c == <span class="string">&#39;\n&#39;</span>)
+    !(c == <span class="string">' ' </span>|| c == <span class="string">'\t' </span>|| c == <span class="string">'\r' </span>|| c == <span class="string">'\n'</span>)
   })
 }
 
 <span class="doccomment">/// Recognizes one or more spaces, tabs, carriage returns and line feeds.
 ///
-/// *Complete version*: will return an error if there&#39;s not enough input data,
+/// *Complete version*: will return an error if there's not enough input data,
 /// or the whole input if no terminating token is found (a non space character).
 /// # Example
 ///
@@ -1915,9 +1916,9 @@
 ///     multispace1(input)
 /// }
 ///
-/// assert_eq!(parser(&quot; \t\n\r21c&quot;), Ok((&quot;21c&quot;, &quot; \t\n\r&quot;)));
-/// assert_eq!(parser(&quot;H2&quot;), Err(Err::Error(Error::new(&quot;H2&quot;, ErrorKind::MultiSpace))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Error(Error::new(&quot;&quot;, ErrorKind::MultiSpace))));
+/// assert_eq!(parser(" \t\n\r21c"), Ok(("21c", " \t\n\r")));
+/// assert_eq!(parser("H2"), Err(Err::Error(Error::new("H2", ErrorKind::MultiSpace))));
+/// assert_eq!(parser(""), Err(Err::Error(Error::new("", ErrorKind::MultiSpace))));
 /// ```
 </span><span class="kw">pub fn </span>multispace1&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, T, E&gt;
 <span class="kw">where
@@ -1927,7 +1928,7 @@
   input.split_at_position1_complete(
     |item| {
       <span class="kw">let </span>c = item.as_char();
-      !(c == <span class="string">&#39; &#39; </span>|| c == <span class="string">&#39;\t&#39; </span>|| c == <span class="string">&#39;\r&#39; </span>|| c == <span class="string">&#39;\n&#39;</span>)
+      !(c == <span class="string">' ' </span>|| c == <span class="string">'\t' </span>|| c == <span class="string">'\r' </span>|| c == <span class="string">'\n'</span>)
     },
     ErrorKind::MultiSpace,
   )
@@ -1936,14 +1937,14 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>sign&lt;T, E: ParseError&lt;T&gt;&gt;(input: T) -&gt; IResult&lt;T, bool, E&gt;
 <span class="kw">where
   </span>T: Clone + InputTake,
-  T: <span class="kw">for</span>&lt;<span class="lifetime">&#39;a</span>&gt; Compare&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8]&gt;,
+  T: <span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; Compare&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]&gt;,
 {
   <span class="kw">use </span><span class="kw">crate</span>::bytes::complete::tag;
   <span class="kw">use </span><span class="kw">crate</span>::combinator::value;
 
   <span class="kw">let </span>(i, opt_sign) = opt(alt((
-    value(<span class="bool-val">false</span>, tag(<span class="kw-2">&amp;</span><span class="string">b&quot;-&quot;</span>[..])),
-    value(<span class="bool-val">true</span>, tag(<span class="kw-2">&amp;</span><span class="string">b&quot;+&quot;</span>[..])),
+    value(<span class="bool-val">false</span>, tag(<span class="kw-2">&amp;</span><span class="string">b"-"</span>[..])),
+    value(<span class="bool-val">true</span>, tag(<span class="kw-2">&amp;</span><span class="string">b"+"</span>[..])),
   )))(input)<span class="question-mark">?</span>;
   <span class="kw">let </span>sign = opt_sign.unwrap_or(<span class="bool-val">true</span>);
 
@@ -1961,7 +1962,7 @@
             <span class="kw">where
             </span>T: InputIter + Slice&lt;RangeFrom&lt;usize&gt;&gt; + InputLength + InputTake + Clone,
             &lt;T <span class="kw">as </span>InputIter&gt;::Item: AsChar,
-            T: <span class="kw">for </span>&lt;<span class="lifetime">&#39;a</span>&gt; Compare&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span>[u8]&gt;,
+            T: <span class="kw">for </span>&lt;<span class="lifetime">'a</span>&gt; Compare&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a</span>[u8]&gt;,
             {
                 <span class="kw">let </span>(i, sign) = sign(input.clone())<span class="question-mark">?</span>;
 
@@ -2071,20 +2072,20 @@
 
   <span class="attr">#[test]
   </span><span class="kw">fn </span>character() {
-    <span class="kw">let </span>empty: <span class="kw-2">&amp;</span>[u8] = <span class="string">b&quot;&quot;</span>;
-    <span class="kw">let </span>a: <span class="kw-2">&amp;</span>[u8] = <span class="string">b&quot;abcd&quot;</span>;
-    <span class="kw">let </span>b: <span class="kw-2">&amp;</span>[u8] = <span class="string">b&quot;1234&quot;</span>;
-    <span class="kw">let </span>c: <span class="kw-2">&amp;</span>[u8] = <span class="string">b&quot;a123&quot;</span>;
-    <span class="kw">let </span>d: <span class="kw-2">&amp;</span>[u8] = <span class="string">&quot;azé12&quot;</span>.as_bytes();
-    <span class="kw">let </span>e: <span class="kw-2">&amp;</span>[u8] = <span class="string">b&quot; &quot;</span>;
-    <span class="kw">let </span>f: <span class="kw-2">&amp;</span>[u8] = <span class="string">b&quot; ;&quot;</span>;
+    <span class="kw">let </span>empty: <span class="kw-2">&amp;</span>[u8] = <span class="string">b""</span>;
+    <span class="kw">let </span>a: <span class="kw-2">&amp;</span>[u8] = <span class="string">b"abcd"</span>;
+    <span class="kw">let </span>b: <span class="kw-2">&amp;</span>[u8] = <span class="string">b"1234"</span>;
+    <span class="kw">let </span>c: <span class="kw-2">&amp;</span>[u8] = <span class="string">b"a123"</span>;
+    <span class="kw">let </span>d: <span class="kw-2">&amp;</span>[u8] = <span class="string">"azé12"</span>.as_bytes();
+    <span class="kw">let </span>e: <span class="kw-2">&amp;</span>[u8] = <span class="string">b" "</span>;
+    <span class="kw">let </span>f: <span class="kw-2">&amp;</span>[u8] = <span class="string">b" ;"</span>;
     <span class="comment">//assert_eq!(alpha1::&lt;_, (_, ErrorKind)&gt;(a), Err(Err::Incomplete(Needed::Size(1))));
     </span><span class="macro">assert_parse!</span>(alpha1(a), <span class="prelude-val">Ok</span>((empty, a)));
     <span class="macro">assert_eq!</span>(alpha1(b), <span class="prelude-val">Err</span>(Err::Error((b, ErrorKind::Alpha))));
-    <span class="macro">assert_eq!</span>(alpha1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(c), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span>c[<span class="number">1</span>..], <span class="kw-2">&amp;</span><span class="string">b&quot;a&quot;</span>[..])));
+    <span class="macro">assert_eq!</span>(alpha1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(c), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span>c[<span class="number">1</span>..], <span class="kw-2">&amp;</span><span class="string">b"a"</span>[..])));
     <span class="macro">assert_eq!</span>(
       alpha1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(d),
-      <span class="prelude-val">Ok</span>((<span class="string">&quot;é12&quot;</span>.as_bytes(), <span class="kw-2">&amp;</span><span class="string">b&quot;az&quot;</span>[..]))
+      <span class="prelude-val">Ok</span>((<span class="string">"é12"</span>.as_bytes(), <span class="kw-2">&amp;</span><span class="string">b"az"</span>[..]))
     );
     <span class="macro">assert_eq!</span>(digit1(a), <span class="prelude-val">Err</span>(Err::Error((a, ErrorKind::Digit))));
     <span class="macro">assert_eq!</span>(digit1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(b), <span class="prelude-val">Ok</span>((empty, b)));
@@ -2095,7 +2096,7 @@
     <span class="macro">assert_eq!</span>(hex_digit1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(c), <span class="prelude-val">Ok</span>((empty, c)));
     <span class="macro">assert_eq!</span>(
       hex_digit1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(d),
-      <span class="prelude-val">Ok</span>((<span class="string">&quot;zé12&quot;</span>.as_bytes(), <span class="kw-2">&amp;</span><span class="string">b&quot;a&quot;</span>[..]))
+      <span class="prelude-val">Ok</span>((<span class="string">"zé12"</span>.as_bytes(), <span class="kw-2">&amp;</span><span class="string">b"a"</span>[..]))
     );
     <span class="macro">assert_eq!</span>(hex_digit1(e), <span class="prelude-val">Err</span>(Err::Error((e, ErrorKind::HexDigit))));
     <span class="macro">assert_eq!</span>(oct_digit1(a), <span class="prelude-val">Err</span>(Err::Error((a, ErrorKind::OctDigit))));
@@ -2107,25 +2108,25 @@
     </span><span class="macro">assert_eq!</span>(alphanumeric1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(c), <span class="prelude-val">Ok</span>((empty, c)));
     <span class="macro">assert_eq!</span>(
       alphanumeric1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(d),
-      <span class="prelude-val">Ok</span>((<span class="string">&quot;é12&quot;</span>.as_bytes(), <span class="kw-2">&amp;</span><span class="string">b&quot;az&quot;</span>[..]))
+      <span class="prelude-val">Ok</span>((<span class="string">"é12"</span>.as_bytes(), <span class="kw-2">&amp;</span><span class="string">b"az"</span>[..]))
     );
     <span class="macro">assert_eq!</span>(space1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(e), <span class="prelude-val">Ok</span>((empty, e)));
-    <span class="macro">assert_eq!</span>(space1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(f), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b&quot;;&quot;</span>[..], <span class="kw-2">&amp;</span><span class="string">b&quot; &quot;</span>[..])));
+    <span class="macro">assert_eq!</span>(space1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(f), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b";"</span>[..], <span class="kw-2">&amp;</span><span class="string">b" "</span>[..])));
   }
 
-  <span class="attr">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
+  <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
   #[test]
   </span><span class="kw">fn </span>character_s() {
-    <span class="kw">let </span>empty = <span class="string">&quot;&quot;</span>;
-    <span class="kw">let </span>a = <span class="string">&quot;abcd&quot;</span>;
-    <span class="kw">let </span>b = <span class="string">&quot;1234&quot;</span>;
-    <span class="kw">let </span>c = <span class="string">&quot;a123&quot;</span>;
-    <span class="kw">let </span>d = <span class="string">&quot;azé12&quot;</span>;
-    <span class="kw">let </span>e = <span class="string">&quot; &quot;</span>;
+    <span class="kw">let </span>empty = <span class="string">""</span>;
+    <span class="kw">let </span>a = <span class="string">"abcd"</span>;
+    <span class="kw">let </span>b = <span class="string">"1234"</span>;
+    <span class="kw">let </span>c = <span class="string">"a123"</span>;
+    <span class="kw">let </span>d = <span class="string">"azé12"</span>;
+    <span class="kw">let </span>e = <span class="string">" "</span>;
     <span class="macro">assert_eq!</span>(alpha1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(a), <span class="prelude-val">Ok</span>((empty, a)));
     <span class="macro">assert_eq!</span>(alpha1(b), <span class="prelude-val">Err</span>(Err::Error((b, ErrorKind::Alpha))));
-    <span class="macro">assert_eq!</span>(alpha1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(c), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span>c[<span class="number">1</span>..], <span class="kw-2">&amp;</span><span class="string">&quot;a&quot;</span>[..])));
-    <span class="macro">assert_eq!</span>(alpha1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(d), <span class="prelude-val">Ok</span>((<span class="string">&quot;é12&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;az&quot;</span>[..])));
+    <span class="macro">assert_eq!</span>(alpha1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(c), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span>c[<span class="number">1</span>..], <span class="kw-2">&amp;</span><span class="string">"a"</span>[..])));
+    <span class="macro">assert_eq!</span>(alpha1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(d), <span class="prelude-val">Ok</span>((<span class="string">"é12"</span>, <span class="kw-2">&amp;</span><span class="string">"az"</span>[..])));
     <span class="macro">assert_eq!</span>(digit1(a), <span class="prelude-val">Err</span>(Err::Error((a, ErrorKind::Digit))));
     <span class="macro">assert_eq!</span>(digit1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(b), <span class="prelude-val">Ok</span>((empty, b)));
     <span class="macro">assert_eq!</span>(digit1(c), <span class="prelude-val">Err</span>(Err::Error((c, ErrorKind::Digit))));
@@ -2133,7 +2134,7 @@
     <span class="macro">assert_eq!</span>(hex_digit1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(a), <span class="prelude-val">Ok</span>((empty, a)));
     <span class="macro">assert_eq!</span>(hex_digit1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(b), <span class="prelude-val">Ok</span>((empty, b)));
     <span class="macro">assert_eq!</span>(hex_digit1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(c), <span class="prelude-val">Ok</span>((empty, c)));
-    <span class="macro">assert_eq!</span>(hex_digit1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(d), <span class="prelude-val">Ok</span>((<span class="string">&quot;zé12&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;a&quot;</span>[..])));
+    <span class="macro">assert_eq!</span>(hex_digit1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(d), <span class="prelude-val">Ok</span>((<span class="string">"zé12"</span>, <span class="kw-2">&amp;</span><span class="string">"a"</span>[..])));
     <span class="macro">assert_eq!</span>(hex_digit1(e), <span class="prelude-val">Err</span>(Err::Error((e, ErrorKind::HexDigit))));
     <span class="macro">assert_eq!</span>(oct_digit1(a), <span class="prelude-val">Err</span>(Err::Error((a, ErrorKind::OctDigit))));
     <span class="macro">assert_eq!</span>(oct_digit1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(b), <span class="prelude-val">Ok</span>((empty, b)));
@@ -2142,85 +2143,85 @@
     <span class="macro">assert_eq!</span>(alphanumeric1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(a), <span class="prelude-val">Ok</span>((empty, a)));
     <span class="comment">//assert_eq!(fix_error!(b,(), alphanumeric), Ok((empty, b)));
     </span><span class="macro">assert_eq!</span>(alphanumeric1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(c), <span class="prelude-val">Ok</span>((empty, c)));
-    <span class="macro">assert_eq!</span>(alphanumeric1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(d), <span class="prelude-val">Ok</span>((<span class="string">&quot;é12&quot;</span>, <span class="string">&quot;az&quot;</span>)));
+    <span class="macro">assert_eq!</span>(alphanumeric1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(d), <span class="prelude-val">Ok</span>((<span class="string">"é12"</span>, <span class="string">"az"</span>)));
     <span class="macro">assert_eq!</span>(space1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(e), <span class="prelude-val">Ok</span>((empty, e)));
   }
 
   <span class="kw">use </span><span class="kw">crate</span>::traits::Offset;
   <span class="attr">#[test]
   </span><span class="kw">fn </span>offset() {
-    <span class="kw">let </span>a = <span class="kw-2">&amp;</span><span class="string">b&quot;abcd;&quot;</span>[..];
-    <span class="kw">let </span>b = <span class="kw-2">&amp;</span><span class="string">b&quot;1234;&quot;</span>[..];
-    <span class="kw">let </span>c = <span class="kw-2">&amp;</span><span class="string">b&quot;a123;&quot;</span>[..];
-    <span class="kw">let </span>d = <span class="kw-2">&amp;</span><span class="string">b&quot; \t;&quot;</span>[..];
-    <span class="kw">let </span>e = <span class="kw-2">&amp;</span><span class="string">b&quot; \t\r\n;&quot;</span>[..];
-    <span class="kw">let </span>f = <span class="kw-2">&amp;</span><span class="string">b&quot;123abcDEF;&quot;</span>[..];
+    <span class="kw">let </span>a = <span class="kw-2">&amp;</span><span class="string">b"abcd;"</span>[..];
+    <span class="kw">let </span>b = <span class="kw-2">&amp;</span><span class="string">b"1234;"</span>[..];
+    <span class="kw">let </span>c = <span class="kw-2">&amp;</span><span class="string">b"a123;"</span>[..];
+    <span class="kw">let </span>d = <span class="kw-2">&amp;</span><span class="string">b" \t;"</span>[..];
+    <span class="kw">let </span>e = <span class="kw-2">&amp;</span><span class="string">b" \t\r\n;"</span>[..];
+    <span class="kw">let </span>f = <span class="kw-2">&amp;</span><span class="string">b"123abcDEF;"</span>[..];
 
     <span class="kw">match </span>alpha1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(a) {
       <span class="prelude-val">Ok</span>((i, <span class="kw">_</span>)) =&gt; {
         <span class="macro">assert_eq!</span>(a.offset(i) + i.len(), a.len());
       }
-      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;wrong return type in offset test for alpha&quot;</span>),
+      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"wrong return type in offset test for alpha"</span>),
     }
     <span class="kw">match </span>digit1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(b) {
       <span class="prelude-val">Ok</span>((i, <span class="kw">_</span>)) =&gt; {
         <span class="macro">assert_eq!</span>(b.offset(i) + i.len(), b.len());
       }
-      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;wrong return type in offset test for digit&quot;</span>),
+      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"wrong return type in offset test for digit"</span>),
     }
     <span class="kw">match </span>alphanumeric1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(c) {
       <span class="prelude-val">Ok</span>((i, <span class="kw">_</span>)) =&gt; {
         <span class="macro">assert_eq!</span>(c.offset(i) + i.len(), c.len());
       }
-      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;wrong return type in offset test for alphanumeric&quot;</span>),
+      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"wrong return type in offset test for alphanumeric"</span>),
     }
     <span class="kw">match </span>space1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(d) {
       <span class="prelude-val">Ok</span>((i, <span class="kw">_</span>)) =&gt; {
         <span class="macro">assert_eq!</span>(d.offset(i) + i.len(), d.len());
       }
-      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;wrong return type in offset test for space&quot;</span>),
+      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"wrong return type in offset test for space"</span>),
     }
     <span class="kw">match </span>multispace1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(e) {
       <span class="prelude-val">Ok</span>((i, <span class="kw">_</span>)) =&gt; {
         <span class="macro">assert_eq!</span>(e.offset(i) + i.len(), e.len());
       }
-      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;wrong return type in offset test for multispace&quot;</span>),
+      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"wrong return type in offset test for multispace"</span>),
     }
     <span class="kw">match </span>hex_digit1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(f) {
       <span class="prelude-val">Ok</span>((i, <span class="kw">_</span>)) =&gt; {
         <span class="macro">assert_eq!</span>(f.offset(i) + i.len(), f.len());
       }
-      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;wrong return type in offset test for hex_digit&quot;</span>),
+      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"wrong return type in offset test for hex_digit"</span>),
     }
     <span class="kw">match </span>oct_digit1::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(f) {
       <span class="prelude-val">Ok</span>((i, <span class="kw">_</span>)) =&gt; {
         <span class="macro">assert_eq!</span>(f.offset(i) + i.len(), f.len());
       }
-      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;wrong return type in offset test for oct_digit&quot;</span>),
+      <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"wrong return type in offset test for oct_digit"</span>),
     }
   }
 
   <span class="attr">#[test]
   </span><span class="kw">fn </span>is_not_line_ending_bytes() {
-    <span class="kw">let </span>a: <span class="kw-2">&amp;</span>[u8] = <span class="string">b&quot;ab12cd\nefgh&quot;</span>;
+    <span class="kw">let </span>a: <span class="kw-2">&amp;</span>[u8] = <span class="string">b"ab12cd\nefgh"</span>;
     <span class="macro">assert_eq!</span>(
       not_line_ending::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(a),
-      <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b&quot;\nefgh&quot;</span>[..], <span class="kw-2">&amp;</span><span class="string">b&quot;ab12cd&quot;</span>[..]))
+      <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b"\nefgh"</span>[..], <span class="kw-2">&amp;</span><span class="string">b"ab12cd"</span>[..]))
     );
 
-    <span class="kw">let </span>b: <span class="kw-2">&amp;</span>[u8] = <span class="string">b&quot;ab12cd\nefgh\nijkl&quot;</span>;
+    <span class="kw">let </span>b: <span class="kw-2">&amp;</span>[u8] = <span class="string">b"ab12cd\nefgh\nijkl"</span>;
     <span class="macro">assert_eq!</span>(
       not_line_ending::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(b),
-      <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b&quot;\nefgh\nijkl&quot;</span>[..], <span class="kw-2">&amp;</span><span class="string">b&quot;ab12cd&quot;</span>[..]))
+      <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b"\nefgh\nijkl"</span>[..], <span class="kw-2">&amp;</span><span class="string">b"ab12cd"</span>[..]))
     );
 
-    <span class="kw">let </span>c: <span class="kw-2">&amp;</span>[u8] = <span class="string">b&quot;ab12cd\r\nefgh\nijkl&quot;</span>;
+    <span class="kw">let </span>c: <span class="kw-2">&amp;</span>[u8] = <span class="string">b"ab12cd\r\nefgh\nijkl"</span>;
     <span class="macro">assert_eq!</span>(
       not_line_ending::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(c),
-      <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b&quot;\r\nefgh\nijkl&quot;</span>[..], <span class="kw-2">&amp;</span><span class="string">b&quot;ab12cd&quot;</span>[..]))
+      <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b"\r\nefgh\nijkl"</span>[..], <span class="kw-2">&amp;</span><span class="string">b"ab12cd"</span>[..]))
     );
 
-    <span class="kw">let </span>d: <span class="kw-2">&amp;</span>[u8] = <span class="string">b&quot;ab12cd&quot;</span>;
+    <span class="kw">let </span>d: <span class="kw-2">&amp;</span>[u8] = <span class="string">b"ab12cd"</span>;
     <span class="macro">assert_eq!</span>(
       not_line_ending::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(d),
       <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span>[][..], <span class="kw-2">&amp;</span>d[..]))
@@ -2230,81 +2231,81 @@
   <span class="attr">#[test]
   </span><span class="kw">fn </span>is_not_line_ending_str() {
     <span class="comment">/*
-    let a: &amp;str = &quot;ab12cd\nefgh&quot;;
-    assert_eq!(not_line_ending(a), Ok((&amp;&quot;\nefgh&quot;[..], &amp;&quot;ab12cd&quot;[..])));
+    let a: &amp;str = "ab12cd\nefgh";
+    assert_eq!(not_line_ending(a), Ok((&amp;"\nefgh"[..], &amp;"ab12cd"[..])));
 
-    let b: &amp;str = &quot;ab12cd\nefgh\nijkl&quot;;
-    assert_eq!(not_line_ending(b), Ok((&amp;&quot;\nefgh\nijkl&quot;[..], &amp;&quot;ab12cd&quot;[..])));
+    let b: &amp;str = "ab12cd\nefgh\nijkl";
+    assert_eq!(not_line_ending(b), Ok((&amp;"\nefgh\nijkl"[..], &amp;"ab12cd"[..])));
 
-    let c: &amp;str = &quot;ab12cd\r\nefgh\nijkl&quot;;
-    assert_eq!(not_line_ending(c), Ok((&amp;&quot;\r\nefgh\nijkl&quot;[..], &amp;&quot;ab12cd&quot;[..])));
+    let c: &amp;str = "ab12cd\r\nefgh\nijkl";
+    assert_eq!(not_line_ending(c), Ok((&amp;"\r\nefgh\nijkl"[..], &amp;"ab12cd"[..])));
 
-    let d = &quot;βèƒôřè\nÂßÇáƒƭèř&quot;;
-    assert_eq!(not_line_ending(d), Ok((&amp;&quot;\nÂßÇáƒƭèř&quot;[..], &amp;&quot;βèƒôřè&quot;[..])));
+    let d = "βèƒôřè\nÂßÇáƒƭèř";
+    assert_eq!(not_line_ending(d), Ok((&amp;"\nÂßÇáƒƭèř"[..], &amp;"βèƒôřè"[..])));
 
-    let e = &quot;βèƒôřè\r\nÂßÇáƒƭèř&quot;;
-    assert_eq!(not_line_ending(e), Ok((&amp;&quot;\r\nÂßÇáƒƭèř&quot;[..], &amp;&quot;βèƒôřè&quot;[..])));
+    let e = "βèƒôřè\r\nÂßÇáƒƭèř";
+    assert_eq!(not_line_ending(e), Ok((&amp;"\r\nÂßÇáƒƭèř"[..], &amp;"βèƒôřè"[..])));
     */
 
-    </span><span class="kw">let </span>f = <span class="string">&quot;βèƒôřè\rÂßÇáƒƭèř&quot;</span>;
+    </span><span class="kw">let </span>f = <span class="string">"βèƒôřè\rÂßÇáƒƭèř"</span>;
     <span class="macro">assert_eq!</span>(not_line_ending(f), <span class="prelude-val">Err</span>(Err::Error((f, ErrorKind::Tag))));
 
-    <span class="kw">let </span>g2: <span class="kw-2">&amp;</span>str = <span class="string">&quot;ab12cd&quot;</span>;
-    <span class="macro">assert_eq!</span>(not_line_ending::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(g2), <span class="prelude-val">Ok</span>((<span class="string">&quot;&quot;</span>, g2)));
+    <span class="kw">let </span>g2: <span class="kw-2">&amp;</span>str = <span class="string">"ab12cd"</span>;
+    <span class="macro">assert_eq!</span>(not_line_ending::&lt;<span class="kw">_</span>, (<span class="kw">_</span>, ErrorKind)&gt;(g2), <span class="prelude-val">Ok</span>((<span class="string">""</span>, g2)));
   }
 
   <span class="attr">#[test]
   </span><span class="kw">fn </span>hex_digit_test() {
-    <span class="kw">let </span>i = <span class="kw-2">&amp;</span><span class="string">b&quot;0123456789abcdefABCDEF;&quot;</span>[..];
-    <span class="macro">assert_parse!</span>(hex_digit1(i), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b&quot;;&quot;</span>[..], <span class="kw-2">&amp;</span>i[..i.len() - <span class="number">1</span>])));
+    <span class="kw">let </span>i = <span class="kw-2">&amp;</span><span class="string">b"0123456789abcdefABCDEF;"</span>[..];
+    <span class="macro">assert_parse!</span>(hex_digit1(i), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b";"</span>[..], <span class="kw-2">&amp;</span>i[..i.len() - <span class="number">1</span>])));
 
-    <span class="kw">let </span>i = <span class="kw-2">&amp;</span><span class="string">b&quot;g&quot;</span>[..];
+    <span class="kw">let </span>i = <span class="kw-2">&amp;</span><span class="string">b"g"</span>[..];
     <span class="macro">assert_parse!</span>(
       hex_digit1(i),
       <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(i, ErrorKind::HexDigit)))
     );
 
-    <span class="kw">let </span>i = <span class="kw-2">&amp;</span><span class="string">b&quot;G&quot;</span>[..];
+    <span class="kw">let </span>i = <span class="kw-2">&amp;</span><span class="string">b"G"</span>[..];
     <span class="macro">assert_parse!</span>(
       hex_digit1(i),
       <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(i, ErrorKind::HexDigit)))
     );
 
-    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b&#39;0&#39;</span>));
-    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b&#39;9&#39;</span>));
-    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b&#39;a&#39;</span>));
-    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b&#39;f&#39;</span>));
-    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b&#39;A&#39;</span>));
-    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b&#39;F&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b&#39;g&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b&#39;G&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b&#39;/&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b&#39;:&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b&#39;@&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b&#39;\x60&#39;</span>));
+    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b'0'</span>));
+    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b'9'</span>));
+    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b'a'</span>));
+    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b'f'</span>));
+    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b'A'</span>));
+    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b'F'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b'g'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b'G'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b'/'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b':'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b'@'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_hex_digit(<span class="string">b'\x60'</span>));
   }
 
   <span class="attr">#[test]
   </span><span class="kw">fn </span>oct_digit_test() {
-    <span class="kw">let </span>i = <span class="kw-2">&amp;</span><span class="string">b&quot;01234567;&quot;</span>[..];
-    <span class="macro">assert_parse!</span>(oct_digit1(i), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b&quot;;&quot;</span>[..], <span class="kw-2">&amp;</span>i[..i.len() - <span class="number">1</span>])));
+    <span class="kw">let </span>i = <span class="kw-2">&amp;</span><span class="string">b"01234567;"</span>[..];
+    <span class="macro">assert_parse!</span>(oct_digit1(i), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b";"</span>[..], <span class="kw-2">&amp;</span>i[..i.len() - <span class="number">1</span>])));
 
-    <span class="kw">let </span>i = <span class="kw-2">&amp;</span><span class="string">b&quot;8&quot;</span>[..];
+    <span class="kw">let </span>i = <span class="kw-2">&amp;</span><span class="string">b"8"</span>[..];
     <span class="macro">assert_parse!</span>(
       oct_digit1(i),
       <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(i, ErrorKind::OctDigit)))
     );
 
-    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b&#39;0&#39;</span>));
-    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b&#39;7&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b&#39;8&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b&#39;9&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b&#39;a&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b&#39;A&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b&#39;/&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b&#39;:&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b&#39;@&#39;</span>));
-    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b&#39;\x60&#39;</span>));
+    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b'0'</span>));
+    <span class="macro">assert!</span>(<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b'7'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b'8'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b'9'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b'a'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b'A'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b'/'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b':'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b'@'</span>));
+    <span class="macro">assert!</span>(!<span class="kw">crate</span>::character::is_oct_digit(<span class="string">b'\x60'</span>));
   }
 
   <span class="attr">#[test]
@@ -2313,9 +2314,9 @@
     <span class="kw">fn </span>take_full_line(i: <span class="kw-2">&amp;</span>[u8]) -&gt; IResult&lt;<span class="kw-2">&amp;</span>[u8], (<span class="kw-2">&amp;</span>[u8], <span class="kw-2">&amp;</span>[u8])&gt; {
       pair(not_line_ending, line_ending)(i)
     }
-    <span class="kw">let </span>input = <span class="string">b&quot;abc\r\n&quot;</span>;
+    <span class="kw">let </span>input = <span class="string">b"abc\r\n"</span>;
     <span class="kw">let </span>output = take_full_line(input);
-    <span class="macro">assert_eq!</span>(output, <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b&quot;&quot;</span>[..], (<span class="kw-2">&amp;</span><span class="string">b&quot;abc&quot;</span>[..], <span class="kw-2">&amp;</span><span class="string">b&quot;\r\n&quot;</span>[..]))));
+    <span class="macro">assert_eq!</span>(output, <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b""</span>[..], (<span class="kw-2">&amp;</span><span class="string">b"abc"</span>[..], <span class="kw-2">&amp;</span><span class="string">b"\r\n"</span>[..]))));
   }
 
   <span class="attr">#[test]
@@ -2324,79 +2325,79 @@
     <span class="kw">fn </span>take_full_line(i: <span class="kw-2">&amp;</span>[u8]) -&gt; IResult&lt;<span class="kw-2">&amp;</span>[u8], (<span class="kw-2">&amp;</span>[u8], <span class="kw-2">&amp;</span>[u8])&gt; {
       pair(not_line_ending, line_ending)(i)
     }
-    <span class="kw">let </span>input = <span class="string">b&quot;abc\n&quot;</span>;
+    <span class="kw">let </span>input = <span class="string">b"abc\n"</span>;
     <span class="kw">let </span>output = take_full_line(input);
-    <span class="macro">assert_eq!</span>(output, <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b&quot;&quot;</span>[..], (<span class="kw-2">&amp;</span><span class="string">b&quot;abc&quot;</span>[..], <span class="kw-2">&amp;</span><span class="string">b&quot;\n&quot;</span>[..]))));
+    <span class="macro">assert_eq!</span>(output, <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b""</span>[..], (<span class="kw-2">&amp;</span><span class="string">b"abc"</span>[..], <span class="kw-2">&amp;</span><span class="string">b"\n"</span>[..]))));
   }
 
   <span class="attr">#[test]
   </span><span class="kw">fn </span>check_windows_lineending() {
-    <span class="kw">let </span>input = <span class="string">b&quot;\r\n&quot;</span>;
+    <span class="kw">let </span>input = <span class="string">b"\r\n"</span>;
     <span class="kw">let </span>output = line_ending(<span class="kw-2">&amp;</span>input[..]);
-    <span class="macro">assert_parse!</span>(output, <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b&quot;&quot;</span>[..], <span class="kw-2">&amp;</span><span class="string">b&quot;\r\n&quot;</span>[..])));
+    <span class="macro">assert_parse!</span>(output, <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b""</span>[..], <span class="kw-2">&amp;</span><span class="string">b"\r\n"</span>[..])));
   }
 
   <span class="attr">#[test]
   </span><span class="kw">fn </span>check_unix_lineending() {
-    <span class="kw">let </span>input = <span class="string">b&quot;\n&quot;</span>;
+    <span class="kw">let </span>input = <span class="string">b"\n"</span>;
     <span class="kw">let </span>output = line_ending(<span class="kw-2">&amp;</span>input[..]);
-    <span class="macro">assert_parse!</span>(output, <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b&quot;&quot;</span>[..], <span class="kw-2">&amp;</span><span class="string">b&quot;\n&quot;</span>[..])));
+    <span class="macro">assert_parse!</span>(output, <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b""</span>[..], <span class="kw-2">&amp;</span><span class="string">b"\n"</span>[..])));
   }
 
   <span class="attr">#[test]
   </span><span class="kw">fn </span>cr_lf() {
-    <span class="macro">assert_parse!</span>(crlf(<span class="kw-2">&amp;</span><span class="string">b&quot;\r\na&quot;</span>[..]), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b&quot;a&quot;</span>[..], <span class="kw-2">&amp;</span><span class="string">b&quot;\r\n&quot;</span>[..])));
+    <span class="macro">assert_parse!</span>(crlf(<span class="kw-2">&amp;</span><span class="string">b"\r\na"</span>[..]), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b"a"</span>[..], <span class="kw-2">&amp;</span><span class="string">b"\r\n"</span>[..])));
     <span class="macro">assert_parse!</span>(
-      crlf(<span class="kw-2">&amp;</span><span class="string">b&quot;\r&quot;</span>[..]),
-      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;\r&quot;</span>[..], ErrorKind::CrLf)))
+      crlf(<span class="kw-2">&amp;</span><span class="string">b"\r"</span>[..]),
+      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="kw-2">&amp;</span><span class="string">b"\r"</span>[..], ErrorKind::CrLf)))
     );
     <span class="macro">assert_parse!</span>(
-      crlf(<span class="kw-2">&amp;</span><span class="string">b&quot;\ra&quot;</span>[..]),
-      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;\ra&quot;</span>[..], ErrorKind::CrLf)))
+      crlf(<span class="kw-2">&amp;</span><span class="string">b"\ra"</span>[..]),
+      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="kw-2">&amp;</span><span class="string">b"\ra"</span>[..], ErrorKind::CrLf)))
     );
 
-    <span class="macro">assert_parse!</span>(crlf(<span class="string">&quot;\r\na&quot;</span>), <span class="prelude-val">Ok</span>((<span class="string">&quot;a&quot;</span>, <span class="string">&quot;\r\n&quot;</span>)));
+    <span class="macro">assert_parse!</span>(crlf(<span class="string">"\r\na"</span>), <span class="prelude-val">Ok</span>((<span class="string">"a"</span>, <span class="string">"\r\n"</span>)));
     <span class="macro">assert_parse!</span>(
-      crlf(<span class="string">&quot;\r&quot;</span>),
-      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="kw-2">&amp;</span><span class="string">&quot;\r&quot;</span>[..], ErrorKind::CrLf)))
+      crlf(<span class="string">"\r"</span>),
+      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="kw-2">&amp;</span><span class="string">"\r"</span>[..], ErrorKind::CrLf)))
     );
     <span class="macro">assert_parse!</span>(
-      crlf(<span class="string">&quot;\ra&quot;</span>),
-      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="string">&quot;\ra&quot;</span>, ErrorKind::CrLf)))
+      crlf(<span class="string">"\ra"</span>),
+      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="string">"\ra"</span>, ErrorKind::CrLf)))
     );
   }
 
   <span class="attr">#[test]
   </span><span class="kw">fn </span>end_of_line() {
-    <span class="macro">assert_parse!</span>(line_ending(<span class="kw-2">&amp;</span><span class="string">b&quot;\na&quot;</span>[..]), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b&quot;a&quot;</span>[..], <span class="kw-2">&amp;</span><span class="string">b&quot;\n&quot;</span>[..])));
-    <span class="macro">assert_parse!</span>(line_ending(<span class="kw-2">&amp;</span><span class="string">b&quot;\r\na&quot;</span>[..]), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b&quot;a&quot;</span>[..], <span class="kw-2">&amp;</span><span class="string">b&quot;\r\n&quot;</span>[..])));
+    <span class="macro">assert_parse!</span>(line_ending(<span class="kw-2">&amp;</span><span class="string">b"\na"</span>[..]), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b"a"</span>[..], <span class="kw-2">&amp;</span><span class="string">b"\n"</span>[..])));
+    <span class="macro">assert_parse!</span>(line_ending(<span class="kw-2">&amp;</span><span class="string">b"\r\na"</span>[..]), <span class="prelude-val">Ok</span>((<span class="kw-2">&amp;</span><span class="string">b"a"</span>[..], <span class="kw-2">&amp;</span><span class="string">b"\r\n"</span>[..])));
     <span class="macro">assert_parse!</span>(
-      line_ending(<span class="kw-2">&amp;</span><span class="string">b&quot;\r&quot;</span>[..]),
-      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;\r&quot;</span>[..], ErrorKind::CrLf)))
+      line_ending(<span class="kw-2">&amp;</span><span class="string">b"\r"</span>[..]),
+      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="kw-2">&amp;</span><span class="string">b"\r"</span>[..], ErrorKind::CrLf)))
     );
     <span class="macro">assert_parse!</span>(
-      line_ending(<span class="kw-2">&amp;</span><span class="string">b&quot;\ra&quot;</span>[..]),
-      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;\ra&quot;</span>[..], ErrorKind::CrLf)))
+      line_ending(<span class="kw-2">&amp;</span><span class="string">b"\ra"</span>[..]),
+      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="kw-2">&amp;</span><span class="string">b"\ra"</span>[..], ErrorKind::CrLf)))
     );
 
-    <span class="macro">assert_parse!</span>(line_ending(<span class="string">&quot;\na&quot;</span>), <span class="prelude-val">Ok</span>((<span class="string">&quot;a&quot;</span>, <span class="string">&quot;\n&quot;</span>)));
-    <span class="macro">assert_parse!</span>(line_ending(<span class="string">&quot;\r\na&quot;</span>), <span class="prelude-val">Ok</span>((<span class="string">&quot;a&quot;</span>, <span class="string">&quot;\r\n&quot;</span>)));
+    <span class="macro">assert_parse!</span>(line_ending(<span class="string">"\na"</span>), <span class="prelude-val">Ok</span>((<span class="string">"a"</span>, <span class="string">"\n"</span>)));
+    <span class="macro">assert_parse!</span>(line_ending(<span class="string">"\r\na"</span>), <span class="prelude-val">Ok</span>((<span class="string">"a"</span>, <span class="string">"\r\n"</span>)));
     <span class="macro">assert_parse!</span>(
-      line_ending(<span class="string">&quot;\r&quot;</span>),
-      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="kw-2">&amp;</span><span class="string">&quot;\r&quot;</span>[..], ErrorKind::CrLf)))
+      line_ending(<span class="string">"\r"</span>),
+      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="kw-2">&amp;</span><span class="string">"\r"</span>[..], ErrorKind::CrLf)))
     );
     <span class="macro">assert_parse!</span>(
-      line_ending(<span class="string">&quot;\ra&quot;</span>),
-      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="string">&quot;\ra&quot;</span>, ErrorKind::CrLf)))
+      line_ending(<span class="string">"\ra"</span>),
+      <span class="prelude-val">Err</span>(Err::Error(<span class="macro">error_position!</span>(<span class="string">"\ra"</span>, ErrorKind::CrLf)))
     );
   }
 
   <span class="kw">fn </span>digit_to_i16(input: <span class="kw-2">&amp;</span>str) -&gt; IResult&lt;<span class="kw-2">&amp;</span>str, i16&gt; {
     <span class="kw">let </span>i = input;
-    <span class="kw">let </span>(i, opt_sign) = opt(alt((char(<span class="string">&#39;+&#39;</span>), char(<span class="string">&#39;-&#39;</span>))))(i)<span class="question-mark">?</span>;
+    <span class="kw">let </span>(i, opt_sign) = opt(alt((char(<span class="string">'+'</span>), char(<span class="string">'-'</span>))))(i)<span class="question-mark">?</span>;
     <span class="kw">let </span>sign = <span class="kw">match </span>opt_sign {
-      <span class="prelude-val">Some</span>(<span class="string">&#39;+&#39;</span>) =&gt; <span class="bool-val">true</span>,
-      <span class="prelude-val">Some</span>(<span class="string">&#39;-&#39;</span>) =&gt; <span class="bool-val">false</span>,
+      <span class="prelude-val">Some</span>(<span class="string">'+'</span>) =&gt; <span class="bool-val">true</span>,
+      <span class="prelude-val">Some</span>(<span class="string">'-'</span>) =&gt; <span class="bool-val">false</span>,
       <span class="kw">_ </span>=&gt; <span class="bool-val">true</span>,
     };
 
@@ -2438,14 +2439,14 @@
 
   <span class="macro">proptest! </span>{
     <span class="attr">#[test]
-    </span><span class="kw">fn </span>ints(s <span class="kw">in </span><span class="string">&quot;\\PC*&quot;</span>) {
+    </span><span class="kw">fn </span>ints(s <span class="kw">in </span><span class="string">"\\PC*"</span>) {
         <span class="kw">let </span>res1 = digit_to_i16(<span class="kw-2">&amp;</span>s);
         <span class="kw">let </span>res2 = i16(s.as_str());
         <span class="macro">assert_eq!</span>(res1, res2);
     }
 
     <span class="attr">#[test]
-    </span><span class="kw">fn </span>uints(s <span class="kw">in </span><span class="string">&quot;\\PC*&quot;</span>) {
+    </span><span class="kw">fn </span>uints(s <span class="kw">in </span><span class="string">"\\PC*"</span>) {
         <span class="kw">let </span>res1 = digit_to_u32(<span class="kw-2">&amp;</span>s);
         <span class="kw">let </span>res2 = u32(s.as_str());
         <span class="macro">assert_eq!</span>(res1, res2);

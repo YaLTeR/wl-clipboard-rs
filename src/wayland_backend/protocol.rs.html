@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wayland-backend-0.3.2/src/protocol.rs`."><title>protocol.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="wayland_backend" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../wayland_backend/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wayland-backend-0.3.3/src/protocol.rs`."><title>protocol.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="wayland_backend" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -352,6 +353,10 @@
 <a href="#352" id="352">352</a>
 <a href="#353" id="353">353</a>
 <a href="#354" id="354">354</a>
+<a href="#355" id="355">355</a>
+<a href="#356" id="356">356</a>
+<a href="#357" id="357">357</a>
+<a href="#358" id="358">358</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Types and utilities for manipulating the Wayland protocol
 
 </span><span class="kw">use </span>std::{ffi::CString, os::unix::prelude::AsRawFd};
@@ -382,9 +387,11 @@
     </span>Object(AllowNull),
     <span class="doccomment">/// Id of a newly created wayland object
     </span>NewId,
-    <span class="doccomment">/// Vec&lt;u8&gt;
+    <span class="doccomment">/// `Vec&lt;u8&gt;`
     </span>Array,
     <span class="doccomment">/// A file descriptor argument. Represented by a [`RawFd`].
+    ///
+    /// [`RawFd`]: std::os::fd::RawFd
     </span>Fd,
 }
 
@@ -414,12 +421,14 @@
     </span>Object(Id),
     <span class="doccomment">/// Id of a newly created wayland object
     </span>NewId(Id),
-    <span class="doccomment">/// Vec&lt;u8&gt;
+    <span class="doccomment">/// `Vec&lt;u8&gt;`
     ///
     /// The value is boxed to reduce the stack size of Argument. The performance
     /// impact is negligible as `array` arguments are pretty rare in the protocol.
     </span>Array(Box&lt;Vec&lt;u8&gt;&gt;),
     <span class="doccomment">/// A file descriptor argument. Represented by a [`RawFd`].
+    ///
+    /// [`RawFd`]: std::os::fd::RawFd
     </span>Fd(Fd),
 }
 
@@ -472,16 +481,16 @@
 
 <span class="kw">impl</span>&lt;Id: std::fmt::Display, Fd: AsRawFd&gt; std::fmt::Display <span class="kw">for </span>Argument&lt;Id, Fd&gt; {
     <span class="attr">#[cfg_attr(coverage, coverage(off))]
-    </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+    </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
         <span class="kw">match </span><span class="self">self </span>{
-            <span class="self">Self</span>::Int(value) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, value),
-            <span class="self">Self</span>::Uint(value) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, value),
-            <span class="self">Self</span>::Fixed(value) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, value),
-            <span class="self">Self</span>::Str(value) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{:?}&quot;</span>, value),
-            <span class="self">Self</span>::Object(value) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, value),
-            <span class="self">Self</span>::NewId(value) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, value),
-            <span class="self">Self</span>::Array(value) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{:?}&quot;</span>, value),
-            <span class="self">Self</span>::Fd(value) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, value.as_raw_fd()),
+            <span class="self">Self</span>::Int(value) =&gt; <span class="macro">write!</span>(f, <span class="string">"{}"</span>, value),
+            <span class="self">Self</span>::Uint(value) =&gt; <span class="macro">write!</span>(f, <span class="string">"{}"</span>, value),
+            <span class="self">Self</span>::Fixed(value) =&gt; <span class="macro">write!</span>(f, <span class="string">"{}"</span>, value),
+            <span class="self">Self</span>::Str(value) =&gt; <span class="macro">write!</span>(f, <span class="string">"{:?}"</span>, value),
+            <span class="self">Self</span>::Object(value) =&gt; <span class="macro">write!</span>(f, <span class="string">"{}"</span>, value),
+            <span class="self">Self</span>::NewId(value) =&gt; <span class="macro">write!</span>(f, <span class="string">"{}"</span>, value),
+            <span class="self">Self</span>::Array(value) =&gt; <span class="macro">write!</span>(f, <span class="string">"{:?}"</span>, value),
+            <span class="self">Self</span>::Fd(value) =&gt; <span class="macro">write!</span>(f, <span class="string">"{}"</span>, value.as_raw_fd()),
         }
     }
 }
@@ -493,20 +502,20 @@
 </span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>Interface {
     <span class="doccomment">/// The name of the interface.
-    </span><span class="kw">pub </span>name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    </span><span class="kw">pub </span>name: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
     <span class="doccomment">/// The maximum supported version of the interface.
     </span><span class="kw">pub </span>version: u32,
     <span class="doccomment">/// A list that describes every request this interface supports.
-    </span><span class="kw">pub </span>requests: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[MessageDesc],
+    </span><span class="kw">pub </span>requests: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>[MessageDesc],
     <span class="doccomment">/// A list that describes every event this interface supports.
-    </span><span class="kw">pub </span>events: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[MessageDesc],
+    </span><span class="kw">pub </span>events: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>[MessageDesc],
     <span class="doccomment">/// A C representation of this interface that may be used to interoperate with libwayland.
-    </span><span class="kw">pub </span>c_ptr: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>wayland_sys::common::wl_interface&gt;,
+    </span><span class="kw">pub </span>c_ptr: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>wayland_sys::common::wl_interface&gt;,
 }
 
 <span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>Interface {
     <span class="attr">#[cfg_attr(coverage, coverage(off))]
-    </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+    </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
         f.write_str(<span class="self">self</span>.name)
     }
 }
@@ -515,9 +524,9 @@
 </span><span class="attr">#[derive(Copy, Clone, Debug)]
 </span><span class="kw">pub struct </span>MessageDesc {
     <span class="doccomment">/// Name of this message
-    </span><span class="kw">pub </span>name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    </span><span class="kw">pub </span>name: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
     <span class="doccomment">/// Signature of the message
-    </span><span class="kw">pub </span>signature: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[ArgumentType],
+    </span><span class="kw">pub </span>signature: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>[ArgumentType],
     <span class="doccomment">/// Minimum required version of the interface
     </span><span class="kw">pub </span>since: u32,
     <span class="doccomment">/// Whether this message is a destructor
@@ -525,14 +534,14 @@
     <span class="doccomment">/// The child interface created from this message.
     ///
     /// In the wayland xml format, this corresponds to the `new_id` type.
-    </span><span class="kw">pub </span>child_interface: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Interface&gt;,
+    </span><span class="kw">pub </span>child_interface: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>Interface&gt;,
     <span class="doccomment">/// The interfaces passed into this message as arguments.
-    </span><span class="kw">pub </span>arg_interfaces: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Interface],
+    </span><span class="kw">pub </span>arg_interfaces: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>[<span class="kw-2">&amp;</span><span class="lifetime">'static </span>Interface],
 }
 
 <span class="doccomment">/// Special interface representing an anonymous object
 </span><span class="kw">pub static </span>ANONYMOUS_INTERFACE: Interface =
-    Interface { name: <span class="string">&quot;&lt;anonymous&gt;&quot;</span>, version: <span class="number">0</span>, requests: <span class="kw-2">&amp;</span>[], events: <span class="kw-2">&amp;</span>[], c_ptr: <span class="prelude-val">None </span>};
+    Interface { name: <span class="string">"&lt;anonymous&gt;"</span>, version: <span class="number">0</span>, requests: <span class="kw-2">&amp;</span>[], events: <span class="kw-2">&amp;</span>[], c_ptr: <span class="prelude-val">None </span>};
 
 <span class="doccomment">/// Description of the protocol-level information of an object
 </span><span class="attr">#[derive(Copy, Clone, Debug)]
@@ -540,14 +549,14 @@
     <span class="doccomment">/// The protocol ID
     </span><span class="kw">pub </span>id: u32,
     <span class="doccomment">/// The interface
-    </span><span class="kw">pub </span>interface: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Interface,
+    </span><span class="kw">pub </span>interface: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>Interface,
     <span class="doccomment">/// The version
     </span><span class="kw">pub </span>version: u32,
 }
 
 <span class="doccomment">/// A protocol error
 ///
-/// This kind of error is generated by the server if your client didn&#39;t respect
+/// This kind of error is generated by the server if your client didn't respect
 /// the protocol, after which the server will kill your connection.
 </span><span class="attr">#[derive(Clone, Debug)]
 </span><span class="kw">pub struct </span>ProtocolError {
@@ -608,7 +617,7 @@
     </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>::std::fmt::Formatter) -&gt; <span class="prelude-ty">Result</span>&lt;(), ::std::fmt::Error&gt; {
         <span class="macro">write!</span>(
             f,
-            <span class="string">&quot;Protocol error {} on object {}@{}: {}&quot;</span>,
+            <span class="string">"Protocol error {} on object {}@{}: {}"</span>,
             <span class="self">self</span>.code, <span class="self">self</span>.object_interface, <span class="self">self</span>.object_id, <span class="self">self</span>.message
         )
     }
@@ -616,7 +625,7 @@
 
 <span class="doccomment">/// Returns true if the two interfaces are the same.
 </span><span class="attr">#[inline]
-</span><span class="kw">pub fn </span>same_interface(a: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Interface, b: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Interface) -&gt; bool {
+</span><span class="kw">pub fn </span>same_interface(a: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>Interface, b: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>Interface) -&gt; bool {
     std::ptr::eq(a, b) || a.name == b.name
 }
 
@@ -637,7 +646,7 @@
 
 <span class="attr">#[inline]
 #[allow(dead_code)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>same_interface_or_anonymous(a: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Interface, b: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Interface) -&gt; bool {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>same_interface_or_anonymous(a: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>Interface, b: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>Interface) -&gt; bool {
     same_interface(a, b) || same_interface(a, <span class="kw-2">&amp;</span>ANONYMOUS_INTERFACE)
 }
 
@@ -653,15 +662,15 @@
 <span class="doccomment">/// Error representing an unknown numeric variant for a [`WEnum`]
 </span><span class="attr">#[derive(Debug, Copy, Clone)]
 </span><span class="kw">pub struct </span>WEnumError {
-    typ: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    typ: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
     value: u32,
 }
 
 <span class="kw">impl </span>std::error::Error <span class="kw">for </span>WEnumError {}
 
 <span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>WEnumError {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">&quot;Unknown numeric value {} for enum {}&quot;</span>, <span class="self">self</span>.value, <span class="self">self</span>.typ)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">"Unknown numeric value {} for enum {}"</span>, <span class="self">self</span>.value, <span class="self">self</span>.typ)
     }
 }
 
@@ -669,7 +678,7 @@
     <span class="doccomment">/// Convert this [`WEnum`] into a result
     ///
     /// This can be used to take advantage of the numerous helper methods on [`Result`] if you
-    /// don&#39;t plan to handle the unknown case of this enum.
+    /// don't plan to handle the unknown case of this enum.
     ///
     /// You can also use the [`From`] and [`Into`] traits to perform the same conversion.
     </span><span class="attr">#[inline]
@@ -687,7 +696,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T: std::convert::TryFrom&lt;u32&gt;&gt; From&lt;u32&gt; <span class="kw">for </span>WEnum&lt;T&gt; {
+<span class="kw">impl</span>&lt;T: TryFrom&lt;u32&gt;&gt; From&lt;u32&gt; <span class="kw">for </span>WEnum&lt;T&gt; {
     <span class="doccomment">/// Constructs an enum from the integer format used by the wayland protocol.
     </span><span class="kw">fn </span>from(v: u32) -&gt; <span class="self">Self </span>{
         <span class="kw">match </span>T::try_from(v) {

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["ClockId","Expiration"],"struct":["TimerFd","TimerFlags","TimerSetTimeFlags"]};

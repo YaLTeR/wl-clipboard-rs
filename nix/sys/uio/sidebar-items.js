@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["pread","preadv","process_vm_readv","process_vm_writev","pwrite","pwritev","readv","writev"],"struct":["IoVec","RemoteIoVec"]};

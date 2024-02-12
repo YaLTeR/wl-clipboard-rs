@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wayland-scanner-0.31.0/src/parse.rs`."><title>parse.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="wayland_scanner" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../wayland_scanner/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wayland-scanner-0.31.1/src/parse.rs`."><title>parse.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="wayland_scanner" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -381,7 +382,7 @@
     (<span class="macro-nonterminal">$it</span>: expr =&gt; <span class="macro-nonterminal">$pattern</span>: pat =&gt; <span class="macro-nonterminal">$result</span>: tt) =&gt; (
         <span class="kw">match </span><span class="macro-nonterminal">$it</span>.read_event_into(<span class="kw-2">&amp;mut </span>Vec::new()) {
             <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">$pattern</span>) =&gt; { <span class="macro-nonterminal">$result </span>},
-            e =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Ill-formed protocol file: {:?}&quot;</span>, e)
+            e =&gt; <span class="macro">panic!</span>(<span class="string">"Ill-formed protocol file: {:?}"</span>, e)
         }
     )
 );
@@ -389,7 +390,7 @@
 <span class="macro">macro_rules! </span>extract_end_tag(
     (<span class="macro-nonterminal">$it</span>: expr =&gt; <span class="macro-nonterminal">$tag</span>: expr) =&gt; (
         <span class="macro">extract_from!</span>(<span class="macro-nonterminal">$it </span>=&gt; Event::End(bytes) =&gt; {
-            <span class="macro">assert!</span>(bytes.name().into_inner() == <span class="macro-nonterminal">$tag</span>.as_bytes(), <span class="string">&quot;Ill-formed protocol file&quot;</span>);
+            <span class="macro">assert!</span>(bytes.name().into_inner() == <span class="macro-nonterminal">$tag</span>.as_bytes(), <span class="string">"Ill-formed protocol file"</span>);
         });
     )
 );
@@ -405,7 +406,7 @@
 <span class="kw">fn </span>decode_utf8_or_panic(txt: Vec&lt;u8&gt;) -&gt; String {
     <span class="kw">match </span>String::from_utf8(txt) {
         <span class="prelude-val">Ok</span>(txt) =&gt; txt,
-        <span class="prelude-val">Err</span>(e) =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Invalid UTF8: &#39;{}&#39;&quot;</span>, String::from_utf8_lossy(<span class="kw-2">&amp;</span>e.into_bytes())),
+        <span class="prelude-val">Err</span>(e) =&gt; <span class="macro">panic!</span>(<span class="string">"Invalid UTF8: '{}'"</span>, String::from_utf8_lossy(<span class="kw-2">&amp;</span>e.into_bytes())),
     }
 }
 
@@ -413,7 +414,7 @@
     <span class="kw">match </span>std::str::from_utf8(txt).ok().and_then(|val| val.parse().ok()) {
         <span class="prelude-val">Some</span>(version) =&gt; version,
         <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(
-            <span class="string">&quot;Invalid value &#39;{}&#39; for parsing type &#39;{}&#39;&quot;</span>,
+            <span class="string">"Invalid value '{}' for parsing type '{}'"</span>,
             String::from_utf8_lossy(txt),
             std::any::type_name::&lt;T&gt;()
         ),
@@ -423,11 +424,11 @@
 <span class="kw">fn </span>parse_protocol&lt;R: BufRead&gt;(<span class="kw-2">mut </span>reader: Reader&lt;R&gt;) -&gt; Protocol {
     <span class="kw">let </span><span class="kw-2">mut </span>protocol = <span class="macro">extract_from!</span>(
         reader =&gt; Event::Start(bytes) =&gt; {
-            <span class="macro">assert!</span>(bytes.name().into_inner() == <span class="string">b&quot;protocol&quot;</span>, <span class="string">&quot;Missing protocol toplevel tag&quot;</span>);
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(attr) = bytes.attributes().filter_map(|res| res.ok()).find(|attr| attr.key.into_inner() == <span class="string">b&quot;name&quot;</span>) {
+            <span class="macro">assert!</span>(bytes.name().into_inner() == <span class="string">b"protocol"</span>, <span class="string">"Missing protocol toplevel tag"</span>);
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(attr) = bytes.attributes().filter_map(|res| res.ok()).find(|attr| attr.key.into_inner() == <span class="string">b"name"</span>) {
                 Protocol::new(decode_utf8_or_panic(attr.value.into_owned()))
             } <span class="kw">else </span>{
-                <span class="macro">panic!</span>(<span class="string">&quot;Protocol must have a name&quot;</span>);
+                <span class="macro">panic!</span>(<span class="string">"Protocol must have a name"</span>);
             }
         }
     );
@@ -436,7 +437,7 @@
         <span class="kw">match </span>reader.read_event_into(<span class="kw-2">&amp;mut </span>Vec::new()) {
             <span class="prelude-val">Ok</span>(Event::Start(bytes)) =&gt; {
                 <span class="kw">match </span>bytes.name().into_inner() {
-                    <span class="string">b&quot;copyright&quot; </span>=&gt; {
+                    <span class="string">b"copyright" </span>=&gt; {
                         <span class="comment">// parse the copyright
                         </span><span class="kw">let </span>copyright = <span class="kw">match </span>reader.read_event_into(<span class="kw-2">&amp;mut </span>Vec::new()) {
                             <span class="prelude-val">Ok</span>(Event::Text(copyright)) =&gt; {
@@ -445,21 +446,21 @@
                             <span class="prelude-val">Ok</span>(Event::CData(copyright)) =&gt; {
                                 String::from_utf8(copyright.into_inner().into()).ok()
                             }
-                            e =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Ill-formed protocol file: {:?}&quot;</span>, e),
+                            e =&gt; <span class="macro">panic!</span>(<span class="string">"Ill-formed protocol file: {:?}"</span>, e),
                         };
 
-                        <span class="macro">extract_end_tag!</span>(reader =&gt; <span class="string">&quot;copyright&quot;</span>);
+                        <span class="macro">extract_end_tag!</span>(reader =&gt; <span class="string">"copyright"</span>);
                         protocol.copyright = copyright
                     }
-                    <span class="string">b&quot;interface&quot; </span>=&gt; {
+                    <span class="string">b"interface" </span>=&gt; {
                         protocol.interfaces.push(parse_interface(<span class="kw-2">&amp;mut </span>reader, bytes.attributes()));
                     }
-                    <span class="string">b&quot;description&quot; </span>=&gt; {
+                    <span class="string">b"description" </span>=&gt; {
                         protocol.description =
                             <span class="prelude-val">Some</span>(parse_description(<span class="kw-2">&amp;mut </span>reader, bytes.attributes()));
                     }
                     name =&gt; <span class="macro">panic!</span>(
-                        <span class="string">&quot;Ill-formed protocol file: unexpected token `{}` in protocol {}&quot;</span>,
+                        <span class="string">"Ill-formed protocol file: unexpected token `{}` in protocol {}"</span>,
                         String::from_utf8_lossy(name),
                         protocol.name
                     ),
@@ -468,15 +469,15 @@
             <span class="prelude-val">Ok</span>(Event::End(bytes)) =&gt; {
                 <span class="kw">let </span>name = bytes.name().into_inner();
                 <span class="macro">assert!</span>(
-                    name == <span class="string">b&quot;protocol&quot;</span>,
-                    <span class="string">&quot;Unexpected closing token `{}`&quot;</span>,
+                    name == <span class="string">b"protocol"</span>,
+                    <span class="string">"Unexpected closing token `{}`"</span>,
                     String::from_utf8_lossy(name)
                 );
                 <span class="kw">break</span>;
             }
             <span class="comment">// ignore comments
             </span><span class="prelude-val">Ok</span>(Event::Comment(<span class="kw">_</span>)) =&gt; {}
-            e =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Ill-formed protocol file: unexpected token {:?}&quot;</span>, e),
+            e =&gt; <span class="macro">panic!</span>(<span class="string">"Ill-formed protocol file: unexpected token {:?}"</span>, e),
         }
     }
 
@@ -487,8 +488,8 @@
     <span class="kw">let </span><span class="kw-2">mut </span>interface = Interface::new();
     <span class="kw">for </span>attr <span class="kw">in </span>attrs.filter_map(|res| res.ok()) {
         <span class="kw">match </span>attr.key.into_inner() {
-            <span class="string">b&quot;name&quot; </span>=&gt; interface.name = decode_utf8_or_panic(attr.value.into_owned()),
-            <span class="string">b&quot;version&quot; </span>=&gt; interface.version = parse_or_panic(<span class="kw-2">&amp;</span>attr.value),
+            <span class="string">b"name" </span>=&gt; interface.name = decode_utf8_or_panic(attr.value.into_owned()),
+            <span class="string">b"version" </span>=&gt; interface.version = parse_or_panic(<span class="kw-2">&amp;</span>attr.value),
             <span class="kw">_ </span>=&gt; {}
         }
     }
@@ -496,15 +497,15 @@
     <span class="kw">loop </span>{
         <span class="kw">match </span>reader.read_event_into(<span class="kw-2">&amp;mut </span>Vec::new()) {
             <span class="prelude-val">Ok</span>(Event::Start(bytes)) =&gt; <span class="kw">match </span>bytes.name().into_inner() {
-                <span class="string">b&quot;description&quot; </span>=&gt; {
+                <span class="string">b"description" </span>=&gt; {
                     interface.description = <span class="prelude-val">Some</span>(parse_description(reader, bytes.attributes()))
                 }
-                <span class="string">b&quot;request&quot; </span>=&gt; interface.requests.push(parse_request(reader, bytes.attributes())),
-                <span class="string">b&quot;event&quot; </span>=&gt; interface.events.push(parse_event(reader, bytes.attributes())),
-                <span class="string">b&quot;enum&quot; </span>=&gt; interface.enums.push(parse_enum(reader, bytes.attributes())),
-                name =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Unexpected token: `{}`&quot;</span>, String::from_utf8_lossy(name)),
+                <span class="string">b"request" </span>=&gt; interface.requests.push(parse_request(reader, bytes.attributes())),
+                <span class="string">b"event" </span>=&gt; interface.events.push(parse_event(reader, bytes.attributes())),
+                <span class="string">b"enum" </span>=&gt; interface.enums.push(parse_enum(reader, bytes.attributes())),
+                name =&gt; <span class="macro">panic!</span>(<span class="string">"Unexpected token: `{}`"</span>, String::from_utf8_lossy(name)),
             },
-            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b&quot;interface&quot; </span>=&gt; <span class="kw">break</span>,
+            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b"interface" </span>=&gt; <span class="kw">break</span>,
             <span class="kw">_ </span>=&gt; {}
         }
     }
@@ -515,11 +516,11 @@
 <span class="kw">fn </span>parse_description&lt;R: BufRead&gt;(reader: <span class="kw-2">&amp;mut </span>Reader&lt;R&gt;, attrs: Attributes) -&gt; (String, String) {
     <span class="kw">let </span><span class="kw-2">mut </span>summary = String::new();
     <span class="kw">for </span>attr <span class="kw">in </span>attrs.filter_map(|res| res.ok()) {
-        <span class="kw">if </span>attr.key.into_inner() == <span class="string">b&quot;summary&quot; </span>{
+        <span class="kw">if </span>attr.key.into_inner() == <span class="string">b"summary" </span>{
             summary = String::from_utf8_lossy(<span class="kw-2">&amp;</span>attr.value)
                 .split_whitespace()
                 .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
-                .join(<span class="string">&quot; &quot;</span>);
+                .join(<span class="string">" "</span>);
         }
     }
 
@@ -530,13 +531,13 @@
         <span class="kw">match </span>reader.read_event_into(<span class="kw-2">&amp;mut </span>Vec::new()) {
             <span class="prelude-val">Ok</span>(Event::Text(bytes)) =&gt; {
                 <span class="kw">if </span>!description.is_empty() {
-                    description.push_str(<span class="string">&quot;\n\n&quot;</span>);
+                    description.push_str(<span class="string">"\n\n"</span>);
                 }
                 description.push_str(<span class="kw-2">&amp;</span>bytes.unescape().unwrap_or_default())
             }
-            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b&quot;description&quot; </span>=&gt; <span class="kw">break</span>,
+            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b"description" </span>=&gt; <span class="kw">break</span>,
             <span class="prelude-val">Ok</span>(Event::Comment(<span class="kw">_</span>)) =&gt; {}
-            e =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Ill-formed protocol file: {:?}&quot;</span>, e),
+            e =&gt; <span class="macro">panic!</span>(<span class="string">"Ill-formed protocol file: {:?}"</span>, e),
         }
     }
 
@@ -547,9 +548,9 @@
     <span class="kw">let </span><span class="kw-2">mut </span>request = Message::new();
     <span class="kw">for </span>attr <span class="kw">in </span>attrs.filter_map(|res| res.ok()) {
         <span class="kw">match </span>attr.key.into_inner() {
-            <span class="string">b&quot;name&quot; </span>=&gt; request.name = decode_utf8_or_panic(attr.value.into_owned()),
-            <span class="string">b&quot;type&quot; </span>=&gt; request.typ = <span class="prelude-val">Some</span>(parse_type(<span class="kw-2">&amp;</span>attr.value)),
-            <span class="string">b&quot;since&quot; </span>=&gt; request.since = parse_or_panic(<span class="kw-2">&amp;</span>attr.value),
+            <span class="string">b"name" </span>=&gt; request.name = decode_utf8_or_panic(attr.value.into_owned()),
+            <span class="string">b"type" </span>=&gt; request.typ = <span class="prelude-val">Some</span>(parse_type(<span class="kw-2">&amp;</span>attr.value)),
+            <span class="string">b"since" </span>=&gt; request.since = parse_or_panic(<span class="kw-2">&amp;</span>attr.value),
             <span class="kw">_ </span>=&gt; {}
         }
     }
@@ -557,13 +558,13 @@
     <span class="kw">loop </span>{
         <span class="kw">match </span>reader.read_event_into(<span class="kw-2">&amp;mut </span>Vec::new()) {
             <span class="prelude-val">Ok</span>(Event::Start(bytes)) =&gt; <span class="kw">match </span>bytes.name().into_inner() {
-                <span class="string">b&quot;description&quot; </span>=&gt; {
+                <span class="string">b"description" </span>=&gt; {
                     request.description = <span class="prelude-val">Some</span>(parse_description(reader, bytes.attributes()))
                 }
-                <span class="string">b&quot;arg&quot; </span>=&gt; request.args.push(parse_arg(reader, bytes.attributes())),
-                name =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Unexpected token: `{}`&quot;</span>, String::from_utf8_lossy(name)),
+                <span class="string">b"arg" </span>=&gt; request.args.push(parse_arg(reader, bytes.attributes())),
+                name =&gt; <span class="macro">panic!</span>(<span class="string">"Unexpected token: `{}`"</span>, String::from_utf8_lossy(name)),
             },
-            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b&quot;request&quot; </span>=&gt; <span class="kw">break</span>,
+            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b"request" </span>=&gt; <span class="kw">break</span>,
             <span class="kw">_ </span>=&gt; {}
         }
     }
@@ -575,10 +576,10 @@
     <span class="kw">let </span><span class="kw-2">mut </span>enu = Enum::new();
     <span class="kw">for </span>attr <span class="kw">in </span>attrs.filter_map(|res| res.ok()) {
         <span class="kw">match </span>attr.key.into_inner() {
-            <span class="string">b&quot;name&quot; </span>=&gt; enu.name = decode_utf8_or_panic(attr.value.into_owned()),
-            <span class="string">b&quot;since&quot; </span>=&gt; enu.since = parse_or_panic(<span class="kw-2">&amp;</span>attr.value),
-            <span class="string">b&quot;bitfield&quot; </span>=&gt; {
-                <span class="kw">if </span><span class="kw-2">&amp;</span>attr.value[..] == <span class="string">b&quot;true&quot; </span>{
+            <span class="string">b"name" </span>=&gt; enu.name = decode_utf8_or_panic(attr.value.into_owned()),
+            <span class="string">b"since" </span>=&gt; enu.since = parse_or_panic(<span class="kw-2">&amp;</span>attr.value),
+            <span class="string">b"bitfield" </span>=&gt; {
+                <span class="kw">if </span><span class="kw-2">&amp;</span>attr.value[..] == <span class="string">b"true" </span>{
                     enu.bitfield = <span class="bool-val">true
                 </span>}
             }
@@ -589,13 +590,13 @@
     <span class="kw">loop </span>{
         <span class="kw">match </span>reader.read_event_into(<span class="kw-2">&amp;mut </span>Vec::new()) {
             <span class="prelude-val">Ok</span>(Event::Start(bytes)) =&gt; <span class="kw">match </span>bytes.name().into_inner() {
-                <span class="string">b&quot;description&quot; </span>=&gt; {
+                <span class="string">b"description" </span>=&gt; {
                     enu.description = <span class="prelude-val">Some</span>(parse_description(reader, bytes.attributes()))
                 }
-                <span class="string">b&quot;entry&quot; </span>=&gt; enu.entries.push(parse_entry(reader, bytes.attributes())),
-                name =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Unexpected token: `{}`&quot;</span>, String::from_utf8_lossy(name)),
+                <span class="string">b"entry" </span>=&gt; enu.entries.push(parse_entry(reader, bytes.attributes())),
+                name =&gt; <span class="macro">panic!</span>(<span class="string">"Unexpected token: `{}`"</span>, String::from_utf8_lossy(name)),
             },
-            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b&quot;enum&quot; </span>=&gt; <span class="kw">break</span>,
+            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b"enum" </span>=&gt; <span class="kw">break</span>,
             <span class="kw">_ </span>=&gt; {}
         }
     }
@@ -607,9 +608,9 @@
     <span class="kw">let </span><span class="kw-2">mut </span>event = Message::new();
     <span class="kw">for </span>attr <span class="kw">in </span>attrs.filter_map(|res| res.ok()) {
         <span class="kw">match </span>attr.key.into_inner() {
-            <span class="string">b&quot;name&quot; </span>=&gt; event.name = decode_utf8_or_panic(attr.value.into_owned()),
-            <span class="string">b&quot;type&quot; </span>=&gt; event.typ = <span class="prelude-val">Some</span>(parse_type(<span class="kw-2">&amp;</span>attr.value)),
-            <span class="string">b&quot;since&quot; </span>=&gt; event.since = parse_or_panic(<span class="kw-2">&amp;</span>attr.value),
+            <span class="string">b"name" </span>=&gt; event.name = decode_utf8_or_panic(attr.value.into_owned()),
+            <span class="string">b"type" </span>=&gt; event.typ = <span class="prelude-val">Some</span>(parse_type(<span class="kw-2">&amp;</span>attr.value)),
+            <span class="string">b"since" </span>=&gt; event.since = parse_or_panic(<span class="kw-2">&amp;</span>attr.value),
             <span class="kw">_ </span>=&gt; {}
         }
     }
@@ -617,13 +618,13 @@
     <span class="kw">loop </span>{
         <span class="kw">match </span>reader.read_event_into(<span class="kw-2">&amp;mut </span>Vec::new()) {
             <span class="prelude-val">Ok</span>(Event::Start(bytes)) =&gt; <span class="kw">match </span>bytes.name().into_inner() {
-                <span class="string">b&quot;description&quot; </span>=&gt; {
+                <span class="string">b"description" </span>=&gt; {
                     event.description = <span class="prelude-val">Some</span>(parse_description(reader, bytes.attributes()))
                 }
-                <span class="string">b&quot;arg&quot; </span>=&gt; event.args.push(parse_arg(reader, bytes.attributes())),
-                name =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Unexpected token: `{}`&quot;</span>, String::from_utf8_lossy(name)),
+                <span class="string">b"arg" </span>=&gt; event.args.push(parse_arg(reader, bytes.attributes())),
+                name =&gt; <span class="macro">panic!</span>(<span class="string">"Unexpected token: `{}`"</span>, String::from_utf8_lossy(name)),
             },
-            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b&quot;event&quot; </span>=&gt; <span class="kw">break</span>,
+            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b"event" </span>=&gt; <span class="kw">break</span>,
             <span class="kw">_ </span>=&gt; {}
         }
     }
@@ -635,23 +636,23 @@
     <span class="kw">let </span><span class="kw-2">mut </span>arg = Arg::new();
     <span class="kw">for </span>attr <span class="kw">in </span>attrs.filter_map(|res| res.ok()) {
         <span class="kw">match </span>attr.key.into_inner() {
-            <span class="string">b&quot;name&quot; </span>=&gt; arg.name = decode_utf8_or_panic(attr.value.into_owned()),
-            <span class="string">b&quot;type&quot; </span>=&gt; arg.typ = parse_type(<span class="kw-2">&amp;</span>attr.value),
-            <span class="string">b&quot;summary&quot; </span>=&gt; {
+            <span class="string">b"name" </span>=&gt; arg.name = decode_utf8_or_panic(attr.value.into_owned()),
+            <span class="string">b"type" </span>=&gt; arg.typ = parse_type(<span class="kw-2">&amp;</span>attr.value),
+            <span class="string">b"summary" </span>=&gt; {
                 arg.summary = <span class="prelude-val">Some</span>(
                     String::from_utf8_lossy(<span class="kw-2">&amp;</span>attr.value)
                         .split_whitespace()
                         .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
-                        .join(<span class="string">&quot; &quot;</span>),
+                        .join(<span class="string">" "</span>),
                 )
             }
-            <span class="string">b&quot;interface&quot; </span>=&gt; arg.interface = <span class="prelude-val">Some</span>(parse_or_panic(<span class="kw-2">&amp;</span>attr.value)),
-            <span class="string">b&quot;allow-null&quot; </span>=&gt; {
-                <span class="kw">if </span><span class="kw-2">&amp;*</span>attr.value == <span class="string">b&quot;true&quot; </span>{
+            <span class="string">b"interface" </span>=&gt; arg.interface = <span class="prelude-val">Some</span>(parse_or_panic(<span class="kw-2">&amp;</span>attr.value)),
+            <span class="string">b"allow-null" </span>=&gt; {
+                <span class="kw">if </span><span class="kw-2">&amp;*</span>attr.value == <span class="string">b"true" </span>{
                     arg.allow_null = <span class="bool-val">true
                 </span>}
             }
-            <span class="string">b&quot;enum&quot; </span>=&gt; arg.enum_ = <span class="prelude-val">Some</span>(decode_utf8_or_panic(attr.value.into_owned())),
+            <span class="string">b"enum" </span>=&gt; arg.enum_ = <span class="prelude-val">Some</span>(decode_utf8_or_panic(attr.value.into_owned())),
             <span class="kw">_ </span>=&gt; {}
         }
     }
@@ -659,12 +660,12 @@
     <span class="kw">loop </span>{
         <span class="kw">match </span>reader.read_event_into(<span class="kw-2">&amp;mut </span>Vec::new()) {
             <span class="prelude-val">Ok</span>(Event::Start(bytes)) =&gt; <span class="kw">match </span>bytes.name().into_inner() {
-                <span class="string">b&quot;description&quot; </span>=&gt; {
+                <span class="string">b"description" </span>=&gt; {
                     arg.description = <span class="prelude-val">Some</span>(parse_description(reader, bytes.attributes()))
                 }
-                name =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Unexpected token: `{}`&quot;</span>, String::from_utf8_lossy(name)),
+                name =&gt; <span class="macro">panic!</span>(<span class="string">"Unexpected token: `{}`"</span>, String::from_utf8_lossy(name)),
             },
-            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b&quot;arg&quot; </span>=&gt; <span class="kw">break</span>,
+            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b"arg" </span>=&gt; <span class="kw">break</span>,
             <span class="kw">_ </span>=&gt; {}
         }
     }
@@ -674,16 +675,16 @@
 
 <span class="kw">fn </span>parse_type(txt: <span class="kw-2">&amp;</span>[u8]) -&gt; Type {
     <span class="kw">match </span>txt {
-        <span class="string">b&quot;int&quot; </span>=&gt; Type::Int,
-        <span class="string">b&quot;uint&quot; </span>=&gt; Type::Uint,
-        <span class="string">b&quot;fixed&quot; </span>=&gt; Type::Fixed,
-        <span class="string">b&quot;string&quot; </span>=&gt; Type::String,
-        <span class="string">b&quot;object&quot; </span>=&gt; Type::Object,
-        <span class="string">b&quot;new_id&quot; </span>=&gt; Type::NewId,
-        <span class="string">b&quot;array&quot; </span>=&gt; Type::Array,
-        <span class="string">b&quot;fd&quot; </span>=&gt; Type::Fd,
-        <span class="string">b&quot;destructor&quot; </span>=&gt; Type::Destructor,
-        e =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Unexpected type: {}&quot;</span>, String::from_utf8_lossy(e)),
+        <span class="string">b"int" </span>=&gt; Type::Int,
+        <span class="string">b"uint" </span>=&gt; Type::Uint,
+        <span class="string">b"fixed" </span>=&gt; Type::Fixed,
+        <span class="string">b"string" </span>=&gt; Type::String,
+        <span class="string">b"object" </span>=&gt; Type::Object,
+        <span class="string">b"new_id" </span>=&gt; Type::NewId,
+        <span class="string">b"array" </span>=&gt; Type::Array,
+        <span class="string">b"fd" </span>=&gt; Type::Fd,
+        <span class="string">b"destructor" </span>=&gt; Type::Destructor,
+        e =&gt; <span class="macro">panic!</span>(<span class="string">"Unexpected type: {}"</span>, String::from_utf8_lossy(e)),
     }
 }
 
@@ -691,28 +692,28 @@
     <span class="kw">let </span><span class="kw-2">mut </span>entry = Entry::new();
     <span class="kw">for </span>attr <span class="kw">in </span>attrs.filter_map(|res| res.ok()) {
         <span class="kw">match </span>attr.key.into_inner() {
-            <span class="string">b&quot;name&quot; </span>=&gt; entry.name = decode_utf8_or_panic(attr.value.into_owned()),
-            <span class="string">b&quot;value&quot; </span>=&gt; {
-                entry.value = <span class="kw">if </span>attr.value.starts_with(<span class="string">b&quot;0x&quot;</span>) {
+            <span class="string">b"name" </span>=&gt; entry.name = decode_utf8_or_panic(attr.value.into_owned()),
+            <span class="string">b"value" </span>=&gt; {
+                entry.value = <span class="kw">if </span>attr.value.starts_with(<span class="string">b"0x"</span>) {
                     <span class="kw">if let </span><span class="prelude-val">Some</span>(val) = std::str::from_utf8(<span class="kw-2">&amp;</span>attr.value[<span class="number">2</span>..])
                         .ok()
                         .and_then(|s| u32::from_str_radix(s, <span class="number">16</span>).ok())
                     {
                         val
                     } <span class="kw">else </span>{
-                        <span class="macro">panic!</span>(<span class="string">&quot;Invalid number: {}&quot;</span>, String::from_utf8_lossy(<span class="kw-2">&amp;</span>attr.value))
+                        <span class="macro">panic!</span>(<span class="string">"Invalid number: {}"</span>, String::from_utf8_lossy(<span class="kw-2">&amp;</span>attr.value))
                     }
                 } <span class="kw">else </span>{
                     parse_or_panic(<span class="kw-2">&amp;</span>attr.value)
                 };
             }
-            <span class="string">b&quot;since&quot; </span>=&gt; entry.since = parse_or_panic(<span class="kw-2">&amp;</span>attr.value),
-            <span class="string">b&quot;summary&quot; </span>=&gt; {
+            <span class="string">b"since" </span>=&gt; entry.since = parse_or_panic(<span class="kw-2">&amp;</span>attr.value),
+            <span class="string">b"summary" </span>=&gt; {
                 entry.summary = <span class="prelude-val">Some</span>(
                     String::from_utf8_lossy(<span class="kw-2">&amp;</span>attr.value)
                         .split_whitespace()
                         .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
-                        .join(<span class="string">&quot; &quot;</span>),
+                        .join(<span class="string">" "</span>),
                 )
             }
             <span class="kw">_ </span>=&gt; {}
@@ -722,12 +723,12 @@
     <span class="kw">loop </span>{
         <span class="kw">match </span>reader.read_event_into(<span class="kw-2">&amp;mut </span>Vec::new()) {
             <span class="prelude-val">Ok</span>(Event::Start(bytes)) =&gt; <span class="kw">match </span>bytes.name().into_inner() {
-                <span class="string">b&quot;description&quot; </span>=&gt; {
+                <span class="string">b"description" </span>=&gt; {
                     entry.description = <span class="prelude-val">Some</span>(parse_description(reader, bytes.attributes()))
                 }
-                name =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Unexpected token: `{}`&quot;</span>, String::from_utf8_lossy(name)),
+                name =&gt; <span class="macro">panic!</span>(<span class="string">"Unexpected token: `{}`"</span>, String::from_utf8_lossy(name)),
             },
-            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b&quot;entry&quot; </span>=&gt; <span class="kw">break</span>,
+            <span class="prelude-val">Ok</span>(Event::End(bytes)) <span class="kw">if </span>bytes.name().into_inner() == <span class="string">b"entry" </span>=&gt; <span class="kw">break</span>,
             <span class="kw">_ </span>=&gt; {}
         }
     }

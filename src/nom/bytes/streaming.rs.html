@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nom-7.1.3/src/bytes/streaming.rs`."><title>streaming.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nom" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../nom/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nom-7.1.3/src/bytes/streaming.rs`."><title>streaming.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nom" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -712,7 +713,7 @@
 
 <span class="doccomment">/// Recognizes a pattern.
 ///
-/// The input data will be compared to the tag combinator&#39;s argument and will return the part of
+/// The input data will be compared to the tag combinator's argument and will return the part of
 /// the input that matches the argument.
 /// # Example
 /// ```rust
@@ -720,13 +721,13 @@
 /// use nom::bytes::streaming::tag;
 ///
 /// fn parser(s: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
-///   tag(&quot;Hello&quot;)(s)
+///   tag("Hello")(s)
 /// }
 ///
-/// assert_eq!(parser(&quot;Hello, World!&quot;), Ok((&quot;, World!&quot;, &quot;Hello&quot;)));
-/// assert_eq!(parser(&quot;Something&quot;), Err(Err::Error(Error::new(&quot;Something&quot;, ErrorKind::Tag))));
-/// assert_eq!(parser(&quot;S&quot;), Err(Err::Error(Error::new(&quot;S&quot;, ErrorKind::Tag))));
-/// assert_eq!(parser(&quot;H&quot;), Err(Err::Incomplete(Needed::new(4))));
+/// assert_eq!(parser("Hello, World!"), Ok((", World!", "Hello")));
+/// assert_eq!(parser("Something"), Err(Err::Error(Error::new("Something", ErrorKind::Tag))));
+/// assert_eq!(parser("S"), Err(Err::Error(Error::new("S", ErrorKind::Tag))));
+/// assert_eq!(parser("H"), Err(Err::Incomplete(Needed::new(4))));
 /// ```
 </span><span class="kw">pub fn </span>tag&lt;T, Input, Error: ParseError&lt;Input&gt;&gt;(
   tag: T,
@@ -753,7 +754,7 @@
 
 <span class="doccomment">/// Recognizes a case insensitive pattern.
 ///
-/// The input data will be compared to the tag combinator&#39;s argument and will return the part of
+/// The input data will be compared to the tag combinator's argument and will return the part of
 /// the input that matches the argument with no regard to case.
 /// # Example
 /// ```rust
@@ -761,14 +762,14 @@
 /// use nom::bytes::streaming::tag_no_case;
 ///
 /// fn parser(s: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
-///   tag_no_case(&quot;hello&quot;)(s)
+///   tag_no_case("hello")(s)
 /// }
 ///
-/// assert_eq!(parser(&quot;Hello, World!&quot;), Ok((&quot;, World!&quot;, &quot;Hello&quot;)));
-/// assert_eq!(parser(&quot;hello, World!&quot;), Ok((&quot;, World!&quot;, &quot;hello&quot;)));
-/// assert_eq!(parser(&quot;HeLlO, World!&quot;), Ok((&quot;, World!&quot;, &quot;HeLlO&quot;)));
-/// assert_eq!(parser(&quot;Something&quot;), Err(Err::Error(Error::new(&quot;Something&quot;, ErrorKind::Tag))));
-/// assert_eq!(parser(&quot;&quot;), Err(Err::Incomplete(Needed::new(5))));
+/// assert_eq!(parser("Hello, World!"), Ok((", World!", "Hello")));
+/// assert_eq!(parser("hello, World!"), Ok((", World!", "hello")));
+/// assert_eq!(parser("HeLlO, World!"), Ok((", World!", "HeLlO")));
+/// assert_eq!(parser("Something"), Err(Err::Error(Error::new("Something", ErrorKind::Tag))));
+/// assert_eq!(parser(""), Err(Err::Incomplete(Needed::new(5))));
 /// ```
 </span><span class="kw">pub fn </span>tag_no_case&lt;T, Input, Error: ParseError&lt;Input&gt;&gt;(
   tag: T,
@@ -795,24 +796,24 @@
 
 <span class="doccomment">/// Parse till certain characters are met.
 ///
-/// The parser will return the longest slice till one of the characters of the combinator&#39;s argument are met.
+/// The parser will return the longest slice till one of the characters of the combinator's argument are met.
 ///
-/// It doesn&#39;t consume the matched character.
+/// It doesn't consume the matched character.
 ///
-/// It will return a `Err::Incomplete(Needed::new(1))` if the pattern wasn&#39;t met.
+/// It will return a `Err::Incomplete(Needed::new(1))` if the pattern wasn't met.
 /// # Example
 /// ```rust
 /// # use nom::{Err, error::ErrorKind, Needed, IResult};
 /// use nom::bytes::streaming::is_not;
 ///
 /// fn not_space(s: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
-///   is_not(&quot; \t\r\n&quot;)(s)
+///   is_not(" \t\r\n")(s)
 /// }
 ///
-/// assert_eq!(not_space(&quot;Hello, World!&quot;), Ok((&quot; World!&quot;, &quot;Hello,&quot;)));
-/// assert_eq!(not_space(&quot;Sometimes\t&quot;), Ok((&quot;\t&quot;, &quot;Sometimes&quot;)));
-/// assert_eq!(not_space(&quot;Nospace&quot;), Err(Err::Incomplete(Needed::new(1))));
-/// assert_eq!(not_space(&quot;&quot;), Err(Err::Incomplete(Needed::new(1))));
+/// assert_eq!(not_space("Hello, World!"), Ok((" World!", "Hello,")));
+/// assert_eq!(not_space("Sometimes\t"), Ok(("\t", "Sometimes")));
+/// assert_eq!(not_space("Nospace"), Err(Err::Incomplete(Needed::new(1))));
+/// assert_eq!(not_space(""), Err(Err::Incomplete(Needed::new(1))));
 /// ```
 </span><span class="kw">pub fn </span>is_not&lt;T, Input, Error: ParseError&lt;Input&gt;&gt;(
   arr: T,
@@ -830,10 +831,10 @@
 <span class="doccomment">/// Returns the longest slice of the matches the pattern.
 ///
 /// The parser will return the longest slice consisting of the characters in provided in the
-/// combinator&#39;s argument.
+/// combinator's argument.
 ///
 /// # Streaming specific
-/// *Streaming version* will return a `Err::Incomplete(Needed::new(1))` if the pattern wasn&#39;t met
+/// *Streaming version* will return a `Err::Incomplete(Needed::new(1))` if the pattern wasn't met
 /// or if the pattern reaches the end of the input.
 /// # Example
 /// ```rust
@@ -841,14 +842,14 @@
 /// use nom::bytes::streaming::is_a;
 ///
 /// fn hex(s: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
-///   is_a(&quot;1234567890ABCDEF&quot;)(s)
+///   is_a("1234567890ABCDEF")(s)
 /// }
 ///
-/// assert_eq!(hex(&quot;123 and voila&quot;), Ok((&quot; and voila&quot;, &quot;123&quot;)));
-/// assert_eq!(hex(&quot;DEADBEEF and others&quot;), Ok((&quot; and others&quot;, &quot;DEADBEEF&quot;)));
-/// assert_eq!(hex(&quot;BADBABEsomething&quot;), Ok((&quot;something&quot;, &quot;BADBABE&quot;)));
-/// assert_eq!(hex(&quot;D15EA5E&quot;), Err(Err::Incomplete(Needed::new(1))));
-/// assert_eq!(hex(&quot;&quot;), Err(Err::Incomplete(Needed::new(1))));
+/// assert_eq!(hex("123 and voila"), Ok((" and voila", "123")));
+/// assert_eq!(hex("DEADBEEF and others"), Ok((" and others", "DEADBEEF")));
+/// assert_eq!(hex("BADBABEsomething"), Ok(("something", "BADBABE")));
+/// assert_eq!(hex("D15EA5E"), Err(Err::Incomplete(Needed::new(1))));
+/// assert_eq!(hex(""), Err(Err::Incomplete(Needed::new(1))));
 /// ```
 </span><span class="kw">pub fn </span>is_a&lt;T, Input, Error: ParseError&lt;Input&gt;&gt;(
   arr: T,
@@ -880,10 +881,10 @@
 ///   take_while(is_alphabetic)(s)
 /// }
 ///
-/// assert_eq!(alpha(b&quot;latin123&quot;), Ok((&amp;b&quot;123&quot;[..], &amp;b&quot;latin&quot;[..])));
-/// assert_eq!(alpha(b&quot;12345&quot;), Ok((&amp;b&quot;12345&quot;[..], &amp;b&quot;&quot;[..])));
-/// assert_eq!(alpha(b&quot;latin&quot;), Err(Err::Incomplete(Needed::new(1))));
-/// assert_eq!(alpha(b&quot;&quot;), Err(Err::Incomplete(Needed::new(1))));
+/// assert_eq!(alpha(b"latin123"), Ok((&amp;b"123"[..], &amp;b"latin"[..])));
+/// assert_eq!(alpha(b"12345"), Ok((&amp;b"12345"[..], &amp;b""[..])));
+/// assert_eq!(alpha(b"latin"), Err(Err::Incomplete(Needed::new(1))));
+/// assert_eq!(alpha(b""), Err(Err::Incomplete(Needed::new(1))));
 /// ```
 </span><span class="kw">pub fn </span>take_while&lt;F, Input, Error: ParseError&lt;Input&gt;&gt;(
   cond: F,
@@ -900,7 +901,7 @@
 /// The parser will return the longest slice that matches the given predicate *(a function that
 /// takes the input and returns a bool)*.
 ///
-/// It will return an `Err(Err::Error((_, ErrorKind::TakeWhile1)))` if the pattern wasn&#39;t met.
+/// It will return an `Err(Err::Error((_, ErrorKind::TakeWhile1)))` if the pattern wasn't met.
 ///
 /// # Streaming Specific
 /// *Streaming version* will return a `Err::Incomplete(Needed::new(1))` or if the pattern reaches the end of the input.
@@ -915,9 +916,9 @@
 ///   take_while1(is_alphabetic)(s)
 /// }
 ///
-/// assert_eq!(alpha(b&quot;latin123&quot;), Ok((&amp;b&quot;123&quot;[..], &amp;b&quot;latin&quot;[..])));
-/// assert_eq!(alpha(b&quot;latin&quot;), Err(Err::Incomplete(Needed::new(1))));
-/// assert_eq!(alpha(b&quot;12345&quot;), Err(Err::Error(Error::new(&amp;b&quot;12345&quot;[..], ErrorKind::TakeWhile1))));
+/// assert_eq!(alpha(b"latin123"), Ok((&amp;b"123"[..], &amp;b"latin"[..])));
+/// assert_eq!(alpha(b"latin"), Err(Err::Incomplete(Needed::new(1))));
+/// assert_eq!(alpha(b"12345"), Err(Err::Error(Error::new(&amp;b"12345"[..], ErrorKind::TakeWhile1))));
 /// ```
 </span><span class="kw">pub fn </span>take_while1&lt;F, Input, Error: ParseError&lt;Input&gt;&gt;(
   cond: F,
@@ -937,7 +938,7 @@
 /// The parser will return the longest slice that matches the given predicate *(a function that
 /// takes the input and returns a bool)*.
 ///
-/// It will return an `Err::Error((_, ErrorKind::TakeWhileMN))` if the pattern wasn&#39;t met.
+/// It will return an `Err::Error((_, ErrorKind::TakeWhileMN))` if the pattern wasn't met.
 /// # Streaming Specific
 /// *Streaming version* will return a `Err::Incomplete(Needed::new(1))`  if the pattern reaches the end of the input or is too short.
 ///
@@ -951,11 +952,11 @@
 ///   take_while_m_n(3, 6, is_alphabetic)(s)
 /// }
 ///
-/// assert_eq!(short_alpha(b&quot;latin123&quot;), Ok((&amp;b&quot;123&quot;[..], &amp;b&quot;latin&quot;[..])));
-/// assert_eq!(short_alpha(b&quot;lengthy&quot;), Ok((&amp;b&quot;y&quot;[..], &amp;b&quot;length&quot;[..])));
-/// assert_eq!(short_alpha(b&quot;latin&quot;), Err(Err::Incomplete(Needed::new(1))));
-/// assert_eq!(short_alpha(b&quot;ed&quot;), Err(Err::Incomplete(Needed::new(1))));
-/// assert_eq!(short_alpha(b&quot;12345&quot;), Err(Err::Error(Error::new(&amp;b&quot;12345&quot;[..], ErrorKind::TakeWhileMN))));
+/// assert_eq!(short_alpha(b"latin123"), Ok((&amp;b"123"[..], &amp;b"latin"[..])));
+/// assert_eq!(short_alpha(b"lengthy"), Ok((&amp;b"y"[..], &amp;b"length"[..])));
+/// assert_eq!(short_alpha(b"latin"), Err(Err::Incomplete(Needed::new(1))));
+/// assert_eq!(short_alpha(b"ed"), Err(Err::Incomplete(Needed::new(1))));
+/// assert_eq!(short_alpha(b"12345"), Err(Err::Error(Error::new(&amp;b"12345"[..], ErrorKind::TakeWhileMN))));
 /// ```
 </span><span class="kw">pub fn </span>take_while_m_n&lt;F, Input, Error: ParseError&lt;Input&gt;&gt;(
   m: usize,
@@ -1032,13 +1033,13 @@
 /// use nom::bytes::streaming::take_till;
 ///
 /// fn till_colon(s: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
-///   take_till(|c| c == &#39;:&#39;)(s)
+///   take_till(|c| c == ':')(s)
 /// }
 ///
-/// assert_eq!(till_colon(&quot;latin:123&quot;), Ok((&quot;:123&quot;, &quot;latin&quot;)));
-/// assert_eq!(till_colon(&quot;:empty matched&quot;), Ok((&quot;:empty matched&quot;, &quot;&quot;))); //allowed
-/// assert_eq!(till_colon(&quot;12345&quot;), Err(Err::Incomplete(Needed::new(1))));
-/// assert_eq!(till_colon(&quot;&quot;), Err(Err::Incomplete(Needed::new(1))));
+/// assert_eq!(till_colon("latin:123"), Ok((":123", "latin")));
+/// assert_eq!(till_colon(":empty matched"), Ok((":empty matched", ""))); //allowed
+/// assert_eq!(till_colon("12345"), Err(Err::Incomplete(Needed::new(1))));
+/// assert_eq!(till_colon(""), Err(Err::Incomplete(Needed::new(1))));
 /// ```
 </span><span class="kw">pub fn </span>take_till&lt;F, Input, Error: ParseError&lt;Input&gt;&gt;(
   cond: F,
@@ -1064,13 +1065,13 @@
 /// use nom::bytes::streaming::take_till1;
 ///
 /// fn till_colon(s: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
-///   take_till1(|c| c == &#39;:&#39;)(s)
+///   take_till1(|c| c == ':')(s)
 /// }
 ///
-/// assert_eq!(till_colon(&quot;latin:123&quot;), Ok((&quot;:123&quot;, &quot;latin&quot;)));
-/// assert_eq!(till_colon(&quot;:empty matched&quot;), Err(Err::Error(Error::new(&quot;:empty matched&quot;, ErrorKind::TakeTill1))));
-/// assert_eq!(till_colon(&quot;12345&quot;), Err(Err::Incomplete(Needed::new(1))));
-/// assert_eq!(till_colon(&quot;&quot;), Err(Err::Incomplete(Needed::new(1))));
+/// assert_eq!(till_colon("latin:123"), Ok((":123", "latin")));
+/// assert_eq!(till_colon(":empty matched"), Err(Err::Error(Error::new(":empty matched", ErrorKind::TakeTill1))));
+/// assert_eq!(till_colon("12345"), Err(Err::Incomplete(Needed::new(1))));
+/// assert_eq!(till_colon(""), Err(Err::Incomplete(Needed::new(1))));
 /// ```
 </span><span class="kw">pub fn </span>take_till1&lt;F, Input, Error: ParseError&lt;Input&gt;&gt;(
   cond: F,
@@ -1104,9 +1105,9 @@
 ///   take(6usize)(s)
 /// }
 ///
-/// assert_eq!(take6(&quot;1234567&quot;), Ok((&quot;7&quot;, &quot;123456&quot;)));
-/// assert_eq!(take6(&quot;things&quot;), Ok((&quot;&quot;, &quot;things&quot;)));
-/// assert_eq!(take6(&quot;short&quot;), Err(Err::Incomplete(Needed::Unknown)));
+/// assert_eq!(take6("1234567"), Ok(("7", "123456")));
+/// assert_eq!(take6("things"), Ok(("", "things")));
+/// assert_eq!(take6("short"), Err(Err::Incomplete(Needed::Unknown)));
 /// ```
 </span><span class="kw">pub fn </span>take&lt;C, Input, Error: ParseError&lt;Input&gt;&gt;(
   count: C,
@@ -1124,10 +1125,10 @@
 
 <span class="doccomment">/// Returns the input slice up to the first occurrence of the pattern.
 ///
-/// It doesn&#39;t consume the pattern.
+/// It doesn't consume the pattern.
 ///
 /// # Streaming Specific
-/// *Streaming version* will return a `Err::Incomplete(Needed::new(N))` if the input doesn&#39;t
+/// *Streaming version* will return a `Err::Incomplete(Needed::new(N))` if the input doesn't
 /// contain the pattern or if the input is smaller than the pattern.
 /// # Example
 /// ```rust
@@ -1135,13 +1136,13 @@
 /// use nom::bytes::streaming::take_until;
 ///
 /// fn until_eof(s: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
-///   take_until(&quot;eof&quot;)(s)
+///   take_until("eof")(s)
 /// }
 ///
-/// assert_eq!(until_eof(&quot;hello, worldeof&quot;), Ok((&quot;eof&quot;, &quot;hello, world&quot;)));
-/// assert_eq!(until_eof(&quot;hello, world&quot;), Err(Err::Incomplete(Needed::Unknown)));
-/// assert_eq!(until_eof(&quot;hello, worldeo&quot;), Err(Err::Incomplete(Needed::Unknown)));
-/// assert_eq!(until_eof(&quot;1eof2eof&quot;), Ok((&quot;eof2eof&quot;, &quot;1&quot;)));
+/// assert_eq!(until_eof("hello, worldeof"), Ok(("eof", "hello, world")));
+/// assert_eq!(until_eof("hello, world"), Err(Err::Incomplete(Needed::Unknown)));
+/// assert_eq!(until_eof("hello, worldeo"), Err(Err::Incomplete(Needed::Unknown)));
+/// assert_eq!(until_eof("1eof2eof"), Ok(("eof2eof", "1")));
 /// ```
 </span><span class="kw">pub fn </span>take_until&lt;T, Input, Error: ParseError&lt;Input&gt;&gt;(
   tag: T,
@@ -1163,10 +1164,10 @@
 
 <span class="doccomment">/// Returns the non empty input slice up to the first occurrence of the pattern.
 ///
-/// It doesn&#39;t consume the pattern.
+/// It doesn't consume the pattern.
 ///
 /// # Streaming Specific
-/// *Streaming version* will return a `Err::Incomplete(Needed::new(N))` if the input doesn&#39;t
+/// *Streaming version* will return a `Err::Incomplete(Needed::new(N))` if the input doesn't
 /// contain the pattern or if the input is smaller than the pattern.
 /// # Example
 /// ```rust
@@ -1174,14 +1175,14 @@
 /// use nom::bytes::streaming::take_until1;
 ///
 /// fn until_eof(s: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
-///   take_until1(&quot;eof&quot;)(s)
+///   take_until1("eof")(s)
 /// }
 ///
-/// assert_eq!(until_eof(&quot;hello, worldeof&quot;), Ok((&quot;eof&quot;, &quot;hello, world&quot;)));
-/// assert_eq!(until_eof(&quot;hello, world&quot;), Err(Err::Incomplete(Needed::Unknown)));
-/// assert_eq!(until_eof(&quot;hello, worldeo&quot;), Err(Err::Incomplete(Needed::Unknown)));
-/// assert_eq!(until_eof(&quot;1eof2eof&quot;), Ok((&quot;eof2eof&quot;, &quot;1&quot;)));
-/// assert_eq!(until_eof(&quot;eof&quot;),  Err(Err::Error(Error::new(&quot;eof&quot;, ErrorKind::TakeUntil))));
+/// assert_eq!(until_eof("hello, worldeof"), Ok(("eof", "hello, world")));
+/// assert_eq!(until_eof("hello, world"), Err(Err::Incomplete(Needed::Unknown)));
+/// assert_eq!(until_eof("hello, worldeo"), Err(Err::Incomplete(Needed::Unknown)));
+/// assert_eq!(until_eof("1eof2eof"), Ok(("eof2eof", "1")));
+/// assert_eq!(until_eof("eof"),  Err(Err::Error(Error::new("eof", ErrorKind::TakeUntil))));
 /// ```
 </span><span class="kw">pub fn </span>take_until1&lt;T, Input, Error: ParseError&lt;Input&gt;&gt;(
   tag: T,
@@ -1215,11 +1216,11 @@
 /// use nom::character::streaming::one_of;
 ///
 /// fn esc(s: &amp;str) -&gt; IResult&lt;&amp;str, &amp;str&gt; {
-///   escaped(digit1, &#39;\\&#39;, one_of(&quot;\&quot;n\\&quot;))(s)
+///   escaped(digit1, '\\', one_of("\"n\\"))(s)
 /// }
 ///
-/// assert_eq!(esc(&quot;123;&quot;), Ok((&quot;;&quot;, &quot;123&quot;)));
-/// assert_eq!(esc(&quot;12\\\&quot;34;&quot;), Ok((&quot;;&quot;, &quot;12\\\&quot;34&quot;)));
+/// assert_eq!(esc("123;"), Ok((";", "123")));
+/// assert_eq!(esc("12\\\"34;"), Ok((";", "12\\\"34")));
 /// ```
 ///
 </span><span class="kw">pub fn </span>escaped&lt;Input, Error, F, G, O1, O2&gt;(
@@ -1311,19 +1312,19 @@
 /// fn parser(input: &amp;str) -&gt; IResult&lt;&amp;str, String&gt; {
 ///   escaped_transform(
 ///     alpha1,
-///     &#39;\\&#39;,
+///     '\\',
 ///     alt((
-///       value(&quot;\\&quot;, tag(&quot;\\&quot;)),
-///       value(&quot;\&quot;&quot;, tag(&quot;\&quot;&quot;)),
-///       value(&quot;\n&quot;, tag(&quot;n&quot;)),
+///       value("\\", tag("\\")),
+///       value("\"", tag("\"")),
+///       value("\n", tag("n")),
 ///     ))
 ///   )(input)
 /// }
 ///
-/// assert_eq!(parser(&quot;ab\\\&quot;cd\&quot;&quot;), Ok((&quot;\&quot;&quot;, String::from(&quot;ab\&quot;cd&quot;))));
+/// assert_eq!(parser("ab\\\"cd\""), Ok(("\"", String::from("ab\"cd"))));
 /// ```
-</span><span class="attr">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
-#[cfg_attr(feature = <span class="string">&quot;docsrs&quot;</span>, doc(cfg(feature = <span class="string">&quot;alloc&quot;</span>)))]
+</span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+#[cfg_attr(feature = <span class="string">"docsrs"</span>, doc(cfg(feature = <span class="string">"alloc"</span>)))]
 </span><span class="kw">pub fn </span>escaped_transform&lt;Input, Error, F, G, O1, O2, ExtendItem, Output&gt;(
   <span class="kw-2">mut </span>normal: F,
   control_char: char,

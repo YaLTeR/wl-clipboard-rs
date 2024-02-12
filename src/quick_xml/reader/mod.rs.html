@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.30.0/src/reader/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../quick_xml/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.31.0/src/reader/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1999,16 +2000,18 @@
 <a href="#1999" id="1999">1999</a>
 <a href="#2000" id="2000">2000</a>
 <a href="#2001" id="2001">2001</a>
+<a href="#2002" id="2002">2002</a>
+<a href="#2003" id="2003">2003</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Contains high-level interface for a pull-based XML parser.
 
-</span><span class="attr">#[cfg(feature = <span class="string">&quot;encoding&quot;</span>)]
+</span><span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
 </span><span class="kw">use </span>encoding_rs::Encoding;
 <span class="kw">use </span>std::ops::Range;
 
 <span class="kw">use </span><span class="kw">crate</span>::encoding::Decoder;
 <span class="kw">use </span><span class="kw">crate</span>::errors::{Error, <span class="prelude-ty">Result</span>};
 <span class="kw">use </span><span class="kw">crate</span>::events::Event;
-<span class="kw">use </span><span class="kw">crate</span>::reader::parser::Parser;
+<span class="kw">use </span><span class="kw">crate</span>::reader::state::ReaderState;
 
 <span class="kw">use </span>memchr;
 
@@ -2032,7 +2035,7 @@
         /// [`End`]: Event::End
         /// [`check_end_names`]: Self::check_end_names
         </span><span class="kw">pub fn </span>expand_empty_elements(<span class="kw-2">&amp;mut </span><span class="self">self</span>, val: bool) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.parser.expand_empty_elements = val;
+            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.state.expand_empty_elements = val;
             <span class="self">self
         </span>}
 
@@ -2045,7 +2048,7 @@
         ///
         /// (`false` by default).
         ///
-        /// &lt;div style=&quot;background:rgba(80, 240, 100, 0.20);padding:0.75em;&quot;&gt;
+        /// &lt;div style="background:rgba(80, 240, 100, 0.20);padding:0.75em;"&gt;
         ///
         /// WARNING: With this option every text events will be trimmed which is
         /// incorrect behavior when text events delimited by comments, processing
@@ -2059,8 +2062,8 @@
         /// [`BytesText::inplace_trim_start`]: crate::events::BytesText::inplace_trim_start
         /// [`BytesText::inplace_trim_end`]: crate::events::BytesText::inplace_trim_end
         </span><span class="kw">pub fn </span>trim_text(<span class="kw-2">&amp;mut </span><span class="self">self</span>, val: bool) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.parser.trim_text_start = val;
-            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.parser.trim_text_end = val;
+            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.state.trim_text_start = val;
+            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.state.trim_text_end = val;
             <span class="self">self
         </span>}
 
@@ -2071,7 +2074,7 @@
         ///
         /// (`false` by default).
         ///
-        /// &lt;div style=&quot;background:rgba(80, 240, 100, 0.20);padding:0.75em;&quot;&gt;
+        /// &lt;div style="background:rgba(80, 240, 100, 0.20);padding:0.75em;"&gt;
         ///
         /// WARNING: With this option every text events will be trimmed which is
         /// incorrect behavior when text events delimited by comments, processing
@@ -2084,7 +2087,7 @@
         /// [`BytesText::inplace_trim_start`]: crate::events::BytesText::inplace_trim_start
         /// [`BytesText::inplace_trim_end`]: crate::events::BytesText::inplace_trim_end
         </span><span class="kw">pub fn </span>trim_text_end(<span class="kw-2">&amp;mut </span><span class="self">self</span>, val: bool) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.parser.trim_text_end = val;
+            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.state.trim_text_end = val;
             <span class="self">self
         </span>}
 
@@ -2100,7 +2103,7 @@
         ///
         /// [`End`]: Event::End
         </span><span class="kw">pub fn </span>trim_markup_names_in_closing_tags(<span class="kw-2">&amp;mut </span><span class="self">self</span>, val: bool) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.parser.trim_markup_names_in_closing_tags = val;
+            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.state.trim_markup_names_in_closing_tags = val;
             <span class="self">self
         </span>}
 
@@ -2111,7 +2114,7 @@
         /// The XML
         ///
         /// ```xml
-        /// &lt;outer xmlns=&quot;namespace&quot; xmlns:p=&quot;namespace&quot;&gt;
+        /// &lt;outer xmlns="namespace" xmlns:p="namespace"&gt;
         /// &lt;/p:outer&gt;
         /// ```
         ///
@@ -2119,7 +2122,7 @@
         /// end tag. The reason is that namespaces are an extension of the original
         /// XML specification (without namespaces) and it should be backward-compatible.
         ///
-        /// When set to `false`, it won&#39;t check if a closing tag matches the corresponding opening tag.
+        /// When set to `false`, it won't check if a closing tag matches the corresponding opening tag.
         /// For example, `&lt;mytag&gt;&lt;/different_tag&gt;` will be permitted.
         ///
         /// If the XML is known to be sane (already processed, etc.) this saves extra time.
@@ -2138,14 +2141,14 @@
         /// [`End`]: Event::End
         /// [`expand_empty_elements`]: Self::expand_empty_elements
         </span><span class="kw">pub fn </span>check_end_names(<span class="kw-2">&amp;mut </span><span class="self">self</span>, val: bool) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.parser.check_end_names = val;
+            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.state.check_end_names = val;
             <span class="self">self
         </span>}
 
         <span class="doccomment">/// Changes whether comments should be validated.
         ///
         /// When set to `true`, every [`Comment`] event will be checked for not containing `--`, which
-        /// is not allowed in XML comments. Most of the time we don&#39;t want comments at all so we don&#39;t
+        /// is not allowed in XML comments. Most of the time we don't want comments at all so we don't
         /// really care about comment correctness, thus the default value is `false` to improve
         /// performance.
         ///
@@ -2153,7 +2156,7 @@
         ///
         /// [`Comment`]: Event::Comment
         </span><span class="kw">pub fn </span>check_comments(<span class="kw-2">&amp;mut </span><span class="self">self</span>, val: bool) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.parser.check_comments = val;
+            <span class="self">self </span>$(.<span class="macro-nonterminal">$holder</span>)<span class="question-mark">? </span>.state.check_comments = val;
             <span class="self">self
         </span>}
     };
@@ -2168,21 +2171,21 @@
         $(, <span class="macro-nonterminal">$</span><span class="kw">await</span>:<span class="macro-nonterminal">ident</span>)<span class="question-mark">?
     </span>) =&gt; {{
         <span class="kw">let </span>event = <span class="kw">loop </span>{
-            <span class="kw">match </span><span class="macro-nonterminal">$self</span>.parser.state {
+            <span class="kw">match </span><span class="macro-nonterminal">$self</span>.state.state {
                 ParseState::Init =&gt; { <span class="comment">// Go to OpenedTag state
                     // If encoding set explicitly, we not need to detect it. For example,
                     // explicit UTF-8 set automatically if Reader was created using `from_str`.
                     // But we still need to remove BOM for consistency with no encoding
                     // feature enabled path
-                    </span><span class="attr">#[cfg(feature = <span class="string">&quot;encoding&quot;</span>)]
+                    </span><span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
                     </span><span class="kw">if let </span><span class="prelude-val">Some</span>(encoding) = <span class="macro-nonterminal">$reader</span>.detect_encoding() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? ? </span>{
-                        <span class="kw">if </span><span class="macro-nonterminal">$self</span>.parser.encoding.can_be_refined() {
-                            <span class="macro-nonterminal">$self</span>.parser.encoding = <span class="kw">crate</span>::reader::EncodingRef::BomDetected(encoding);
+                        <span class="kw">if </span><span class="macro-nonterminal">$self</span>.state.encoding.can_be_refined() {
+                            <span class="macro-nonterminal">$self</span>.state.encoding = <span class="kw">crate</span>::reader::EncodingRef::BomDetected(encoding);
                         }
                     }
 
                     <span class="comment">// Removes UTF-8 BOM if it is present
-                    </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;encoding&quot;</span>))]
+                    </span><span class="attr">#[cfg(not(feature = <span class="string">"encoding"</span>))]
                     </span><span class="macro-nonterminal">$reader</span>.remove_utf8_bom() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? ?</span>;
 
                     <span class="comment">// Go to OpenedTag state
@@ -2201,12 +2204,12 @@
                 },
                 <span class="comment">// Go to ClosedTag state in next two arms
                 </span>ParseState::OpenedTag =&gt; <span class="kw">break </span><span class="macro-nonterminal">$self</span>.<span class="macro-nonterminal">$read_until_close</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?</span>,
-                <span class="macro-nonterminal">ParseState::Empty </span>=&gt; <span class="kw">break </span><span class="macro-nonterminal">$self</span>.parser.close_expanded_empty(),
+                <span class="macro-nonterminal">ParseState::Empty </span>=&gt; <span class="kw">break </span><span class="macro-nonterminal">$self</span>.state.close_expanded_empty(),
                 ParseState::Exit =&gt; <span class="kw">break </span><span class="prelude-val">Ok</span>(Event::Eof),
             };
         };
         <span class="kw">match </span>event {
-            <span class="prelude-val">Err</span>(<span class="kw">_</span>) | <span class="prelude-val">Ok</span>(Event::Eof) =&gt; <span class="macro-nonterminal">$self</span>.parser.state = ParseState::Exit,
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) | <span class="prelude-val">Ok</span>(Event::Eof) =&gt; <span class="macro-nonterminal">$self</span>.state.state = ParseState::Exit,
             <span class="kw">_ </span>=&gt; {}
         }
         event
@@ -2214,7 +2217,7 @@
 }
 
 <span class="doccomment">/// Read bytes up to `&lt;` and skip it. If current byte (after skipping all space
-/// characters if [`Parser::trim_text_start`] is `true`) is already `&lt;`, then
+/// characters if [`ReaderState::trim_text_start`] is `true`) is already `&lt;`, then
 /// returns the next event, otherwise stay at position just after the `&lt;` symbol.
 ///
 /// Moves parser to the `OpenedTag` state.
@@ -2229,24 +2232,24 @@
         <span class="macro-nonterminal">$read_event</span>:ident
         $(, <span class="macro-nonterminal">$</span><span class="kw">await</span>:<span class="macro-nonterminal">ident</span>)<span class="question-mark">?
     </span>) =&gt; {{
-        <span class="macro-nonterminal">$self</span>.parser.state = ParseState::OpenedTag;
+        <span class="macro-nonterminal">$self</span>.state.state = ParseState::OpenedTag;
 
-        <span class="kw">if </span><span class="macro-nonterminal">$self</span>.parser.trim_text_start {
-            <span class="macro-nonterminal">$reader</span>.skip_whitespace(<span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.parser.offset) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? ?</span>;
+        <span class="kw">if </span><span class="macro-nonterminal">$self</span>.state.trim_text_start {
+            <span class="macro-nonterminal">$reader</span>.skip_whitespace(<span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.state.offset) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? ?</span>;
         }
 
         <span class="comment">// If we already at the `&lt;` symbol, do not try to return an empty Text event
-        </span><span class="kw">if </span><span class="macro-nonterminal">$reader</span>.skip_one(<span class="string">b&#39;&lt;&#39;</span>, <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.parser.offset) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? ? </span>{
+        </span><span class="kw">if </span><span class="macro-nonterminal">$reader</span>.skip_one(<span class="string">b'&lt;'</span>, <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.state.offset) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? ? </span>{
             <span class="comment">// Pass $buf to the next next iteration of parsing loop
             </span><span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(<span class="macro-nonterminal">$buf</span>));
         }
 
         <span class="kw">match </span><span class="macro-nonterminal">$reader
-            </span>.read_bytes_until(<span class="string">b&#39;&lt;&#39;</span>, <span class="macro-nonterminal">$buf</span>, <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.parser.offset)
+            </span>.read_bytes_until(<span class="string">b'&lt;'</span>, <span class="macro-nonterminal">$buf</span>, <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.state.offset)
             $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
         </span>{
             <span class="comment">// Return Text event with `bytes` content
-            </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="macro-nonterminal">bytes</span>)) =&gt; <span class="macro-nonterminal">$self</span>.parser.emit_text(bytes).map(<span class="prelude-val">Ok</span>),
+            </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="macro-nonterminal">bytes</span>)) =&gt; <span class="macro-nonterminal">$self</span>.state.emit_text(bytes).map(<span class="prelude-val">Ok</span>),
             <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(Event::Eof)),
             <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e),
         }
@@ -2279,43 +2282,43 @@
         <span class="macro-nonterminal">$reader</span>:expr
         $(, <span class="macro-nonterminal">$</span><span class="kw">await</span>:<span class="macro-nonterminal">ident</span>)<span class="question-mark">?
     </span>) =&gt; {{
-        <span class="macro-nonterminal">$self</span>.parser.state = ParseState::ClosedTag;
+        <span class="macro-nonterminal">$self</span>.state.state = ParseState::ClosedTag;
 
         <span class="kw">match </span><span class="macro-nonterminal">$reader</span>.peek_one() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
             <span class="comment">// `&lt;!` - comment, CDATA or DOCTYPE declaration
-            </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="string">b&#39;!&#39;</span>)) =&gt; <span class="kw">match </span><span class="macro-nonterminal">$reader
-                </span>.read_bang_element(<span class="macro-nonterminal">$buf</span>, <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.parser.offset)
+            </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="string">b'!'</span>)) =&gt; <span class="kw">match </span><span class="macro-nonterminal">$reader
+                </span>.read_bang_element(<span class="macro-nonterminal">$buf</span>, <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.state.offset)
                 $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
             </span>{
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">Event::Eof</span>),
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>((bang_type, bytes))) =&gt; <span class="macro-nonterminal">$self</span>.parser.emit_bang(bang_type, bytes),
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>((bang_type, bytes))) =&gt; <span class="macro-nonterminal">$self</span>.state.emit_bang(bang_type, bytes),
                 <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e),
             },
             <span class="comment">// `&lt;/` - closing tag
-            </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="string">b&#39;/&#39;</span>)) =&gt; <span class="kw">match </span><span class="macro-nonterminal">$reader
-                </span>.read_bytes_until(<span class="string">b&#39;&gt;&#39;</span>, <span class="macro-nonterminal">$buf</span>, <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.parser.offset)
+            </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="string">b'/'</span>)) =&gt; <span class="kw">match </span><span class="macro-nonterminal">$reader
+                </span>.read_bytes_until(<span class="string">b'&gt;'</span>, <span class="macro-nonterminal">$buf</span>, <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.state.offset)
                 $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
             </span>{
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">Event::Eof</span>),
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(bytes)) =&gt; <span class="macro-nonterminal">$self</span>.parser.emit_end(bytes),
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(bytes)) =&gt; <span class="macro-nonterminal">$self</span>.state.emit_end(bytes),
                 <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e),
             },
             <span class="comment">// `&lt;?` - processing instruction
-            </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="string">b&#39;?&#39;</span>)) =&gt; <span class="kw">match </span><span class="macro-nonterminal">$reader
-                </span>.read_bytes_until(<span class="string">b&#39;&gt;&#39;</span>, <span class="macro-nonterminal">$buf</span>, <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.parser.offset)
+            </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="string">b'?'</span>)) =&gt; <span class="kw">match </span><span class="macro-nonterminal">$reader
+                </span>.read_bytes_until(<span class="string">b'&gt;'</span>, <span class="macro-nonterminal">$buf</span>, <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.state.offset)
                 $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
             </span>{
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">Event::Eof</span>),
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(bytes)) =&gt; <span class="macro-nonterminal">$self</span>.parser.emit_question_mark(bytes),
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(bytes)) =&gt; <span class="macro-nonterminal">$self</span>.state.emit_question_mark(bytes),
                 <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e),
             },
             <span class="comment">// `&lt;...` - opening or self-closed tag
             </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="kw">_</span>)) =&gt; <span class="kw">match </span><span class="macro-nonterminal">$reader
-                </span>.read_element(<span class="macro-nonterminal">$buf</span>, <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.parser.offset)
+                </span>.read_element(<span class="macro-nonterminal">$buf</span>, <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$self</span>.state.offset)
                 $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
             </span>{
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">Event::Eof</span>),
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(bytes)) =&gt; <span class="macro-nonterminal">$self</span>.parser.emit_start(bytes),
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(bytes)) =&gt; <span class="macro-nonterminal">$self</span>.state.emit_start(bytes),
                 <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e),
             },
             <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; <span class="prelude-val">Ok</span>(Event::Eof),
@@ -2350,7 +2353,7 @@
                 }
                 <span class="prelude-val">Ok</span>(Event::Eof) =&gt; {
                     <span class="kw">let </span>name = <span class="macro-nonterminal">$self</span>.decoder().decode(<span class="macro-nonterminal">$end</span>.as_ref());
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::UnexpectedEof(<span class="macro">format!</span>(<span class="string">&quot;&lt;/{:?}&gt;&quot;</span>, name)));
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::UnexpectedEof(<span class="macro">format!</span>(<span class="string">"&lt;/{:?}&gt;"</span>, name)));
                 }
                 <span class="kw">_ </span>=&gt; (),
             }
@@ -2358,12 +2361,12 @@
     }};
 }
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;async-tokio&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"async-tokio"</span>)]
 </span><span class="kw">mod </span>async_tokio;
 <span class="kw">mod </span>buffered_reader;
 <span class="kw">mod </span>ns_reader;
-<span class="kw">mod </span>parser;
 <span class="kw">mod </span>slice_reader;
+<span class="kw">mod </span>state;
 
 <span class="kw">pub use </span>ns_reader::NsReader;
 
@@ -2380,11 +2383,11 @@
 ///   subgraph _
 ///     direction LR
 ///
-///     Init      -- &quot;(no event)&quot;\n                                       --&gt; OpenedTag
+///     Init      -- "(no event)"\n                                       --&gt; OpenedTag
 ///     OpenedTag -- Decl, DocType, PI\nComment, CData\nStart, Empty, End --&gt; ClosedTag
-///     ClosedTag -- &quot;#lt;false#gt;\n(no event)&quot;\nText                    --&gt; OpenedTag
+///     ClosedTag -- "#lt;false#gt;\n(no event)"\nText                    --&gt; OpenedTag
 ///   end
-///   ClosedTag -- &quot;#lt;true#gt;&quot;\nStart --&gt; Empty
+///   ClosedTag -- "#lt;true#gt;"\nStart --&gt; Empty
 ///   Empty     -- End                   --&gt; ClosedTag
 ///   _ -. Eof .-&gt; Exit
 /// ```
@@ -2410,7 +2413,7 @@
     /// [`Event::Start`] event. The next event emitted will be an [`Event::End`],
     /// after which reader returned to the `ClosedTag` state.
     ///
-    /// [`expand_empty_elements`]: Parser::expand_empty_elements
+    /// [`expand_empty_elements`]: ReaderState::expand_empty_elements
     </span>Empty,
     <span class="doccomment">/// Reader enters this state when `Eof` event generated or an error occurred.
     /// This is the last state, the reader stay in it forever.
@@ -2425,29 +2428,29 @@
 /// flowchart LR
 ///   Implicit    -- from_str       --&gt; Explicit
 ///   Implicit    -- BOM            --&gt; BomDetected
-///   Implicit    -- &quot;encoding=...&quot; --&gt; XmlDetected
-///   BomDetected -- &quot;encoding=...&quot; --&gt; XmlDetected
+///   Implicit    -- "encoding=..." --&gt; XmlDetected
+///   BomDetected -- "encoding=..." --&gt; XmlDetected
 /// ```
-</span><span class="attr">#[cfg(feature = <span class="string">&quot;encoding&quot;</span>)]
+</span><span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
 #[derive(Clone, Copy)]
 </span><span class="kw">enum </span>EncodingRef {
     <span class="doccomment">/// Encoding was implicitly assumed to have a specified value. It can be refined
     /// using BOM or by the XML declaration event (`&lt;?xml encoding=... ?&gt;`)
-    </span>Implicit(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Encoding),
+    </span>Implicit(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>Encoding),
     <span class="doccomment">/// Encoding was explicitly set to the desired value. It cannot be changed
     /// nor by BOM, nor by parsing XML declaration (`&lt;?xml encoding=... ?&gt;`)
-    </span>Explicit(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Encoding),
+    </span>Explicit(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>Encoding),
     <span class="doccomment">/// Encoding was detected from a byte order mark (BOM) or by the first bytes
     /// of the content. It can be refined by the XML declaration event (`&lt;?xml encoding=... ?&gt;`)
-    </span>BomDetected(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Encoding),
+    </span>BomDetected(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>Encoding),
     <span class="doccomment">/// Encoding was detected using XML declaration event (`&lt;?xml encoding=... ?&gt;`).
     /// It can no longer change
-    </span>XmlDetected(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Encoding),
+    </span>XmlDetected(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>Encoding),
 }
-<span class="attr">#[cfg(feature = <span class="string">&quot;encoding&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
 </span><span class="kw">impl </span>EncodingRef {
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>encoding(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Encoding {
+    </span><span class="kw">fn </span>encoding(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>Encoding {
         <span class="kw">match </span><span class="self">self </span>{
             <span class="self">Self</span>::Implicit(e) =&gt; e,
             <span class="self">Self</span>::Explicit(e) =&gt; e,
@@ -2479,10 +2482,10 @@
 /// use quick_xml::events::Event;
 /// use quick_xml::reader::Reader;
 ///
-/// let xml = r#&quot;&lt;tag1 att1 = &quot;test&quot;&gt;
+/// let xml = r#"&lt;tag1 att1 = "test"&gt;
 ///                 &lt;tag2&gt;&lt;!--Test comment--&gt;Test&lt;/tag2&gt;
 ///                 &lt;tag2&gt;Test 2&lt;/tag2&gt;
-///              &lt;/tag1&gt;&quot;#;
+///              &lt;/tag1&gt;"#;
 /// let mut reader = Reader::from_str(xml);
 /// reader.trim_text(true);
 ///
@@ -2492,20 +2495,20 @@
 ///
 /// // The `Reader` does not implement `Iterator` because it outputs borrowed data (`Cow`s)
 /// loop {
-///     // NOTE: this is the generic case when we don&#39;t know about the input BufRead.
-///     // when the input is a &amp;str or a &amp;[u8], we don&#39;t actually need to use another
+///     // NOTE: this is the generic case when we don't know about the input BufRead.
+///     // when the input is a &amp;str or a &amp;[u8], we don't actually need to use another
 ///     // buffer, we could directly call `reader.read_event()`
 ///     match reader.read_event_into(&amp;mut buf) {
-///         Err(e) =&gt; panic!(&quot;Error at position {}: {:?}&quot;, reader.buffer_position(), e),
+///         Err(e) =&gt; panic!("Error at position {}: {:?}", reader.buffer_position(), e),
 ///         // exits the loop when reaching end of file
 ///         Ok(Event::Eof) =&gt; break,
 ///
 ///         Ok(Event::Start(e)) =&gt; {
 ///             match e.name().as_ref() {
-///                 b&quot;tag1&quot; =&gt; println!(&quot;attributes values: {:?}&quot;,
+///                 b"tag1" =&gt; println!("attributes values: {:?}",
 ///                                     e.attributes().map(|a| a.unwrap().value)
 ///                                     .collect::&lt;Vec&lt;_&gt;&gt;()),
-///                 b&quot;tag2&quot; =&gt; count += 1,
+///                 b"tag2" =&gt; count += 1,
 ///                 _ =&gt; (),
 ///             }
 ///         }
@@ -2514,7 +2517,7 @@
 ///         // There are several other `Event`s we do not consider here
 ///         _ =&gt; (),
 ///     }
-///     // if we don&#39;t keep a borrow elsewhere, we can clear the buffer to keep memory usage low
+///     // if we don't keep a borrow elsewhere, we can clear the buffer to keep memory usage low
 ///     buf.clear();
 /// }
 /// ```
@@ -2525,7 +2528,7 @@
     <span class="doccomment">/// Source of data for parse
     </span>reader: R,
     <span class="doccomment">/// Configuration and current parse state
-    </span>parser: Parser,
+    </span>state: ReaderState,
 }
 
 <span class="doccomment">/// Builder methods
@@ -2534,7 +2537,7 @@
     </span><span class="kw">pub fn </span>from_reader(reader: R) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             reader,
-            parser: Parser::default(),
+            state: ReaderState::default(),
         }
     }
 
@@ -2555,10 +2558,10 @@
     /// use quick_xml::events::Event;
     /// use quick_xml::reader::Reader;
     ///
-    /// let xml = r#&quot;&lt;tag1 att1 = &quot;test&quot;&gt;
+    /// let xml = r#"&lt;tag1 att1 = "test"&gt;
     ///                 &lt;tag2&gt;&lt;!--Test comment--&gt;Test&lt;/tag2&gt;
     ///                 &lt;tag3&gt;Test 2&lt;/tag3&gt;
-    ///              &lt;/tag1&gt;&quot;#;
+    ///              &lt;/tag1&gt;"#;
     /// let mut reader = Reader::from_reader(Cursor::new(xml.as_bytes()));
     /// let mut buf = Vec::new();
     ///
@@ -2566,11 +2569,11 @@
     ///     let end_pos = reader.buffer_position();
     ///     let mut cursor = reader.into_inner();
     ///     let s = String::from_utf8(cursor.into_inner()[0..end_pos].to_owned())
-    ///         .expect(&quot;can&#39;t make a string&quot;);
+    ///         .expect("can't make a string");
     ///     let mut line = 1;
     ///     let mut column = 0;
     ///     for c in s.chars() {
-    ///         if c == &#39;\n&#39; {
+    ///         if c == '\n' {
     ///             line += 1;
     ///             column = 0;
     ///         } else {
@@ -2583,9 +2586,9 @@
     /// loop {
     ///     match reader.read_event_into(&amp;mut buf) {
     ///         Ok(Event::Start(ref e)) =&gt; match e.name().as_ref() {
-    ///             b&quot;tag1&quot; | b&quot;tag2&quot; =&gt; (),
+    ///             b"tag1" | b"tag2" =&gt; (),
     ///             tag =&gt; {
-    ///                 assert_eq!(b&quot;tag3&quot;, tag);
+    ///                 assert_eq!(b"tag3", tag);
     ///                 assert_eq!((3, 22), into_line_and_column(reader));
     ///                 break;
     ///             }
@@ -2614,25 +2617,27 @@
     ///
     /// Useful when debugging errors.
     </span><span class="kw">pub fn </span>buffer_position(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="comment">// when internal state is OpenedTag, we have actually read until &#39;&lt;&#39;,
-        // which we don&#39;t want to show
-        </span><span class="kw">if let </span>ParseState::OpenedTag = <span class="self">self</span>.parser.state {
-            <span class="self">self</span>.parser.offset - <span class="number">1
+        <span class="comment">// when internal state is OpenedTag, we have actually read until '&lt;',
+        // which we don't want to show
+        </span><span class="kw">if let </span>ParseState::OpenedTag = <span class="self">self</span>.state.state {
+            <span class="self">self</span>.state.offset - <span class="number">1
         </span>} <span class="kw">else </span>{
-            <span class="self">self</span>.parser.offset
+            <span class="self">self</span>.state.offset
         }
     }
 
     <span class="doccomment">/// Get the decoder, used to decode bytes, read by this reader, to the strings.
     ///
-    /// If `encoding` feature is enabled, the used encoding may change after
+    /// If [`encoding`] feature is enabled, the used encoding may change after
     /// parsing the XML declaration, otherwise encoding is fixed to UTF-8.
     ///
-    /// If `encoding` feature is enabled and no encoding is specified in declaration,
+    /// If [`encoding`] feature is enabled and no encoding is specified in declaration,
     /// defaults to UTF-8.
+    ///
+    /// [`encoding`]: ../index.html#encoding
     </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>decoder(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Decoder {
-        <span class="self">self</span>.parser.decoder()
+        <span class="self">self</span>.state.decoder()
     }
 }
 
@@ -2641,29 +2646,29 @@
     <span class="doccomment">/// Read text into the given buffer, and return an event that borrows from
     /// either that buffer or from the input itself, based on the type of the
     /// reader.
-    </span><span class="kw">fn </span>read_event_impl&lt;<span class="lifetime">&#39;i</span>, B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>buf: B) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">&#39;i</span>&gt;&gt;
+    </span><span class="kw">fn </span>read_event_impl&lt;<span class="lifetime">'i</span>, B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>buf: B) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'i</span>&gt;&gt;
     <span class="kw">where
-        </span>R: XmlSource&lt;<span class="lifetime">&#39;i</span>, B&gt;,
+        </span>R: XmlSource&lt;<span class="lifetime">'i</span>, B&gt;,
     {
         <span class="macro">read_event_impl!</span>(<span class="self">self</span>, buf, <span class="self">self</span>.reader, read_until_open, read_until_close)
     }
 
-    <span class="doccomment">/// Read until &#39;&lt;&#39; is found, moves reader to an `OpenedTag` state and returns a `Text` event.
+    <span class="doccomment">/// Read until '&lt;' is found, moves reader to an `OpenedTag` state and returns a `Text` event.
     ///
     /// Returns inner `Ok` if the loop should be broken and an event returned.
     /// Returns inner `Err` with the same `buf` because Rust borrowck stumbles upon this case in particular.
-    </span><span class="kw">fn </span>read_until_open&lt;<span class="lifetime">&#39;i</span>, B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: B) -&gt; <span class="prelude-ty">Result</span>&lt;std::result::Result&lt;Event&lt;<span class="lifetime">&#39;i</span>&gt;, B&gt;&gt;
+    </span><span class="kw">fn </span>read_until_open&lt;<span class="lifetime">'i</span>, B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: B) -&gt; <span class="prelude-ty">Result</span>&lt;std::result::Result&lt;Event&lt;<span class="lifetime">'i</span>&gt;, B&gt;&gt;
     <span class="kw">where
-        </span>R: XmlSource&lt;<span class="lifetime">&#39;i</span>, B&gt;,
+        </span>R: XmlSource&lt;<span class="lifetime">'i</span>, B&gt;,
     {
         <span class="macro">read_until_open!</span>(<span class="self">self</span>, buf, <span class="self">self</span>.reader, read_event_impl)
     }
 
     <span class="doccomment">/// Private function to read until `&gt;` is found. This function expects that
     /// it was called just after encounter a `&lt;` symbol.
-    </span><span class="kw">fn </span>read_until_close&lt;<span class="lifetime">&#39;i</span>, B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: B) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">&#39;i</span>&gt;&gt;
+    </span><span class="kw">fn </span>read_until_close&lt;<span class="lifetime">'i</span>, B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: B) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'i</span>&gt;&gt;
     <span class="kw">where
-        </span>R: XmlSource&lt;<span class="lifetime">&#39;i</span>, B&gt;,
+        </span>R: XmlSource&lt;<span class="lifetime">'i</span>, B&gt;,
     {
         <span class="macro">read_until_close!</span>(<span class="self">self</span>, buf, <span class="self">self</span>.reader)
     }
@@ -2682,17 +2687,17 @@
 /// deserialization.
 ///
 /// # Parameters
-/// - `&#39;r`: lifetime of a buffer from which events will borrow
+/// - `'r`: lifetime of a buffer from which events will borrow
 /// - `B`: a type of a buffer that can be used to store data read from `Self` and
 ///   from which events can borrow
-</span><span class="kw">trait </span>XmlSource&lt;<span class="lifetime">&#39;r</span>, B&gt; {
+</span><span class="kw">trait </span>XmlSource&lt;<span class="lifetime">'r</span>, B&gt; {
     <span class="doccomment">/// Removes UTF-8 BOM if it is present
-    </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;encoding&quot;</span>))]
+    </span><span class="attr">#[cfg(not(feature = <span class="string">"encoding"</span>))]
     </span><span class="kw">fn </span>remove_utf8_bom(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
 
     <span class="doccomment">/// Determines encoding from the start of input and removes BOM if it is present
-    </span><span class="attr">#[cfg(feature = <span class="string">&quot;encoding&quot;</span>)]
-    </span><span class="kw">fn </span>detect_encoding(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Encoding&gt;&gt;;
+    </span><span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
+    </span><span class="kw">fn </span>detect_encoding(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>Encoding&gt;&gt;;
 
     <span class="doccomment">/// Read input until `byte` is found or end of input is reached.
     ///
@@ -2703,12 +2708,12 @@
     ///
     /// ```ignore
     /// let mut position = 0;
-    /// let mut input = b&quot;abc*def&quot;.as_ref();
+    /// let mut input = b"abc*def".as_ref();
     /// //                    ^= 4
     ///
     /// assert_eq!(
-    ///     input.read_bytes_until(b&#39;*&#39;, (), &amp;mut position).unwrap(),
-    ///     Some(b&quot;abc&quot;.as_ref())
+    ///     input.read_bytes_until(b'*', (), &amp;mut position).unwrap(),
+    ///     Some(b"abc".as_ref())
     /// );
     /// assert_eq!(position, 4); // position after the symbol matched
     /// ```
@@ -2725,7 +2730,7 @@
         byte: u8,
         buf: B,
         position: <span class="kw-2">&amp;mut </span>usize,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;r </span>[u8]&gt;&gt;;
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'r </span>[u8]&gt;&gt;;
 
     <span class="doccomment">/// Read input until comment, CDATA or processing instruction is finished.
     ///
@@ -2746,7 +2751,7 @@
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         buf: B,
         position: <span class="kw-2">&amp;mut </span>usize,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;(BangType, <span class="kw-2">&amp;</span><span class="lifetime">&#39;r </span>[u8])&gt;&gt;;
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;(BangType, <span class="kw-2">&amp;</span><span class="lifetime">'r </span>[u8])&gt;&gt;;
 
     <span class="doccomment">/// Read input until XML element is closed by approaching a `&gt;` symbol.
     /// Returns `Some(buffer)` that contains a data between `&lt;` and `&gt;` or
@@ -2757,10 +2762,10 @@
     ///
     /// Attribute values are [defined] as follows:
     /// ```plain
-    /// AttValue := &#39;&quot;&#39; (([^&lt;&amp;&quot;]) | Reference)* &#39;&quot;&#39;
-    ///           | &quot;&#39;&quot; (([^&lt;&amp;&#39;]) | Reference)* &quot;&#39;&quot;
+    /// AttValue := '"' (([^&lt;&amp;"]) | Reference)* '"'
+    ///           | "'" (([^&lt;&amp;']) | Reference)* "'"
     /// ```
-    /// (`Reference` is something like `&amp;quot;`, but we don&#39;t care about
+    /// (`Reference` is something like `&amp;quot;`, but we don't care about
     /// escaped characters at this level)
     ///
     /// # Parameters
@@ -2770,7 +2775,7 @@
     ///
     /// [defined]: https://www.w3.org/TR/xml11/#NT-AttValue
     /// [events]: crate::events::Event
-    </span><span class="kw">fn </span>read_element(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: B, position: <span class="kw-2">&amp;mut </span>usize) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;r </span>[u8]&gt;&gt;;
+    </span><span class="kw">fn </span>read_element(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: B, position: <span class="kw-2">&amp;mut </span>usize) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'r </span>[u8]&gt;&gt;;
 
     <span class="doccomment">/// Consume and discard all the whitespace until the next non-whitespace
     /// character or EOF.
@@ -2805,11 +2810,11 @@
     <span class="attr">#[inline(always)]
     </span><span class="kw">fn </span>new(byte: <span class="prelude-ty">Option</span>&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="prelude-val">Ok</span>(<span class="kw">match </span>byte {
-            <span class="prelude-val">Some</span>(<span class="string">b&#39;[&#39;</span>) =&gt; <span class="self">Self</span>::CData,
-            <span class="prelude-val">Some</span>(<span class="string">b&#39;-&#39;</span>) =&gt; <span class="self">Self</span>::Comment,
-            <span class="prelude-val">Some</span>(<span class="string">b&#39;D&#39;</span>) | <span class="prelude-val">Some</span>(<span class="string">b&#39;d&#39;</span>) =&gt; <span class="self">Self</span>::DocType,
+            <span class="prelude-val">Some</span>(<span class="string">b'['</span>) =&gt; <span class="self">Self</span>::CData,
+            <span class="prelude-val">Some</span>(<span class="string">b'-'</span>) =&gt; <span class="self">Self</span>::Comment,
+            <span class="prelude-val">Some</span>(<span class="string">b'D'</span>) | <span class="prelude-val">Some</span>(<span class="string">b'd'</span>) =&gt; <span class="self">Self</span>::DocType,
             <span class="prelude-val">Some</span>(b) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::UnexpectedBang(b)),
-            <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::UnexpectedEof(<span class="string">&quot;Bang&quot;</span>.to_string())),
+            <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::UnexpectedEof(<span class="string">"Bang"</span>.to_string())),
         })
     }
 
@@ -2820,14 +2825,14 @@
     /// - `buf`: buffer with data consumed on previous iterations
     /// - `chunk`: data read on current iteration and not yet consumed from reader
     </span><span class="attr">#[inline(always)]
-    </span><span class="kw">fn </span>parse&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, buf: <span class="kw-2">&amp;</span>[u8], chunk: <span class="kw-2">&amp;</span><span class="lifetime">&#39;b </span>[u8]) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;b </span>[u8], usize)&gt; {
-        <span class="kw">for </span>i <span class="kw">in </span>memchr::memchr_iter(<span class="string">b&#39;&gt;&#39;</span>, chunk) {
+    </span><span class="kw">fn </span>parse&lt;<span class="lifetime">'b</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, buf: <span class="kw-2">&amp;</span>[u8], chunk: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8], usize)&gt; {
+        <span class="kw">for </span>i <span class="kw">in </span>memchr::memchr_iter(<span class="string">b'&gt;'</span>, chunk) {
             <span class="kw">match </span><span class="self">self </span>{
                 <span class="comment">// Need to read at least 6 symbols (`!----&gt;`) for properly finished comment
                 // &lt;!----&gt; - XML comment
                 //  012345 - i
                 </span><span class="self">Self</span>::Comment <span class="kw">if </span>buf.len() + i &gt; <span class="number">4 </span>=&gt; {
-                    <span class="kw">if </span>chunk[..i].ends_with(<span class="string">b&quot;--&quot;</span>) {
+                    <span class="kw">if </span>chunk[..i].ends_with(<span class="string">b"--"</span>) {
                         <span class="comment">// We cannot strip last `--` from the buffer because we need it in case of
                         // check_comments enabled option. XML standard requires that comment
                         // will not end with `---&gt;` sequence because this is a special case of
@@ -2836,35 +2841,35 @@
                     </span>}
                     <span class="comment">// End sequence `-|-&gt;` was splitted at |
                     //        buf --/   \-- chunk
-                    </span><span class="kw">if </span>i == <span class="number">1 </span>&amp;&amp; buf.ends_with(<span class="string">b&quot;-&quot;</span>) &amp;&amp; chunk[<span class="number">0</span>] == <span class="string">b&#39;-&#39; </span>{
+                    </span><span class="kw">if </span>i == <span class="number">1 </span>&amp;&amp; buf.ends_with(<span class="string">b"-"</span>) &amp;&amp; chunk[<span class="number">0</span>] == <span class="string">b'-' </span>{
                         <span class="kw">return </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>chunk[..i], i + <span class="number">1</span>)); <span class="comment">// +1 for `&gt;`
                     </span>}
                     <span class="comment">// End sequence `--|&gt;` was splitted at |
                     //         buf --/   \-- chunk
-                    </span><span class="kw">if </span>i == <span class="number">0 </span>&amp;&amp; buf.ends_with(<span class="string">b&quot;--&quot;</span>) {
+                    </span><span class="kw">if </span>i == <span class="number">0 </span>&amp;&amp; buf.ends_with(<span class="string">b"--"</span>) {
                         <span class="kw">return </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>[], i + <span class="number">1</span>)); <span class="comment">// +1 for `&gt;`
                     </span>}
                 }
                 <span class="self">Self</span>::Comment =&gt; {}
                 <span class="self">Self</span>::CData =&gt; {
-                    <span class="kw">if </span>chunk[..i].ends_with(<span class="string">b&quot;]]&quot;</span>) {
+                    <span class="kw">if </span>chunk[..i].ends_with(<span class="string">b"]]"</span>) {
                         <span class="kw">return </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>chunk[..i], i + <span class="number">1</span>)); <span class="comment">// +1 for `&gt;`
                     </span>}
                     <span class="comment">// End sequence `]|]&gt;` was splitted at |
                     //        buf --/   \-- chunk
-                    </span><span class="kw">if </span>i == <span class="number">1 </span>&amp;&amp; buf.ends_with(<span class="string">b&quot;]&quot;</span>) &amp;&amp; chunk[<span class="number">0</span>] == <span class="string">b&#39;]&#39; </span>{
+                    </span><span class="kw">if </span>i == <span class="number">1 </span>&amp;&amp; buf.ends_with(<span class="string">b"]"</span>) &amp;&amp; chunk[<span class="number">0</span>] == <span class="string">b']' </span>{
                         <span class="kw">return </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>chunk[..i], i + <span class="number">1</span>)); <span class="comment">// +1 for `&gt;`
                     </span>}
                     <span class="comment">// End sequence `]]|&gt;` was splitted at |
                     //         buf --/   \-- chunk
-                    </span><span class="kw">if </span>i == <span class="number">0 </span>&amp;&amp; buf.ends_with(<span class="string">b&quot;]]&quot;</span>) {
+                    </span><span class="kw">if </span>i == <span class="number">0 </span>&amp;&amp; buf.ends_with(<span class="string">b"]]"</span>) {
                         <span class="kw">return </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>[], i + <span class="number">1</span>)); <span class="comment">// +1 for `&gt;`
                     </span>}
                 }
                 <span class="self">Self</span>::DocType =&gt; {
                     <span class="kw">let </span>content = <span class="kw-2">&amp;</span>chunk[..i];
-                    <span class="kw">let </span>balance = memchr::memchr2_iter(<span class="string">b&#39;&lt;&#39;</span>, <span class="string">b&#39;&gt;&#39;</span>, content)
-                        .map(|p| <span class="kw">if </span>content[p] == <span class="string">b&#39;&lt;&#39; </span>{ <span class="number">1i32 </span>} <span class="kw">else </span>{ -<span class="number">1 </span>})
+                    <span class="kw">let </span>balance = memchr::memchr2_iter(<span class="string">b'&lt;'</span>, <span class="string">b'&gt;'</span>, content)
+                        .map(|p| <span class="kw">if </span>content[p] == <span class="string">b'&lt;' </span>{ <span class="number">1i32 </span>} <span class="kw">else </span>{ -<span class="number">1 </span>})
                         .sum::&lt;i32&gt;();
                     <span class="kw">if </span>balance == <span class="number">0 </span>{
                         <span class="kw">return </span><span class="prelude-val">Some</span>((content, i + <span class="number">1</span>)); <span class="comment">// +1 for `&gt;`
@@ -2877,9 +2882,9 @@
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>to_err(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Error {
         <span class="kw">let </span>bang_str = <span class="kw">match </span><span class="self">self </span>{
-            <span class="self">Self</span>::CData =&gt; <span class="string">&quot;CData&quot;</span>,
-            <span class="self">Self</span>::Comment =&gt; <span class="string">&quot;Comment&quot;</span>,
-            <span class="self">Self</span>::DocType =&gt; <span class="string">&quot;DOCTYPE&quot;</span>,
+            <span class="self">Self</span>::CData =&gt; <span class="string">"CData"</span>,
+            <span class="self">Self</span>::Comment =&gt; <span class="string">"Comment"</span>,
+            <span class="self">Self</span>::DocType =&gt; <span class="string">"DOCTYPE"</span>,
         };
         Error::UnexpectedEof(bang_str.to_string())
     }
@@ -2900,16 +2905,16 @@
     /// Returns a tuple with part of chunk up to element closing symbol `&gt;`
     /// and a position after that symbol or `None` if such symbol was not found
     </span><span class="attr">#[inline(always)]
-    </span><span class="kw">fn </span>change&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, chunk: <span class="kw-2">&amp;</span><span class="lifetime">&#39;b </span>[u8]) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;b </span>[u8], usize)&gt; {
-        <span class="kw">for </span>i <span class="kw">in </span>memchr::memchr3_iter(<span class="string">b&#39;&gt;&#39;</span>, <span class="string">b&#39;\&#39;&#39;</span>, <span class="string">b&#39;&quot;&#39;</span>, chunk) {
+    </span><span class="kw">fn </span>change&lt;<span class="lifetime">'b</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, chunk: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8], usize)&gt; {
+        <span class="kw">for </span>i <span class="kw">in </span>memchr::memchr3_iter(<span class="string">b'&gt;'</span>, <span class="string">b'\''</span>, <span class="string">b'"'</span>, chunk) {
             <span class="kw-2">*</span><span class="self">self </span>= <span class="kw">match </span>(<span class="kw-2">*</span><span class="self">self</span>, chunk[i]) {
                 <span class="comment">// only allowed to match `&gt;` while we are in state `Elem`
-                </span>(<span class="self">Self</span>::Elem, <span class="string">b&#39;&gt;&#39;</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>chunk[..i], i + <span class="number">1</span>)),
-                (<span class="self">Self</span>::Elem, <span class="string">b&#39;\&#39;&#39;</span>) =&gt; <span class="self">Self</span>::SingleQ,
-                (<span class="self">Self</span>::Elem, <span class="string">b&#39;\&quot;&#39;</span>) =&gt; <span class="self">Self</span>::DoubleQ,
+                </span>(<span class="self">Self</span>::Elem, <span class="string">b'&gt;'</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>chunk[..i], i + <span class="number">1</span>)),
+                (<span class="self">Self</span>::Elem, <span class="string">b'\''</span>) =&gt; <span class="self">Self</span>::SingleQ,
+                (<span class="self">Self</span>::Elem, <span class="string">b'\"'</span>) =&gt; <span class="self">Self</span>::DoubleQ,
 
                 <span class="comment">// the only end_byte that gets us out if the same character
-                </span>(<span class="self">Self</span>::SingleQ, <span class="string">b&#39;\&#39;&#39;</span>) | (<span class="self">Self</span>::DoubleQ, <span class="string">b&#39;&quot;&#39;</span>) =&gt; <span class="self">Self</span>::Elem,
+                </span>(<span class="self">Self</span>::SingleQ, <span class="string">b'\''</span>) | (<span class="self">Self</span>::DoubleQ, <span class="string">b'"'</span>) =&gt; <span class="self">Self</span>::Elem,
 
                 <span class="comment">// all other bytes: no state change
                 </span><span class="kw">_ </span>=&gt; <span class="kw-2">*</span><span class="self">self</span>,
@@ -2922,7 +2927,7 @@
 <span class="doccomment">/// A function to check whether the byte is a whitespace (blank, new line, carriage return or tab)
 </span><span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const fn </span>is_whitespace(b: u8) -&gt; bool {
-    <span class="macro">matches!</span>(b, <span class="string">b&#39; &#39; </span>| <span class="string">b&#39;\r&#39; </span>| <span class="string">b&#39;\n&#39; </span>| <span class="string">b&#39;\t&#39;</span>)
+    <span class="macro">matches!</span>(b, <span class="string">b' ' </span>| <span class="string">b'\r' </span>| <span class="string">b'\n' </span>| <span class="string">b'\t'</span>)
 }
 
 <span class="comment">////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2952,12 +2957,12 @@
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty</span>() {
                     <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                     <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;&quot;</span>.as_ref();
+                    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b""</span>.as_ref();
                     <span class="comment">//                ^= 0
 
                     </span><span class="macro">assert_eq!</span>(
                         <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input)
-                            .read_bytes_until(<span class="string">b&#39;*&#39;</span>, buf, <span class="kw-2">&amp;mut </span>position)
+                            .read_bytes_until(<span class="string">b'*'</span>, buf, <span class="kw-2">&amp;mut </span>position)
                             $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
                             </span>.<span class="macro-nonterminal">unwrap</span>()
                             .map(Bytes),
@@ -2972,16 +2977,16 @@
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">non_existent</span>() {
                     <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                     <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;abcdef&quot;</span>.as_ref();
+                    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"abcdef"</span>.as_ref();
                     <span class="comment">//                      ^= 6
 
                     </span><span class="macro">assert_eq!</span>(
                         <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input)
-                            .read_bytes_until(<span class="string">b&#39;*&#39;</span>, buf, <span class="kw-2">&amp;mut </span>position)
+                            .read_bytes_until(<span class="string">b'*'</span>, buf, <span class="kw-2">&amp;mut </span>position)
                             $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
                             </span>.<span class="macro-nonterminal">unwrap</span>()
                             .map(Bytes),
-                        <span class="prelude-val">Some</span>(Bytes(<span class="string">b&quot;abcdef&quot;</span>))
+                        <span class="prelude-val">Some</span>(Bytes(<span class="string">b"abcdef"</span>))
                     );
                     <span class="macro">assert_eq!</span>(position, <span class="number">6</span>);
                 }
@@ -2993,16 +2998,16 @@
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">at_the_start</span>() {
                     <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                     <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;*abcdef&quot;</span>.as_ref();
+                    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"*abcdef"</span>.as_ref();
                     <span class="comment">//                 ^= 1
 
                     </span><span class="macro">assert_eq!</span>(
                         <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input)
-                            .read_bytes_until(<span class="string">b&#39;*&#39;</span>, buf, <span class="kw-2">&amp;mut </span>position)
+                            .read_bytes_until(<span class="string">b'*'</span>, buf, <span class="kw-2">&amp;mut </span>position)
                             $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
                             </span>.<span class="macro-nonterminal">unwrap</span>()
                             .map(Bytes),
-                        <span class="prelude-val">Some</span>(Bytes(<span class="string">b&quot;&quot;</span>))
+                        <span class="prelude-val">Some</span>(Bytes(<span class="string">b""</span>))
                     );
                     <span class="macro">assert_eq!</span>(position, <span class="number">1</span>); <span class="comment">// position after the symbol matched
                 </span>}
@@ -3014,16 +3019,16 @@
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">inside</span>() {
                     <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                     <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;abc*def&quot;</span>.as_ref();
+                    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"abc*def"</span>.as_ref();
                     <span class="comment">//                    ^= 4
 
                     </span><span class="macro">assert_eq!</span>(
                         <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input)
-                            .read_bytes_until(<span class="string">b&#39;*&#39;</span>, buf, <span class="kw-2">&amp;mut </span>position)
+                            .read_bytes_until(<span class="string">b'*'</span>, buf, <span class="kw-2">&amp;mut </span>position)
                             $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
                             </span>.<span class="macro-nonterminal">unwrap</span>()
                             .map(Bytes),
-                        <span class="prelude-val">Some</span>(Bytes(<span class="string">b&quot;abc&quot;</span>))
+                        <span class="prelude-val">Some</span>(Bytes(<span class="string">b"abc"</span>))
                     );
                     <span class="macro">assert_eq!</span>(position, <span class="number">4</span>); <span class="comment">// position after the symbol matched
                 </span>}
@@ -3035,16 +3040,16 @@
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">in_the_end</span>() {
                     <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                     <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;abcdef*&quot;</span>.as_ref();
+                    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"abcdef*"</span>.as_ref();
                     <span class="comment">//                       ^= 7
 
                     </span><span class="macro">assert_eq!</span>(
                         <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input)
-                            .read_bytes_until(<span class="string">b&#39;*&#39;</span>, buf, <span class="kw-2">&amp;mut </span>position)
+                            .read_bytes_until(<span class="string">b'*'</span>, buf, <span class="kw-2">&amp;mut </span>position)
                             $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
                             </span>.<span class="macro-nonterminal">unwrap</span>()
                             .map(Bytes),
-                        <span class="prelude-val">Some</span>(Bytes(<span class="string">b&quot;abcdef&quot;</span>))
+                        <span class="prelude-val">Some</span>(Bytes(<span class="string">b"abcdef"</span>))
                     );
                     <span class="macro">assert_eq!</span>(position, <span class="number">7</span>); <span class="comment">// position after the symbol matched
                 </span>}
@@ -3064,18 +3069,18 @@
                     <span class="doccomment">/// Checks that if input begins like CDATA element, but CDATA start sequence
                     /// is not finished, parsing ends with an error
                     </span><span class="attr">#[<span class="macro-nonterminal">$test</span>]
-                    #[ignore = <span class="string">&quot;start CDATA sequence fully checked outside of `read_bang_element`&quot;</span>]
+                    #[ignore = <span class="string">"start CDATA sequence fully checked outside of `read_bang_element`"</span>]
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">not_properly_start</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;![]]&gt;other content&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"![]]&gt;other content"</span>.as_ref();
                         <span class="comment">//                ^= 0
 
                         </span><span class="kw">match </span><span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_bang_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;CData&quot; </span>=&gt; {}
+                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"CData" </span>=&gt; {}
                             x =&gt; <span class="macro">assert!</span>(
                                 <span class="bool-val">false</span>,
-                                <span class="string">r#&quot;Expected `UnexpectedEof(&quot;CData&quot;)`, but result is: {:?}&quot;#</span>,
+                                <span class="string">r#"Expected `UnexpectedEof("CData")`, but result is: {:?}"#</span>,
                                 x
                             ),
                         }
@@ -3088,14 +3093,14 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">not_closed</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;![CDATA[other content&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"![CDATA[other content"</span>.as_ref();
                         <span class="comment">//                ^= 0
 
                         </span><span class="kw">match </span><span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_bang_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;CData&quot; </span>=&gt; {}
+                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"CData" </span>=&gt; {}
                             x =&gt; <span class="macro">assert!</span>(
                                 <span class="bool-val">false</span>,
-                                <span class="string">r#&quot;Expected `UnexpectedEof(&quot;CData&quot;)`, but result is: {:?}&quot;#</span>,
+                                <span class="string">r#"Expected `UnexpectedEof("CData")`, but result is: {:?}"#</span>,
                                 x
                             ),
                         }
@@ -3107,7 +3112,7 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;![CDATA[]]&gt;other content&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"![CDATA[]]&gt;other content"</span>.as_ref();
                         <span class="comment">//                           ^= 11
 
                         </span><span class="macro">assert_eq!</span>(
@@ -3116,7 +3121,7 @@
                                 $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
                                 </span>.<span class="macro-nonterminal">unwrap</span>()
                                 .map(|(ty, data)| (ty, Bytes(data))),
-                            <span class="prelude-val">Some</span>((BangType::CData, Bytes(<span class="string">b&quot;![CDATA[]]&quot;</span>)))
+                            <span class="prelude-val">Some</span>((BangType::CData, Bytes(<span class="string">b"![CDATA[]]"</span>)))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">11</span>);
                     }
@@ -3128,7 +3133,7 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">with_content</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;![CDATA[cdata]] ]&gt;content]]&gt;other content]]&gt;&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"![CDATA[cdata]] ]&gt;content]]&gt;other content]]&gt;"</span>.as_ref();
                         <span class="comment">//                                            ^= 28
 
                         </span><span class="macro">assert_eq!</span>(
@@ -3137,7 +3142,7 @@
                                 $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
                                 </span>.<span class="macro-nonterminal">unwrap</span>()
                                 .map(|(ty, data)| (ty, Bytes(data))),
-                            <span class="prelude-val">Some</span>((BangType::CData, Bytes(<span class="string">b&quot;![CDATA[cdata]] ]&gt;content]]&quot;</span>)))
+                            <span class="prelude-val">Some</span>((BangType::CData, Bytes(<span class="string">b"![CDATA[cdata]] ]&gt;content]]"</span>)))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">28</span>);
                     }
@@ -3147,7 +3152,7 @@
                 /// comment data can contain any sequence except `--`:
                 ///
                 /// ```peg
-                /// comment = &#39;&lt;--&#39; (!&#39;--&#39; char)* &#39;--&gt;&#39;;
+                /// comment = '&lt;--' (!'--' char)* '--&gt;';
                 /// char = [#x1-#x2C]
                 ///      / [#x2E-#xD7FF]
                 ///      / [#xE000-#xFFFD]
@@ -3167,18 +3172,18 @@
                     <span class="kw">use </span>pretty_assertions::assert_eq;
 
                     <span class="attr">#[<span class="macro-nonterminal">$test</span>]
-                    #[ignore = <span class="string">&quot;start comment sequence fully checked outside of `read_bang_element`&quot;</span>]
+                    #[ignore = <span class="string">"start comment sequence fully checked outside of `read_bang_element`"</span>]
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">not_properly_start</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!- --&gt;other content&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!- --&gt;other content"</span>.as_ref();
                         <span class="comment">//                ^= 0
 
                         </span><span class="kw">match </span><span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_bang_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;Comment&quot; </span>=&gt; {}
+                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"Comment" </span>=&gt; {}
                             x =&gt; <span class="macro">assert!</span>(
                                 <span class="bool-val">false</span>,
-                                <span class="string">r#&quot;Expected `UnexpectedEof(&quot;Comment&quot;)`, but result is: {:?}&quot;#</span>,
+                                <span class="string">r#"Expected `UnexpectedEof("Comment")`, but result is: {:?}"#</span>,
                                 x
                             ),
                         }
@@ -3189,14 +3194,14 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">not_properly_end</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!-&gt;other content&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!-&gt;other content"</span>.as_ref();
                         <span class="comment">//                ^= 0
 
                         </span><span class="kw">match </span><span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_bang_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;Comment&quot; </span>=&gt; {}
+                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"Comment" </span>=&gt; {}
                             x =&gt; <span class="macro">assert!</span>(
                                 <span class="bool-val">false</span>,
-                                <span class="string">r#&quot;Expected `UnexpectedEof(&quot;Comment&quot;)`, but result is: {:?}&quot;#</span>,
+                                <span class="string">r#"Expected `UnexpectedEof("Comment")`, but result is: {:?}"#</span>,
                                 x
                             ),
                         }
@@ -3207,14 +3212,14 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">not_closed1</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!--other content&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!--other content"</span>.as_ref();
                         <span class="comment">//                ^= 0
 
                         </span><span class="kw">match </span><span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_bang_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;Comment&quot; </span>=&gt; {}
+                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"Comment" </span>=&gt; {}
                             x =&gt; <span class="macro">assert!</span>(
                                 <span class="bool-val">false</span>,
-                                <span class="string">r#&quot;Expected `UnexpectedEof(&quot;Comment&quot;)`, but result is: {:?}&quot;#</span>,
+                                <span class="string">r#"Expected `UnexpectedEof("Comment")`, but result is: {:?}"#</span>,
                                 x
                             ),
                         }
@@ -3225,14 +3230,14 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">not_closed2</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!--&gt;other content&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!--&gt;other content"</span>.as_ref();
                         <span class="comment">//                ^= 0
 
                         </span><span class="kw">match </span><span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_bang_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;Comment&quot; </span>=&gt; {}
+                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"Comment" </span>=&gt; {}
                             x =&gt; <span class="macro">assert!</span>(
                                 <span class="bool-val">false</span>,
-                                <span class="string">r#&quot;Expected `UnexpectedEof(&quot;Comment&quot;)`, but result is: {:?}&quot;#</span>,
+                                <span class="string">r#"Expected `UnexpectedEof("Comment")`, but result is: {:?}"#</span>,
                                 x
                             ),
                         }
@@ -3243,14 +3248,14 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">not_closed3</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!---&gt;other content&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!---&gt;other content"</span>.as_ref();
                         <span class="comment">//                ^= 0
 
                         </span><span class="kw">match </span><span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_bang_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;Comment&quot; </span>=&gt; {}
+                            <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"Comment" </span>=&gt; {}
                             x =&gt; <span class="macro">assert!</span>(
                                 <span class="bool-val">false</span>,
-                                <span class="string">r#&quot;Expected `UnexpectedEof(&quot;Comment&quot;)`, but result is: {:?}&quot;#</span>,
+                                <span class="string">r#"Expected `UnexpectedEof("Comment")`, but result is: {:?}"#</span>,
                                 x
                             ),
                         }
@@ -3261,7 +3266,7 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!----&gt;other content&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!----&gt;other content"</span>.as_ref();
                         <span class="comment">//                      ^= 6
 
                         </span><span class="macro">assert_eq!</span>(
@@ -3270,7 +3275,7 @@
                                 $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
                                 </span>.<span class="macro-nonterminal">unwrap</span>()
                                 .map(|(ty, data)| (ty, Bytes(data))),
-                            <span class="prelude-val">Some</span>((BangType::Comment, Bytes(<span class="string">b&quot;!----&quot;</span>)))
+                            <span class="prelude-val">Some</span>((BangType::Comment, Bytes(<span class="string">b"!----"</span>)))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">6</span>);
                     }
@@ -3279,7 +3284,7 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">with_content</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!---&gt;comment&lt;---&gt;other content&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!---&gt;comment&lt;---&gt;other content"</span>.as_ref();
                         <span class="comment">//                                 ^= 17
 
                         </span><span class="macro">assert_eq!</span>(
@@ -3288,7 +3293,7 @@
                                 $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
                                 </span>.<span class="macro-nonterminal">unwrap</span>()
                                 .map(|(ty, data)| (ty, Bytes(data))),
-                            <span class="prelude-val">Some</span>((BangType::Comment, Bytes(<span class="string">b&quot;!---&gt;comment&lt;---&quot;</span>)))
+                            <span class="prelude-val">Some</span>((BangType::Comment, Bytes(<span class="string">b"!---&gt;comment&lt;---"</span>)))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">17</span>);
                     }
@@ -3309,14 +3314,14 @@
                         </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">not_properly_start</span>() {
                             <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                             <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!D other content&quot;</span>.as_ref();
+                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!D other content"</span>.as_ref();
                             <span class="comment">//                ^= 0
 
                             </span><span class="kw">match </span><span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_bang_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                                <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;DOCTYPE&quot; </span>=&gt; {}
+                                <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"DOCTYPE" </span>=&gt; {}
                                 x =&gt; <span class="macro">assert!</span>(
                                     <span class="bool-val">false</span>,
-                                    <span class="string">r#&quot;Expected `UnexpectedEof(&quot;DOCTYPE&quot;)`, but result is: {:?}&quot;#</span>,
+                                    <span class="string">r#"Expected `UnexpectedEof("DOCTYPE")`, but result is: {:?}"#</span>,
                                     x
                                 ),
                             }
@@ -3327,14 +3332,14 @@
                         </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">without_space</span>() {
                             <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                             <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!DOCTYPEother content&quot;</span>.as_ref();
+                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!DOCTYPEother content"</span>.as_ref();
                             <span class="comment">//                ^= 0
 
                             </span><span class="kw">match </span><span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_bang_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                                <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;DOCTYPE&quot; </span>=&gt; {}
+                                <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"DOCTYPE" </span>=&gt; {}
                                 x =&gt; <span class="macro">assert!</span>(
                                     <span class="bool-val">false</span>,
-                                    <span class="string">r#&quot;Expected `UnexpectedEof(&quot;DOCTYPE&quot;)`, but result is: {:?}&quot;#</span>,
+                                    <span class="string">r#"Expected `UnexpectedEof("DOCTYPE")`, but result is: {:?}"#</span>,
                                     x
                                 ),
                             }
@@ -3345,7 +3350,7 @@
                         </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty</span>() {
                             <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                             <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!DOCTYPE&gt;other content&quot;</span>.as_ref();
+                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!DOCTYPE&gt;other content"</span>.as_ref();
                             <span class="comment">//                         ^= 9
 
                             </span><span class="macro">assert_eq!</span>(
@@ -3354,7 +3359,7 @@
                                     $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
                                     </span>.<span class="macro-nonterminal">unwrap</span>()
                                     .map(|(ty, data)| (ty, Bytes(data))),
-                                <span class="prelude-val">Some</span>((BangType::DocType, Bytes(<span class="string">b&quot;!DOCTYPE&quot;</span>)))
+                                <span class="prelude-val">Some</span>((BangType::DocType, Bytes(<span class="string">b"!DOCTYPE"</span>)))
                             );
                             <span class="macro">assert_eq!</span>(position, <span class="number">9</span>);
                         }
@@ -3363,14 +3368,14 @@
                         </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">not_closed</span>() {
                             <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                             <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!DOCTYPE other content&quot;</span>.as_ref();
+                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!DOCTYPE other content"</span>.as_ref();
                             <span class="comment">//                ^= 0
 
                             </span><span class="kw">match </span><span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_bang_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                                <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;DOCTYPE&quot; </span>=&gt; {}
+                                <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"DOCTYPE" </span>=&gt; {}
                                 x =&gt; <span class="macro">assert!</span>(
                                     <span class="bool-val">false</span>,
-                                    <span class="string">r#&quot;Expected `UnexpectedEof(&quot;DOCTYPE&quot;)`, but result is: {:?}&quot;#</span>,
+                                    <span class="string">r#"Expected `UnexpectedEof("DOCTYPE")`, but result is: {:?}"#</span>,
                                     x
                                 ),
                             }
@@ -3389,14 +3394,14 @@
                         </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">not_properly_start</span>() {
                             <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                             <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!d other content&quot;</span>.as_ref();
+                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!d other content"</span>.as_ref();
                             <span class="comment">//                ^= 0
 
                             </span><span class="kw">match </span><span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_bang_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                                <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;DOCTYPE&quot; </span>=&gt; {}
+                                <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"DOCTYPE" </span>=&gt; {}
                                 x =&gt; <span class="macro">assert!</span>(
                                     <span class="bool-val">false</span>,
-                                    <span class="string">r#&quot;Expected `UnexpectedEof(&quot;DOCTYPE&quot;)`, but result is: {:?}&quot;#</span>,
+                                    <span class="string">r#"Expected `UnexpectedEof("DOCTYPE")`, but result is: {:?}"#</span>,
                                     x
                                 ),
                             }
@@ -3407,14 +3412,14 @@
                         </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">without_space</span>() {
                             <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                             <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!doctypeother content&quot;</span>.as_ref();
+                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!doctypeother content"</span>.as_ref();
                             <span class="comment">//                ^= 0
 
                             </span><span class="kw">match </span><span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_bang_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                                <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;DOCTYPE&quot; </span>=&gt; {}
+                                <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"DOCTYPE" </span>=&gt; {}
                                 x =&gt; <span class="macro">assert!</span>(
                                     <span class="bool-val">false</span>,
-                                    <span class="string">r#&quot;Expected `UnexpectedEof(&quot;DOCTYPE&quot;)`, but result is: {:?}&quot;#</span>,
+                                    <span class="string">r#"Expected `UnexpectedEof("DOCTYPE")`, but result is: {:?}"#</span>,
                                     x
                                 ),
                             }
@@ -3425,7 +3430,7 @@
                         </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty</span>() {
                             <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                             <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!doctype&gt;other content&quot;</span>.as_ref();
+                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!doctype&gt;other content"</span>.as_ref();
                             <span class="comment">//                         ^= 9
 
                             </span><span class="macro">assert_eq!</span>(
@@ -3434,7 +3439,7 @@
                                     $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">?
                                     </span>.<span class="macro-nonterminal">unwrap</span>()
                                     .map(|(ty, data)| (ty, Bytes(data))),
-                                <span class="prelude-val">Some</span>((BangType::DocType, Bytes(<span class="string">b&quot;!doctype&quot;</span>)))
+                                <span class="prelude-val">Some</span>((BangType::DocType, Bytes(<span class="string">b"!doctype"</span>)))
                             );
                             <span class="macro">assert_eq!</span>(position, <span class="number">9</span>);
                         }
@@ -3443,14 +3448,14 @@
                         </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">not_closed</span>() {
                             <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                             <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;!doctype other content&quot;</span>.as_ref();
+                            <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"!doctype other content"</span>.as_ref();
                             <span class="comment">//                ^= 0
 
                             </span><span class="kw">match </span><span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_bang_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                                <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;DOCTYPE&quot; </span>=&gt; {}
+                                <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"DOCTYPE" </span>=&gt; {}
                                 x =&gt; <span class="macro">assert!</span>(
                                     <span class="bool-val">false</span>,
-                                    <span class="string">r#&quot;Expected `UnexpectedEof(&quot;DOCTYPE&quot;)`, but result is: {:?}&quot;#</span>,
+                                    <span class="string">r#"Expected `UnexpectedEof("DOCTYPE")`, but result is: {:?}"#</span>,
                                     x
                                 ),
                             }
@@ -3470,7 +3475,7 @@
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty</span>() {
                     <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                     <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;&quot;</span>.as_ref();
+                    <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b""</span>.as_ref();
                     <span class="comment">//                ^= 0
 
                     </span><span class="macro">assert_eq!</span>(
@@ -3489,12 +3494,12 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty_tag</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;&gt;&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"&gt;"</span>.as_ref();
                         <span class="comment">//                 ^= 1
 
                         </span><span class="macro">assert_eq!</span>(
                             <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>().map(Bytes),
-                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b&quot;&quot;</span>))
+                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b""</span>))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">1</span>);
                     }
@@ -3503,12 +3508,12 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">normal</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;tag&gt;&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"tag&gt;"</span>.as_ref();
                         <span class="comment">//                    ^= 4
 
                         </span><span class="macro">assert_eq!</span>(
                             <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>().map(Bytes),
-                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b&quot;tag&quot;</span>))
+                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b"tag"</span>))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">4</span>);
                     }
@@ -3517,12 +3522,12 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty_ns_empty_tag</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;:&gt;&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b":&gt;"</span>.as_ref();
                         <span class="comment">//                  ^= 2
 
                         </span><span class="macro">assert_eq!</span>(
                             <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>().map(Bytes),
-                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b&quot;:&quot;</span>))
+                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b":"</span>))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">2</span>);
                     }
@@ -3531,12 +3536,12 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty_ns</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;:tag&gt;&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b":tag&gt;"</span>.as_ref();
                         <span class="comment">//                     ^= 5
 
                         </span><span class="macro">assert_eq!</span>(
                             <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>().map(Bytes),
-                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b&quot;:tag&quot;</span>))
+                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b":tag"</span>))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">5</span>);
                     }
@@ -3545,12 +3550,12 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">with_attributes</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">br#&quot;tag  attr-1=&quot;&gt;&quot;  attr2  =  &#39;&gt;&#39;  3attr&gt;&quot;#</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">br#"tag  attr-1="&gt;"  attr2  =  '&gt;'  3attr&gt;"#</span>.as_ref();
                         <span class="comment">//                                                        ^= 38
 
                         </span><span class="macro">assert_eq!</span>(
                             <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>().map(Bytes),
-                            <span class="prelude-val">Some</span>(Bytes(<span class="string">br#&quot;tag  attr-1=&quot;&gt;&quot;  attr2  =  &#39;&gt;&#39;  3attr&quot;#</span>))
+                            <span class="prelude-val">Some</span>(Bytes(<span class="string">br#"tag  attr-1="&gt;"  attr2  =  '&gt;'  3attr"#</span>))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">38</span>);
                     }
@@ -3565,12 +3570,12 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty_tag</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;/&gt;&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"/&gt;"</span>.as_ref();
                         <span class="comment">//                  ^= 2
 
                         </span><span class="macro">assert_eq!</span>(
                             <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>().map(Bytes),
-                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b&quot;/&quot;</span>))
+                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b"/"</span>))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">2</span>);
                     }
@@ -3579,12 +3584,12 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">normal</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;tag/&gt;&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b"tag/&gt;"</span>.as_ref();
                         <span class="comment">//                     ^= 5
 
                         </span><span class="macro">assert_eq!</span>(
                             <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>().map(Bytes),
-                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b&quot;tag/&quot;</span>))
+                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b"tag/"</span>))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">5</span>);
                     }
@@ -3593,12 +3598,12 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty_ns_empty_tag</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;:/&gt;&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b":/&gt;"</span>.as_ref();
                         <span class="comment">//                   ^= 3
 
                         </span><span class="macro">assert_eq!</span>(
                             <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>().map(Bytes),
-                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b&quot;:/&quot;</span>))
+                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b":/"</span>))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">3</span>);
                     }
@@ -3607,12 +3612,12 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty_ns</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b&quot;:tag/&gt;&quot;</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">b":tag/&gt;"</span>.as_ref();
                         <span class="comment">//                      ^= 6
 
                         </span><span class="macro">assert_eq!</span>(
                             <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>().map(Bytes),
-                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b&quot;:tag/&quot;</span>))
+                            <span class="prelude-val">Some</span>(Bytes(<span class="string">b":tag/"</span>))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">6</span>);
                     }
@@ -3621,12 +3626,12 @@
                     </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">with_attributes</span>() {
                         <span class="kw">let </span>buf = <span class="macro-nonterminal">$buf</span>;
                         <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
-                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">br#&quot;tag  attr-1=&quot;/&gt;&quot;  attr2  =  &#39;/&gt;&#39;  3attr/&gt;&quot;#</span>.as_ref();
+                        <span class="kw">let </span><span class="kw-2">mut </span>input = <span class="string">br#"tag  attr-1="/&gt;"  attr2  =  '/&gt;'  3attr/&gt;"#</span>.as_ref();
                         <span class="comment">//                                                           ^= 41
 
                         </span><span class="macro">assert_eq!</span>(
                             <span class="macro-nonterminal">$source</span>(<span class="kw-2">&amp;mut </span>input).read_element(buf, <span class="kw-2">&amp;mut </span>position) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>().map(Bytes),
-                            <span class="prelude-val">Some</span>(Bytes(<span class="string">br#&quot;tag  attr-1=&quot;/&gt;&quot;  attr2  =  &#39;/&gt;&#39;  3attr/&quot;#</span>))
+                            <span class="prelude-val">Some</span>(Bytes(<span class="string">br#"tag  attr-1="/&gt;"  attr2  =  '/&gt;'  3attr/"#</span>))
                         );
                         <span class="macro">assert_eq!</span>(position, <span class="number">41</span>);
                     }
@@ -3639,13 +3644,13 @@
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">cdata</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;![]]&gt;&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"![]]&gt;"</span>);
 
                     <span class="kw">match </span>reader.<span class="macro-nonterminal">$read_until_close</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                        <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;CData&quot; </span>=&gt; {}
+                        <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"CData" </span>=&gt; {}
                         x =&gt; <span class="macro">assert!</span>(
                             <span class="bool-val">false</span>,
-                            <span class="string">r#&quot;Expected `UnexpectedEof(&quot;CData&quot;)`, but result is: {:?}&quot;#</span>,
+                            <span class="string">r#"Expected `UnexpectedEof("CData")`, but result is: {:?}"#</span>,
                             x
                         ),
                     }
@@ -3653,13 +3658,13 @@
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">comment</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;!- --&gt;&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"!- --&gt;"</span>);
 
                     <span class="kw">match </span>reader.<span class="macro-nonterminal">$read_until_close</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                        <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;Comment&quot; </span>=&gt; {}
+                        <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"Comment" </span>=&gt; {}
                         x =&gt; <span class="macro">assert!</span>(
                             <span class="bool-val">false</span>,
-                            <span class="string">r#&quot;Expected `UnexpectedEof(&quot;Comment&quot;)`, but result is: {:?}&quot;#</span>,
+                            <span class="string">r#"Expected `UnexpectedEof("Comment")`, but result is: {:?}"#</span>,
                             x
                         ),
                     }
@@ -3667,13 +3672,13 @@
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">doctype_uppercase</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;!D&gt;&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"!D&gt;"</span>);
 
                     <span class="kw">match </span>reader.<span class="macro-nonterminal">$read_until_close</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                        <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;DOCTYPE&quot; </span>=&gt; {}
+                        <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"DOCTYPE" </span>=&gt; {}
                         x =&gt; <span class="macro">assert!</span>(
                             <span class="bool-val">false</span>,
-                            <span class="string">r#&quot;Expected `UnexpectedEof(&quot;DOCTYPE&quot;)`, but result is: {:?}&quot;#</span>,
+                            <span class="string">r#"Expected `UnexpectedEof("DOCTYPE")`, but result is: {:?}"#</span>,
                             x
                         ),
                     }
@@ -3681,13 +3686,13 @@
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">doctype_lowercase</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;!d&gt;&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"!d&gt;"</span>);
 
                     <span class="kw">match </span>reader.<span class="macro-nonterminal">$read_until_close</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                        <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">&quot;DOCTYPE&quot; </span>=&gt; {}
+                        <span class="prelude-val">Err</span>(<span class="macro-nonterminal">Error::UnexpectedEof</span>(s)) <span class="kw">if </span>s == <span class="string">"DOCTYPE" </span>=&gt; {}
                         x =&gt; <span class="macro">assert!</span>(
                             <span class="bool-val">false</span>,
-                            <span class="string">r#&quot;Expected `UnexpectedEof(&quot;DOCTYPE&quot;)`, but result is: {:?}&quot;#</span>,
+                            <span class="string">r#"Expected `UnexpectedEof("DOCTYPE")`, but result is: {:?}"#</span>,
                             x
                         ),
                     }
@@ -3707,11 +3712,11 @@
                 /// character should be stripped for consistency
                 </span><span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">bom_from_reader</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_reader(<span class="string">&quot;\u{feff}\u{feff}&quot;</span>.as_bytes());
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_reader(<span class="string">"\u{feff}\u{feff}"</span>.as_bytes());
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::Text(BytesText::from_escaped(<span class="string">&quot;\u{feff}&quot;</span>))
+                        Event::Text(BytesText::from_escaped(<span class="string">"\u{feff}"</span>))
                     );
 
                     <span class="macro">assert_eq!</span>(
@@ -3727,11 +3732,11 @@
                 ///   stay consistent, so the first BOM character is stripped
                 </span><span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">bom_from_str</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;\u{feff}\u{feff}&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"\u{feff}\u{feff}"</span>);
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::Text(BytesText::from_escaped(<span class="string">&quot;\u{feff}&quot;</span>))
+                        Event::Text(BytesText::from_escaped(<span class="string">"\u{feff}"</span>))
                     );
 
                     <span class="macro">assert_eq!</span>(
@@ -3742,100 +3747,100 @@
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">declaration</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;&lt;?xml ?&gt;&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"&lt;?xml ?&gt;"</span>);
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::Decl(BytesDecl::from_start(BytesStart::from_content(<span class="string">&quot;xml &quot;</span>, <span class="number">3</span>)))
+                        Event::Decl(BytesDecl::from_start(BytesStart::from_content(<span class="string">"xml "</span>, <span class="number">3</span>)))
                     );
                 }
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">doctype</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;&lt;!DOCTYPE x&gt;&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"&lt;!DOCTYPE x&gt;"</span>);
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::DocType(BytesText::from_escaped(<span class="string">&quot;x&quot;</span>))
+                        Event::DocType(BytesText::from_escaped(<span class="string">"x"</span>))
                     );
                 }
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">processing_instruction</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;&lt;?xml-stylesheet?&gt;&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"&lt;?xml-stylesheet?&gt;"</span>);
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::PI(BytesText::from_escaped(<span class="string">&quot;xml-stylesheet&quot;</span>))
+                        Event::PI(BytesText::from_escaped(<span class="string">"xml-stylesheet"</span>))
                     );
                 }
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">start</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;&lt;tag&gt;&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"&lt;tag&gt;"</span>);
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::Start(BytesStart::new(<span class="string">&quot;tag&quot;</span>))
+                        Event::Start(BytesStart::new(<span class="string">"tag"</span>))
                     );
                 }
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">end</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;&lt;/tag&gt;&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"&lt;/tag&gt;"</span>);
                     <span class="comment">// Because we expect invalid XML, do not check that
                     // the end name paired with the start name
                     </span>reader.check_end_names(<span class="bool-val">false</span>);
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::End(BytesEnd::new(<span class="string">&quot;tag&quot;</span>))
+                        Event::End(BytesEnd::new(<span class="string">"tag"</span>))
                     );
                 }
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;&lt;tag/&gt;&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"&lt;tag/&gt;"</span>);
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::Empty(BytesStart::new(<span class="string">&quot;tag&quot;</span>))
+                        Event::Empty(BytesStart::new(<span class="string">"tag"</span>))
                     );
                 }
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">text</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;text&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"text"</span>);
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::Text(BytesText::from_escaped(<span class="string">&quot;text&quot;</span>))
+                        Event::Text(BytesText::from_escaped(<span class="string">"text"</span>))
                     );
                 }
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">cdata</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;&lt;![CDATA[]]&gt;&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"&lt;![CDATA[]]&gt;"</span>);
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::CData(BytesCData::new(<span class="string">&quot;&quot;</span>))
+                        Event::CData(BytesCData::new(<span class="string">""</span>))
                     );
                 }
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">comment</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;&lt;!----&gt;&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"&lt;!----&gt;"</span>);
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::Comment(BytesText::from_escaped(<span class="string">&quot;&quot;</span>))
+                        Event::Comment(BytesText::from_escaped(<span class="string">""</span>))
                     );
                 }
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">eof</span>() {
-                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">&quot;&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">""</span>);
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="macro-nonterminal">$buf</span>) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
@@ -3860,16 +3865,16 @@
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">decl</span>() {
-                    <span class="kw">let </span>xml = <span class="string">&quot;&lt;?xml ?&gt;&quot;</span>;
+                    <span class="kw">let </span>xml = <span class="string">"&lt;?xml ?&gt;"</span>;
                     <span class="comment">//         ^^^^^^^ data that fit into buffer
-                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">&quot;?&gt;&quot;</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">1</span>;
+                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">"?&gt;"</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">1</span>;
                     <span class="kw">let </span>br = &lt;<span class="macro-nonterminal">$BufReader</span>&gt;::with_capacity(size, xml.as_bytes());
                     <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_reader(br);
                     <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::Decl(BytesDecl::from_start(BytesStart::from_content(<span class="string">&quot;xml &quot;</span>, <span class="number">3</span>)))
+                        Event::Decl(BytesDecl::from_start(BytesStart::from_content(<span class="string">"xml "</span>, <span class="number">3</span>)))
                     );
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
@@ -3879,16 +3884,16 @@
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">pi</span>() {
-                    <span class="kw">let </span>xml = <span class="string">&quot;&lt;?pi?&gt;&quot;</span>;
+                    <span class="kw">let </span>xml = <span class="string">"&lt;?pi?&gt;"</span>;
                     <span class="comment">//         ^^^^^ data that fit into buffer
-                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">&quot;?&gt;&quot;</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">1</span>;
+                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">"?&gt;"</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">1</span>;
                     <span class="kw">let </span>br = &lt;<span class="macro-nonterminal">$BufReader</span>&gt;::with_capacity(size, xml.as_bytes());
                     <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_reader(br);
                     <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::PI(BytesText::new(<span class="string">&quot;pi&quot;</span>))
+                        Event::PI(BytesText::new(<span class="string">"pi"</span>))
                     );
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
@@ -3898,16 +3903,16 @@
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">empty</span>() {
-                    <span class="kw">let </span>xml = <span class="string">&quot;&lt;empty/&gt;&quot;</span>;
+                    <span class="kw">let </span>xml = <span class="string">"&lt;empty/&gt;"</span>;
                     <span class="comment">//         ^^^^^^^ data that fit into buffer
-                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">&quot;/&gt;&quot;</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">1</span>;
+                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">"/&gt;"</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">1</span>;
                     <span class="kw">let </span>br = &lt;<span class="macro-nonterminal">$BufReader</span>&gt;::with_capacity(size, xml.as_bytes());
                     <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_reader(br);
                     <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::Empty(BytesStart::new(<span class="string">&quot;empty&quot;</span>))
+                        Event::Empty(BytesStart::new(<span class="string">"empty"</span>))
                     );
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
@@ -3917,16 +3922,16 @@
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">cdata1</span>() {
-                    <span class="kw">let </span>xml = <span class="string">&quot;&lt;![CDATA[cdata]]&gt;&quot;</span>;
+                    <span class="kw">let </span>xml = <span class="string">"&lt;![CDATA[cdata]]&gt;"</span>;
                     <span class="comment">//         ^^^^^^^^^^^^^^^ data that fit into buffer
-                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">&quot;]]&gt;&quot;</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">1</span>;
+                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">"]]&gt;"</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">1</span>;
                     <span class="kw">let </span>br = &lt;<span class="macro-nonterminal">$BufReader</span>&gt;::with_capacity(size, xml.as_bytes());
                     <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_reader(br);
                     <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::CData(BytesCData::new(<span class="string">&quot;cdata&quot;</span>))
+                        Event::CData(BytesCData::new(<span class="string">"cdata"</span>))
                     );
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
@@ -3936,16 +3941,16 @@
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">cdata2</span>() {
-                    <span class="kw">let </span>xml = <span class="string">&quot;&lt;![CDATA[cdata]]&gt;&quot;</span>;
+                    <span class="kw">let </span>xml = <span class="string">"&lt;![CDATA[cdata]]&gt;"</span>;
                     <span class="comment">//         ^^^^^^^^^^^^^^^^ data that fit into buffer
-                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">&quot;]]&gt;&quot;</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">2</span>;
+                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">"]]&gt;"</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">2</span>;
                     <span class="kw">let </span>br = &lt;<span class="macro-nonterminal">$BufReader</span>&gt;::with_capacity(size, xml.as_bytes());
                     <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_reader(br);
                     <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::CData(BytesCData::new(<span class="string">&quot;cdata&quot;</span>))
+                        Event::CData(BytesCData::new(<span class="string">"cdata"</span>))
                     );
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
@@ -3955,16 +3960,16 @@
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">comment1</span>() {
-                    <span class="kw">let </span>xml = <span class="string">&quot;&lt;!--comment--&gt;&quot;</span>;
+                    <span class="kw">let </span>xml = <span class="string">"&lt;!--comment--&gt;"</span>;
                     <span class="comment">//         ^^^^^^^^^^^^ data that fit into buffer
-                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">&quot;--&gt;&quot;</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">1</span>;
+                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">"--&gt;"</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">1</span>;
                     <span class="kw">let </span>br = &lt;<span class="macro-nonterminal">$BufReader</span>&gt;::with_capacity(size, xml.as_bytes());
                     <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_reader(br);
                     <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::Comment(BytesText::new(<span class="string">&quot;comment&quot;</span>))
+                        Event::Comment(BytesText::new(<span class="string">"comment"</span>))
                     );
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
@@ -3974,16 +3979,16 @@
 
                 <span class="attr">#[<span class="macro-nonterminal">$test</span>]
                 </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">comment2</span>() {
-                    <span class="kw">let </span>xml = <span class="string">&quot;&lt;!--comment--&gt;&quot;</span>;
+                    <span class="kw">let </span>xml = <span class="string">"&lt;!--comment--&gt;"</span>;
                     <span class="comment">//         ^^^^^^^^^^^^^ data that fit into buffer
-                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">&quot;--&gt;&quot;</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">2</span>;
+                    </span><span class="kw">let </span>size = xml.match_indices(<span class="string">"--&gt;"</span>).next().unwrap().<span class="number">0 </span>+ <span class="number">2</span>;
                     <span class="kw">let </span>br = &lt;<span class="macro-nonterminal">$BufReader</span>&gt;::with_capacity(size, xml.as_bytes());
                     <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_reader(br);
                     <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
 
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),
-                        Event::Comment(BytesText::new(<span class="string">&quot;comment&quot;</span>))
+                        Event::Comment(BytesText::new(<span class="string">"comment"</span>))
                     );
                     <span class="macro">assert_eq!</span>(
                         reader.<span class="macro-nonterminal">$read_event</span>(<span class="kw-2">&amp;mut </span>buf) $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>.<span class="macro-nonterminal">unwrap</span>(),

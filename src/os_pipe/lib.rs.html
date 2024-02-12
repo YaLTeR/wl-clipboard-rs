@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/os_pipe-1.1.4/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="os_pipe" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../os_pipe/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/os_pipe-1.1.5/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="os_pipe" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -508,7 +509,7 @@
 //! [`CreatePipe`](https://docs.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-createpipe)
 //! on Windows. The Rust standard library provides
 //! [`Stdio::piped`](https://doc.rust-lang.org/std/process/struct.Stdio.html#method.piped)
-//! for simple use cases involving child processes, but it doesn&#39;t
+//! for simple use cases involving child processes, but it doesn't
 //! support creating pipes directly. This crate fills that gap.
 //!
 //! - [Docs](https://docs.rs/os_pipe)
@@ -518,25 +519,25 @@
 //! # Common deadlocks related to pipes
 //!
 //! When you work with pipes, you often end up debugging a deadlock at
-//! some point. These can be confusing if you don&#39;t know why they
+//! some point. These can be confusing if you don't know why they
 //! happen. Here are two things you need to know:
 //!
-//! 1. Pipe reads will block waiting for input as long as there&#39;s at
+//! 1. Pipe reads will block waiting for input as long as there's at
 //!    least one writer still open. **If you forget to close a writer,
 //!    reads will block forever.** This includes writers that you give
 //!    to child processes.
 //! 2. Pipes have an internal buffer of some fixed size. On Linux for
 //!    example, pipe buffers are 64 KiB by default. When the buffer is
 //!    full, writes will block waiting for space. **If the buffer is
-//!    full and there aren&#39;t any readers, writes will block forever.**
+//!    full and there aren't any readers, writes will block forever.**
 //!
 //! Deadlocks caused by a forgotten writer usually show up immediately,
 //! which makes them relatively easy to fix once you know what to look
-//! for. (See &quot;Avoid a deadlock!&quot; in the example code below.) However,
+//! for. (See "Avoid a deadlock!" in the example code below.) However,
 //! deadlocks caused by full pipe buffers are trickier. These might only
 //! show up for larger inputs, and they might be timing-dependent or
 //! platform-dependent. If you find that writing to a pipe deadlocks
-//! sometimes, think about who&#39;s supposed to be reading from that pipe,
+//! sometimes, think about who's supposed to be reading from that pipe,
 //! and whether that thread or process might be blocked on something
 //! else. For more on this, see the [Gotchas
 //! Doc](https://github.com/oconnor663/duct.py/blob/master/gotchas.md#using-io-threads-to-avoid-blocking-children)
@@ -553,11 +554,11 @@
 //! use std::io::prelude::*;
 //!
 //! let (mut reader, mut writer) = os_pipe::pipe()?;
-//! // XXX: If this write blocks, we&#39;ll never get to the read.
-//! writer.write_all(b&quot;x&quot;)?;
+//! // XXX: If this write blocks, we'll never get to the read.
+//! writer.write_all(b"x")?;
 //! let mut output = [0];
 //! reader.read_exact(&amp;mut output)?;
-//! assert_eq!(b&quot;x&quot;, &amp;output);
+//! assert_eq!(b"x", &amp;output);
 //! # Ok(())
 //! # }
 //! ```
@@ -572,7 +573,7 @@
 //!
 //! For a more complex example, here we join the stdout and stderr of a
 //! child process into a single pipe. To do that we open a pipe, clone
-//! its writer, and set that pair of writers as the child&#39;s stdout and
+//! its writer, and set that pair of writers as the child's stdout and
 //! stderr. (This is possible because `PipeWriter` implements
 //! `Into&lt;Stdio&gt;`.) Then we can read interleaved output from the pipe
 //! reader. This example is deadlock-free, but note the comment about
@@ -581,19 +582,19 @@
 //! ```rust
 //! # use std::io::prelude::*;
 //! # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
-//! // We&#39;re going to spawn a child process that prints &quot;foo&quot; to stdout
-//! // and &quot;bar&quot; to stderr, and we&#39;ll combine these into a single pipe.
-//! let mut command = std::process::Command::new(&quot;python&quot;);
-//! command.args(&amp;[&quot;-c&quot;, r#&quot;
+//! // We're going to spawn a child process that prints "foo" to stdout
+//! // and "bar" to stderr, and we'll combine these into a single pipe.
+//! let mut command = std::process::Command::new("python");
+//! command.args(&amp;["-c", r#"
 //! import sys
-//! sys.stdout.write(&quot;foo&quot;)
+//! sys.stdout.write("foo")
 //! sys.stdout.flush()
-//! sys.stderr.write(&quot;bar&quot;)
+//! sys.stderr.write("bar")
 //! sys.stderr.flush()
-//! &quot;#]);
+//! "#]);
 //!
-//! // Here&#39;s the interesting part. Open a pipe, clone its writer, and
-//! // set that pair of writers as the child&#39;s stdout and stderr.
+//! // Here's the interesting part. Open a pipe, clone its writer, and
+//! // set that pair of writers as the child's stdout and stderr.
 //! let (mut reader, writer) = os_pipe::pipe()?;
 //! let writer_clone = writer.try_clone()?;
 //! command.stdout(writer);
@@ -611,7 +612,7 @@
 //! let mut output = String::new();
 //! reader.read_to_string(&amp;mut output)?;
 //! handle.wait()?;
-//! assert_eq!(output, &quot;foobar&quot;);
+//! assert_eq!(output, "foobar");
 //! # Ok(())
 //! # }
 //! ```
@@ -645,7 +646,7 @@
 
 <span class="kw">impl </span>PipeReader {
     <span class="kw">pub fn </span>try_clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;PipeReader&gt; {
-        <span class="comment">// Do *not* use File::try_clone here. It&#39;s buggy on windows. See
+        <span class="comment">// Do *not* use File::try_clone here. It's buggy on windows. See
         // comments on windows.rs::dup().
         </span>sys::dup(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>).map(PipeReader)
     }
@@ -657,7 +658,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; io::Read <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>PipeReader {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; io::Read <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>PipeReader {
     <span class="kw">fn </span>read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; io::Result&lt;usize&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>file_ref = <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>;
         file_ref.read(buf)
@@ -680,7 +681,7 @@
 
 <span class="kw">impl </span>PipeWriter {
     <span class="kw">pub fn </span>try_clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; io::Result&lt;PipeWriter&gt; {
-        <span class="comment">// Do *not* use File::try_clone here. It&#39;s buggy on windows. See
+        <span class="comment">// Do *not* use File::try_clone here. It's buggy on windows. See
         // comments on windows.rs::dup().
         </span>sys::dup(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>).map(PipeWriter)
     }
@@ -696,7 +697,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; io::Write <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>PipeWriter {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; io::Write <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>PipeWriter {
     <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;</span>[u8]) -&gt; io::Result&lt;usize&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>file_ref = <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>;
         file_ref.write(buf)
@@ -719,7 +720,7 @@
 /// This corresponds to the `pipe2` library call on Posix and the
 /// `CreatePipe` library call on Windows (though these implementation
 /// details might change). These pipes are non-inheritable, so new child
-/// processes won&#39;t receive a copy of them unless they&#39;re explicitly
+/// processes won't receive a copy of them unless they're explicitly
 /// passed as stdin/stdout/stderr.
 ///
 /// [`PipeReader`]: struct.PipeReader.html
@@ -728,13 +729,13 @@
     sys::pipe()
 }
 
-<span class="doccomment">/// Get a duplicated copy of the current process&#39;s standard input, as a
+<span class="doccomment">/// Get a duplicated copy of the current process's standard input, as a
 /// [`PipeReader`].
 ///
-/// Reading directly from this pipe isn&#39;t recommended, because it&#39;s not
+/// Reading directly from this pipe isn't recommended, because it's not
 /// synchronized with [`std::io::stdin`]. [`PipeReader`] implements
 /// [`Into&lt;Stdio&gt;`], so it can be passed directly to [`Command::stdin`]. This is
-/// equivalent to [`Stdio::inherit`], though, so it&#39;s usually not necessary
+/// equivalent to [`Stdio::inherit`], though, so it's usually not necessary
 /// unless you need a collection of different pipes.
 ///
 /// [`std::io::stdin`]: https://doc.rust-lang.org/std/io/fn.stdin.html
@@ -746,14 +747,14 @@
     sys::dup(<span class="kw-2">&amp;</span>io::stdin()).map(PipeReader)
 }
 
-<span class="doccomment">/// Get a duplicated copy of the current process&#39;s standard output, as a
+<span class="doccomment">/// Get a duplicated copy of the current process's standard output, as a
 /// [`PipeWriter`](struct.PipeWriter.html).
 ///
-/// Writing directly to this pipe isn&#39;t recommended, because it&#39;s not
+/// Writing directly to this pipe isn't recommended, because it's not
 /// synchronized with [`std::io::stdout`]. [`PipeWriter`] implements
 /// [`Into&lt;Stdio&gt;`], so it can be passed directly to [`Command::stdout`] or
-/// [`Command::stderr`]. This can be useful if you want the child&#39;s stderr to go
-/// to the parent&#39;s stdout.
+/// [`Command::stderr`]. This can be useful if you want the child's stderr to go
+/// to the parent's stdout.
 ///
 /// [`std::io::stdout`]: https://doc.rust-lang.org/std/io/fn.stdout.html
 /// [`PipeWriter`]: struct.PipeWriter.html
@@ -765,14 +766,14 @@
     sys::dup(<span class="kw-2">&amp;</span>io::stdout()).map(PipeWriter)
 }
 
-<span class="doccomment">/// Get a duplicated copy of the current process&#39;s standard error, as a
+<span class="doccomment">/// Get a duplicated copy of the current process's standard error, as a
 /// [`PipeWriter`](struct.PipeWriter.html).
 ///
-/// Writing directly to this pipe isn&#39;t recommended, because it&#39;s not
+/// Writing directly to this pipe isn't recommended, because it's not
 /// synchronized with [`std::io::stderr`]. [`PipeWriter`] implements
 /// [`Into&lt;Stdio&gt;`], so it can be passed directly to [`Command::stdout`] or
-/// [`Command::stderr`]. This can be useful if you want the child&#39;s stdout to go
-/// to the parent&#39;s stderr.
+/// [`Command::stderr`]. This can be useful if you want the child's stdout to go
+/// to the parent's stderr.
 ///
 /// [`std::io::stderr`]: https://doc.rust-lang.org/std/io/fn.stderr.html
 /// [`PipeWriter`]: struct.PipeWriter.html
@@ -785,10 +786,10 @@
 }
 
 <span class="attr">#[cfg(not(windows))]
-#[path = <span class="string">&quot;unix.rs&quot;</span>]
+#[path = <span class="string">"unix.rs"</span>]
 </span><span class="kw">mod </span>sys;
 <span class="attr">#[cfg(windows)]
-#[path = <span class="string">&quot;windows.rs&quot;</span>]
+#[path = <span class="string">"windows.rs"</span>]
 </span><span class="kw">mod </span>sys;
 
 <span class="attr">#[cfg(test)]
@@ -802,27 +803,27 @@
 
     <span class="kw">fn </span>path_to_exe(name: <span class="kw-2">&amp;</span>str) -&gt; PathBuf {
         <span class="comment">// This project defines some associated binaries for testing, and we shell out to them in
-        // these tests. `cargo test` doesn&#39;t automatically build associated binaries, so this
+        // these tests. `cargo test` doesn't automatically build associated binaries, so this
         // function takes care of building them explicitly, with the right debug/release flavor.
         </span><span class="kw">static </span>CARGO_BUILD_ONCE: Once = Once::new();
         CARGO_BUILD_ONCE.call_once(|| {
-            <span class="kw">let </span><span class="kw-2">mut </span>build_command = Command::new(<span class="string">&quot;cargo&quot;</span>);
-            build_command.args(<span class="kw-2">&amp;</span>[<span class="string">&quot;build&quot;</span>, <span class="string">&quot;--quiet&quot;</span>]);
+            <span class="kw">let </span><span class="kw-2">mut </span>build_command = Command::new(<span class="string">"cargo"</span>);
+            build_command.args(<span class="kw-2">&amp;</span>[<span class="string">"build"</span>, <span class="string">"--quiet"</span>]);
             <span class="kw">if </span>!<span class="macro">cfg!</span>(debug_assertions) {
-                build_command.arg(<span class="string">&quot;--release&quot;</span>);
+                build_command.arg(<span class="string">"--release"</span>);
             }
             <span class="kw">let </span>build_status = build_command.status().unwrap();
             <span class="macro">assert!</span>(
                 build_status.success(),
-                <span class="string">&quot;Cargo failed to build associated binaries.&quot;
+                <span class="string">"Cargo failed to build associated binaries."
             </span>);
         });
         <span class="kw">let </span>flavor = <span class="kw">if </span><span class="macro">cfg!</span>(debug_assertions) {
-            <span class="string">&quot;debug&quot;
+            <span class="string">"debug"
         </span>} <span class="kw">else </span>{
-            <span class="string">&quot;release&quot;
+            <span class="string">"release"
         </span>};
-        Path::new(<span class="string">&quot;target&quot;</span>)
+        Path::new(<span class="string">"target"</span>)
             .join(flavor)
             .join(name)
             .with_extension(EXE_EXTENSION)
@@ -831,29 +832,29 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_pipe_some_data() {
         <span class="kw">let </span>(<span class="kw-2">mut </span>reader, <span class="kw-2">mut </span>writer) = <span class="kw">crate</span>::pipe().unwrap();
-        <span class="comment">// A small write won&#39;t fill the pipe buffer, so it won&#39;t block this thread.
-        </span>writer.write_all(<span class="string">b&quot;some stuff&quot;</span>).unwrap();
+        <span class="comment">// A small write won't fill the pipe buffer, so it won't block this thread.
+        </span>writer.write_all(<span class="string">b"some stuff"</span>).unwrap();
         drop(writer);
         <span class="kw">let </span><span class="kw-2">mut </span>out = String::new();
         reader.read_to_string(<span class="kw-2">&amp;mut </span>out).unwrap();
-        <span class="macro">assert_eq!</span>(out, <span class="string">&quot;some stuff&quot;</span>);
+        <span class="macro">assert_eq!</span>(out, <span class="string">"some stuff"</span>);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_pipe_some_data_with_refs() {
-        <span class="comment">// As with `File`, there&#39;s a second set of impls for shared
+        <span class="comment">// As with `File`, there's a second set of impls for shared
         // refs. Test those.
         </span><span class="kw">let </span>(reader, writer) = <span class="kw">crate</span>::pipe().unwrap();
         <span class="kw">let </span><span class="kw-2">mut </span>reader_ref = <span class="kw-2">&amp;</span>reader;
         {
             <span class="kw">let </span><span class="kw-2">mut </span>writer_ref = <span class="kw-2">&amp;</span>writer;
-            <span class="comment">// A small write won&#39;t fill the pipe buffer, so it won&#39;t block this thread.
-            </span>writer_ref.write_all(<span class="string">b&quot;some stuff&quot;</span>).unwrap();
+            <span class="comment">// A small write won't fill the pipe buffer, so it won't block this thread.
+            </span>writer_ref.write_all(<span class="string">b"some stuff"</span>).unwrap();
         }
         drop(writer);
         <span class="kw">let </span><span class="kw-2">mut </span>out = String::new();
         reader_ref.read_to_string(<span class="kw-2">&amp;mut </span>out).unwrap();
-        <span class="macro">assert_eq!</span>(out, <span class="string">&quot;some stuff&quot;</span>);
+        <span class="macro">assert_eq!</span>(out, <span class="string">"some stuff"</span>);
     }
 
     <span class="attr">#[test]
@@ -862,7 +863,7 @@
         drop(writer);
         <span class="kw">let </span><span class="kw-2">mut </span>out = String::new();
         reader.read_to_string(<span class="kw-2">&amp;mut </span>out).unwrap();
-        <span class="macro">assert_eq!</span>(out, <span class="string">&quot;&quot;</span>);
+        <span class="macro">assert_eq!</span>(out, <span class="string">""</span>);
     }
 
     <span class="attr">#[test]
@@ -873,7 +874,7 @@
         <span class="kw">let </span>joiner = thread::spawn(<span class="kw">move </span>|| {
             writer.write_all(<span class="kw-2">&amp;</span>data_copy).unwrap();
             <span class="comment">// This drop happens automatically, so writing it out here is mostly
-            // just for clarity. For what it&#39;s worth, it also guards against
+            // just for clarity. For what it's worth, it also guards against
             // accidentally forgetting to drop if we switch to scoped threads or
             // something like that and change this to a non-moving closure. The
             // explicit drop forces `writer` to move.
@@ -891,7 +892,7 @@
         </span><span class="kw">let </span>(input_reader, <span class="kw-2">mut </span>input_writer) = <span class="kw">crate</span>::pipe().unwrap();
         <span class="kw">let </span>(<span class="kw-2">mut </span>output_reader, output_writer) = <span class="kw">crate</span>::pipe().unwrap();
 
-        <span class="comment">// Create a bunch of duplicated copies, which we&#39;ll close later. This
+        <span class="comment">// Create a bunch of duplicated copies, which we'll close later. This
         // tests that duplication preserves non-inheritability.
         </span><span class="kw">let </span>ir_dup = input_reader.try_clone().unwrap();
         <span class="kw">let </span>iw_dup = input_writer.try_clone().unwrap();
@@ -899,11 +900,11 @@
         <span class="kw">let </span>ow_dup = output_writer.try_clone().unwrap();
 
         <span class="comment">// Spawn the child. Note that this temporary Command object takes
-        // ownership of our copies of the child&#39;s stdin and stdout, and then
+        // ownership of our copies of the child's stdin and stdout, and then
         // closes them immediately when it drops. That stops us from blocking
         // our own read below. We use our own simple implementation of cat for
         // compatibility with Windows.
-        </span><span class="kw">let </span><span class="kw-2">mut </span>child = Command::new(path_to_exe(<span class="string">&quot;cat&quot;</span>))
+        </span><span class="kw">let </span><span class="kw-2">mut </span>child = Command::new(path_to_exe(<span class="string">"cat"</span>))
             .stdin(input_reader)
             .stdout(output_writer)
             .spawn()
@@ -915,21 +916,21 @@
         drop(or_dup);
         drop(ow_dup);
 
-        <span class="comment">// Write to the child&#39;s stdin. This is a small write, so it shouldn&#39;t
+        <span class="comment">// Write to the child's stdin. This is a small write, so it shouldn't
         // block.
-        </span>input_writer.write_all(<span class="string">b&quot;hello&quot;</span>).unwrap();
+        </span>input_writer.write_all(<span class="string">b"hello"</span>).unwrap();
         drop(input_writer);
 
-        <span class="comment">// Read from the child&#39;s stdout. If this child has accidentally
+        <span class="comment">// Read from the child's stdout. If this child has accidentally
         // inherited the write end of its own stdin, then it will never exit,
-        // and this read will block forever. That&#39;s what this test is all
+        // and this read will block forever. That's what this test is all
         // about.
         </span><span class="kw">let </span><span class="kw-2">mut </span>output = Vec::new();
         output_reader.read_to_end(<span class="kw-2">&amp;mut </span>output).unwrap();
         child.wait().unwrap();
 
         <span class="comment">// Confirm that we got the right bytes.
-        </span><span class="macro">assert_eq!</span>(<span class="string">b&quot;hello&quot;</span>, <span class="kw-2">&amp;*</span>output);
+        </span><span class="macro">assert_eq!</span>(<span class="string">b"hello"</span>, <span class="kw-2">&amp;*</span>output);
     }
 
     <span class="attr">#[test]
@@ -940,16 +941,16 @@
         // Create pipes for a child process.
         </span><span class="kw">let </span>(reader, <span class="kw-2">mut </span>writer) = <span class="kw">crate</span>::pipe().unwrap();
 
-        <span class="comment">// Write input. This shouldn&#39;t block because it&#39;s small. Then close the write end, or else
+        <span class="comment">// Write input. This shouldn't block because it's small. Then close the write end, or else
         // the child will hang.
-        </span>writer.write_all(<span class="string">b&quot;quack&quot;</span>).unwrap();
+        </span>writer.write_all(<span class="string">b"quack"</span>).unwrap();
         drop(writer);
 
-        <span class="comment">// Use `swap` to run `cat_both`. `cat_both will read &quot;quack&quot; from stdin
+        <span class="comment">// Use `swap` to run `cat_both`. `cat_both will read "quack" from stdin
         // and write it to stdout and stderr with different tags. But because we
         // run it inside `swap`, the tags in the output should be backwards.
-        </span><span class="kw">let </span>output = Command::new(path_to_exe(<span class="string">&quot;swap&quot;</span>))
-            .arg(path_to_exe(<span class="string">&quot;cat_both&quot;</span>))
+        </span><span class="kw">let </span>output = Command::new(path_to_exe(<span class="string">"swap"</span>))
+            .arg(path_to_exe(<span class="string">"cat_both"</span>))
             .stdin(reader)
             .output()
             .unwrap();
@@ -957,13 +958,13 @@
         <span class="comment">// Check for a clean exit.
         </span><span class="macro">assert!</span>(
             output.status.success(),
-            <span class="string">&quot;child process returned {:#?}&quot;</span>,
+            <span class="string">"child process returned {:#?}"</span>,
             output
         );
 
         <span class="comment">// Confirm that we got the right bytes.
-        </span><span class="macro">assert_eq!</span>(<span class="string">b&quot;stderr: quack&quot;</span>, <span class="kw-2">&amp;*</span>output.stdout);
-        <span class="macro">assert_eq!</span>(<span class="string">b&quot;stdout: quack&quot;</span>, <span class="kw-2">&amp;*</span>output.stderr);
+        </span><span class="macro">assert_eq!</span>(<span class="string">b"stderr: quack"</span>, <span class="kw-2">&amp;*</span>output.stdout);
+        <span class="macro">assert_eq!</span>(<span class="string">b"stdout: quack"</span>, <span class="kw-2">&amp;*</span>output.stderr);
     }
 
     <span class="attr">#[test]
@@ -991,19 +992,19 @@
         <span class="kw">let </span>(reader, writer) = <span class="kw">crate</span>::pipe().unwrap();
         <span class="kw">let </span><span class="kw-2">mut </span>reader_clone = reader.try_clone().unwrap();
         <span class="kw">let </span><span class="kw-2">mut </span>writer_clone = writer.try_clone().unwrap();
-        <span class="comment">// A small write won&#39;t fill the pipe buffer, so it won&#39;t block this thread.
-        </span>writer_clone.write_all(<span class="string">b&quot;some stuff&quot;</span>).unwrap();
+        <span class="comment">// A small write won't fill the pipe buffer, so it won't block this thread.
+        </span>writer_clone.write_all(<span class="string">b"some stuff"</span>).unwrap();
         drop(writer);
         drop(writer_clone);
         <span class="kw">let </span><span class="kw-2">mut </span>out = String::new();
         reader_clone.read_to_string(<span class="kw-2">&amp;mut </span>out).unwrap();
-        <span class="macro">assert_eq!</span>(out, <span class="string">&quot;some stuff&quot;</span>);
+        <span class="macro">assert_eq!</span>(out, <span class="string">"some stuff"</span>);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_debug() {
         <span class="kw">let </span>(reader, writer) = <span class="kw">crate</span>::pipe().unwrap();
-        <span class="macro">format!</span>(<span class="string">&quot;{:?} {:?}&quot;</span>, reader, writer);
+        <span class="macro">format!</span>(<span class="string">"{:?} {:?}"</span>, reader, writer);
     }
 }
 </code></pre></div></section></main></body></html>

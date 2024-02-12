@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/minimal-lexical-0.2.1/src/bigint.rs`."><title>bigint.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="minimal_lexical" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../minimal_lexical/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/minimal-lexical-0.2.1/src/bigint.rs`."><title>bigint.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="minimal_lexical" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -792,12 +793,12 @@
 
 </span><span class="attr">#![doc(hidden)]
 
-#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
+#[cfg(feature = <span class="string">"alloc"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::heapvec::HeapVec;
 <span class="kw">use </span><span class="kw">crate</span>::num::Float;
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;alloc&quot;</span>))]
+<span class="attr">#[cfg(not(feature = <span class="string">"alloc"</span>))]
 </span><span class="kw">use </span><span class="kw">crate</span>::stackvec::StackVec;
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;compact&quot;</span>))]
+<span class="attr">#[cfg(not(feature = <span class="string">"compact"</span>))]
 </span><span class="kw">use </span><span class="kw">crate</span>::table::{LARGE_POW5, LARGE_POW5_STEP};
 <span class="kw">use </span>core::{cmp, ops, ptr};
 
@@ -811,10 +812,10 @@
 <span class="doccomment">/// The number of limbs for the bigint.
 </span><span class="kw">pub const </span>BIGINT_LIMBS: usize = BIGINT_BITS / LIMB_BITS;
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;alloc&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 </span><span class="kw">pub type </span>VecType = HeapVec;
 
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;alloc&quot;</span>))]
+<span class="attr">#[cfg(not(feature = <span class="string">"alloc"</span>))]
 </span><span class="kw">pub type </span>VecType = StackVec;
 
 <span class="doccomment">/// Storage for a big integer type.
@@ -896,11 +897,11 @@
 <span class="doccomment">/// REVERSE VIEW
 
 /// Reverse, immutable view of a sequence.
-</span><span class="kw">pub struct </span>ReverseView&lt;<span class="lifetime">&#39;a</span>, T: <span class="lifetime">&#39;a</span>&gt; {
-    inner: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[T],
+</span><span class="kw">pub struct </span>ReverseView&lt;<span class="lifetime">'a</span>, T: <span class="lifetime">'a</span>&gt; {
+    inner: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[T],
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T&gt; ops::Index&lt;usize&gt; <span class="kw">for </span>ReverseView&lt;<span class="lifetime">&#39;a</span>, T&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T&gt; ops::Index&lt;usize&gt; <span class="kw">for </span>ReverseView&lt;<span class="lifetime">'a</span>, T&gt; {
     <span class="kw">type </span>Output = T;
 
     <span class="attr">#[inline]
@@ -946,7 +947,7 @@
 </span><span class="doccomment">/// Normalize the integer, so any leading zero values are removed.
 </span><span class="attr">#[inline]
 </span><span class="kw">pub fn </span>normalize(x: <span class="kw-2">&amp;mut </span>VecType) {
-    <span class="comment">// We don&#39;t care if this wraps: the index is bounds-checked.
+    <span class="comment">// We don't care if this wraps: the index is bounds-checked.
     </span><span class="kw">while let </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>value) = x.get(x.len().wrapping_sub(<span class="number">1</span>)) {
         <span class="kw">if </span>value == <span class="number">0 </span>{
             <span class="kw">unsafe </span>{ x.set_len(x.len() - <span class="number">1</span>) };
@@ -960,7 +961,7 @@
 </span><span class="attr">#[inline]
 #[allow(clippy::match_like_matches_macro)]
 </span><span class="kw">pub fn </span>is_normalized(x: <span class="kw-2">&amp;</span>[Limb]) -&gt; bool {
-    <span class="comment">// We don&#39;t care if this wraps: the index is bounds-checked.
+    <span class="comment">// We don't care if this wraps: the index is bounds-checked.
     </span><span class="kw">match </span>x.get(x.len().wrapping_sub(<span class="number">1</span>)) {
         <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">0</span>) =&gt; <span class="bool-val">false</span>,
         <span class="kw">_ </span>=&gt; <span class="bool-val">true</span>,
@@ -1161,7 +1162,7 @@
 </span><span class="kw">pub fn </span>pow(x: <span class="kw-2">&amp;mut </span>VecType, <span class="kw-2">mut </span>exp: u32) -&gt; <span class="prelude-ty">Option</span>&lt;()&gt; {
     <span class="comment">// Minimize the number of iterations for large exponents: just
     // do a few steps with a large powers.
-    </span><span class="attr">#[cfg(not(feature = <span class="string">&quot;compact&quot;</span>))]
+    </span><span class="attr">#[cfg(not(feature = <span class="string">"compact"</span>))]
     </span>{
         <span class="kw">while </span>exp &gt;= LARGE_POW5_STEP {
             large_mul(x, <span class="kw-2">&amp;</span>LARGE_POW5)<span class="question-mark">?</span>;
@@ -1262,7 +1263,7 @@
     // that as the current range. If the effective y buffer is longer, need
     // to resize to that, + the start index.
     </span><span class="kw">if </span>y.len() &gt; x.len().saturating_sub(start) {
-        <span class="comment">// Ensure we panic if we can&#39;t extend the buffer.
+        <span class="comment">// Ensure we panic if we can't extend the buffer.
         // This avoids any unsafe behavior afterwards.
         </span>x.try_resize(y.len() + start, <span class="number">0</span>)<span class="question-mark">?</span>;
     }
@@ -1270,7 +1271,7 @@
     <span class="comment">// Iteratively add elements from y to x.
     </span><span class="kw">let </span><span class="kw-2">mut </span>carry = <span class="bool-val">false</span>;
     <span class="kw">for </span>(index, <span class="kw-2">&amp;</span>yi) <span class="kw">in </span>y.iter().enumerate() {
-        <span class="comment">// We panicked in `try_resize` if this wasn&#39;t true.
+        <span class="comment">// We panicked in `try_resize` if this wasn't true.
         </span><span class="kw">let </span>xi = x.get_mut(start + index).unwrap();
 
         <span class="comment">// Only one op of the two ops can overflow, since we added at max
@@ -1304,11 +1305,11 @@
 ///
 /// Slow, naive algorithm, using limb-bit bases and just shifting left for
 /// each iteration. This could be optimized with numerous other algorithms,
-/// but it&#39;s extremely simple, and works in O(n*m) time, which is fine
+/// but it's extremely simple, and works in O(n*m) time, which is fine
 /// by me. Each iteration, of which there are `m` iterations, requires
 /// `n` multiplications, and `n` additions, or grade-school multiplication.
 ///
-/// Don&#39;t use Karatsuba multiplication, since out implementation seems to
+/// Don't use Karatsuba multiplication, since out implementation seems to
 /// be slower asymptotically, which is likely just due to the small sizes
 /// we deal with here. For example, running on the following data:
 ///
@@ -1474,7 +1475,7 @@
 </span><span class="attr">#[inline]
 </span><span class="kw">pub fn </span>leading_zeros(x: <span class="kw-2">&amp;</span>[Limb]) -&gt; u32 {
     <span class="kw">let </span>length = x.len();
-    <span class="comment">// wrapping_sub is fine, since it&#39;ll just return None.
+    <span class="comment">// wrapping_sub is fine, since it'll just return None.
     </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>value) = x.get(length.wrapping_sub(<span class="number">1</span>)) {
         value.leading_zeros()
     } <span class="kw">else </span>{
@@ -1523,7 +1524,7 @@
 //  ```
 //
 //  If the result contains `call __multi3`, then the multiplication
-//  is emulated by the compiler. Otherwise, it&#39;s natively supported.
+//  is emulated by the compiler. Otherwise, it's natively supported.
 //
 //  This should be all-known 64-bit platforms supported by Rust.
 //      https://forge.rust-lang.org/platform-support.html
@@ -1551,8 +1552,8 @@
 //      sparcv9 (Same as sparc64).
 //
 //  These tests are run via `xcross`, my own library for C cross-compiling,
-//  which supports numerous targets (far in excess of Rust&#39;s tier 1 support,
-//  or rust-embedded/cross&#39;s list). xcross may be found here:
+//  which supports numerous targets (far in excess of Rust's tier 1 support,
+//  or rust-embedded/cross's list). xcross may be found here:
 //      https://github.com/Alexhuszagh/xcross
 //
 //  To compile for the given target, run:
@@ -1561,17 +1562,17 @@
 //  All 32-bit architectures inherently do not have support. That means
 //  we can essentially look for 64-bit architectures that are not SPARC.
 
-</span><span class="attr">#[cfg(all(target_pointer_width = <span class="string">&quot;64&quot;</span>, not(target_arch = <span class="string">&quot;sparc&quot;</span>)))]
+</span><span class="attr">#[cfg(all(target_pointer_width = <span class="string">"64"</span>, not(target_arch = <span class="string">"sparc"</span>)))]
 </span><span class="kw">pub type </span>Limb = u64;
-<span class="attr">#[cfg(all(target_pointer_width = <span class="string">&quot;64&quot;</span>, not(target_arch = <span class="string">&quot;sparc&quot;</span>)))]
+<span class="attr">#[cfg(all(target_pointer_width = <span class="string">"64"</span>, not(target_arch = <span class="string">"sparc"</span>)))]
 </span><span class="kw">pub type </span>Wide = u128;
-<span class="attr">#[cfg(all(target_pointer_width = <span class="string">&quot;64&quot;</span>, not(target_arch = <span class="string">&quot;sparc&quot;</span>)))]
+<span class="attr">#[cfg(all(target_pointer_width = <span class="string">"64"</span>, not(target_arch = <span class="string">"sparc"</span>)))]
 </span><span class="kw">pub const </span>LIMB_BITS: usize = <span class="number">64</span>;
 
-<span class="attr">#[cfg(not(all(target_pointer_width = <span class="string">&quot;64&quot;</span>, not(target_arch = <span class="string">&quot;sparc&quot;</span>))))]
+<span class="attr">#[cfg(not(all(target_pointer_width = <span class="string">"64"</span>, not(target_arch = <span class="string">"sparc"</span>))))]
 </span><span class="kw">pub type </span>Limb = u32;
-<span class="attr">#[cfg(not(all(target_pointer_width = <span class="string">&quot;64&quot;</span>, not(target_arch = <span class="string">&quot;sparc&quot;</span>))))]
+<span class="attr">#[cfg(not(all(target_pointer_width = <span class="string">"64"</span>, not(target_arch = <span class="string">"sparc"</span>))))]
 </span><span class="kw">pub type </span>Wide = u64;
-<span class="attr">#[cfg(not(all(target_pointer_width = <span class="string">&quot;64&quot;</span>, not(target_arch = <span class="string">&quot;sparc&quot;</span>))))]
+<span class="attr">#[cfg(not(all(target_pointer_width = <span class="string">"64"</span>, not(target_arch = <span class="string">"sparc"</span>))))]
 </span><span class="kw">pub const </span>LIMB_BITS: usize = <span class="number">32</span>;
 </code></pre></div></section></main></body></html>

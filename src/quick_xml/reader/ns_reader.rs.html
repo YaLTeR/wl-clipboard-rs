@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.30.0/src/reader/ns_reader.rs`."><title>ns_reader.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../quick_xml/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.31.0/src/reader/ns_reader.rs`."><title>ns_reader.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -828,20 +829,6 @@
 <a href="#828" id="828">828</a>
 <a href="#829" id="829">829</a>
 <a href="#830" id="830">830</a>
-<a href="#831" id="831">831</a>
-<a href="#832" id="832">832</a>
-<a href="#833" id="833">833</a>
-<a href="#834" id="834">834</a>
-<a href="#835" id="835">835</a>
-<a href="#836" id="836">836</a>
-<a href="#837" id="837">837</a>
-<a href="#838" id="838">838</a>
-<a href="#839" id="839">839</a>
-<a href="#840" id="840">840</a>
-<a href="#841" id="841">841</a>
-<a href="#842" id="842">842</a>
-<a href="#843" id="843">843</a>
-<a href="#844" id="844">844</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! A reader that manages namespace declarations found in the input and able
 //! to resolve [qualified names] to [expanded names].
 //!
@@ -865,9 +852,6 @@
 </span><span class="kw">pub struct </span>NsReader&lt;R&gt; {
     <span class="doccomment">/// An XML reader
     </span><span class="kw">pub</span>(<span class="kw">super</span>) reader: Reader&lt;R&gt;,
-    <span class="doccomment">/// Buffer that contains names of namespace prefixes (the part between `xmlns:`
-    /// and an `=`) and namespace values.
-    </span>buffer: Vec&lt;u8&gt;,
     <span class="doccomment">/// A buffer to manage namespaces
     </span>ns_resolver: NamespaceResolver,
     <span class="doccomment">/// We cannot pop data from the namespace stack until returned `Empty` or `End`
@@ -893,15 +877,14 @@
     </span><span class="kw">fn </span>new(reader: Reader&lt;R&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             reader,
-            buffer: Vec::new(),
             ns_resolver: NamespaceResolver::default(),
             pending_pop: <span class="bool-val">false</span>,
         }
     }
 
-    <span class="kw">fn </span>read_event_impl&lt;<span class="lifetime">&#39;i</span>, B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: B) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">&#39;i</span>&gt;&gt;
+    <span class="kw">fn </span>read_event_impl&lt;<span class="lifetime">'i</span>, B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: B) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'i</span>&gt;&gt;
     <span class="kw">where
-        </span>R: XmlSource&lt;<span class="lifetime">&#39;i</span>, B&gt;,
+        </span>R: XmlSource&lt;<span class="lifetime">'i</span>, B&gt;,
     {
         <span class="self">self</span>.pop();
         <span class="kw">let </span>event = <span class="self">self</span>.reader.read_event_impl(buf);
@@ -910,19 +893,19 @@
 
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>pop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="kw">if </span><span class="self">self</span>.pending_pop {
-            <span class="self">self</span>.ns_resolver.pop(<span class="kw-2">&amp;mut </span><span class="self">self</span>.buffer);
+            <span class="self">self</span>.ns_resolver.pop();
             <span class="self">self</span>.pending_pop = <span class="bool-val">false</span>;
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>process_event&lt;<span class="lifetime">&#39;i</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, event: <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">&#39;i</span>&gt;&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">&#39;i</span>&gt;&gt; {
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>process_event&lt;<span class="lifetime">'i</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, event: <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'i</span>&gt;&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'i</span>&gt;&gt; {
         <span class="kw">match </span>event {
             <span class="prelude-val">Ok</span>(Event::Start(e)) =&gt; {
-                <span class="self">self</span>.ns_resolver.push(<span class="kw-2">&amp;</span>e, <span class="kw-2">&amp;mut </span><span class="self">self</span>.buffer);
+                <span class="self">self</span>.ns_resolver.push(<span class="kw-2">&amp;</span>e)<span class="question-mark">?</span>;
                 <span class="prelude-val">Ok</span>(Event::Start(e))
             }
             <span class="prelude-val">Ok</span>(Event::Empty(e)) =&gt; {
-                <span class="self">self</span>.ns_resolver.push(<span class="kw-2">&amp;</span>e, <span class="kw-2">&amp;mut </span><span class="self">self</span>.buffer);
+                <span class="self">self</span>.ns_resolver.push(<span class="kw-2">&amp;</span>e)<span class="question-mark">?</span>;
                 <span class="comment">// notify next `read_event_impl()` invocation that it needs to pop this
                 // namespace scope
                 </span><span class="self">self</span>.pending_pop = <span class="bool-val">true</span>;
@@ -938,24 +921,14 @@
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>resolve_event&lt;<span class="lifetime">&#39;i</span>&gt;(
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>resolve_event&lt;<span class="lifetime">'i</span>&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        event: <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">&#39;i</span>&gt;&gt;,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;(ResolveResult, Event&lt;<span class="lifetime">&#39;i</span>&gt;)&gt; {
+        event: <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'i</span>&gt;&gt;,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(ResolveResult, Event&lt;<span class="lifetime">'i</span>&gt;)&gt; {
         <span class="kw">match </span>event {
-            <span class="prelude-val">Ok</span>(Event::Start(e)) =&gt; <span class="prelude-val">Ok</span>((
-                <span class="self">self</span>.ns_resolver.find(e.name(), <span class="kw-2">&amp;</span><span class="self">self</span>.buffer),
-                Event::Start(e),
-            )),
-            <span class="prelude-val">Ok</span>(Event::Empty(e)) =&gt; <span class="prelude-val">Ok</span>((
-                <span class="self">self</span>.ns_resolver.find(e.name(), <span class="kw-2">&amp;</span><span class="self">self</span>.buffer),
-                Event::Empty(e),
-            )),
-            <span class="prelude-val">Ok</span>(Event::End(e)) =&gt; <span class="prelude-val">Ok</span>((
-                <span class="comment">// Comment that prevent cargo rmt
-                </span><span class="self">self</span>.ns_resolver.find(e.name(), <span class="kw-2">&amp;</span><span class="self">self</span>.buffer),
-                Event::End(e),
-            )),
+            <span class="prelude-val">Ok</span>(Event::Start(e)) =&gt; <span class="prelude-val">Ok</span>((<span class="self">self</span>.ns_resolver.find(e.name()), Event::Start(e))),
+            <span class="prelude-val">Ok</span>(Event::Empty(e)) =&gt; <span class="prelude-val">Ok</span>((<span class="self">self</span>.ns_resolver.find(e.name()), Event::Empty(e))),
+            <span class="prelude-val">Ok</span>(Event::End(e)) =&gt; <span class="prelude-val">Ok</span>((<span class="self">self</span>.ns_resolver.find(e.name()), Event::End(e))),
             <span class="prelude-val">Ok</span>(e) =&gt; <span class="prelude-val">Ok</span>((ResolveResult::Unbound, e)),
             <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e),
         }
@@ -981,13 +954,13 @@
     /// into _(namespace name, local name)_.
     ///
     /// _Qualified_ names have the form `prefix:local-name` where the `prefix`
-    /// is defined on any containing XML element via `xmlns:prefix=&quot;the:namespace:uri&quot;`.
+    /// is defined on any containing XML element via `xmlns:prefix="the:namespace:uri"`.
     /// The namespace prefix can be defined on the same element as the name in question.
     ///
     /// The method returns following results depending on the `name` shape,
     /// `attribute` flag and the presence of the default namespace:
     ///
-    /// |attribute|`xmlns=&quot;...&quot;`|QName              |ResolveResult          |LocalName
+    /// |attribute|`xmlns="..."`|QName              |ResolveResult          |LocalName
     /// |---------|-------------|-------------------|-----------------------|------------
     /// |`true`   |Not defined  |`local-name`       |[`Unbound`]            |`local-name`
     /// |`true`   |Defined      |`local-name`       |[`Unbound`]            |`local-name`
@@ -1002,7 +975,7 @@
     ///
     /// # Lifetimes
     ///
-    /// - `&#39;n`: lifetime of a name. Returned local name will be bound to the same
+    /// - `'n`: lifetime of a name. Returned local name will be bound to the same
     ///   lifetime as the name in question.
     /// - returned namespace name will be bound to the reader itself
     ///
@@ -1012,14 +985,14 @@
     /// [`resolve_attribute()`]: Self::resolve_attribute()
     /// [`resolve_element()`]: Self::resolve_element()
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>resolve&lt;<span class="lifetime">&#39;n</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: QName&lt;<span class="lifetime">&#39;n</span>&gt;, attribute: bool) -&gt; (ResolveResult, LocalName&lt;<span class="lifetime">&#39;n</span>&gt;) {
-        <span class="self">self</span>.ns_resolver.resolve(name, <span class="kw-2">&amp;</span><span class="self">self</span>.buffer, !attribute)
+    </span><span class="kw">pub fn </span>resolve&lt;<span class="lifetime">'n</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: QName&lt;<span class="lifetime">'n</span>&gt;, attribute: bool) -&gt; (ResolveResult, LocalName&lt;<span class="lifetime">'n</span>&gt;) {
+        <span class="self">self</span>.ns_resolver.resolve(name, !attribute)
     }
 
     <span class="doccomment">/// Resolves a potentially qualified **element name** into _(namespace name, local name)_.
     ///
     /// _Qualified_ element names have the form `prefix:local-name` where the
-    /// `prefix` is defined on any containing XML element via `xmlns:prefix=&quot;the:namespace:uri&quot;`.
+    /// `prefix` is defined on any containing XML element via `xmlns:prefix="the:namespace:uri"`.
     /// The namespace prefix can be defined on the same element as the element
     /// in question.
     ///
@@ -1028,7 +1001,7 @@
     /// The method returns following results depending on the `name` shape and
     /// the presence of the default namespace:
     ///
-    /// |`xmlns=&quot;...&quot;`|QName              |ResolveResult          |LocalName
+    /// |`xmlns="..."`|QName              |ResolveResult          |LocalName
     /// |-------------|-------------------|-----------------------|------------
     /// |Not defined  |`local-name`       |[`Unbound`]            |`local-name`
     /// |Defined      |`local-name`       |[`Bound`] (default)    |`local-name`
@@ -1036,7 +1009,7 @@
     ///
     /// # Lifetimes
     ///
-    /// - `&#39;n`: lifetime of an element name. Returned local name will be bound
+    /// - `'n`: lifetime of an element name. Returned local name will be bound
     ///   to the same lifetime as the name in question.
     /// - returned namespace name will be bound to the reader itself
     ///
@@ -1052,12 +1025,12 @@
     /// use quick_xml::name::{Namespace, QName, ResolveResult::*};
     /// use quick_xml::reader::NsReader;
     ///
-    /// let mut reader = NsReader::from_str(&quot;&lt;tag xmlns=&#39;root namespace&#39;/&gt;&quot;);
+    /// let mut reader = NsReader::from_str("&lt;tag xmlns='root namespace'/&gt;");
     ///
     /// match reader.read_event().unwrap() {
     ///     Event::Empty(e) =&gt; assert_eq!(
     ///         reader.resolve_element(e.name()),
-    ///         (Bound(Namespace(b&quot;root namespace&quot;)), QName(b&quot;tag&quot;).into())
+    ///         (Bound(Namespace(b"root namespace")), QName(b"tag").into())
     ///     ),
     ///     _ =&gt; unreachable!(),
     /// }
@@ -1068,14 +1041,14 @@
     /// [`Unknown`]: ResolveResult::Unknown
     /// [`read_resolved_event()`]: Self::read_resolved_event
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>resolve_element&lt;<span class="lifetime">&#39;n</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: QName&lt;<span class="lifetime">&#39;n</span>&gt;) -&gt; (ResolveResult, LocalName&lt;<span class="lifetime">&#39;n</span>&gt;) {
-        <span class="self">self</span>.ns_resolver.resolve(name, <span class="kw-2">&amp;</span><span class="self">self</span>.buffer, <span class="bool-val">true</span>)
+    </span><span class="kw">pub fn </span>resolve_element&lt;<span class="lifetime">'n</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: QName&lt;<span class="lifetime">'n</span>&gt;) -&gt; (ResolveResult, LocalName&lt;<span class="lifetime">'n</span>&gt;) {
+        <span class="self">self</span>.ns_resolver.resolve(name, <span class="bool-val">true</span>)
     }
 
     <span class="doccomment">/// Resolves a potentially qualified **attribute name** into _(namespace name, local name)_.
     ///
     /// _Qualified_ attribute names have the form `prefix:local-name` where the
-    /// `prefix` is defined on any containing XML element via `xmlns:prefix=&quot;the:namespace:uri&quot;`.
+    /// `prefix` is defined on any containing XML element via `xmlns:prefix="the:namespace:uri"`.
     /// The namespace prefix can be defined on the same element as the attribute
     /// in question.
     ///
@@ -1084,7 +1057,7 @@
     /// The method returns following results depending on the `name` shape and
     /// the presence of the default namespace:
     ///
-    /// |`xmlns=&quot;...&quot;`|QName              |ResolveResult          |LocalName
+    /// |`xmlns="..."`|QName              |ResolveResult          |LocalName
     /// |-------------|-------------------|-----------------------|------------
     /// |Not defined  |`local-name`       |[`Unbound`]            |`local-name`
     /// |Defined      |`local-name`       |[`Unbound`]            |`local-name`
@@ -1092,7 +1065,7 @@
     ///
     /// # Lifetimes
     ///
-    /// - `&#39;n`: lifetime of an attribute name. Returned local name will be bound
+    /// - `'n`: lifetime of an attribute name. Returned local name will be bound
     ///   to the same lifetime as the name in question.
     /// - returned namespace name will be bound to the reader itself
     ///
@@ -1105,12 +1078,12 @@
     /// use quick_xml::name::{Namespace, QName, ResolveResult::*};
     /// use quick_xml::reader::NsReader;
     ///
-    /// let mut reader = NsReader::from_str(&quot;
-    ///     &lt;tag one=&#39;1&#39;
-    ///          p:two=&#39;2&#39;
-    ///          xmlns=&#39;root namespace&#39;
-    ///          xmlns:p=&#39;other namespace&#39;/&gt;
-    /// &quot;);
+    /// let mut reader = NsReader::from_str("
+    ///     &lt;tag one='1'
+    ///          p:two='2'
+    ///          xmlns='root namespace'
+    ///          xmlns:p='other namespace'/&gt;
+    /// ");
     /// reader.trim_text(true);
     ///
     /// match reader.read_event().unwrap() {
@@ -1122,13 +1095,13 @@
     ///         let one = iter.next().unwrap().unwrap();
     ///         assert_eq!(
     ///             reader.resolve_attribute(one.key),
-    ///             (Unbound, QName(b&quot;one&quot;).into())
+    ///             (Unbound, QName(b"one").into())
     ///         );
     ///
     ///         let two = iter.next().unwrap().unwrap();
     ///         assert_eq!(
     ///             reader.resolve_attribute(two.key),
-    ///             (Bound(Namespace(b&quot;other namespace&quot;)), QName(b&quot;two&quot;).into())
+    ///             (Bound(Namespace(b"other namespace")), QName(b"two").into())
     ///         );
     ///     }
     ///     _ =&gt; unreachable!(),
@@ -1139,15 +1112,15 @@
     /// [`Unbound`]: ResolveResult::Unbound
     /// [`Unknown`]: ResolveResult::Unknown
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>resolve_attribute&lt;<span class="lifetime">&#39;n</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: QName&lt;<span class="lifetime">&#39;n</span>&gt;) -&gt; (ResolveResult, LocalName&lt;<span class="lifetime">&#39;n</span>&gt;) {
-        <span class="self">self</span>.ns_resolver.resolve(name, <span class="kw-2">&amp;</span><span class="self">self</span>.buffer, <span class="bool-val">false</span>)
+    </span><span class="kw">pub fn </span>resolve_attribute&lt;<span class="lifetime">'n</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: QName&lt;<span class="lifetime">'n</span>&gt;) -&gt; (ResolveResult, LocalName&lt;<span class="lifetime">'n</span>&gt;) {
+        <span class="self">self</span>.ns_resolver.resolve(name, <span class="bool-val">false</span>)
     }
 }
 
 <span class="kw">impl</span>&lt;R: BufRead&gt; NsReader&lt;R&gt; {
     <span class="doccomment">/// Reads the next event into given buffer.
     ///
-    /// This method manages namespaces but doesn&#39;t resolve them automatically.
+    /// This method manages namespaces but doesn't resolve them automatically.
     /// You should call [`resolve_element()`] if you want to get a namespace.
     ///
     /// You also can use [`read_resolved_event_into()`] instead if you want to resolve
@@ -1161,12 +1134,12 @@
     /// use quick_xml::name::{Namespace, ResolveResult::*};
     /// use quick_xml::reader::NsReader;
     ///
-    /// let mut reader = NsReader::from_str(r#&quot;
-    ///     &lt;x:tag1 xmlns:x=&quot;www.xxxx&quot; xmlns:y=&quot;www.yyyy&quot; att1 = &quot;test&quot;&gt;
+    /// let mut reader = NsReader::from_str(r#"
+    ///     &lt;x:tag1 xmlns:x="www.xxxx" xmlns:y="www.yyyy" att1 = "test"&gt;
     ///        &lt;y:tag2&gt;&lt;!--Test comment--&gt;Test&lt;/y:tag2&gt;
     ///        &lt;y:tag2&gt;Test 2&lt;/y:tag2&gt;
     ///     &lt;/x:tag1&gt;
-    /// &quot;#);
+    /// "#);
     /// reader.trim_text(true);
     ///
     /// let mut count = 0;
@@ -1178,8 +1151,8 @@
     ///             count += 1;
     ///             let (ns, local) = reader.resolve_element(e.name());
     ///             match local.as_ref() {
-    ///                 b&quot;tag1&quot; =&gt; assert_eq!(ns, Bound(Namespace(b&quot;www.xxxx&quot;))),
-    ///                 b&quot;tag2&quot; =&gt; assert_eq!(ns, Bound(Namespace(b&quot;www.yyyy&quot;))),
+    ///                 b"tag1" =&gt; assert_eq!(ns, Bound(Namespace(b"www.xxxx"))),
+    ///                 b"tag2" =&gt; assert_eq!(ns, Bound(Namespace(b"www.yyyy"))),
     ///                 _ =&gt; unreachable!(),
     ///             }
     ///         }
@@ -1192,13 +1165,13 @@
     ///     buf.clear();
     /// }
     /// assert_eq!(count, 3);
-    /// assert_eq!(txt, vec![&quot;Test&quot;.to_string(), &quot;Test 2&quot;.to_string()]);
+    /// assert_eq!(txt, vec!["Test".to_string(), "Test 2".to_string()]);
     /// ```
     ///
     /// [`resolve_element()`]: Self::resolve_element
     /// [`read_resolved_event_into()`]: Self::read_resolved_event_into
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>read_event_into&lt;<span class="lifetime">&#39;b</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;</span><span class="lifetime">&#39;b </span><span class="kw-2">mut </span>Vec&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">&#39;b</span>&gt;&gt; {
+    </span><span class="kw">pub fn </span>read_event_into&lt;<span class="lifetime">'b</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;</span><span class="lifetime">'b </span><span class="kw-2">mut </span>Vec&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'b</span>&gt;&gt; {
         <span class="self">self</span>.read_event_impl(buf)
     }
 
@@ -1219,12 +1192,12 @@
     /// use quick_xml::name::{Namespace, QName, ResolveResult::*};
     /// use quick_xml::reader::NsReader;
     ///
-    /// let mut reader = NsReader::from_str(r#&quot;
-    ///     &lt;x:tag1 xmlns:x=&quot;www.xxxx&quot; xmlns:y=&quot;www.yyyy&quot; att1 = &quot;test&quot;&gt;
+    /// let mut reader = NsReader::from_str(r#"
+    ///     &lt;x:tag1 xmlns:x="www.xxxx" xmlns:y="www.yyyy" att1 = "test"&gt;
     ///        &lt;y:tag2&gt;&lt;!--Test comment--&gt;Test&lt;/y:tag2&gt;
     ///        &lt;y:tag2&gt;Test 2&lt;/y:tag2&gt;
     ///     &lt;/x:tag1&gt;
-    /// &quot;#);
+    /// "#);
     /// reader.trim_text(true);
     ///
     /// let mut count = 0;
@@ -1232,13 +1205,13 @@
     /// let mut txt = Vec::new();
     /// loop {
     ///     match reader.read_resolved_event_into(&amp;mut buf).unwrap() {
-    ///         (Bound(Namespace(b&quot;www.xxxx&quot;)), Event::Start(e)) =&gt; {
+    ///         (Bound(Namespace(b"www.xxxx")), Event::Start(e)) =&gt; {
     ///             count += 1;
-    ///             assert_eq!(e.local_name(), QName(b&quot;tag1&quot;).into());
+    ///             assert_eq!(e.local_name(), QName(b"tag1").into());
     ///         }
-    ///         (Bound(Namespace(b&quot;www.yyyy&quot;)), Event::Start(e)) =&gt; {
+    ///         (Bound(Namespace(b"www.yyyy")), Event::Start(e)) =&gt; {
     ///             count += 1;
-    ///             assert_eq!(e.local_name(), QName(b&quot;tag2&quot;).into());
+    ///             assert_eq!(e.local_name(), QName(b"tag2").into());
     ///         }
     ///         (_, Event::Start(_)) =&gt; unreachable!(),
     ///
@@ -1251,7 +1224,7 @@
     ///     buf.clear();
     /// }
     /// assert_eq!(count, 3);
-    /// assert_eq!(txt, vec![&quot;Test&quot;.to_string(), &quot;Test 2&quot;.to_string()]);
+    /// assert_eq!(txt, vec!["Test".to_string(), "Test 2".to_string()]);
     /// ```
     ///
     /// [`Start`]: Event::Start
@@ -1259,10 +1232,10 @@
     /// [`End`]: Event::End
     /// [`read_event_into()`]: Self::read_event_into
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>read_resolved_event_into&lt;<span class="lifetime">&#39;b</span>&gt;(
+    </span><span class="kw">pub fn </span>read_resolved_event_into&lt;<span class="lifetime">'b</span>&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        buf: <span class="kw-2">&amp;</span><span class="lifetime">&#39;b </span><span class="kw-2">mut </span>Vec&lt;u8&gt;,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;(ResolveResult, Event&lt;<span class="lifetime">&#39;b</span>&gt;)&gt; {
+        buf: <span class="kw-2">&amp;</span><span class="lifetime">'b </span><span class="kw-2">mut </span>Vec&lt;u8&gt;,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(ResolveResult, Event&lt;<span class="lifetime">'b</span>&gt;)&gt; {
         <span class="kw">let </span>event = <span class="self">self</span>.read_event_impl(buf);
         <span class="self">self</span>.resolve_event(event)
     }
@@ -1304,7 +1277,7 @@
     /// according to [the specification]
     ///
     /// &gt; The end of every element that begins with a **start-tag** MUST be marked
-    /// &gt; by an **end-tag** containing a name that echoes the element&#39;s type as
+    /// &gt; by an **end-tag** containing a name that echoes the element's type as
     /// &gt; given in the **start-tag**
     ///
     /// # Examples
@@ -1318,25 +1291,25 @@
     /// use quick_xml::name::{Namespace, ResolveResult};
     /// use quick_xml::reader::NsReader;
     ///
-    /// let mut reader = NsReader::from_str(r#&quot;
-    ///     &lt;outer xmlns=&quot;namespace 1&quot;&gt;
-    ///         &lt;inner xmlns=&quot;namespace 2&quot;&gt;
+    /// let mut reader = NsReader::from_str(r#"
+    ///     &lt;outer xmlns="namespace 1"&gt;
+    ///         &lt;inner xmlns="namespace 2"&gt;
     ///             &lt;outer&gt;&lt;/outer&gt;
     ///         &lt;/inner&gt;
     ///         &lt;inner&gt;
     ///             &lt;inner&gt;&lt;/inner&gt;
     ///             &lt;inner/&gt;
     ///             &lt;outer&gt;&lt;/outer&gt;
-    ///             &lt;p:outer xmlns:p=&quot;ns&quot;&gt;&lt;/p:outer&gt;
+    ///             &lt;p:outer xmlns:p="ns"&gt;&lt;/p:outer&gt;
     ///             &lt;outer/&gt;
     ///         &lt;/inner&gt;
     ///     &lt;/outer&gt;
-    /// &quot;#);
+    /// "#);
     /// reader.trim_text(true);
     /// let mut buf = Vec::new();
     ///
-    /// let ns = Namespace(b&quot;namespace 1&quot;);
-    /// let start = BytesStart::from_content(r#&quot;outer xmlns=&quot;namespace 1&quot;&quot;#, 5);
+    /// let ns = Namespace(b"namespace 1");
+    /// let start = BytesStart::from_content(r#"outer xmlns="namespace 1""#, 5);
     /// let end   = start.to_end().into_owned();
     ///
     /// // First, we read a start event...
@@ -1379,17 +1352,17 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;i</span>&gt; NsReader&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;i </span>[u8]&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'i</span>&gt; NsReader&lt;<span class="kw-2">&amp;</span><span class="lifetime">'i </span>[u8]&gt; {
     <span class="doccomment">/// Creates an XML reader from a string slice.
     </span><span class="attr">#[inline]
     #[allow(clippy::should_implement_trait)]
-    </span><span class="kw">pub fn </span>from_str(s: <span class="kw-2">&amp;</span><span class="lifetime">&#39;i </span>str) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>from_str(s: <span class="kw-2">&amp;</span><span class="lifetime">'i </span>str) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>::new(Reader::from_str(s))
     }
 
     <span class="doccomment">/// Reads the next event, borrow its content from the input buffer.
     ///
-    /// This method manages namespaces but doesn&#39;t resolve them automatically.
+    /// This method manages namespaces but doesn't resolve them automatically.
     /// You should call [`resolve_element()`] if you want to get a namespace.
     ///
     /// You also can use [`read_resolved_event()`] instead if you want to resolve namespace
@@ -1407,12 +1380,12 @@
     /// use quick_xml::name::{Namespace, ResolveResult::*};
     /// use quick_xml::reader::NsReader;
     ///
-    /// let mut reader = NsReader::from_str(r#&quot;
-    ///     &lt;x:tag1 xmlns:x=&quot;www.xxxx&quot; xmlns:y=&quot;www.yyyy&quot; att1 = &quot;test&quot;&gt;
+    /// let mut reader = NsReader::from_str(r#"
+    ///     &lt;x:tag1 xmlns:x="www.xxxx" xmlns:y="www.yyyy" att1 = "test"&gt;
     ///        &lt;y:tag2&gt;&lt;!--Test comment--&gt;Test&lt;/y:tag2&gt;
     ///        &lt;y:tag2&gt;Test 2&lt;/y:tag2&gt;
     ///     &lt;/x:tag1&gt;
-    /// &quot;#);
+    /// "#);
     /// reader.trim_text(true);
     ///
     /// let mut count = 0;
@@ -1423,8 +1396,8 @@
     ///             count += 1;
     ///             let (ns, local) = reader.resolve_element(e.name());
     ///             match local.as_ref() {
-    ///                 b&quot;tag1&quot; =&gt; assert_eq!(ns, Bound(Namespace(b&quot;www.xxxx&quot;))),
-    ///                 b&quot;tag2&quot; =&gt; assert_eq!(ns, Bound(Namespace(b&quot;www.yyyy&quot;))),
+    ///                 b"tag1" =&gt; assert_eq!(ns, Bound(Namespace(b"www.xxxx"))),
+    ///                 b"tag2" =&gt; assert_eq!(ns, Bound(Namespace(b"www.yyyy"))),
     ///                 _ =&gt; unreachable!(),
     ///             }
     ///         }
@@ -1436,13 +1409,13 @@
     ///     }
     /// }
     /// assert_eq!(count, 3);
-    /// assert_eq!(txt, vec![&quot;Test&quot;.to_string(), &quot;Test 2&quot;.to_string()]);
+    /// assert_eq!(txt, vec!["Test".to_string(), "Test 2".to_string()]);
     /// ```
     ///
     /// [`resolve_element()`]: Self::resolve_element
     /// [`read_resolved_event()`]: Self::read_resolved_event
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>read_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">&#39;i</span>&gt;&gt; {
+    </span><span class="kw">pub fn </span>read_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'i</span>&gt;&gt; {
         <span class="self">self</span>.read_event_impl(())
     }
 
@@ -1468,25 +1441,25 @@
     /// use quick_xml::name::{Namespace, QName, ResolveResult::*};
     /// use quick_xml::reader::NsReader;
     ///
-    /// let mut reader = NsReader::from_str(r#&quot;
-    ///     &lt;x:tag1 xmlns:x=&quot;www.xxxx&quot; xmlns:y=&quot;www.yyyy&quot; att1 = &quot;test&quot;&gt;
+    /// let mut reader = NsReader::from_str(r#"
+    ///     &lt;x:tag1 xmlns:x="www.xxxx" xmlns:y="www.yyyy" att1 = "test"&gt;
     ///        &lt;y:tag2&gt;&lt;!--Test comment--&gt;Test&lt;/y:tag2&gt;
     ///        &lt;y:tag2&gt;Test 2&lt;/y:tag2&gt;
     ///     &lt;/x:tag1&gt;
-    /// &quot;#);
+    /// "#);
     /// reader.trim_text(true);
     ///
     /// let mut count = 0;
     /// let mut txt = Vec::new();
     /// loop {
     ///     match reader.read_resolved_event().unwrap() {
-    ///         (Bound(Namespace(b&quot;www.xxxx&quot;)), Event::Start(e)) =&gt; {
+    ///         (Bound(Namespace(b"www.xxxx")), Event::Start(e)) =&gt; {
     ///             count += 1;
-    ///             assert_eq!(e.local_name(), QName(b&quot;tag1&quot;).into());
+    ///             assert_eq!(e.local_name(), QName(b"tag1").into());
     ///         }
-    ///         (Bound(Namespace(b&quot;www.yyyy&quot;)), Event::Start(e)) =&gt; {
+    ///         (Bound(Namespace(b"www.yyyy")), Event::Start(e)) =&gt; {
     ///             count += 1;
-    ///             assert_eq!(e.local_name(), QName(b&quot;tag2&quot;).into());
+    ///             assert_eq!(e.local_name(), QName(b"tag2").into());
     ///         }
     ///         (_, Event::Start(_)) =&gt; unreachable!(),
     ///
@@ -1498,7 +1471,7 @@
     ///     }
     /// }
     /// assert_eq!(count, 3);
-    /// assert_eq!(txt, vec![&quot;Test&quot;.to_string(), &quot;Test 2&quot;.to_string()]);
+    /// assert_eq!(txt, vec!["Test".to_string(), "Test 2".to_string()]);
     /// ```
     ///
     /// [`Start`]: Event::Start
@@ -1506,7 +1479,7 @@
     /// [`End`]: Event::End
     /// [`read_event()`]: Self::read_event
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>read_resolved_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(ResolveResult, Event&lt;<span class="lifetime">&#39;i</span>&gt;)&gt; {
+    </span><span class="kw">pub fn </span>read_resolved_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(ResolveResult, Event&lt;<span class="lifetime">'i</span>&gt;)&gt; {
         <span class="kw">let </span>event = <span class="self">self</span>.read_event_impl(());
         <span class="self">self</span>.resolve_event(event)
     }
@@ -1542,7 +1515,7 @@
     /// according to [the specification]
     ///
     /// &gt; The end of every element that begins with a **start-tag** MUST be marked
-    /// &gt; by an **end-tag** containing a name that echoes the element&#39;s type as
+    /// &gt; by an **end-tag** containing a name that echoes the element's type as
     /// &gt; given in the **start-tag**
     ///
     /// # Examples
@@ -1556,24 +1529,24 @@
     /// use quick_xml::name::{Namespace, ResolveResult};
     /// use quick_xml::reader::NsReader;
     ///
-    /// let mut reader = NsReader::from_str(r#&quot;
-    ///     &lt;outer xmlns=&quot;namespace 1&quot;&gt;
-    ///         &lt;inner xmlns=&quot;namespace 2&quot;&gt;
+    /// let mut reader = NsReader::from_str(r#"
+    ///     &lt;outer xmlns="namespace 1"&gt;
+    ///         &lt;inner xmlns="namespace 2"&gt;
     ///             &lt;outer&gt;&lt;/outer&gt;
     ///         &lt;/inner&gt;
     ///         &lt;inner&gt;
     ///             &lt;inner&gt;&lt;/inner&gt;
     ///             &lt;inner/&gt;
     ///             &lt;outer&gt;&lt;/outer&gt;
-    ///             &lt;p:outer xmlns:p=&quot;ns&quot;&gt;&lt;/p:outer&gt;
+    ///             &lt;p:outer xmlns:p="ns"&gt;&lt;/p:outer&gt;
     ///             &lt;outer/&gt;
     ///         &lt;/inner&gt;
     ///     &lt;/outer&gt;
-    /// &quot;#);
+    /// "#);
     /// reader.trim_text(true);
     ///
-    /// let ns = Namespace(b&quot;namespace 1&quot;);
-    /// let start = BytesStart::from_content(r#&quot;outer xmlns=&quot;namespace 1&quot;&quot;#, 5);
+    /// let ns = Namespace(b"namespace 1");
+    /// let start = BytesStart::from_content(r#"outer xmlns="namespace 1""#, 5);
     /// let end   = start.to_end().into_owned();
     ///
     /// // First, we read a start event...
@@ -1614,7 +1587,7 @@
     /// same name.
     ///
     /// This method does not unescape read data, instead it returns content
-    /// &quot;as is&quot; of the XML document. This is because it has no idea what text
+    /// "as is" of the XML document. This is because it has no idea what text
     /// it reads, and if, for example, it contains CDATA section, attempt to
     /// unescape it content will spoil data.
     ///
@@ -1637,16 +1610,16 @@
     /// use quick_xml::events::{BytesStart, Event};
     /// use quick_xml::reader::NsReader;
     ///
-    /// let mut reader = NsReader::from_str(r#&quot;
+    /// let mut reader = NsReader::from_str(r#"
     ///     &lt;html&gt;
     ///         &lt;title&gt;This is a HTML text&lt;/title&gt;
     ///         &lt;p&gt;Usual XML rules does not apply inside it
     ///         &lt;p&gt;For example, elements not needed to be &amp;quot;closed&amp;quot;
     ///     &lt;/html&gt;
-    /// &quot;#);
+    /// "#);
     /// reader.trim_text(true);
     ///
-    /// let start = BytesStart::new(&quot;html&quot;);
+    /// let start = BytesStart::new("html");
     /// let end   = start.to_end().into_owned();
     ///
     /// // First, we read a start event...
@@ -1657,11 +1630,11 @@
     /// // ...then, we could read text content until close tag.
     /// // This call will correctly handle nested &lt;html&gt; elements.
     /// let text = reader.read_text(end.name()).unwrap();
-    /// assert_eq!(text, Cow::Borrowed(r#&quot;
+    /// assert_eq!(text, Cow::Borrowed(r#"
     ///         &lt;title&gt;This is a HTML text&lt;/title&gt;
     ///         &lt;p&gt;Usual XML rules does not apply inside it
     ///         &lt;p&gt;For example, elements not needed to be &amp;quot;closed&amp;quot;
-    ///     &quot;#));
+    ///     "#));
     ///
     /// // Now we can enable checks again
     /// reader.check_end_names(true);
@@ -1673,7 +1646,7 @@
     /// [`Start`]: Event::Start
     /// [`decoder()`]: Reader::decoder()
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>read_text(<span class="kw-2">&amp;mut </span><span class="self">self</span>, end: QName) -&gt; <span class="prelude-ty">Result</span>&lt;Cow&lt;<span class="lifetime">&#39;i</span>, str&gt;&gt; {
+    </span><span class="kw">pub fn </span>read_text(<span class="kw-2">&amp;mut </span><span class="self">self</span>, end: QName) -&gt; <span class="prelude-ty">Result</span>&lt;Cow&lt;<span class="lifetime">'i</span>, str&gt;&gt; {
         <span class="self">self</span>.reader.read_text(end)
     }
 }

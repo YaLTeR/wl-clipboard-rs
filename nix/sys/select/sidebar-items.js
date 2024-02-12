@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["FD_SETSIZE"],"fn":["pselect","select"],"struct":["FdSet","Fds"]};

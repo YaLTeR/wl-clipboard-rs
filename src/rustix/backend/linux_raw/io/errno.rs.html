@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.25/src/backend/linux_raw/io/errno.rs`."><title>errno.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.0 (79e9716c9 2023-11-13)" data-channel="1.74.0" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../../rustix/index.html"><img class="rust-logo" src="../../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.31/src/backend/linux_raw/io/errno.rs`."><title>errno.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -577,7 +578,7 @@
 /// # References
 ///  - [POSIX]
 ///  - [Linux]
-///  - [Winsock2]
+///  - [Winsock]
 ///  - [FreeBSD]
 ///  - [NetBSD]
 ///  - [OpenBSD]
@@ -587,7 +588,7 @@
 ///
 /// [POSIX]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/errno.html
 /// [Linux]: https://man7.org/linux/man-pages/man3/errno.3.html
-/// [Winsock2]: https://learn.microsoft.com/en-us/windows/win32/winsock/windows-sockets-error-codes-2
+/// [Winsock]: https://learn.microsoft.com/en-us/windows/win32/winsock/windows-sockets-error-codes-2
 /// [FreeBSD]: https://man.freebsd.org/cgi/man.cgi?errno
 /// [NetBSD]: https://man.netbsd.org/errno.2
 /// [OpenBSD]: https://man.openbsd.org/errno.2
@@ -596,7 +597,7 @@
 /// [glibc]: https://www.gnu.org/software/libc/manual/html_node/Error-Codes.html
 /// [`std::io::Error`]: Result
 </span><span class="attr">#[repr(transparent)]
-#[doc(alias = <span class="string">&quot;errno&quot;</span>)]
+#[doc(alias = <span class="string">"errno"</span>)]
 #[derive(Eq, PartialEq, Hash, Copy, Clone)]
 </span><span class="comment">// Linux returns negated error codes, and we leave them in negated form, so
 // error codes are in `-4095..0`.
@@ -607,14 +608,14 @@
 <span class="kw">impl </span>Errno {
     <span class="doccomment">/// Extract an `Errno` value from a `std::io::Error`.
     ///
-    /// This isn&#39;t a `From` conversion because it&#39;s expected to be relatively
+    /// This isn't a `From` conversion because it's expected to be relatively
     /// uncommon.
-    </span><span class="attr">#[cfg(feature = <span class="string">&quot;std&quot;</span>)]
+    </span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
     #[inline]
     </span><span class="kw">pub fn </span>from_io_error(io_err: <span class="kw-2">&amp;</span>std::io::Error) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         io_err.raw_os_error().and_then(|raw| {
             <span class="comment">// `std::io::Error` could theoretically have arbitrary OS error
-            // values, so check that they&#39;re in Linux&#39;s range.
+            // values, so check that they're in Linux's range.
             </span><span class="kw">if </span>(<span class="number">1</span>..<span class="number">4096</span>).contains(<span class="kw-2">&amp;</span>raw) {
                 <span class="prelude-val">Some</span>(<span class="self">Self</span>::from_errno(raw <span class="kw">as </span>u32))
             } <span class="kw">else </span>{
@@ -637,11 +638,11 @@
 
     <span class="doccomment">/// Convert from a C `errno` value (which is positive) to an `Errno`.
     </span><span class="kw">const fn </span>from_errno(raw: u32) -&gt; <span class="self">Self </span>{
-        <span class="comment">// We store error values in negated form, so that we don&#39;t have to
+        <span class="comment">// We store error values in negated form, so that we don't have to
         // negate them after every syscall.
         </span><span class="kw">let </span>encoded = raw.wrapping_neg() <span class="kw">as </span>u16;
 
-        <span class="comment">// TODO: Use Range::contains, once that&#39;s `const`.
+        <span class="comment">// TODO: Use Range::contains, once that's `const`.
         </span><span class="macro">assert!</span>(encoded &gt;= <span class="number">0xf001</span>);
 
         <span class="comment">// SAFETY: Linux syscalls return negated error values in the range
@@ -710,7 +711,7 @@
 
 <span class="doccomment">/// Check for an error from the result of a syscall which encodes a
 /// `u64` on success.
-</span><span class="attr">#[cfg(target_pointer_width = <span class="string">&quot;64&quot;</span>)]
+</span><span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
 #[inline]
 </span><span class="kw">pub</span>(<span class="kw">in </span><span class="kw">crate</span>::backend) <span class="kw">fn </span>try_decode_u64&lt;Num: RetNumber&gt;(raw: RetReg&lt;Num&gt;) -&gt; io::Result&lt;u64&gt; {
     <span class="kw">if </span>raw.is_in_range(-<span class="number">4095</span>..<span class="number">0</span>) {
@@ -789,7 +790,7 @@
 /// # Safety
 ///
 /// This must only be used with syscalls which do not return on success.
-</span><span class="attr">#[cfg(feature = <span class="string">&quot;runtime&quot;</span>)]
+</span><span class="attr">#[cfg(any(feature = <span class="string">"event"</span>, feature = <span class="string">"runtime"</span>))]
 #[inline]
 </span><span class="kw">pub</span>(<span class="kw">in </span><span class="kw">crate</span>::backend) <span class="kw">unsafe fn </span>try_decode_error&lt;Num: RetNumber&gt;(raw: RetReg&lt;Num&gt;) -&gt; io::Errno {
     <span class="macro">debug_assert!</span>(raw.is_in_range(-<span class="number">4095</span>..<span class="number">0</span>));
@@ -827,7 +828,7 @@
 
 <span class="kw">impl </span>Errno {
     <span class="doccomment">/// `EACCES`
-    </span><span class="attr">#[doc(alias = <span class="string">&quot;ACCES&quot;</span>)]
+    </span><span class="attr">#[doc(alias = <span class="string">"ACCES"</span>)]
     </span><span class="kw">pub const </span>ACCESS: <span class="self">Self </span>= <span class="self">Self</span>::from_errno(errno::EACCES);
     <span class="doccomment">/// `EADDRINUSE`
     </span><span class="kw">pub const </span>ADDRINUSE: <span class="self">Self </span>= <span class="self">Self</span>::from_errno(errno::EADDRINUSE);
@@ -977,7 +978,7 @@
     <span class="doccomment">/// `ENOCSI`
     </span><span class="kw">pub const </span>NOCSI: <span class="self">Self </span>= <span class="self">Self</span>::from_errno(errno::ENOCSI);
     <span class="doccomment">/// `ENODATA`
-    </span><span class="attr">#[doc(alias = <span class="string">&quot;NOATTR&quot;</span>)]
+    </span><span class="attr">#[doc(alias = <span class="string">"NOATTR"</span>)]
     </span><span class="kw">pub const </span>NODATA: <span class="self">Self </span>= <span class="self">Self</span>::from_errno(errno::ENODATA);
     <span class="doccomment">/// `ENODEV`
     </span><span class="kw">pub const </span>NODEV: <span class="self">Self </span>= <span class="self">Self</span>::from_errno(errno::ENODEV);
@@ -1085,7 +1086,7 @@
     <span class="doccomment">/// `ETIMEDOUT`
     </span><span class="kw">pub const </span>TIMEDOUT: <span class="self">Self </span>= <span class="self">Self</span>::from_errno(errno::ETIMEDOUT);
     <span class="doccomment">/// `E2BIG`
-    </span><span class="attr">#[doc(alias = <span class="string">&quot;2BIG&quot;</span>)]
+    </span><span class="attr">#[doc(alias = <span class="string">"2BIG"</span>)]
     </span><span class="kw">pub const </span>TOOBIG: <span class="self">Self </span>= <span class="self">Self</span>::from_errno(errno::E2BIG);
     <span class="doccomment">/// `ETOOMANYREFS`
     </span><span class="kw">pub const </span>TOOMANYREFS: <span class="self">Self </span>= <span class="self">Self</span>::from_errno(errno::ETOOMANYREFS);
