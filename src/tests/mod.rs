@@ -1,13 +1,10 @@
 use std::ffi::OsStr;
-use std::os::fd::{AsRawFd, FromRawFd, OwnedFd};
 use std::sync::atomic::AtomicU8;
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::{Arc, Mutex};
 use std::thread;
 
-use nix::sys::epoll::{
-    epoll_create1, epoll_ctl, epoll_wait, EpollCreateFlags, EpollEvent, EpollFlags, EpollOp,
-};
+use nix::sys::epoll::{Epoll, EpollCreateFlags, EpollEvent, EpollFlags};
 use wayland_backend::server::ClientData;
 use wayland_server::{Display, ListeningSocket};
 
@@ -19,7 +16,7 @@ mod utils;
 pub struct TestServer<S: 'static> {
     pub display: Display<S>,
     pub socket: ListeningSocket,
-    pub poll_fd: OwnedFd,
+    pub epoll: Epoll,
 }
 
 struct ClientCounter(AtomicU8);
@@ -39,30 +36,22 @@ impl<S: Send + 'static> TestServer<S> {
         let mut display = Display::new().unwrap();
         let socket = ListeningSocket::bind_auto("wl-clipboard-rs-test", 0..).unwrap();
 
-        let poll_fd = epoll_create1(EpollCreateFlags::EPOLL_CLOEXEC).unwrap();
-        let poll_fd = unsafe { OwnedFd::from_raw_fd(poll_fd) };
+        let epoll = Epoll::new(EpollCreateFlags::EPOLL_CLOEXEC).unwrap();
 
-        let mut evt = EpollEvent::new(EpollFlags::EPOLLIN, 0);
-        epoll_ctl(
-            poll_fd.as_raw_fd(),
-            EpollOp::EpollCtlAdd,
-            socket.as_raw_fd(),
-            &mut evt,
-        )
-        .unwrap();
-        let mut evt = EpollEvent::new(EpollFlags::EPOLLIN, 1);
-        epoll_ctl(
-            poll_fd.as_raw_fd(),
-            EpollOp::EpollCtlAdd,
-            display.backend().poll_fd().as_raw_fd(),
-            &mut evt,
-        )
-        .unwrap();
+        epoll
+            .add(&socket, EpollEvent::new(EpollFlags::EPOLLIN, 0))
+            .unwrap();
+        epoll
+            .add(
+                display.backend().poll_fd(),
+                EpollEvent::new(EpollFlags::EPOLLIN, 1),
+            )
+            .unwrap();
 
         TestServer {
             display,
             socket,
-            poll_fd,
+            epoll,
         }
     }
 
@@ -88,7 +77,7 @@ impl<S: Send + 'static> TestServer<S> {
         while client_counter.0.load(SeqCst) > 0 || waiting_for_first_client {
             // Wait for requests from the client.
             let mut events = [EpollEvent::empty(); 2];
-            let nevents = epoll_wait(self.poll_fd.as_raw_fd(), &mut events, -1).unwrap();
+            let nevents = self.epoll.wait(&mut events, -1).unwrap();
 
             let ready_socket = events.iter().take(nevents).any(|event| event.data() == 0);
             let ready_clients = events.iter().take(nevents).any(|event| event.data() == 1);
