@@ -4,35 +4,35 @@ use std::fs::read_link;
 use std::io::{stdout, Read, Write};
 
 use anyhow::Context;
+use clap::Parser;
 use libc::STDOUT_FILENO;
 use log::trace;
 use mime_guess::Mime;
-use structopt::clap::AppSettings;
-use structopt::StructOpt;
 use wl_clipboard_rs::paste::*;
 use wl_clipboard_rs::utils::is_text;
 
-#[derive(StructOpt)]
-#[structopt(name = "wl-paste",
-            about = "Paste clipboard contents on Wayland.",
-            rename_all = "kebab-case",
-            setting = AppSettings::ColoredHelp)]
+#[derive(Parser)]
+#[command(
+    name = "wl-paste",
+    version,
+    about = "Paste clipboard contents on Wayland."
+)]
 struct Options {
     /// List the offered MIME types instead of pasting
-    #[structopt(long, short)]
+    #[arg(long, short)]
     list_types: bool,
 
     /// Use the "primary" clipboard
     ///
     /// Pasting to the "primary" clipboard requires the compositor to support the data-control
     /// protocol of version 2 or above.
-    #[structopt(long, short)]
+    #[arg(long, short)]
     primary: bool,
 
     /// Do not append a newline character
     ///
     /// By default the newline character is appended automatically when pasting text MIME types.
-    #[structopt(long, short, conflicts_with = "list-types")]
+    #[arg(long, short, conflicts_with = "list-types")]
     no_newline: bool,
 
     /// Pick the seat to work with
@@ -40,24 +40,24 @@ struct Options {
     /// By default the seat used is unspecified (it depends on the order returned by the
     /// compositor). This is perfectly fine when only a single seat is present, so for most
     /// configurations.
-    #[structopt(long, short)]
+    #[arg(long, short)]
     seat: Option<String>,
 
     /// Request the given MIME type instead of inferring the MIME type
     ///
     /// As a special case, specifying "text" will look for a number of plain text types,
     /// prioritizing ones that are known to give UTF-8 text.
-    #[structopt(
-        name = "mime-type",
+    #[arg(
+        name = "MIME/TYPE",
         long = "type",
-        short = "t",
+        short = 't',
         conflicts_with = "list-types"
     )]
     mime_type: Option<String>,
 
     /// Enable verbose logging
-    #[structopt(long, short, parse(from_occurrences))]
-    verbose: usize,
+    #[arg(long, short, action = clap::ArgAction::Count)]
+    verbose: u8,
 }
 
 fn infer_mime_type() -> Option<Mime> {
@@ -70,7 +70,7 @@ fn infer_mime_type() -> Option<Mime> {
 
 fn main() -> Result<(), anyhow::Error> {
     // Parse command-line options.
-    let options = Options::from_args();
+    let options = Options::parse();
     let primary = if options.primary {
         ClipboardType::Primary
     } else {
@@ -83,7 +83,7 @@ fn main() -> Result<(), anyhow::Error> {
         .unwrap_or_default();
 
     stderrlog::new()
-        .verbosity(options.verbose.saturating_add(1))
+        .verbosity(usize::from(options.verbose) + 1)
         .init()
         .unwrap();
 

@@ -6,6 +6,7 @@
   for copying. All internal uses of the function have been changed to simply
   use `std::io::copy` instead.
 - Replaced `nix` with `rustix`, following `wayland-rs`.
+- Replaced the deprecated `structopt` with `clap` itself.
 
 ## v0.8.1 (7th Mar 2024)
 

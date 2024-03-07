@@ -2,17 +2,17 @@ use std::ffi::OsString;
 use std::fs::OpenOptions;
 use std::os::unix::ffi::OsStringExt;
 
+use clap::Parser;
 use libc::fork;
 use rustix::stdio::{dup2_stdin, dup2_stdout};
-use structopt::clap::AppSettings;
-use structopt::StructOpt;
 use wl_clipboard_rs::copy::{self, clear, ClipboardType, MimeType, Seat, ServeRequests, Source};
 
-#[derive(StructOpt)]
-#[structopt(name = "wl-copy",
-            about = "Copy clipboard contents on Wayland.",
-            rename_all = "kebab-case",
-            setting = AppSettings::ColoredHelp)]
+#[derive(Parser)]
+#[command(
+    name = "wl-copy",
+    version,
+    about = "Copy clipboard contents on Wayland."
+)]
 struct Options {
     /// Serve only a single paste request and then exit
     ///
@@ -20,48 +20,48 @@ struct Options {
     /// copying e.g. sensitive data, like passwords. Note however that certain apps may have issues
     /// pasting when this option is used, in particular XWayland clients are known to suffer from
     /// this.
-    #[structopt(long, short = "o", conflicts_with = "clear")]
+    #[arg(long, short = 'o', conflicts_with = "clear")]
     paste_once: bool,
 
     /// Stay in the foreground instead of forking
-    #[structopt(long, short, conflicts_with = "clear")]
+    #[arg(long, short, conflicts_with = "clear")]
     foreground: bool,
 
     /// Clear the clipboard instead of copying
-    #[structopt(long, short)]
+    #[arg(long, short)]
     clear: bool,
 
     /// Use the "primary" clipboard
     ///
     /// Copying to the "primary" clipboard requires the compositor to support the data-control
     /// protocol of version 2 or above.
-    #[structopt(long, short)]
+    #[arg(long, short)]
     primary: bool,
 
     /// Use the regular clipboard
     ///
     /// Set this flag together with --primary to operate on both clipboards at once. Has no effect
     /// otherwise (since the regular clipboard is the default clipboard).
-    #[structopt(long, short)]
+    #[arg(long, short)]
     regular: bool,
 
     /// Trim the trailing newline character before copying
     ///
     /// This flag is only applied for text MIME types.
-    #[structopt(long, short = "n", conflicts_with = "clear")]
+    #[arg(long, short = 'n', conflicts_with = "clear")]
     trim_newline: bool,
 
     /// Pick the seat to work with
     ///
     /// By default wl-copy operates on all seats at once.
-    #[structopt(long, short)]
+    #[arg(long, short)]
     seat: Option<String>,
 
     /// Override the inferred MIME type for the content
-    #[structopt(
-        name = "mime-type",
+    #[arg(
+        name = "MIME/TYPE",
         long = "type",
-        short = "t",
+        short = 't',
         conflicts_with = "clear"
     )]
     mime_type: Option<String>,
@@ -69,12 +69,12 @@ struct Options {
     /// Text to copy
     ///
     /// If not specified, wl-copy will use data from the standard input.
-    #[structopt(name = "text to copy", conflicts_with = "clear", parse(from_os_str))]
+    #[arg(name = "TEXT TO COPY", conflicts_with = "clear")]
     text: Vec<OsString>,
 
     /// Enable verbose logging
-    #[structopt(long, short, parse(from_occurrences))]
-    verbose: usize,
+    #[arg(long, short, action = clap::ArgAction::Count)]
+    verbose: u8,
 }
 
 impl From<Options> for copy::Options {
@@ -103,10 +103,10 @@ impl From<Options> for copy::Options {
 
 fn main() -> Result<(), anyhow::Error> {
     // Parse command-line options.
-    let mut options = Options::from_args();
+    let mut options = Options::parse();
 
     stderrlog::new()
-        .verbosity(options.verbose.saturating_add(1))
+        .verbosity(usize::from(options.verbose) + 1)
         .init()
         .unwrap();
 
