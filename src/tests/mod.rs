@@ -4,7 +4,7 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::sync::{Arc, Mutex};
 use std::thread;
 
-use nix::sys::epoll::{Epoll, EpollCreateFlags, EpollEvent, EpollFlags};
+use nix::sys::epoll::{Epoll, EpollCreateFlags, EpollEvent, EpollFlags, EpollTimeout};
 use wayland_backend::server::ClientData;
 use wayland_server::{Display, ListeningSocket};
 
@@ -77,7 +77,7 @@ impl<S: Send + 'static> TestServer<S> {
         while client_counter.0.load(SeqCst) > 0 || waiting_for_first_client {
             // Wait for requests from the client.
             let mut events = [EpollEvent::empty(); 2];
-            let nevents = self.epoll.wait(&mut events, -1).unwrap();
+            let nevents = self.epoll.wait(&mut events, EpollTimeout::NONE).unwrap();
 
             let ready_socket = events.iter().take(nevents).any(|event| event.data() == 0);
             let ready_clients = events.iter().take(nevents).any(|event| event.data() == 1);
