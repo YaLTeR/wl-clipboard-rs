@@ -2,11 +2,15 @@
 
 ## Unreleased
 
+## v0.8.1 (7th Mar 2024)
+
+- Updated dependencies, notably `nix`, which fixes building on LoongArch.
+
 ## v0.8.0 (3rd Oct 2023)
 
-- Added `copy::Options::omit_additional_text_mime_types` to disable wl-
-  clipboard-rs offering several known text MIME types when a text MIME type is
-  copied.
+- Added `copy::Options::omit_additional_text_mime_types` to disable
+  wl-clipboard-rs offering several known text MIME types when a text MIME type
+  is copied.
 - Updated `wayland-rs` to 0.31.
   - **Breaking** This changed the error types slightly. However, most uses of
     wl-clipboard-rs should be completely unaffected.
