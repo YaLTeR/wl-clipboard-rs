@@ -5,7 +5,6 @@ use std::collections::{HashMap, HashSet};
 use std::ffi::OsString;
 use std::fs::{remove_dir, remove_file, File, OpenOptions};
 use std::io::{self, Read, Seek, SeekFrom, Write};
-use std::os::unix::io::IntoRawFd;
 use std::path::PathBuf;
 use std::sync::mpsc::sync_channel;
 use std::{iter, thread};
@@ -29,7 +28,7 @@ use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_source_v1
 
 use crate::common::{self, initialize};
 use crate::seat_data::SeatData;
-use crate::utils::{self, copy_data, is_text};
+use crate::utils::is_text;
 
 /// The clipboard to operate on.
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord, Default)]
@@ -157,7 +156,7 @@ pub enum SourceCreationError {
     TempFileCreate(#[source] io::Error),
 
     #[error("Couldn't copy data to the temporary file")]
-    DataCopy(#[source] utils::CopyDataError),
+    DataCopy(#[source] io::Error),
 
     #[error("Couldn't write to the temporary file")]
     TempFileWrite(#[source] io::Error),
@@ -238,7 +237,7 @@ pub enum DataSourceError {
     FileOpen(#[source] io::Error),
 
     #[error("Couldn't copy the data to the target file descriptor")]
-    Copy(#[source] utils::CopyDataError),
+    Copy(#[source] io::Error),
 }
 
 struct State {
@@ -350,9 +349,9 @@ impl Dispatch<ZwlrDataControlSourceV1, ()> for State {
                 let data_path = &state.data_paths[&mime_type];
 
                 let file = File::open(data_path).map_err(DataSourceError::FileOpen);
-                let result = file.and_then(|data_file| {
-                    let data_fd = data_file.into_raw_fd();
-                    copy_data(Some(data_fd), fd.into_raw_fd(), true).map_err(DataSourceError::Copy)
+                let result = file.and_then(|mut data_file| {
+                    let mut target_file = File::from(fd);
+                    io::copy(&mut data_file, &mut target_file).map_err(DataSourceError::Copy)
                 });
 
                 if let Err(err) = result {
@@ -618,7 +617,7 @@ fn make_source(
             .map_err(SourceCreationError::TempFileWrite)?;
     } else {
         // Copy the standard input into the target file.
-        copy_data(None, temp_file.into_raw_fd(), true).map_err(SourceCreationError::DataCopy)?;
+        io::copy(&mut io::stdin(), &mut temp_file).map_err(SourceCreationError::DataCopy)?;
     }
 
     let mime_type = match mime_type {

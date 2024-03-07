@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Breaking** Removed `utils::copy_data`. It forked into a `/usr/bin/env cat`
+  for copying. All internal uses of the function have been changed to simply
+  use `std::io::copy` instead.
+
 ## v0.8.1 (7th Mar 2024)
 
 - Updated dependencies, notably `nix`, which fixes building on LoongArch.
