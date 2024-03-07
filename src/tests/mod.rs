@@ -1,10 +1,11 @@
 use std::ffi::OsStr;
+use std::os::fd::OwnedFd;
 use std::sync::atomic::AtomicU8;
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::{Arc, Mutex};
 use std::thread;
 
-use nix::sys::epoll::{Epoll, EpollCreateFlags, EpollEvent, EpollFlags, EpollTimeout};
+use rustix::event::epoll;
 use wayland_backend::server::ClientData;
 use wayland_server::{Display, ListeningSocket};
 
@@ -16,7 +17,7 @@ mod utils;
 pub struct TestServer<S: 'static> {
     pub display: Display<S>,
     pub socket: ListeningSocket,
-    pub epoll: Epoll,
+    pub epoll: OwnedFd,
 }
 
 struct ClientCounter(AtomicU8);
@@ -36,17 +37,22 @@ impl<S: Send + 'static> TestServer<S> {
         let mut display = Display::new().unwrap();
         let socket = ListeningSocket::bind_auto("wl-clipboard-rs-test", 0..).unwrap();
 
-        let epoll = Epoll::new(EpollCreateFlags::EPOLL_CLOEXEC).unwrap();
+        let epoll = epoll::create(epoll::CreateFlags::CLOEXEC).unwrap();
 
-        epoll
-            .add(&socket, EpollEvent::new(EpollFlags::EPOLLIN, 0))
-            .unwrap();
-        epoll
-            .add(
-                display.backend().poll_fd(),
-                EpollEvent::new(EpollFlags::EPOLLIN, 1),
-            )
-            .unwrap();
+        epoll::add(
+            &epoll,
+            &socket,
+            epoll::EventData::new_u64(0),
+            epoll::EventFlags::IN,
+        )
+        .unwrap();
+        epoll::add(
+            &epoll,
+            display.backend().poll_fd(),
+            epoll::EventData::new_u64(1),
+            epoll::EventFlags::IN,
+        )
+        .unwrap();
 
         TestServer {
             display,
@@ -76,28 +82,29 @@ impl<S: Send + 'static> TestServer<S> {
 
         while client_counter.0.load(SeqCst) > 0 || waiting_for_first_client {
             // Wait for requests from the client.
-            let mut events = [EpollEvent::empty(); 2];
-            let nevents = self.epoll.wait(&mut events, EpollTimeout::NONE).unwrap();
+            let mut events = epoll::EventVec::with_capacity(2);
+            epoll::wait(&self.epoll, &mut events, -1).unwrap();
 
-            let ready_socket = events.iter().take(nevents).any(|event| event.data() == 0);
-            let ready_clients = events.iter().take(nevents).any(|event| event.data() == 1);
-
-            if ready_socket {
-                // Try to accept a new client.
-                if let Some(stream) = self.socket.accept().unwrap() {
-                    waiting_for_first_client = false;
-                    client_counter.0.fetch_add(1, SeqCst);
-                    self.display
-                        .handle()
-                        .insert_client(stream, client_counter.clone())
-                        .unwrap();
+            for event in &events {
+                match event.data.u64() {
+                    0 => {
+                        // Try to accept a new client.
+                        if let Some(stream) = self.socket.accept().unwrap() {
+                            waiting_for_first_client = false;
+                            client_counter.0.fetch_add(1, SeqCst);
+                            self.display
+                                .handle()
+                                .insert_client(stream, client_counter.clone())
+                                .unwrap();
+                        }
+                    }
+                    1 => {
+                        // Try to dispatch client messages.
+                        self.display.dispatch_clients(state).unwrap();
+                        self.display.flush_clients().unwrap();
+                    }
+                    x => panic!("unexpected epoll event: {x}"),
                 }
-            }
-
-            if ready_clients {
-                // Try to dispatch client messages.
-                self.display.dispatch_clients(state).unwrap();
-                self.display.flush_clients().unwrap();
             }
         }
     }

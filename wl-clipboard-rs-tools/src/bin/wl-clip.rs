@@ -1,13 +1,12 @@
 use std::env::args_os;
 use std::ffi::OsString;
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::io::{stdout, Read, Write};
 use std::process;
 
 use anyhow::{Context, Error};
-use libc::{STDIN_FILENO, STDOUT_FILENO};
-use nix::fcntl::OFlag;
-use nix::unistd::{close, dup2, fork, ForkResult};
+use libc::fork;
+use rustix::stdio::{dup2_stdin, dup2_stdout};
 use wl_clipboard_rs::copy::{self, ServeRequests, Source};
 use wl_clipboard_rs::paste::{self, get_contents};
 use wl_clipboard_rs::utils::is_text;
@@ -290,20 +289,24 @@ fn main() -> Result<(), Error> {
         } else {
             // SAFETY: We don't spawn any threads, so doing things after forking is safe.
             // TODO: is there any way to verify that we don't spawn any threads?
-            if let ForkResult::Child = unsafe { fork() }.unwrap() {
-                // Replace STDIN and STDOUT with /dev/null. We won't be using them, and keeping them as
-                // is hangs a potential pipeline (i.e. wl-copy hello | cat). Also, simply closing the
-                // file descriptors is a bad idea because then they get reused by subsequent temp file
-                // opens, which breaks the dup2/close logic during data copying.
-                if let Ok(dev_null) =
-                    nix::fcntl::open("/dev/null", OFlag::O_RDWR, nix::sys::stat::Mode::empty())
-                {
-                    let _ = dup2(dev_null, STDIN_FILENO);
-                    let _ = dup2(dev_null, STDOUT_FILENO);
-                    let _ = close(dev_null);
-                }
+            match unsafe { fork() } {
+                -1 => panic!("error forking: {:?}", std::io::Error::last_os_error()),
+                0 => {
+                    // Replace STDIN and STDOUT with /dev/null. We won't be using them, and keeping
+                    // them as is hangs a potential pipeline (i.e. wl-copy hello | cat). Also,
+                    // simply closing the file descriptors is a bad idea because then they get
+                    // reused by subsequent temp file opens, which breaks the dup2/close logic
+                    // during data copying.
+                    if let Ok(dev_null) =
+                        OpenOptions::new().read(true).write(true).open("/dev/null")
+                    {
+                        let _ = dup2_stdin(&dev_null);
+                        let _ = dup2_stdout(&dev_null);
+                    }
 
-                drop(prepared_copy.serve());
+                    drop(prepared_copy.serve());
+                }
+                _ => (),
             }
         }
     }

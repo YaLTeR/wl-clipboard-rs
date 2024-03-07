@@ -7,15 +7,15 @@
 
 use std::collections::HashMap;
 use std::io::Write;
-use std::os::fd::{AsFd, AsRawFd};
+use std::os::fd::AsFd;
 use std::sync::atomic::AtomicU8;
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::mpsc::Sender;
 
-use nix::fcntl::{fcntl, FcntlArg, OFlag};
 use os_pipe::PipeWriter;
 use proptest::prelude::*;
 use proptest_derive::Arbitrary;
+use rustix::fs::{fcntl_setfl, OFlags};
 use wayland_protocols_wlr::data_control::v1::server::zwlr_data_control_device_v1::{
     self, ZwlrDataControlDeviceV1,
 };
@@ -261,7 +261,7 @@ impl Dispatch<ZwlrDataControlOfferV1, (String, bool)> for State {
                 }
                 OfferInfo::Runtime { source } => {
                     if state.set_nonblock_on_write_fd {
-                        fcntl(fd.as_raw_fd(), FcntlArg::F_SETFL(OFlag::O_NONBLOCK)).unwrap();
+                        fcntl_setfl(&fd, OFlags::NONBLOCK).unwrap();
                     }
 
                     source.send(mime_type, fd.as_fd())
