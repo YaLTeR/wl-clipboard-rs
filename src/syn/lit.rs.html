@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.48/src/lit.rs`."><title>lit.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.52/src/lit.rs`."><title>lit.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -1638,18 +1638,6 @@
 <a href="#1637" id="1637">1637</a>
 <a href="#1638" id="1638">1638</a>
 <a href="#1639" id="1639">1639</a>
-<a href="#1640" id="1640">1640</a>
-<a href="#1641" id="1641">1641</a>
-<a href="#1642" id="1642">1642</a>
-<a href="#1643" id="1643">1643</a>
-<a href="#1644" id="1644">1644</a>
-<a href="#1645" id="1645">1645</a>
-<a href="#1646" id="1646">1646</a>
-<a href="#1647" id="1647">1647</a>
-<a href="#1648" id="1648">1648</a>
-<a href="#1649" id="1649">1649</a>
-<a href="#1650" id="1650">1650</a>
-<a href="#1651" id="1651">1651</a>
 </pre></div><pre class="rust"><code><span class="attr">#[cfg(feature = <span class="string">"parsing"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::lookahead;
 <span class="attr">#[cfg(feature = <span class="string">"parsing"</span>)]
@@ -1670,7 +1658,7 @@
     ///
     /// This type is a [syntax tree enum].
     ///
-    /// [syntax tree enum]: crate::Expr#syntax-tree-enums
+    /// [syntax tree enum]: crate::expr::Expr#syntax-tree-enums
     </span><span class="attr">#[non_exhaustive]
     </span><span class="kw">pub enum </span>Lit {
         <span class="doccomment">/// A UTF-8 string literal: `"foo"`.
@@ -1877,10 +1865,11 @@
 
         <span class="comment">// Parse string literal into a token stream with every span equal to the
         // original literal's span.
-        </span><span class="kw">let </span><span class="kw-2">mut </span>tokens = TokenStream::from_str(<span class="kw-2">&amp;</span><span class="self">self</span>.value())<span class="question-mark">?</span>;
-        tokens = respan_token_stream(tokens, <span class="self">self</span>.span());
+        </span><span class="kw">let </span>span = <span class="self">self</span>.span();
+        <span class="kw">let </span><span class="kw-2">mut </span>tokens = TokenStream::from_str(<span class="kw-2">&amp;</span><span class="self">self</span>.value())<span class="question-mark">?</span>;
+        tokens = respan_token_stream(tokens, span);
 
-        <span class="kw">let </span>result = parser.parse2(tokens)<span class="question-mark">?</span>;
+        <span class="kw">let </span>result = <span class="kw">crate</span>::parse::parse_scoped(parser, span, tokens)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>suffix = <span class="self">self</span>.suffix();
         <span class="kw">if </span>!suffix.is_empty() {
@@ -2206,139 +2195,118 @@
 
 <span class="attr">#[cfg(feature = <span class="string">"extra-traits"</span>)]
 </span><span class="kw">mod </span>debug_impls {
-    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::lit::{LitBool, LitByte, LitByteStr, LitChar, LitFloat, LitInt, LitStr};
     <span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug};
 
     <span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
     </span><span class="kw">impl </span>Debug <span class="kw">for </span>LitStr {
         <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            <span class="kw">impl </span>LitStr {
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(
-                    <span class="kw-2">&amp;</span><span class="self">self</span>,
-                    formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter,
-                    name: <span class="kw-2">&amp;</span>str,
-                ) -&gt; fmt::Result {
-                    formatter
-                        .debug_struct(name)
-                        .field(<span class="string">"token"</span>, <span class="kw-2">&amp;</span><span class="macro">format_args!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.repr.token))
-                        .finish()
-                }
-            }
             <span class="self">self</span>.debug(formatter, <span class="string">"LitStr"</span>)
+        }
+    }
+
+    <span class="kw">impl </span>LitStr {
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter, name: <span class="kw-2">&amp;</span>str) -&gt; fmt::Result {
+            formatter
+                .debug_struct(name)
+                .field(<span class="string">"token"</span>, <span class="kw-2">&amp;</span><span class="macro">format_args!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.repr.token))
+                .finish()
         }
     }
 
     <span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
     </span><span class="kw">impl </span>Debug <span class="kw">for </span>LitByteStr {
         <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            <span class="kw">impl </span>LitByteStr {
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(
-                    <span class="kw-2">&amp;</span><span class="self">self</span>,
-                    formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter,
-                    name: <span class="kw-2">&amp;</span>str,
-                ) -&gt; fmt::Result {
-                    formatter
-                        .debug_struct(name)
-                        .field(<span class="string">"token"</span>, <span class="kw-2">&amp;</span><span class="macro">format_args!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.repr.token))
-                        .finish()
-                }
-            }
             <span class="self">self</span>.debug(formatter, <span class="string">"LitByteStr"</span>)
+        }
+    }
+
+    <span class="kw">impl </span>LitByteStr {
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter, name: <span class="kw-2">&amp;</span>str) -&gt; fmt::Result {
+            formatter
+                .debug_struct(name)
+                .field(<span class="string">"token"</span>, <span class="kw-2">&amp;</span><span class="macro">format_args!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.repr.token))
+                .finish()
         }
     }
 
     <span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
     </span><span class="kw">impl </span>Debug <span class="kw">for </span>LitByte {
         <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            <span class="kw">impl </span>LitByte {
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(
-                    <span class="kw-2">&amp;</span><span class="self">self</span>,
-                    formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter,
-                    name: <span class="kw-2">&amp;</span>str,
-                ) -&gt; fmt::Result {
-                    formatter
-                        .debug_struct(name)
-                        .field(<span class="string">"token"</span>, <span class="kw-2">&amp;</span><span class="macro">format_args!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.repr.token))
-                        .finish()
-                }
-            }
             <span class="self">self</span>.debug(formatter, <span class="string">"LitByte"</span>)
+        }
+    }
+
+    <span class="kw">impl </span>LitByte {
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter, name: <span class="kw-2">&amp;</span>str) -&gt; fmt::Result {
+            formatter
+                .debug_struct(name)
+                .field(<span class="string">"token"</span>, <span class="kw-2">&amp;</span><span class="macro">format_args!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.repr.token))
+                .finish()
         }
     }
 
     <span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
     </span><span class="kw">impl </span>Debug <span class="kw">for </span>LitChar {
         <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            <span class="kw">impl </span>LitChar {
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(
-                    <span class="kw-2">&amp;</span><span class="self">self</span>,
-                    formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter,
-                    name: <span class="kw-2">&amp;</span>str,
-                ) -&gt; fmt::Result {
-                    formatter
-                        .debug_struct(name)
-                        .field(<span class="string">"token"</span>, <span class="kw-2">&amp;</span><span class="macro">format_args!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.repr.token))
-                        .finish()
-                }
-            }
             <span class="self">self</span>.debug(formatter, <span class="string">"LitChar"</span>)
+        }
+    }
+
+    <span class="kw">impl </span>LitChar {
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter, name: <span class="kw-2">&amp;</span>str) -&gt; fmt::Result {
+            formatter
+                .debug_struct(name)
+                .field(<span class="string">"token"</span>, <span class="kw-2">&amp;</span><span class="macro">format_args!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.repr.token))
+                .finish()
         }
     }
 
     <span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
     </span><span class="kw">impl </span>Debug <span class="kw">for </span>LitInt {
         <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            <span class="kw">impl </span>LitInt {
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(
-                    <span class="kw-2">&amp;</span><span class="self">self</span>,
-                    formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter,
-                    name: <span class="kw-2">&amp;</span>str,
-                ) -&gt; fmt::Result {
-                    formatter
-                        .debug_struct(name)
-                        .field(<span class="string">"token"</span>, <span class="kw-2">&amp;</span><span class="macro">format_args!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.repr.token))
-                        .finish()
-                }
-            }
             <span class="self">self</span>.debug(formatter, <span class="string">"LitInt"</span>)
+        }
+    }
+
+    <span class="kw">impl </span>LitInt {
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter, name: <span class="kw-2">&amp;</span>str) -&gt; fmt::Result {
+            formatter
+                .debug_struct(name)
+                .field(<span class="string">"token"</span>, <span class="kw-2">&amp;</span><span class="macro">format_args!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.repr.token))
+                .finish()
         }
     }
 
     <span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
     </span><span class="kw">impl </span>Debug <span class="kw">for </span>LitFloat {
         <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            <span class="kw">impl </span>LitFloat {
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(
-                    <span class="kw-2">&amp;</span><span class="self">self</span>,
-                    formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter,
-                    name: <span class="kw-2">&amp;</span>str,
-                ) -&gt; fmt::Result {
-                    formatter
-                        .debug_struct(name)
-                        .field(<span class="string">"token"</span>, <span class="kw-2">&amp;</span><span class="macro">format_args!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.repr.token))
-                        .finish()
-                }
-            }
             <span class="self">self</span>.debug(formatter, <span class="string">"LitFloat"</span>)
+        }
+    }
+
+    <span class="kw">impl </span>LitFloat {
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter, name: <span class="kw-2">&amp;</span>str) -&gt; fmt::Result {
+            formatter
+                .debug_struct(name)
+                .field(<span class="string">"token"</span>, <span class="kw-2">&amp;</span><span class="macro">format_args!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.repr.token))
+                .finish()
         }
     }
 
     <span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
     </span><span class="kw">impl </span>Debug <span class="kw">for </span>LitBool {
         <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            <span class="kw">impl </span>LitBool {
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(
-                    <span class="kw-2">&amp;</span><span class="self">self</span>,
-                    formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter,
-                    name: <span class="kw-2">&amp;</span>str,
-                ) -&gt; fmt::Result {
-                    formatter
-                        .debug_struct(name)
-                        .field(<span class="string">"value"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.value)
-                        .finish()
-                }
-            }
             <span class="self">self</span>.debug(formatter, <span class="string">"LitBool"</span>)
+        }
+    }
+
+    <span class="kw">impl </span>LitBool {
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>debug(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter, name: <span class="kw-2">&amp;</span>str) -&gt; fmt::Result {
+            formatter
+                .debug_struct(name)
+                .field(<span class="string">"value"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.value)
+                .finish()
         }
     }
 }
@@ -2459,10 +2427,14 @@
 
 <span class="attr">#[cfg(feature = <span class="string">"parsing"</span>)]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>parsing {
-    <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span><span class="kw">crate</span>::buffer::Cursor;
-    <span class="kw">use </span><span class="kw">crate</span>::parse::{Parse, ParseStream, <span class="prelude-ty">Result</span>};
-    <span class="kw">use </span>proc_macro2::Punct;
+    <span class="kw">use </span><span class="kw">crate</span>::error::Result;
+    <span class="kw">use </span><span class="kw">crate</span>::lit::{
+        value, Lit, LitBool, LitByte, LitByteStr, LitChar, LitFloat, LitFloatRepr, LitInt,
+        LitIntRepr, LitStr,
+    };
+    <span class="kw">use </span><span class="kw">crate</span>::parse::{Parse, ParseStream};
+    <span class="kw">use </span>proc_macro2::{Literal, Punct};
 
     <span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"parsing"</span>)))]
     </span><span class="kw">impl </span>Parse <span class="kw">for </span>Lit {
@@ -2615,7 +2587,7 @@
 
 <span class="attr">#[cfg(feature = <span class="string">"printing"</span>)]
 </span><span class="kw">mod </span>printing {
-    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::lit::{LitBool, LitByte, LitByteStr, LitChar, LitFloat, LitInt, LitStr};
     <span class="kw">use </span>proc_macro2::TokenStream;
     <span class="kw">use </span>quote::{ToTokens, TokenStreamExt};
 
@@ -2670,8 +2642,12 @@
 }
 
 <span class="kw">mod </span>value {
-    <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span><span class="kw">crate</span>::bigint::BigInt;
+    <span class="kw">use </span><span class="kw">crate</span>::lit::{
+        Lit, LitBool, LitByte, LitByteStr, LitChar, LitFloat, LitFloatRepr, LitInt, LitIntRepr,
+        LitRepr, LitStr,
+    };
+    <span class="kw">use </span>proc_macro2::{Literal, Span};
     <span class="kw">use </span>std::char;
     <span class="kw">use </span>std::ops::{Index, RangeFrom};
 

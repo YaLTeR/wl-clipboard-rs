@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nix-0.27.1/src/errno.rs`."><title>errno.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="nix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nix-0.28.0/src/errno.rs`."><title>errno.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="nix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -3335,121 +3335,130 @@
 <a href="#3334" id="3334">3334</a>
 <a href="#3335" id="3335">3335</a>
 <a href="#3336" id="3336">3336</a>
-<a href="#3337" id="3337">3337</a>
-<a href="#3338" id="3338">3338</a>
-<a href="#3339" id="3339">3339</a>
-<a href="#3340" id="3340">3340</a>
-<a href="#3341" id="3341">3341</a>
-<a href="#3342" id="3342">3342</a>
-<a href="#3343" id="3343">3343</a>
-<a href="#3344" id="3344">3344</a>
-<a href="#3345" id="3345">3345</a>
-<a href="#3346" id="3346">3346</a>
-<a href="#3347" id="3347">3347</a>
-<a href="#3348" id="3348">3348</a>
-<a href="#3349" id="3349">3349</a>
-<a href="#3350" id="3350">3350</a>
-<a href="#3351" id="3351">3351</a>
-<a href="#3352" id="3352">3352</a>
-<a href="#3353" id="3353">3353</a>
-<a href="#3354" id="3354">3354</a>
-<a href="#3355" id="3355">3355</a>
-<a href="#3356" id="3356">3356</a>
-<a href="#3357" id="3357">3357</a>
-<a href="#3358" id="3358">3358</a>
-<a href="#3359" id="3359">3359</a>
-<a href="#3360" id="3360">3360</a>
-<a href="#3361" id="3361">3361</a>
-<a href="#3362" id="3362">3362</a>
-<a href="#3363" id="3363">3363</a>
-<a href="#3364" id="3364">3364</a>
-<a href="#3365" id="3365">3365</a>
-<a href="#3366" id="3366">3366</a>
-<a href="#3367" id="3367">3367</a>
-<a href="#3368" id="3368">3368</a>
-<a href="#3369" id="3369">3369</a>
-<a href="#3370" id="3370">3370</a>
-<a href="#3371" id="3371">3371</a>
-<a href="#3372" id="3372">3372</a>
-<a href="#3373" id="3373">3373</a>
-<a href="#3374" id="3374">3374</a>
-<a href="#3375" id="3375">3375</a>
-<a href="#3376" id="3376">3376</a>
-<a href="#3377" id="3377">3377</a>
-<a href="#3378" id="3378">3378</a>
-<a href="#3379" id="3379">3379</a>
-<a href="#3380" id="3380">3380</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::Result;
+</pre></div><pre class="rust"><code><span class="doccomment">//! Safe wrappers around errno functions
+//!
+//! # Example
+//! ```
+//! use nix::errno::Errno;
+//!
+//! Errno::EIO.set();
+//! assert_eq!(Errno::last(), Errno::EIO);
+//!
+//! Errno::clear();
+//! assert_eq!(Errno::last(), Errno::from_raw(0));
+//! ```
+
+</span><span class="kw">use </span><span class="kw">crate</span>::Result;
 <span class="kw">use </span>cfg_if::cfg_if;
 <span class="kw">use </span>libc::{c_int, c_void};
-<span class="kw">use </span>std::convert::TryFrom;
 <span class="kw">use </span>std::{error, fmt, io};
 
 <span class="kw">pub use </span><span class="self">self</span>::consts::<span class="kw-2">*</span>;
 
 <span class="macro">cfg_if! </span>{
     <span class="kw">if </span><span class="attr">#[cfg(any(target_os = <span class="string">"freebsd"</span>,
-                 target_os = <span class="string">"ios"</span>,
-                 target_os = <span class="string">"macos"</span>))] </span>{
+                 apple_targets,))] </span>{
         <span class="kw">unsafe fn </span>errno_location() -&gt; <span class="kw-2">*mut </span>c_int {
-            libc::__error()
+            <span class="kw">unsafe </span>{ libc::__error() }
         }
-    } <span class="kw">else if </span><span class="attr">#[cfg(any(target_os = <span class="string">"android"</span>,
-                        target_os = <span class="string">"netbsd"</span>,
-                        target_os = <span class="string">"openbsd"</span>))] </span>{
+    } <span class="kw">else if </span><span class="attr">#[cfg(any(target_os = <span class="string">"android"</span>, netbsdlike))] </span>{
         <span class="kw">unsafe fn </span>errno_location() -&gt; <span class="kw-2">*mut </span>c_int {
-            libc::__errno()
+            <span class="kw">unsafe </span>{ libc::__errno() }
         }
     } <span class="kw">else if </span><span class="attr">#[cfg(any(target_os = <span class="string">"linux"</span>,
                         target_os = <span class="string">"redox"</span>,
                         target_os = <span class="string">"dragonfly"</span>,
-                        target_os = <span class="string">"fuchsia"</span>))] </span>{
+                        target_os = <span class="string">"fuchsia"</span>,
+                        target_os = <span class="string">"hurd"</span>))] </span>{
         <span class="kw">unsafe fn </span>errno_location() -&gt; <span class="kw-2">*mut </span>c_int {
-            libc::__errno_location()
+            <span class="kw">unsafe </span>{ libc::__errno_location() }
         }
-    } <span class="kw">else if </span><span class="attr">#[cfg(any(target_os = <span class="string">"illumos"</span>, target_os = <span class="string">"solaris"</span>))] </span>{
+    } <span class="kw">else if </span><span class="attr">#[cfg(solarish)] </span>{
         <span class="kw">unsafe fn </span>errno_location() -&gt; <span class="kw-2">*mut </span>c_int {
-            libc::___errno()
+            <span class="kw">unsafe </span>{ libc::___errno() }
         }
     } <span class="kw">else if </span><span class="attr">#[cfg(any(target_os = <span class="string">"haiku"</span>,))] </span>{
         <span class="kw">unsafe fn </span>errno_location() -&gt; <span class="kw-2">*mut </span>c_int {
-            libc::_errnop()
+            <span class="kw">unsafe </span>{ libc::_errnop() }
         }
     } <span class="kw">else if </span><span class="attr">#[cfg(any(target_os = <span class="string">"aix"</span>))] </span>{
         <span class="kw">unsafe fn </span>errno_location() -&gt; <span class="kw-2">*mut </span>c_int {
-            libc::_Errno()
+            <span class="kw">unsafe </span>{ libc::_Errno() }
         }
-    }
-}
-
-<span class="doccomment">/// Sets the platform-specific errno to no-error
-</span><span class="kw">fn </span>clear() {
-    <span class="comment">// Safe because errno is a thread-local variable
-    </span><span class="kw">unsafe </span>{
-        <span class="kw-2">*</span>errno_location() = <span class="number">0</span>;
     }
 }
 
 <span class="doccomment">/// Returns the platform-specific value of errno
+</span><span class="attr">#[deprecated(since = <span class="string">"0.28.0"</span>, note = <span class="string">"please use `Errno::last_raw()` instead"</span>)]
 </span><span class="kw">pub fn </span>errno() -&gt; i32 {
-    <span class="kw">unsafe </span>{ <span class="kw-2">*</span>errno_location() }
+    Errno::last_raw()
 }
 
 <span class="kw">impl </span>Errno {
-    <span class="kw">pub fn </span>last() -&gt; <span class="self">Self </span>{
-        last()
+    <span class="doccomment">/// Returns the current value of errno
+    </span><span class="kw">pub fn </span>last() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::from_raw(<span class="self">Self</span>::last_raw())
+    }
+
+    <span class="doccomment">/// Returns the current raw i32 value of errno
+    </span><span class="kw">pub fn </span>last_raw() -&gt; i32 {
+        <span class="kw">unsafe </span>{ <span class="kw-2">*</span>errno_location() }
+    }
+
+    <span class="doccomment">/// Sets the value of errno.
+    ///
+    /// # Example
+    /// ```
+    /// use nix::errno::Errno;
+    ///
+    /// Errno::EIO.set();
+    ///
+    /// assert_eq!(Errno::last(), Errno::EIO);
+    /// ```
+    </span><span class="kw">pub fn </span>set(<span class="self">self</span>) {
+        <span class="self">Self</span>::set_raw(<span class="self">self </span><span class="kw">as </span>i32)
+    }
+
+    <span class="doccomment">/// Sets the raw i32 value of errno.
+    </span><span class="kw">pub fn </span>set_raw(errno: i32) {
+        <span class="comment">// Safe because errno is a thread-local variable
+        </span><span class="kw">unsafe </span>{
+            <span class="kw-2">*</span>errno_location() = errno;
+        }
+    }
+
+    <span class="attr">#[deprecated(
+        since = <span class="string">"0.28.0"</span>,
+        note = <span class="string">"please use `Errno::from_raw()` instead"
+    </span>)]
+    </span><span class="kw">pub const fn </span>from_i32(err: i32) -&gt; Errno {
+        <span class="self">Self</span>::from_raw(err)
+    }
+
+    <span class="kw">pub const fn </span>from_raw(err: i32) -&gt; Errno {
+        <span class="attr">#[allow(deprecated)]
+        </span>from_i32(err)
     }
 
     <span class="kw">pub fn </span>desc(<span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str {
         desc(<span class="self">self</span>)
     }
 
-    <span class="kw">pub const fn </span>from_i32(err: i32) -&gt; Errno {
-        from_i32(err)
-    }
-
-    <span class="kw">pub fn </span>clear() {
-        clear()
+    <span class="doccomment">/// Sets the platform-specific errno to no-error
+    ///
+    /// ```
+    /// use nix::errno::Errno;
+    ///
+    /// Errno::EIO.set();
+    ///
+    /// Errno::clear();
+    ///
+    /// let err = Errno::last();
+    /// assert_ne!(err, Errno::EIO);
+    /// assert_eq!(err, Errno::from_raw(0));
+    /// ```
+    </span><span class="kw">pub fn </span>clear() {
+        <span class="self">Self</span>::set_raw(<span class="number">0</span>)
     }
 
     <span class="doccomment">/// Returns `Ok(value)` if it does not contain the sentinel value. This
@@ -3518,12 +3527,8 @@
     <span class="kw">type </span>Error = io::Error;
 
     <span class="kw">fn </span>try_from(ioerror: io::Error) -&gt; std::result::Result&lt;<span class="self">Self</span>, io::Error&gt; {
-        ioerror.raw_os_error().map(Errno::from_i32).ok_or(ioerror)
+        ioerror.raw_os_error().map(Errno::from_raw).ok_or(ioerror)
     }
-}
-
-<span class="kw">fn </span>last() -&gt; Errno {
-    Errno::from_i32(errno())
 }
 
 <span class="kw">fn </span>desc(errno: Errno) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str {
@@ -3606,467 +3611,270 @@
         EHOSTUNREACH =&gt; <span class="string">"No route to host"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
             target_os = <span class="string">"fuchsia"
         </span>))]
         </span>ECHRNG =&gt; <span class="string">"Channel number out of range"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
             target_os = <span class="string">"fuchsia"
         </span>))]
         </span>EL2NSYNC =&gt; <span class="string">"Level 2 not synchronized"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
             target_os = <span class="string">"fuchsia"
         </span>))]
         </span>EL3HLT =&gt; <span class="string">"Level 3 halted"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
             target_os = <span class="string">"fuchsia"
         </span>))]
         </span>EL3RST =&gt; <span class="string">"Level 3 reset"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
             target_os = <span class="string">"fuchsia"
         </span>))]
         </span>ELNRNG =&gt; <span class="string">"Link number out of range"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
             target_os = <span class="string">"fuchsia"
         </span>))]
         </span>EUNATCH =&gt; <span class="string">"Protocol driver not attached"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
             target_os = <span class="string">"fuchsia"
         </span>))]
         </span>ENOCSI =&gt; <span class="string">"No CSI structure available"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
             target_os = <span class="string">"fuchsia"
         </span>))]
         </span>EL2HLT =&gt; <span class="string">"Level 2 halted"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>EBADE =&gt; <span class="string">"Invalid exchange"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>EBADR =&gt; <span class="string">"Invalid request descriptor"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>EXFULL =&gt; <span class="string">"Exchange full"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>ENOANO =&gt; <span class="string">"No anode"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>EBADRQC =&gt; <span class="string">"Invalid request code"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>EBADSLT =&gt; <span class="string">"Invalid slot"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>EBFONT =&gt; <span class="string">"Bad font file format"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
+            linux_android,
+            solarish,
+            target_os = <span class="string">"fuchsia"</span>,
+            target_os = <span class="string">"hurd"
         </span>))]
         </span>ENOSTR =&gt; <span class="string">"Device not a stream"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
+            linux_android,
+            solarish,
+            target_os = <span class="string">"fuchsia"</span>,
+            target_os = <span class="string">"hurd"
         </span>))]
         </span>ENODATA =&gt; <span class="string">"No data available"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
+            linux_android,
+            solarish,
+            target_os = <span class="string">"fuchsia"</span>,
+            target_os = <span class="string">"hurd"
         </span>))]
         </span>ETIME =&gt; <span class="string">"Timer expired"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
+            linux_android,
+            solarish,
+            target_os = <span class="string">"fuchsia"</span>,
+            target_os = <span class="string">"hurd"
         </span>))]
         </span>ENOSR =&gt; <span class="string">"Out of streams resources"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>ENONET =&gt; <span class="string">"Machine is not on the network"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>ENOPKG =&gt; <span class="string">"Package not installed"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
+            linux_android,
+            solarish,
+            target_os = <span class="string">"fuchsia"</span>,
+            target_os = <span class="string">"hurd"
         </span>))]
         </span>EREMOTE =&gt; <span class="string">"Object is remote"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
             target_os = <span class="string">"fuchsia"
         </span>))]
         </span>ENOLINK =&gt; <span class="string">"Link has been severed"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>EADV =&gt; <span class="string">"Advertise error"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>ESRMNT =&gt; <span class="string">"Srmount error"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>ECOMM =&gt; <span class="string">"Communication error on send"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+            target_os = <span class="string">"fuchsia"</span>,
+        ))]
         </span>EPROTO =&gt; <span class="string">"Protocol error"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
             target_os = <span class="string">"fuchsia"
         </span>))]
         </span>EMULTIHOP =&gt; <span class="string">"Multihop attempted"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"fuchsia"</span>))]
         </span>EDOTDOT =&gt; <span class="string">"RFS specific error"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"aix"</span>, target_os = <span class="string">"fuchsia"</span>))]
         </span>EBADMSG =&gt; <span class="string">"Not a data message"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"illumos"</span>, target_os = <span class="string">"solaris"</span>))]
+        <span class="attr">#[cfg(solarish)]
         </span>EBADMSG =&gt; <span class="string">"Trying to read unreadable message"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
             target_os = <span class="string">"aix"</span>,
             target_os = <span class="string">"fuchsia"</span>,
-            target_os = <span class="string">"haiku"
+            target_os = <span class="string">"haiku"</span>,
+            target_os = <span class="string">"hurd"
         </span>))]
         </span>EOVERFLOW =&gt; <span class="string">"Value too large for defined data type"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>ENOTUNIQ =&gt; <span class="string">"Name not unique on network"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>EBADFD =&gt; <span class="string">"File descriptor in bad state"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>EREMCHG =&gt; <span class="string">"Remote address changed"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>ELIBACC =&gt; <span class="string">"Can not access a needed shared library"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>ELIBBAD =&gt; <span class="string">"Accessing a corrupted shared library"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>ELIBSCN =&gt; <span class="string">".lib section in a.out corrupted"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>ELIBMAX =&gt; <span class="string">"Attempting to link in too many shared libraries"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
+            linux_android,
+            solarish,
+            target_os = <span class="string">"fuchsia"</span>,
+            target_os = <span class="string">"hurd"
         </span>))]
         </span>ELIBEXEC =&gt; <span class="string">"Cannot exec a shared library directly"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
             target_os = <span class="string">"fuchsia"</span>,
             target_os = <span class="string">"openbsd"
         </span>))]
         </span>EILSEQ =&gt; <span class="string">"Illegal byte sequence"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
             target_os = <span class="string">"fuchsia"
         </span>))]
         </span>ERESTART =&gt; <span class="string">"Interrupted system call should be restarted"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>ESTRPIPE =&gt; <span class="string">"Streams pipe error"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, solarish, target_os = <span class="string">"fuchsia"</span>))]
         </span>EUSERS =&gt; <span class="string">"Too many users"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
             target_os = <span class="string">"fuchsia"</span>,
             target_os = <span class="string">"netbsd"</span>,
             target_os = <span class="string">"redox"
         </span>))]
         </span>EOPNOTSUPP =&gt; <span class="string">"Operation not supported on transport endpoint"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"fuchsia"</span>, target_os = <span class="string">"hurd"</span>))]
         </span>ESTALE =&gt; <span class="string">"Stale file handle"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"fuchsia"</span>))]
         </span>EUCLEAN =&gt; <span class="string">"Structure needs cleaning"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"fuchsia"</span>))]
         </span>ENOTNAM =&gt; <span class="string">"Not a XENIX named type file"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"fuchsia"</span>))]
         </span>ENAVAIL =&gt; <span class="string">"No XENIX semaphores available"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"fuchsia"</span>))]
         </span>EISNAM =&gt; <span class="string">"Is a named type file"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"fuchsia"</span>))]
         </span>EREMOTEIO =&gt; <span class="string">"Remote I/O error"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"fuchsia"</span>))]
         </span>EDQUOT =&gt; <span class="string">"Quota exceeded"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
             target_os = <span class="string">"fuchsia"</span>,
             target_os = <span class="string">"openbsd"</span>,
             target_os = <span class="string">"dragonfly"
@@ -4074,71 +3882,47 @@
         </span>ENOMEDIUM =&gt; <span class="string">"No medium found"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
             target_os = <span class="string">"fuchsia"</span>,
             target_os = <span class="string">"openbsd"
         </span>))]
         </span>EMEDIUMTYPE =&gt; <span class="string">"Wrong medium type"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
+            linux_android,
+            solarish,
             target_os = <span class="string">"fuchsia"</span>,
             target_os = <span class="string">"haiku"
         </span>))]
         </span>ECANCELED =&gt; <span class="string">"Operation canceled"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"fuchsia"</span>))]
         </span>ENOKEY =&gt; <span class="string">"Required key not available"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"fuchsia"</span>))]
         </span>EKEYEXPIRED =&gt; <span class="string">"Key has expired"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"fuchsia"</span>))]
         </span>EKEYREVOKED =&gt; <span class="string">"Key has been revoked"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"fuchsia"</span>))]
         </span>EKEYREJECTED =&gt; <span class="string">"Key was rejected by service"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
+            linux_android,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"fuchsia"
+            target_os = <span class="string">"fuchsia"</span>,
+            target_os = <span class="string">"hurd"
         </span>))]
         </span>EOWNERDEAD =&gt; <span class="string">"Owner died"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"illumos"</span>, target_os = <span class="string">"solaris"</span>))]
+        <span class="attr">#[cfg(solarish)]
         </span>EOWNERDEAD =&gt; <span class="string">"Process died with lock"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"linux"</span>,
-            target_os = <span class="string">"android"</span>,
-            target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"fuchsia"
-        </span>))]
+        <span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"aix"</span>, target_os = <span class="string">"fuchsia"</span>))]
         </span>ENOTRECOVERABLE =&gt; <span class="string">"State not recoverable"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"illumos"</span>, target_os = <span class="string">"solaris"</span>))]
+        <span class="attr">#[cfg(solarish)]
         </span>ENOTRECOVERABLE =&gt; <span class="string">"Lock is not recoverable"</span>,
 
         <span class="attr">#[cfg(any(
@@ -4153,21 +3937,13 @@
         </span>))]
         </span>EHWPOISON =&gt; <span class="string">"Memory page has hardware error"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"freebsd"</span>, target_os = <span class="string">"dragonfly"</span>))]
+        <span class="attr">#[cfg(freebsdlike)]
         </span>EDOOFUS =&gt; <span class="string">"Programming error"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"redox"
-        </span>))]
+        <span class="attr">#[cfg(any(freebsdlike, target_os = <span class="string">"hurd"</span>, target_os = <span class="string">"redox"</span>))]
         </span>EMULTIHOP =&gt; <span class="string">"Multihop attempted"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"redox"
-        </span>))]
+        <span class="attr">#[cfg(any(freebsdlike, target_os = <span class="string">"hurd"</span>, target_os = <span class="string">"redox"</span>))]
         </span>ENOLINK =&gt; <span class="string">"Link has been severed"</span>,
 
         <span class="attr">#[cfg(target_os = <span class="string">"freebsd"</span>)]
@@ -4176,300 +3952,157 @@
         <span class="attr">#[cfg(target_os = <span class="string">"freebsd"</span>)]
         </span>ECAPMODE =&gt; <span class="string">"Not permitted in capability mode"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"
-        </span>))]
+        <span class="attr">#[cfg(any(bsd, target_os = <span class="string">"hurd"</span>))]
         </span>ENEEDAUTH =&gt; <span class="string">"Need authenticator"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"</span>,
-            target_os = <span class="string">"redox"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"
-        </span>))]
+        <span class="attr">#[cfg(any(bsd, target_os = <span class="string">"redox"</span>, solarish))]
         </span>EOVERFLOW =&gt; <span class="string">"Value too large to be stored in data type"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
+            freebsdlike,
+            apple_targets,
             target_os = <span class="string">"netbsd"</span>,
             target_os = <span class="string">"redox"</span>,
-            target_os = <span class="string">"haiku"
+            target_os = <span class="string">"haiku"</span>,
+            target_os = <span class="string">"hurd"
         </span>))]
         </span>EILSEQ =&gt; <span class="string">"Illegal byte sequence"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"</span>,
-            target_os = <span class="string">"haiku"
-        </span>))]
+        <span class="attr">#[cfg(any(bsd, target_os = <span class="string">"haiku"</span>))]
         </span>ENOATTR =&gt; <span class="string">"Attribute not found"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"</span>,
+            bsd,
             target_os = <span class="string">"redox"</span>,
-            target_os = <span class="string">"haiku"
+            target_os = <span class="string">"haiku"</span>,
+            target_os = <span class="string">"hurd"
         </span>))]
         </span>EBADMSG =&gt; <span class="string">"Bad message"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"</span>,
-            target_os = <span class="string">"redox"</span>,
-            target_os = <span class="string">"haiku"
+            bsd,
+            target_os = <span class="string">"haiku"</span>,
+            target_os = <span class="string">"hurd"</span>,
+            target_os = <span class="string">"redox"
         </span>))]
         </span>EPROTO =&gt; <span class="string">"Protocol error"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"
+            freebsdlike,
+            apple_targets,
+            target_os = <span class="string">"openbsd"</span>,
+            target_os = <span class="string">"hurd"
         </span>))]
         </span>ENOTRECOVERABLE =&gt; <span class="string">"State not recoverable"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"
-        </span>))]
+        <span class="attr">#[cfg(any(freebsdlike, apple_targets, target_os = <span class="string">"openbsd"</span>))]
         </span>EOWNERDEAD =&gt; <span class="string">"Previous owner died"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"</span>,
+            bsd,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"haiku"
+            solarish,
+            target_os = <span class="string">"haiku"</span>,
+            target_os = <span class="string">"hurd"
         </span>))]
         </span>ENOTSUP =&gt; <span class="string">"Operation not supported"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"
-        </span>))]
+        <span class="attr">#[cfg(any(bsd, target_os = <span class="string">"aix"</span>, target_os = <span class="string">"hurd"</span>))]
         </span>EPROCLIM =&gt; <span class="string">"Too many processes"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
+            bsd,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"</span>,
+            target_os = <span class="string">"hurd"</span>,
             target_os = <span class="string">"redox"
         </span>))]
         </span>EUSERS =&gt; <span class="string">"Too many users"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"</span>,
+            bsd,
+            solarish,
             target_os = <span class="string">"redox"</span>,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
-            target_os = <span class="string">"haiku"
+            target_os = <span class="string">"haiku"</span>,
+            target_os = <span class="string">"hurd"
         </span>))]
         </span>EDQUOT =&gt; <span class="string">"Disc quota exceeded"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"</span>,
+            bsd,
+            solarish,
             target_os = <span class="string">"redox"</span>,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"</span>,
             target_os = <span class="string">"haiku"
         </span>))]
         </span>ESTALE =&gt; <span class="string">"Stale NFS file handle"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"</span>,
-            target_os = <span class="string">"redox"
-        </span>))]
+        <span class="attr">#[cfg(any(bsd, target_os = <span class="string">"aix"</span>, target_os = <span class="string">"redox"</span>))]
         </span>EREMOTE =&gt; <span class="string">"Too many levels of remote in path"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"
-        </span>))]
+        <span class="attr">#[cfg(any(bsd, target_os = <span class="string">"hurd"</span>))]
         </span>EBADRPC =&gt; <span class="string">"RPC struct is bad"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"
-        </span>))]
+        <span class="attr">#[cfg(any(bsd, target_os = <span class="string">"hurd"</span>))]
         </span>ERPCMISMATCH =&gt; <span class="string">"RPC version wrong"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"
-        </span>))]
+        <span class="attr">#[cfg(any(bsd, target_os = <span class="string">"hurd"</span>))]
         </span>EPROGUNAVAIL =&gt; <span class="string">"RPC prog. not avail"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"
-        </span>))]
+        <span class="attr">#[cfg(any(bsd, target_os = <span class="string">"hurd"</span>))]
         </span>EPROGMISMATCH =&gt; <span class="string">"Program version wrong"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"
-        </span>))]
+        <span class="attr">#[cfg(any(bsd, target_os = <span class="string">"hurd"</span>))]
         </span>EPROCUNAVAIL =&gt; <span class="string">"Bad procedure for program"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"
-        </span>))]
+        <span class="attr">#[cfg(any(bsd, target_os = <span class="string">"hurd"</span>))]
         </span>EFTYPE =&gt; <span class="string">"Inappropriate file type or format"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"
-        </span>))]
+        <span class="attr">#[cfg(any(bsd, target_os = <span class="string">"hurd"</span>))]
         </span>EAUTH =&gt; <span class="string">"Authentication error"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"freebsd"</span>,
-            target_os = <span class="string">"dragonfly"</span>,
-            target_os = <span class="string">"ios"</span>,
+            bsd,
             target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"openbsd"</span>,
-            target_os = <span class="string">"netbsd"</span>,
+            target_os = <span class="string">"hurd"</span>,
             target_os = <span class="string">"redox"
         </span>))]
         </span>ECANCELED =&gt; <span class="string">"Operation canceled"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"macos"</span>, target_os = <span class="string">"ios"</span>))]
+        <span class="attr">#[cfg(apple_targets)]
         </span>EPWROFF =&gt; <span class="string">"Device power is off"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"macos"</span>, target_os = <span class="string">"ios"</span>))]
+        <span class="attr">#[cfg(apple_targets)]
         </span>EDEVERR =&gt; <span class="string">"Device error, e.g. paper out"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"macos"</span>, target_os = <span class="string">"ios"</span>))]
+        <span class="attr">#[cfg(apple_targets)]
         </span>EBADEXEC =&gt; <span class="string">"Bad executable"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"macos"</span>, target_os = <span class="string">"ios"</span>))]
+        <span class="attr">#[cfg(apple_targets)]
         </span>EBADARCH =&gt; <span class="string">"Bad CPU type in executable"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"macos"</span>, target_os = <span class="string">"ios"</span>))]
+        <span class="attr">#[cfg(apple_targets)]
         </span>ESHLIBVERS =&gt; <span class="string">"Shared library version mismatch"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"macos"</span>, target_os = <span class="string">"ios"</span>))]
+        <span class="attr">#[cfg(apple_targets)]
         </span>EBADMACHO =&gt; <span class="string">"Malformed Macho file"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"netbsd"</span>,
-            target_os = <span class="string">"haiku"
-        </span>))]
+        <span class="attr">#[cfg(any(apple_targets, target_os = <span class="string">"netbsd"</span>, target_os = <span class="string">"haiku"</span>))]
         </span>EMULTIHOP =&gt; <span class="string">"Reserved"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"ios"</span>,
+            apple_targets,
             target_os = <span class="string">"aix"</span>,
             target_os = <span class="string">"netbsd"</span>,
             target_os = <span class="string">"redox"
         </span>))]
         </span>ENODATA =&gt; <span class="string">"No message available on STREAM"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"netbsd"</span>,
-            target_os = <span class="string">"haiku"
-        </span>))]
+        <span class="attr">#[cfg(any(apple_targets, target_os = <span class="string">"netbsd"</span>, target_os = <span class="string">"haiku"</span>))]
         </span>ENOLINK =&gt; <span class="string">"Reserved"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"ios"</span>,
+            apple_targets,
             target_os = <span class="string">"aix"</span>,
             target_os = <span class="string">"netbsd"</span>,
             target_os = <span class="string">"redox"
@@ -4477,8 +4110,7 @@
         </span>ENOSR =&gt; <span class="string">"No STREAM resources"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"ios"</span>,
+            apple_targets,
             target_os = <span class="string">"aix"</span>,
             target_os = <span class="string">"netbsd"</span>,
             target_os = <span class="string">"redox"
@@ -4486,30 +4118,23 @@
         </span>ENOSTR =&gt; <span class="string">"Not a STREAM"</span>,
 
         <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"ios"</span>,
+            apple_targets,
             target_os = <span class="string">"aix"</span>,
             target_os = <span class="string">"netbsd"</span>,
             target_os = <span class="string">"redox"
         </span>))]
         </span>ETIME =&gt; <span class="string">"STREAM ioctl timeout"</span>,
 
-        <span class="attr">#[cfg(any(
-            target_os = <span class="string">"macos"</span>,
-            target_os = <span class="string">"ios"</span>,
-            target_os = <span class="string">"aix"</span>,
-            target_os = <span class="string">"illumos"</span>,
-            target_os = <span class="string">"solaris"
-        </span>))]
+        <span class="attr">#[cfg(any(apple_targets, solarish, target_os = <span class="string">"aix"</span>))]
         </span>EOPNOTSUPP =&gt; <span class="string">"Operation not supported on socket"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"macos"</span>, target_os = <span class="string">"ios"</span>))]
+        <span class="attr">#[cfg(apple_targets)]
         </span>ENOPOLICY =&gt; <span class="string">"No such policy registered"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"macos"</span>, target_os = <span class="string">"ios"</span>))]
+        <span class="attr">#[cfg(apple_targets)]
         </span>EQFULL =&gt; <span class="string">"Interface output queue is full"</span>,
 
-        <span class="attr">#[cfg(target_os = <span class="string">"openbsd"</span>)]
+        <span class="attr">#[cfg(any(target_os = <span class="string">"openbsd"</span>, target_os = <span class="string">"hurd"</span>))]
         </span>EOPNOTSUPP =&gt; <span class="string">"Operation not supported"</span>,
 
         <span class="attr">#[cfg(target_os = <span class="string">"openbsd"</span>)]
@@ -4518,18 +4143,33 @@
         <span class="attr">#[cfg(target_os = <span class="string">"dragonfly"</span>)]
         </span>EASYNC =&gt; <span class="string">"Async"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"illumos"</span>, target_os = <span class="string">"solaris"</span>))]
+        <span class="attr">#[cfg(solarish)]
         </span>EDEADLOCK =&gt; <span class="string">"Resource deadlock would occur"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"illumos"</span>, target_os = <span class="string">"solaris"</span>))]
+        <span class="attr">#[cfg(solarish)]
         </span>ELOCKUNMAPPED =&gt; <span class="string">"Locked lock was unmapped"</span>,
 
-        <span class="attr">#[cfg(any(target_os = <span class="string">"illumos"</span>, target_os = <span class="string">"solaris"</span>))]
+        <span class="attr">#[cfg(solarish)]
         </span>ENOTACTIVE =&gt; <span class="string">"Facility is not active"</span>,
+
+        <span class="attr">#[cfg(target_os = <span class="string">"hurd"</span>)]
+        </span>EBACKGROUND =&gt; <span class="string">"Inappropriate operation for background process"</span>,
+
+        <span class="attr">#[cfg(target_os = <span class="string">"hurd"</span>)]
+        </span>EDIED =&gt; <span class="string">"Translator died"</span>,
+
+        <span class="attr">#[cfg(target_os = <span class="string">"hurd"</span>)]
+        </span>EGREGIOUS =&gt; <span class="string">"You really blew it this time"</span>,
+
+        <span class="attr">#[cfg(target_os = <span class="string">"hurd"</span>)]
+        </span>EIEIO =&gt; <span class="string">"Computer bought the farm"</span>,
+
+        <span class="attr">#[cfg(target_os = <span class="string">"hurd"</span>)]
+        </span>EGRATUITOUS =&gt; <span class="string">"Gratuitous error"</span>,
     }
 }
 
-<span class="attr">#[cfg(any(target_os = <span class="string">"linux"</span>, target_os = <span class="string">"android"</span>, target_os = <span class="string">"fuchsia"</span>))]
+<span class="attr">#[cfg(any(linux_android, target_os = <span class="string">"fuchsia"</span>))]
 </span><span class="kw">mod </span>consts {
     <span class="attr">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
     #[repr(i32)]
@@ -4677,7 +4317,11 @@
         <span class="kw">pub const </span>ENOTSUP: Errno = Errno::EOPNOTSUPP;
     }
 
-    <span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
+    <span class="attr">#[deprecated(
+        since = <span class="string">"0.28.0"</span>,
+        note = <span class="string">"please use `Errno::from_raw()` instead"
+    </span>)]
+    </span><span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
         <span class="kw">use </span><span class="self">self</span>::Errno::<span class="kw-2">*</span>;
 
         <span class="kw">match </span>e {
@@ -4819,7 +4463,7 @@
     }
 }
 
-<span class="attr">#[cfg(any(target_os = <span class="string">"macos"</span>, target_os = <span class="string">"ios"</span>))]
+<span class="attr">#[cfg(apple_targets)]
 </span><span class="kw">mod </span>consts {
     <span class="attr">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
     #[repr(i32)]
@@ -4940,7 +4584,11 @@
         <span class="kw">pub const </span>EDEADLOCK: Errno = Errno::EDEADLK;
     }
 
-    <span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
+    <span class="attr">#[deprecated(
+        since = <span class="string">"0.28.0"</span>,
+        note = <span class="string">"please use `Errno::from_raw()` instead"
+    </span>)]
+    </span><span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
         <span class="kw">use </span><span class="self">self</span>::Errno::<span class="kw-2">*</span>;
 
         <span class="kw">match </span>e {
@@ -5167,7 +4815,11 @@
         <span class="kw">pub const </span>EOPNOTSUPP: Errno = Errno::ENOTSUP;
     }
 
-    <span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
+    <span class="attr">#[deprecated(
+        since = <span class="string">"0.28.0"</span>,
+        note = <span class="string">"please use `Errno::from_raw()` instead"
+    </span>)]
+    </span><span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
         <span class="kw">use </span><span class="self">self</span>::Errno::<span class="kw-2">*</span>;
 
         <span class="kw">match </span>e {
@@ -5384,7 +5036,11 @@
         <span class="kw">pub const </span>EOPNOTSUPP: Errno = Errno::ENOTSUP;
     }
 
-    <span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
+    <span class="attr">#[deprecated(
+        since = <span class="string">"0.28.0"</span>,
+        note = <span class="string">"please use `Errno::from_raw()` instead"
+    </span>)]
+    </span><span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
         <span class="kw">use </span><span class="self">self</span>::Errno::<span class="kw-2">*</span>;
 
         <span class="kw">match </span>e {
@@ -5596,7 +5252,11 @@
         <span class="kw">pub const </span>EWOULDBLOCK: Errno = Errno::EAGAIN;
     }
 
-    <span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
+    <span class="attr">#[deprecated(
+        since = <span class="string">"0.28.0"</span>,
+        note = <span class="string">"please use `Errno::from_raw()` instead"
+    </span>)]
+    </span><span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
         <span class="kw">use </span><span class="self">self</span>::Errno::<span class="kw-2">*</span>;
 
         <span class="kw">match </span>e {
@@ -5810,7 +5470,11 @@
         <span class="kw">pub const </span>EWOULDBLOCK: Errno = Errno::EAGAIN;
     }
 
-    <span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
+    <span class="attr">#[deprecated(
+        since = <span class="string">"0.28.0"</span>,
+        note = <span class="string">"please use `Errno::from_raw()` instead"
+    </span>)]
+    </span><span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
         <span class="kw">use </span><span class="self">self</span>::Errno::<span class="kw-2">*</span>;
 
         <span class="kw">match </span>e {
@@ -6013,7 +5677,11 @@
         <span class="kw">pub const </span>EWOULDBLOCK: Errno = Errno::EAGAIN;
     }
 
-    <span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
+    <span class="attr">#[deprecated(
+        since = <span class="string">"0.28.0"</span>,
+        note = <span class="string">"please use `Errno::from_raw()` instead"
+    </span>)]
+    </span><span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
         <span class="kw">use </span><span class="self">self</span>::Errno::<span class="kw-2">*</span>;
 
         <span class="kw">match </span>e {
@@ -6107,7 +5775,7 @@
     }
 }
 
-<span class="attr">#[cfg(any(target_os = <span class="string">"illumos"</span>, target_os = <span class="string">"solaris"</span>))]
+<span class="attr">#[cfg(solarish)]
 </span><span class="kw">mod </span>consts {
     <span class="attr">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
     #[repr(i32)]
@@ -6242,7 +5910,11 @@
         <span class="kw">pub const </span>EWOULDBLOCK: Errno = Errno::EAGAIN;
     }
 
-    <span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
+    <span class="attr">#[deprecated(
+        since = <span class="string">"0.28.0"</span>,
+        note = <span class="string">"please use `Errno::from_raw()` instead"
+    </span>)]
+    </span><span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
         <span class="kw">use </span><span class="self">self</span>::Errno::<span class="kw-2">*</span>;
 
         <span class="kw">match </span>e {
@@ -6462,7 +6134,11 @@
         <span class="kw">pub const </span>EOPNOTSUPP: Errno = Errno::ENOTSUP;
     }
 
-    <span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
+    <span class="attr">#[deprecated(
+        since = <span class="string">"0.28.0"</span>,
+        note = <span class="string">"please use `Errno::from_raw()` instead"
+    </span>)]
+    </span><span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
         <span class="kw">use </span><span class="self">self</span>::Errno::<span class="kw-2">*</span>;
 
         <span class="kw">match </span>e {
@@ -6653,7 +6329,11 @@
         EOPNOTSUPP = libc::EOPNOTSUPP,
     }
 
-    <span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
+    <span class="attr">#[deprecated(
+        since = <span class="string">"0.28.0"</span>,
+        note = <span class="string">"please use `Errno::from_raw()` instead"
+    </span>)]
+    </span><span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
         <span class="kw">use </span><span class="self">self</span>::Errno::<span class="kw-2">*</span>;
 
         <span class="kw">match </span>e {
@@ -6755,6 +6435,238 @@
             libc::ENOSTR =&gt; ENOSTR,
             libc::ETIME =&gt; ETIME,
             libc::EOPNOTSUPP =&gt; EOPNOTSUPP,
+            <span class="kw">_ </span>=&gt; UnknownErrno,
+        }
+    }
+}
+
+<span class="attr">#[cfg(target_os = <span class="string">"hurd"</span>)]
+</span><span class="kw">mod </span>consts {
+    <span class="attr">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+    #[repr(i32)]
+    #[non_exhaustive]
+    </span><span class="kw">pub enum </span>Errno {
+        UnknownErrno = <span class="number">0</span>,
+        EPERM = libc::EPERM,
+        ENOENT = libc::ENOENT,
+        ESRCH = libc::ESRCH,
+        EINTR = libc::EINTR,
+        EIO = libc::EIO,
+        ENXIO = libc::ENXIO,
+        E2BIG = libc::E2BIG,
+        ENOEXEC = libc::ENOEXEC,
+        EBADF = libc::EBADF,
+        ECHILD = libc::ECHILD,
+        EDEADLK = libc::EDEADLK,
+        ENOMEM = libc::ENOMEM,
+        EACCES = libc::EACCES,
+        EFAULT = libc::EFAULT,
+        ENOTBLK = libc::ENOTBLK,
+        EBUSY = libc::EBUSY,
+        EEXIST = libc::EEXIST,
+        EXDEV = libc::EXDEV,
+        ENODEV = libc::ENODEV,
+        ENOTDIR = libc::ENOTDIR,
+        EISDIR = libc::EISDIR,
+        EINVAL = libc::EINVAL,
+        EMFILE = libc::EMFILE,
+        ENFILE = libc::ENFILE,
+        ENOTTY = libc::ENOTTY,
+        ETXTBSY = libc::ETXTBSY,
+        EFBIG = libc::EFBIG,
+        ENOSPC = libc::ENOSPC,
+        ESPIPE = libc::ESPIPE,
+        EROFS = libc::EROFS,
+        EMLINK = libc::EMLINK,
+        EPIPE = libc::EPIPE,
+        EDOM = libc::EDOM,
+        ERANGE = libc::ERANGE,
+        EAGAIN = libc::EAGAIN,
+        EINPROGRESS = libc::EINPROGRESS,
+        EALREADY = libc::EALREADY,
+        ENOTSOCK = libc::ENOTSOCK,
+        EMSGSIZE = libc::EMSGSIZE,
+        EPROTOTYPE = libc::EPROTOTYPE,
+        ENOPROTOOPT = libc::ENOPROTOOPT,
+        EPROTONOSUPPORT = libc::EPROTONOSUPPORT,
+        ESOCKTNOSUPPORT = libc::ESOCKTNOSUPPORT,
+        EOPNOTSUPP = libc::EOPNOTSUPP,
+        EPFNOSUPPORT = libc::EPFNOSUPPORT,
+        EAFNOSUPPORT = libc::EAFNOSUPPORT,
+        EADDRINUSE = libc::EADDRINUSE,
+        EADDRNOTAVAIL = libc::EADDRNOTAVAIL,
+        ENETDOWN = libc::ENETDOWN,
+        ENETUNREACH = libc::ENETUNREACH,
+        ENETRESET = libc::ENETRESET,
+        ECONNABORTED = libc::ECONNABORTED,
+        ECONNRESET = libc::ECONNRESET,
+        ENOBUFS = libc::ENOBUFS,
+        EISCONN = libc::EISCONN,
+        ENOTCONN = libc::ENOTCONN,
+        EDESTADDRREQ = libc::EDESTADDRREQ,
+        ESHUTDOWN = libc::ESHUTDOWN,
+        ETOOMANYREFS = libc::ETOOMANYREFS,
+        ETIMEDOUT = libc::ETIMEDOUT,
+        ECONNREFUSED = libc::ECONNREFUSED,
+        ELOOP = libc::ELOOP,
+        ENAMETOOLONG = libc::ENAMETOOLONG,
+        EHOSTDOWN = libc::EHOSTDOWN,
+        EHOSTUNREACH = libc::EHOSTUNREACH,
+        ENOTEMPTY = libc::ENOTEMPTY,
+        EPROCLIM = libc::EPROCLIM,
+        EUSERS = libc::EUSERS,
+        EDQUOT = libc::EDQUOT,
+        ESTALE = libc::ESTALE,
+        EREMOTE = libc::EREMOTE,
+        EBADRPC = libc::EBADRPC,
+        ERPCMISMATCH = libc::ERPCMISMATCH,
+        EPROGUNAVAIL = libc::EPROGUNAVAIL,
+        EPROGMISMATCH = libc::EPROGMISMATCH,
+        EPROCUNAVAIL = libc::EPROCUNAVAIL,
+        ENOLCK = libc::ENOLCK,
+        EFTYPE = libc::EFTYPE,
+        EAUTH = libc::EAUTH,
+        ENEEDAUTH = libc::ENEEDAUTH,
+        ENOSYS = libc::ENOSYS,
+        ELIBEXEC = libc::ELIBEXEC,
+        ENOTSUP = libc::ENOTSUP,
+        EILSEQ = libc::EILSEQ,
+        EBACKGROUND = libc::EBACKGROUND,
+        EDIED = libc::EDIED,
+        EGREGIOUS = libc::EGREGIOUS,
+        EIEIO = libc::EIEIO,
+        EGRATUITOUS = libc::EGRATUITOUS,
+        EBADMSG = libc::EBADMSG,
+        EIDRM = libc::EIDRM,
+        EMULTIHOP = libc::EMULTIHOP,
+        ENODATA = libc::ENODATA,
+        ENOLINK = libc::ENOLINK,
+        ENOMSG = libc::ENOMSG,
+        ENOSR = libc::ENOSR,
+        ENOSTR = libc::ENOSTR,
+        EOVERFLOW = libc::EOVERFLOW,
+        EPROTO = libc::EPROTO,
+        ETIME = libc::ETIME,
+        ECANCELED = libc::ECANCELED,
+        EOWNERDEAD = libc::EOWNERDEAD,
+        ENOTRECOVERABLE = libc::ENOTRECOVERABLE,
+    }
+
+    <span class="kw">impl </span>Errno {
+        <span class="kw">pub const </span>EWOULDBLOCK: Errno = Errno::EAGAIN;
+    }
+
+    <span class="attr">#[deprecated(
+        since = <span class="string">"0.28.0"</span>,
+        note = <span class="string">"please use `Errno::from_raw()` instead"
+    </span>)]
+    </span><span class="kw">pub const fn </span>from_i32(e: i32) -&gt; Errno {
+        <span class="kw">use </span><span class="self">self</span>::Errno::<span class="kw-2">*</span>;
+
+        <span class="kw">match </span>e {
+            libc::EPERM =&gt; EPERM,
+            libc::ENOENT =&gt; ENOENT,
+            libc::ESRCH =&gt; ESRCH,
+            libc::EINTR =&gt; EINTR,
+            libc::EIO =&gt; EIO,
+            libc::ENXIO =&gt; ENXIO,
+            libc::E2BIG =&gt; E2BIG,
+            libc::ENOEXEC =&gt; ENOEXEC,
+            libc::EBADF =&gt; EBADF,
+            libc::ECHILD =&gt; ECHILD,
+            libc::EDEADLK =&gt; EDEADLK,
+            libc::ENOMEM =&gt; ENOMEM,
+            libc::EACCES =&gt; EACCES,
+            libc::EFAULT =&gt; EFAULT,
+            libc::ENOTBLK =&gt; ENOTBLK,
+            libc::EBUSY =&gt; EBUSY,
+            libc::EEXIST =&gt; EEXIST,
+            libc::EXDEV =&gt; EXDEV,
+            libc::ENODEV =&gt; ENODEV,
+            libc::ENOTDIR =&gt; ENOTDIR,
+            libc::EISDIR =&gt; EISDIR,
+            libc::EINVAL =&gt; EINVAL,
+            libc::EMFILE =&gt; EMFILE,
+            libc::ENFILE =&gt; ENFILE,
+            libc::ENOTTY =&gt; ENOTTY,
+            libc::ETXTBSY =&gt; ETXTBSY,
+            libc::EFBIG =&gt; EFBIG,
+            libc::ENOSPC =&gt; ENOSPC,
+            libc::ESPIPE =&gt; ESPIPE,
+            libc::EROFS =&gt; EROFS,
+            libc::EMLINK =&gt; EMLINK,
+            libc::EPIPE =&gt; EPIPE,
+            libc::EDOM =&gt; EDOM,
+            libc::ERANGE =&gt; ERANGE,
+            libc::EAGAIN =&gt; EAGAIN,
+            libc::EINPROGRESS =&gt; EINPROGRESS,
+            libc::EALREADY =&gt; EALREADY,
+            libc::ENOTSOCK =&gt; ENOTSOCK,
+            libc::EMSGSIZE =&gt; EMSGSIZE,
+            libc::EPROTOTYPE =&gt; EPROTOTYPE,
+            libc::ENOPROTOOPT =&gt; ENOPROTOOPT,
+            libc::EPROTONOSUPPORT =&gt; EPROTONOSUPPORT,
+            libc::ESOCKTNOSUPPORT =&gt; ESOCKTNOSUPPORT,
+            libc::EOPNOTSUPP =&gt; EOPNOTSUPP,
+            libc::EPFNOSUPPORT =&gt; EPFNOSUPPORT,
+            libc::EAFNOSUPPORT =&gt; EAFNOSUPPORT,
+            libc::EADDRINUSE =&gt; EADDRINUSE,
+            libc::EADDRNOTAVAIL =&gt; EADDRNOTAVAIL,
+            libc::ENETDOWN =&gt; ENETDOWN,
+            libc::ENETUNREACH =&gt; ENETUNREACH,
+            libc::ENETRESET =&gt; ENETRESET,
+            libc::ECONNABORTED =&gt; ECONNABORTED,
+            libc::ECONNRESET =&gt; ECONNRESET,
+            libc::ENOBUFS =&gt; ENOBUFS,
+            libc::EISCONN =&gt; EISCONN,
+            libc::ENOTCONN =&gt; ENOTCONN,
+            libc::EDESTADDRREQ =&gt; EDESTADDRREQ,
+            libc::ESHUTDOWN =&gt; ESHUTDOWN,
+            libc::ETOOMANYREFS =&gt; ETOOMANYREFS,
+            libc::ETIMEDOUT =&gt; ETIMEDOUT,
+            libc::ECONNREFUSED =&gt; ECONNREFUSED,
+            libc::ELOOP =&gt; ELOOP,
+            libc::ENAMETOOLONG =&gt; ENAMETOOLONG,
+            libc::EHOSTDOWN =&gt; EHOSTDOWN,
+            libc::EHOSTUNREACH =&gt; EHOSTUNREACH,
+            libc::ENOTEMPTY =&gt; ENOTEMPTY,
+            libc::EPROCLIM =&gt; EPROCLIM,
+            libc::EUSERS =&gt; EUSERS,
+            libc::EDQUOT =&gt; EDQUOT,
+            libc::ESTALE =&gt; ESTALE,
+            libc::EREMOTE =&gt; EREMOTE,
+            libc::EBADRPC =&gt; EBADRPC,
+            libc::ERPCMISMATCH =&gt; ERPCMISMATCH,
+            libc::EPROGUNAVAIL =&gt; EPROGUNAVAIL,
+            libc::EPROGMISMATCH =&gt; EPROGMISMATCH,
+            libc::EPROCUNAVAIL =&gt; EPROCUNAVAIL,
+            libc::ENOLCK =&gt; ENOLCK,
+            libc::EFTYPE =&gt; EFTYPE,
+            libc::EAUTH =&gt; EAUTH,
+            libc::ENEEDAUTH =&gt; ENEEDAUTH,
+            libc::ENOSYS =&gt; ENOSYS,
+            libc::ELIBEXEC =&gt; ELIBEXEC,
+            libc::ENOTSUP =&gt; ENOTSUP,
+            libc::EILSEQ =&gt; EILSEQ,
+            libc::EBACKGROUND =&gt; EBACKGROUND,
+            libc::EDIED =&gt; EDIED,
+            libc::EGREGIOUS =&gt; EGREGIOUS,
+            libc::EIEIO =&gt; EIEIO,
+            libc::EGRATUITOUS =&gt; EGRATUITOUS,
+            libc::EBADMSG =&gt; EBADMSG,
+            libc::EIDRM =&gt; EIDRM,
+            libc::EMULTIHOP =&gt; EMULTIHOP,
+            libc::ENODATA =&gt; ENODATA,
+            libc::ENOLINK =&gt; ENOLINK,
+            libc::ENOMSG =&gt; ENOMSG,
+            libc::ENOSR =&gt; ENOSR,
+            libc::ENOSTR =&gt; ENOSTR,
+            libc::EOVERFLOW =&gt; EOVERFLOW,
+            libc::EPROTO =&gt; EPROTO,
+            libc::ETIME =&gt; ETIME,
+            libc::ECANCELED =&gt; ECANCELED,
+            libc::EOWNERDEAD =&gt; EOWNERDEAD,
+            libc::ENOTRECOVERABLE =&gt; ENOTRECOVERABLE,
             <span class="kw">_ </span>=&gt; UnknownErrno,
         }
     }

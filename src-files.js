@@ -18,7 +18,7 @@ var srcIndex = new Map(JSON.parse('[\
 ["log",["",[],["__private_api.rs","lib.rs","macros.rs"]]],\
 ["memchr",["",[["arch",[["all",[["packedpair",[],["default_rank.rs","mod.rs"]]],["memchr.rs","mod.rs","rabinkarp.rs","shiftor.rs","twoway.rs"]],["generic",[],["memchr.rs","mod.rs","packedpair.rs"]],["x86_64",[["avx2",[],["memchr.rs","mod.rs","packedpair.rs"]],["sse2",[],["memchr.rs","mod.rs","packedpair.rs"]]],["memchr.rs","mod.rs"]]],["mod.rs"]],["memmem",[],["mod.rs","searcher.rs"]]],["cow.rs","ext.rs","lib.rs","macros.rs","memchr.rs","vector.rs"]]],\
 ["minimal_lexical",["",[],["bigint.rs","extended_float.rs","lemire.rs","lib.rs","mask.rs","num.rs","number.rs","parse.rs","rounding.rs","slow.rs","stackvec.rs","table.rs","table_lemire.rs","table_small.rs"]]],\
-["nix",["",[["sys",[],["epoll.rs","eventfd.rs","memfd.rs","mod.rs","prctl.rs","signal.rs","stat.rs","statfs.rs","statvfs.rs","sysinfo.rs","time.rs","wait.rs"]]],["errno.rs","fcntl.rs","lib.rs","macros.rs","unistd.rs"]]],\
+["nix",["",[["sys",[],["epoll.rs","eventfd.rs","memfd.rs","mod.rs","prctl.rs","signal.rs","stat.rs","statfs.rs","statvfs.rs","sysinfo.rs","time.rs","wait.rs"]]],["errno.rs","fcntl.rs","lib.rs","macros.rs","poll_timeout.rs","unistd.rs"]]],\
 ["nom",["",[["bits",[],["complete.rs","mod.rs","streaming.rs"]],["branch",[],["mod.rs"]],["bytes",[],["complete.rs","mod.rs","streaming.rs"]],["character",[],["complete.rs","mod.rs","streaming.rs"]],["combinator",[],["mod.rs"]],["multi",[],["mod.rs"]],["number",[],["complete.rs","mod.rs","streaming.rs"]],["sequence",[],["mod.rs"]]],["error.rs","internal.rs","lib.rs","macros.rs","str.rs","traits.rs"]]],\
 ["once_cell",["",[],["imp_std.rs","lib.rs","race.rs"]]],\
 ["os_pipe",["",[],["lib.rs","unix.rs"]]],\
