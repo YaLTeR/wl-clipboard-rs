@@ -278,7 +278,7 @@ fn copy_multi_no_additional_text_mime_types_test() {
 fn copy_large() {
     // Assuming the default pipe capacity is 65536.
     let mut bytes_to_copy = vec![];
-    for i in 0..70000 {
+    for i in 0..65536 * 10 {
         bytes_to_copy.push((i % 256) as u8);
     }
 

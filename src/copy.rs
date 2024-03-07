@@ -10,6 +10,7 @@ use std::sync::mpsc::sync_channel;
 use std::{iter, thread};
 
 use log::trace;
+use rustix::fs::{fcntl_setfl, OFlags};
 use wayland_client::globals::GlobalListContents;
 use wayland_client::protocol::wl_registry::WlRegistry;
 use wayland_client::protocol::wl_seat::WlSeat;
@@ -350,6 +351,11 @@ impl Dispatch<ZwlrDataControlSourceV1, ()> for State {
 
                 let file = File::open(data_path).map_err(DataSourceError::FileOpen);
                 let result = file.and_then(|mut data_file| {
+                    // Clear O_NONBLOCK, otherwise io::copy() will stop halfway.
+                    fcntl_setfl(&fd, OFlags::empty())
+                        .map_err(io::Error::from)
+                        .map_err(DataSourceError::Copy)?;
+
                     let mut target_file = File::from(fd);
                     io::copy(&mut data_file, &mut target_file).map_err(DataSourceError::Copy)
                 });
