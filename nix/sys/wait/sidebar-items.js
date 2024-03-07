@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Id","WaitStatus"],"fn":["wait","waitid","waitpid"],"struct":["WaitPidFlag"]};
