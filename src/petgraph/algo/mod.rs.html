@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/petgraph-0.6.4/src/algo/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="petgraph" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/petgraph-0.6.5/src/algo/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-081576b923113409.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="petgraph" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0 (129f3b996 2024-06-10)" data-channel="1.79.0" data-search-js="search-bf21c90c8c1d92b1.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../petgraph/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -864,44 +863,6 @@
 <a href="#863" id="863">863</a>
 <a href="#864" id="864">864</a>
 <a href="#865" id="865">865</a>
-<a href="#866" id="866">866</a>
-<a href="#867" id="867">867</a>
-<a href="#868" id="868">868</a>
-<a href="#869" id="869">869</a>
-<a href="#870" id="870">870</a>
-<a href="#871" id="871">871</a>
-<a href="#872" id="872">872</a>
-<a href="#873" id="873">873</a>
-<a href="#874" id="874">874</a>
-<a href="#875" id="875">875</a>
-<a href="#876" id="876">876</a>
-<a href="#877" id="877">877</a>
-<a href="#878" id="878">878</a>
-<a href="#879" id="879">879</a>
-<a href="#880" id="880">880</a>
-<a href="#881" id="881">881</a>
-<a href="#882" id="882">882</a>
-<a href="#883" id="883">883</a>
-<a href="#884" id="884">884</a>
-<a href="#885" id="885">885</a>
-<a href="#886" id="886">886</a>
-<a href="#887" id="887">887</a>
-<a href="#888" id="888">888</a>
-<a href="#889" id="889">889</a>
-<a href="#890" id="890">890</a>
-<a href="#891" id="891">891</a>
-<a href="#892" id="892">892</a>
-<a href="#893" id="893">893</a>
-<a href="#894" id="894">894</a>
-<a href="#895" id="895">895</a>
-<a href="#896" id="896">896</a>
-<a href="#897" id="897">897</a>
-<a href="#898" id="898">898</a>
-<a href="#899" id="899">899</a>
-<a href="#900" id="900">900</a>
-<a href="#901" id="901">901</a>
-<a href="#902" id="902">902</a>
-<a href="#903" id="903">903</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Graph algorithms.
 //!
 //! It is a goal to gradually migrate the algorithms to be based on graph traits
@@ -914,13 +875,15 @@
 <span class="kw">pub mod </span>dominators;
 <span class="kw">pub mod </span>feedback_arc_set;
 <span class="kw">pub mod </span>floyd_warshall;
+<span class="kw">pub mod </span>ford_fulkerson;
 <span class="kw">pub mod </span>isomorphism;
 <span class="kw">pub mod </span>k_shortest_path;
 <span class="kw">pub mod </span>matching;
+<span class="kw">pub mod </span>min_spanning_tree;
+<span class="kw">pub mod </span>page_rank;
 <span class="kw">pub mod </span>simple_paths;
 <span class="kw">pub mod </span>tred;
 
-<span class="kw">use </span>std::collections::{BinaryHeap, HashMap};
 <span class="kw">use </span>std::num::NonZeroUsize;
 
 <span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
@@ -932,22 +895,22 @@
     IntoNodeIdentifiers, NodeCompactIndexable, NodeIndexable, Reversed, VisitMap, Visitable,
 };
 <span class="kw">use </span><span class="kw">super</span>::EdgeType;
-<span class="kw">use </span><span class="kw">crate</span>::data::Element;
-<span class="kw">use </span><span class="kw">crate</span>::scored::MinScored;
 <span class="kw">use </span><span class="kw">crate</span>::visit::Walker;
-<span class="kw">use </span><span class="kw">crate</span>::visit::{Data, IntoNodeReferences, NodeRef};
 
 <span class="kw">pub use </span>astar::astar;
 <span class="kw">pub use </span>bellman_ford::{bellman_ford, find_negative_cycle};
 <span class="kw">pub use </span>dijkstra::dijkstra;
 <span class="kw">pub use </span>feedback_arc_set::greedy_feedback_arc_set;
 <span class="kw">pub use </span>floyd_warshall::floyd_warshall;
+<span class="kw">pub use </span>ford_fulkerson::ford_fulkerson;
 <span class="kw">pub use </span>isomorphism::{
     is_isomorphic, is_isomorphic_matching, is_isomorphic_subgraph, is_isomorphic_subgraph_matching,
     subgraph_isomorphisms_iter,
 };
 <span class="kw">pub use </span>k_shortest_path::k_shortest_path;
 <span class="kw">pub use </span>matching::{greedy_matching, maximum_matching, Matching};
+<span class="kw">pub use </span>min_spanning_tree::min_spanning_tree;
+<span class="kw">pub use </span>page_rank::page_rank;
 <span class="kw">pub use </span>simple_paths::all_simple_paths;
 
 <span class="doccomment">/// \[Generic\] Return the number of connected components of the graph.
@@ -1318,7 +1281,7 @@
         F: FnMut(<span class="kw-2">&amp;</span>[N]),
         N: Copy + PartialEq,
     {
-        <span class="macro">macro_rules! </span>node {
+        <span class="macro">macro_rules!</span> node {
             (<span class="macro-nonterminal">$node</span>:expr) =&gt; {
                 <span class="self">self</span>.nodes[g.to_index(<span class="macro-nonterminal">$node</span>)]
             };
@@ -1539,112 +1502,6 @@
     condensed
 }
 
-<span class="doccomment">/// \[Generic\] Compute a *minimum spanning tree* of a graph.
-///
-/// The input graph is treated as if undirected.
-///
-/// Using Kruskal's algorithm with runtime **O(|E| log |E|)**. We actually
-/// return a minimum spanning forest, i.e. a minimum spanning tree for each connected
-/// component of the graph.
-///
-/// The resulting graph has all the vertices of the input graph (with identical node indices),
-/// and **|V| - c** edges, where **c** is the number of connected components in `g`.
-///
-/// Use `from_elements` to create a graph from the resulting iterator.
-</span><span class="kw">pub fn </span>min_spanning_tree&lt;G&gt;(g: G) -&gt; MinSpanningTree&lt;G&gt;
-<span class="kw">where
-    </span>G::NodeWeight: Clone,
-    G::EdgeWeight: Clone + PartialOrd,
-    G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable,
-{
-    <span class="comment">// Initially each vertex is its own disjoint subgraph, track the connectedness
-    // of the pre-MST with a union &amp; find datastructure.
-    </span><span class="kw">let </span>subgraphs = UnionFind::new(g.node_bound());
-
-    <span class="kw">let </span>edges = g.edge_references();
-    <span class="kw">let </span><span class="kw-2">mut </span>sort_edges = BinaryHeap::with_capacity(edges.size_hint().<span class="number">0</span>);
-    <span class="kw">for </span>edge <span class="kw">in </span>edges {
-        sort_edges.push(MinScored(
-            edge.weight().clone(),
-            (edge.source(), edge.target()),
-        ));
-    }
-
-    MinSpanningTree {
-        graph: g,
-        node_ids: <span class="prelude-val">Some</span>(g.node_references()),
-        subgraphs,
-        sort_edges,
-        node_map: HashMap::new(),
-        node_count: <span class="number">0</span>,
-    }
-}
-
-<span class="doccomment">/// An iterator producing a minimum spanning forest of a graph.
-</span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>MinSpanningTree&lt;G&gt;
-<span class="kw">where
-    </span>G: Data + IntoNodeReferences,
-{
-    graph: G,
-    node_ids: <span class="prelude-ty">Option</span>&lt;G::NodeReferences&gt;,
-    subgraphs: UnionFind&lt;usize&gt;,
-    <span class="attr">#[allow(clippy::type_complexity)]
-    </span>sort_edges: BinaryHeap&lt;MinScored&lt;G::EdgeWeight, (G::NodeId, G::NodeId)&gt;&gt;,
-    node_map: HashMap&lt;usize, usize&gt;,
-    node_count: usize,
-}
-
-<span class="kw">impl</span>&lt;G&gt; Iterator <span class="kw">for </span>MinSpanningTree&lt;G&gt;
-<span class="kw">where
-    </span>G: IntoNodeReferences + NodeIndexable,
-    G::NodeWeight: Clone,
-    G::EdgeWeight: PartialOrd,
-{
-    <span class="kw">type </span>Item = Element&lt;G::NodeWeight, G::EdgeWeight&gt;;
-
-    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
-        <span class="kw">let </span>g = <span class="self">self</span>.graph;
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>iter) = <span class="self">self</span>.node_ids {
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(node) = iter.next() {
-                <span class="self">self</span>.node_map.insert(g.to_index(node.id()), <span class="self">self</span>.node_count);
-                <span class="self">self</span>.node_count += <span class="number">1</span>;
-                <span class="kw">return </span><span class="prelude-val">Some</span>(Element::Node {
-                    weight: node.weight().clone(),
-                });
-            }
-        }
-        <span class="self">self</span>.node_ids = <span class="prelude-val">None</span>;
-
-        <span class="comment">// Kruskal's algorithm.
-        // Algorithm is this:
-        //
-        // 1. Create a pre-MST with all the vertices and no edges.
-        // 2. Repeat:
-        //
-        //  a. Remove the shortest edge from the original graph.
-        //  b. If the edge connects two disjoint trees in the pre-MST,
-        //     add the edge.
-        </span><span class="kw">while let </span><span class="prelude-val">Some</span>(MinScored(score, (a, b))) = <span class="self">self</span>.sort_edges.pop() {
-            <span class="comment">// check if the edge would connect two disjoint parts
-            </span><span class="kw">let </span>(a_index, b_index) = (g.to_index(a), g.to_index(b));
-            <span class="kw">if </span><span class="self">self</span>.subgraphs.union(a_index, b_index) {
-                <span class="kw">let </span>(<span class="kw-2">&amp;</span>a_order, <span class="kw-2">&amp;</span>b_order) =
-                    <span class="kw">match </span>(<span class="self">self</span>.node_map.get(<span class="kw-2">&amp;</span>a_index), <span class="self">self</span>.node_map.get(<span class="kw-2">&amp;</span>b_index)) {
-                        (<span class="prelude-val">Some</span>(a_id), <span class="prelude-val">Some</span>(b_id)) =&gt; (a_id, b_id),
-                        <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"Edge references unknown node"</span>),
-                    };
-                <span class="kw">return </span><span class="prelude-val">Some</span>(Element::Edge {
-                    source: a_order,
-                    target: b_order,
-                    weight: score,
-                });
-            }
-        }
-        <span class="prelude-val">None
-    </span>}
-}
-
 <span class="doccomment">/// An algorithm error: a cycle was found in the graph.
 </span><span class="attr">#[derive(Clone, Debug, PartialEq)]
 </span><span class="kw">pub struct </span>Cycle&lt;N&gt;(N);
@@ -1756,7 +1613,7 @@
     <span class="kw">fn </span>overflowing_add(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, bool);
 }
 
-<span class="macro">macro_rules! </span>impl_bounded_measure_integer(
+<span class="macro">macro_rules!</span> impl_bounded_measure_integer(
     ( $( <span class="macro-nonterminal">$t</span>:ident ),* ) =&gt; {
         $(
             <span class="kw">impl </span>BoundedMeasure <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
@@ -1778,7 +1635,7 @@
 
 <span class="macro">impl_bounded_measure_integer!</span>(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize);
 
-<span class="macro">macro_rules! </span>impl_bounded_measure_float(
+<span class="macro">macro_rules!</span> impl_bounded_measure_float(
     ( $( <span class="macro-nonterminal">$t</span>:ident ),* ) =&gt; {
         $(
             <span class="kw">impl </span>BoundedMeasure <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
@@ -1805,4 +1662,70 @@
 );
 
 <span class="macro">impl_bounded_measure_float!</span>(f32, f64);
+
+<span class="doccomment">/// A floating-point measure that can be computed from `usize`
+/// and with a default measure of proximity.  
+</span><span class="kw">pub trait </span>UnitMeasure:
+    Measure
+    + std::ops::Sub&lt;<span class="self">Self</span>, Output = <span class="self">Self</span>&gt;
+    + std::ops::Mul&lt;<span class="self">Self</span>, Output = <span class="self">Self</span>&gt;
+    + std::ops::Div&lt;<span class="self">Self</span>, Output = <span class="self">Self</span>&gt;
+    + std::iter::Sum
+{
+    <span class="kw">fn </span>zero() -&gt; <span class="self">Self</span>;
+    <span class="kw">fn </span>one() -&gt; <span class="self">Self</span>;
+    <span class="kw">fn </span>from_usize(nb: usize) -&gt; <span class="self">Self</span>;
+    <span class="kw">fn </span>default_tol() -&gt; <span class="self">Self</span>;
+}
+
+<span class="macro">macro_rules!</span> impl_unit_measure(
+    ( $( <span class="macro-nonterminal">$t</span>:ident ),* )=&gt; {
+        $(
+            <span class="kw">impl </span>UnitMeasure <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+                <span class="kw">fn </span>zero() -&gt; <span class="self">Self </span>{
+                    <span class="number">0 </span><span class="kw">as </span><span class="macro-nonterminal">$t
+                </span>}
+                <span class="kw">fn </span>one() -&gt; <span class="self">Self </span>{
+                    <span class="number">1 </span><span class="kw">as </span><span class="macro-nonterminal">$t
+                </span>}
+
+                <span class="kw">fn </span>from_usize(nb: usize) -&gt; <span class="self">Self </span>{
+                    nb <span class="kw">as </span><span class="macro-nonterminal">$t
+                </span>}
+
+                <span class="kw">fn </span>default_tol() -&gt; <span class="self">Self </span>{
+                    <span class="number">1e-6 </span><span class="kw">as </span><span class="macro-nonterminal">$t
+                </span>}
+
+            }
+
+        )*
+    }
+);
+<span class="macro">impl_unit_measure!</span>(f32, f64);
+
+<span class="doccomment">/// Some measure of positive numbers, assuming positive
+/// float-pointing numbers
+</span><span class="kw">pub trait </span>PositiveMeasure: Measure + Copy {
+    <span class="kw">fn </span>zero() -&gt; <span class="self">Self</span>;
+    <span class="kw">fn </span>max() -&gt; <span class="self">Self</span>;
+}
+
+<span class="macro">macro_rules!</span> impl_positive_measure(
+    ( $( <span class="macro-nonterminal">$t</span>:ident ),* )=&gt; {
+        $(
+            <span class="kw">impl </span>PositiveMeasure <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+                <span class="kw">fn </span>zero() -&gt; <span class="self">Self </span>{
+                    <span class="number">0 </span><span class="kw">as </span><span class="macro-nonterminal">$t
+                </span>}
+                <span class="kw">fn </span>max() -&gt; <span class="self">Self </span>{
+                    std::<span class="macro-nonterminal">$t::MAX
+                </span>}
+            }
+
+        )*
+    }
+);
+
+<span class="macro">impl_positive_measure!</span>(u8, u16, u32, u64, u128, usize, f32, f64);
 </code></pre></div></section></main></body></html>

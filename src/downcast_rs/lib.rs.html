@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/downcast-rs-1.2.0/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="downcast_rs" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/downcast-rs-1.2.1/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-081576b923113409.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="downcast_rs" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0 (129f3b996 2024-06-10)" data-channel="1.79.0" data-search-js="search-bf21c90c8c1d92b1.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../downcast_rs/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -689,11 +688,9 @@
 <a href="#688" id="688">688</a>
 <a href="#689" id="689">689</a>
 <a href="#690" id="690">690</a>
-<a href="#691" id="691">691</a>
-<a href="#692" id="692">692</a>
-</pre></div><pre class="rust"><code><span class="attr">#![deny(unsafe_code)]
+</pre></div><pre class="rust"><code><span class="attr">#![deny(unsafe_code,rustdoc::bare_urls)]
 #![cfg_attr(not(feature = <span class="string">"std"</span>), no_std)]
-</span><span class="doccomment">//! [![Build status](https://img.shields.io/github/workflow/status/marcianx/downcast-rs/CI/master)](https://github.com/marcianx/downcast-rs/actions)
+</span><span class="doccomment">//! [![Build status](https://img.shields.io/github/actions/workflow/status/marcianx/downcast-rs/main.yml?branch=master)](https://github.com/marcianx/downcast-rs/actions)
 //! [![Latest version](https://img.shields.io/crates/v/downcast-rs.svg)](https://crates.io/crates/downcast-rs)
 //! [![Documentation](https://docs.rs/downcast-rs/badge.svg)](https://docs.rs/downcast-rs)
 //!
@@ -712,7 +709,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! downcast-rs = "1.2.0"
+//! downcast-rs = "1.2.1"
 //! ```
 //!
 //! This crate is `no_std` compatible. To use it without `std`:
@@ -726,8 +723,7 @@
 //! `downcast::DowncastSync` and invoke `impl_downcast!` on it as in the examples
 //! below.
 //!
-//! Since 1.1.0, the minimum supported Rust version is 1.33 to support `Rc` and `Arc`
-//! in the receiver position.
+//! Since 1.2.0, the minimum supported Rust version is 1.36 due to needing stable access to alloc.
 //!
 //! ```
 //! # #[macro_use]
@@ -901,22 +897,22 @@
 <span class="doccomment">/// Adds downcasting support to traits that extend `downcast::Downcast` by defining forwarding
 /// methods to the corresponding implementations on `std::any::Any` in the standard library.
 ///
-/// See https://users.rust-lang.org/t/how-to-create-a-macro-to-impl-a-provided-type-parametrized-trait/5289
+/// See &lt;https://users.rust-lang.org/t/how-to-create-a-macro-to-impl-a-provided-type-parametrized-trait/5289&gt;
 /// for why this is implemented this way to support templatized traits.
 </span><span class="attr">#[macro_export(local_inner_macros)]
-</span><span class="macro">macro_rules! </span>impl_downcast {
+</span><span class="macro">macro_rules!</span> impl_downcast {
     (@impl_full
         <span class="macro-nonterminal">$trait_</span>:ident [$(<span class="macro-nonterminal">$param_types</span>:tt)<span class="kw-2">*</span>]
         <span class="kw">for </span>[$(<span class="macro-nonterminal">$forall_types</span>:ident),<span class="kw-2">*</span>]
         <span class="kw">where </span>[$(<span class="macro-nonterminal">$preds</span>:tt)<span class="kw-2">*</span>]
     ) =&gt; {
-        <span class="macro">impl_downcast! </span>{
+        <span class="macro">impl_downcast!</span> {
             @inject_where
                 [<span class="kw">impl</span>&lt;$(<span class="macro-nonterminal">$forall_types</span>),<span class="kw-2">*</span>&gt; <span class="kw">dyn </span><span class="macro-nonterminal">$trait_</span>&lt;$(<span class="macro-nonterminal">$param_types</span>)<span class="kw-2">*</span>&gt;]
                 types [$(<span class="macro-nonterminal">$forall_types</span>),<span class="kw-2">*</span>]
                 <span class="kw">where </span>[$(<span class="macro-nonterminal">$preds</span>)<span class="kw-2">*</span>]
                 [{
-                    <span class="macro">impl_downcast! </span>{ @impl_body <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$param_types</span>)<span class="kw-2">*</span>] }
+                    <span class="macro">impl_downcast!</span> { @impl_body <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$param_types</span>)<span class="kw-2">*</span>] }
                 }]
         }
     };
@@ -926,14 +922,14 @@
         <span class="kw">for </span>[$(<span class="macro-nonterminal">$forall_types</span>:ident),<span class="kw-2">*</span>]
         <span class="kw">where </span>[$(<span class="macro-nonterminal">$preds</span>:tt)<span class="kw-2">*</span>]
     ) =&gt; {
-        <span class="macro">impl_downcast! </span>{
+        <span class="macro">impl_downcast!</span> {
             @inject_where
                 [<span class="kw">impl</span>&lt;$(<span class="macro-nonterminal">$forall_types</span>),<span class="kw-2">*</span>&gt; <span class="kw">dyn </span><span class="macro-nonterminal">$trait_</span>&lt;$(<span class="macro-nonterminal">$param_types</span>)<span class="kw-2">*</span>&gt;]
                 types [$(<span class="macro-nonterminal">$forall_types</span>),<span class="kw-2">*</span>]
                 <span class="kw">where </span>[$(<span class="macro-nonterminal">$preds</span>)<span class="kw-2">*</span>]
                 [{
-                    <span class="macro">impl_downcast! </span>{ @impl_body <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$param_types</span>)<span class="kw-2">*</span>] }
-                    <span class="macro">impl_downcast! </span>{ @impl_body_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$param_types</span>)<span class="kw-2">*</span>] }
+                    <span class="macro">impl_downcast!</span> { @impl_body <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$param_types</span>)<span class="kw-2">*</span>] }
+                    <span class="macro">impl_downcast!</span> { @impl_body_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$param_types</span>)<span class="kw-2">*</span>] }
                 }]
         }
     };
@@ -986,11 +982,10 @@
         <span class="doccomment">/// Returns an `Arc`-ed object from an `Arc`-ed trait object if the underlying object is of
         /// type `__T`. Returns the original `Arc`-ed trait if it isn't.
         </span><span class="attr">#[inline]
-        </span><span class="kw">pub fn </span>downcast_arc&lt;__T: <span class="macro-nonterminal">$trait_</span>&lt;$(<span class="macro-nonterminal">$types</span>)<span class="kw-2">*</span>&gt;&gt;(
+        </span><span class="kw">pub fn </span>downcast_arc&lt;__T: <span class="macro-nonterminal">$trait_</span>&lt;$(<span class="macro-nonterminal">$types</span>)<span class="kw-2">*</span>&gt; + <span class="macro-nonterminal">$crate::__std::any::Any </span>+ <span class="macro-nonterminal">$crate::__std::marker::Send </span>+ <span class="macro-nonterminal">$crate::__std::marker::Sync</span>&gt;(
             <span class="self">self</span>: <span class="macro-nonterminal">$crate::__alloc::sync::Arc</span>&lt;<span class="self">Self</span>&gt;,
         ) -&gt; <span class="macro-nonterminal">$crate::__std::result::Result</span>&lt;<span class="macro-nonterminal">$crate::__alloc::sync::Arc</span>&lt;__T&gt;, <span class="macro-nonterminal">$crate::__alloc::sync::Arc</span>&lt;<span class="self">Self</span>&gt;&gt;
-            <span class="kw">where </span>__T: <span class="macro-nonterminal">$crate::__std::any::Any </span>+ <span class="macro-nonterminal">$crate::__std::marker::Send </span>+ <span class="macro-nonterminal">$crate::__std::marker::Sync
-        </span>{
+        {
             <span class="kw">if </span><span class="self">self</span>.is::&lt;__T&gt;() {
                 <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">$crate::DowncastSync::into_any_arc</span>(<span class="self">self</span>).downcast::&lt;__T&gt;().unwrap())
             } <span class="kw">else </span>{
@@ -1000,11 +995,11 @@
     };
 
     (@inject_where [$(<span class="macro-nonterminal">$before</span>:tt)<span class="kw-2">*</span>] types [] <span class="kw">where </span>[] [$(<span class="macro-nonterminal">$after</span>:tt)<span class="kw-2">*</span>]) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @as_item $(<span class="macro-nonterminal">$before</span>)* $(<span class="macro-nonterminal">$after</span>)* }
+        <span class="macro">impl_downcast!</span> { @as_item $(<span class="macro-nonterminal">$before</span>)* $(<span class="macro-nonterminal">$after</span>)* }
     };
 
     (@inject_where [$(<span class="macro-nonterminal">$before</span>:tt)<span class="kw-2">*</span>] types [$(<span class="macro-nonterminal">$types</span>:ident),<span class="kw-2">*</span>] <span class="kw">where </span>[] [$(<span class="macro-nonterminal">$after</span>:tt)<span class="kw-2">*</span>]) =&gt; {
-        <span class="macro">impl_downcast! </span>{
+        <span class="macro">impl_downcast!</span> {
             @as_item
                 $(<span class="macro-nonterminal">$before</span>)*
                 <span class="kw">where </span>$( <span class="macro-nonterminal">$types</span>: <span class="macro-nonterminal">$crate::__std::any::Any </span>+ <span class="lifetime">'static </span>),*
@@ -1012,7 +1007,7 @@
         }
     };
     (@inject_where [$(<span class="macro-nonterminal">$before</span>:tt)<span class="kw-2">*</span>] types [$(<span class="macro-nonterminal">$types</span>:ident),<span class="kw-2">*</span>] <span class="kw">where </span>[$(<span class="macro-nonterminal">$preds</span>:tt)+] [$(<span class="macro-nonterminal">$after</span>:tt)<span class="kw-2">*</span>]) =&gt; {
-        <span class="macro">impl_downcast! </span>{
+        <span class="macro">impl_downcast!</span> {
             @as_item
                 $(<span class="macro-nonterminal">$before</span>)*
                 <span class="kw">where
@@ -1025,41 +1020,41 @@
     (@as_item <span class="macro-nonterminal">$i</span>:item) =&gt; { <span class="macro-nonterminal">$i </span>};
 
     <span class="comment">// No type parameters.
-    </span>(<span class="macro-nonterminal">$trait_</span>:ident   ) =&gt; { <span class="macro">impl_downcast! </span>{ @impl_full <span class="macro-nonterminal">$trait_ </span>[] <span class="kw">for </span>[] <span class="kw">where </span>[] } };
-    (<span class="macro-nonterminal">$trait_</span>:ident &lt;&gt;) =&gt; { <span class="macro">impl_downcast! </span>{ @impl_full <span class="macro-nonterminal">$trait_ </span>[] <span class="kw">for </span>[] <span class="kw">where </span>[] } };
-    (sync <span class="macro-nonterminal">$trait_</span>:ident   ) =&gt; { <span class="macro">impl_downcast! </span>{ @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[] <span class="kw">for </span>[] <span class="kw">where </span>[] } };
-    (sync <span class="macro-nonterminal">$trait_</span>:ident &lt;&gt;) =&gt; { <span class="macro">impl_downcast! </span>{ @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[] <span class="kw">for </span>[] <span class="kw">where </span>[] } };
+    </span>(<span class="macro-nonterminal">$trait_</span>:ident   ) =&gt; { <span class="macro">impl_downcast!</span> { @impl_full <span class="macro-nonterminal">$trait_ </span>[] <span class="kw">for </span>[] <span class="kw">where </span>[] } };
+    (<span class="macro-nonterminal">$trait_</span>:ident &lt;&gt;) =&gt; { <span class="macro">impl_downcast!</span> { @impl_full <span class="macro-nonterminal">$trait_ </span>[] <span class="kw">for </span>[] <span class="kw">where </span>[] } };
+    (sync <span class="macro-nonterminal">$trait_</span>:ident   ) =&gt; { <span class="macro">impl_downcast!</span> { @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[] <span class="kw">for </span>[] <span class="kw">where </span>[] } };
+    (sync <span class="macro-nonterminal">$trait_</span>:ident &lt;&gt;) =&gt; { <span class="macro">impl_downcast!</span> { @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[] <span class="kw">for </span>[] <span class="kw">where </span>[] } };
     <span class="comment">// Type parameters.
     </span>(<span class="macro-nonterminal">$trait_</span>:ident &lt; $(<span class="macro-nonterminal">$types</span>:ident),* &gt;) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[] }
+        <span class="macro">impl_downcast!</span> { @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[] }
     };
     (sync <span class="macro-nonterminal">$trait_</span>:ident &lt; $(<span class="macro-nonterminal">$types</span>:ident),* &gt;) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[] }
+        <span class="macro">impl_downcast!</span> { @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[] }
     };
     <span class="comment">// Type parameters and where clauses.
     </span>(<span class="macro-nonterminal">$trait_</span>:ident &lt; $(<span class="macro-nonterminal">$types</span>:ident),* &gt; <span class="kw">where </span>$(<span class="macro-nonterminal">$preds</span>:tt)+) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[$(<span class="macro-nonterminal">$preds</span>)<span class="kw-2">*</span>] }
+        <span class="macro">impl_downcast!</span> { @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[$(<span class="macro-nonterminal">$preds</span>)<span class="kw-2">*</span>] }
     };
     (sync <span class="macro-nonterminal">$trait_</span>:ident &lt; $(<span class="macro-nonterminal">$types</span>:ident),* &gt; <span class="kw">where </span>$(<span class="macro-nonterminal">$preds</span>:tt)+) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[$(<span class="macro-nonterminal">$preds</span>)<span class="kw-2">*</span>] }
+        <span class="macro">impl_downcast!</span> { @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[$(<span class="macro-nonterminal">$preds</span>)<span class="kw-2">*</span>] }
     };
     <span class="comment">// Associated types.
     </span>(<span class="macro-nonterminal">$trait_</span>:ident assoc $(<span class="macro-nonterminal">$atypes</span>:ident),<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[] }
+        <span class="macro">impl_downcast!</span> { @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[] }
     };
     (sync <span class="macro-nonterminal">$trait_</span>:ident assoc $(<span class="macro-nonterminal">$atypes</span>:ident),<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[] }
+        <span class="macro">impl_downcast!</span> { @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[] }
     };
     <span class="comment">// Associated types and where clauses.
     </span>(<span class="macro-nonterminal">$trait_</span>:ident assoc $(<span class="macro-nonterminal">$atypes</span>:ident),* <span class="kw">where </span>$(<span class="macro-nonterminal">$preds</span>:tt)+) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[$(<span class="macro-nonterminal">$preds</span>)<span class="kw-2">*</span>] }
+        <span class="macro">impl_downcast!</span> { @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[$(<span class="macro-nonterminal">$preds</span>)<span class="kw-2">*</span>] }
     };
     (sync <span class="macro-nonterminal">$trait_</span>:ident assoc $(<span class="macro-nonterminal">$atypes</span>:ident),* <span class="kw">where </span>$(<span class="macro-nonterminal">$preds</span>:tt)+) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[$(<span class="macro-nonterminal">$preds</span>)<span class="kw-2">*</span>] }
+        <span class="macro">impl_downcast!</span> { @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[$(<span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>] <span class="kw">where </span>[$(<span class="macro-nonterminal">$preds</span>)<span class="kw-2">*</span>] }
     };
     <span class="comment">// Type parameters and associated types.
     </span>(<span class="macro-nonterminal">$trait_</span>:ident &lt; $(<span class="macro-nonterminal">$types</span>:ident),* &gt; assoc $(<span class="macro-nonterminal">$atypes</span>:ident),<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">impl_downcast! </span>{
+        <span class="macro">impl_downcast!</span> {
             @impl_full
                 <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>, $(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>]
                 <span class="kw">for </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>, $(<span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>]
@@ -1067,7 +1062,7 @@
         }
     };
     (sync <span class="macro-nonterminal">$trait_</span>:ident &lt; $(<span class="macro-nonterminal">$types</span>:ident),* &gt; assoc $(<span class="macro-nonterminal">$atypes</span>:ident),<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">impl_downcast! </span>{
+        <span class="macro">impl_downcast!</span> {
             @impl_full_sync
                 <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>, $(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>]
                 <span class="kw">for </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>, $(<span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>]
@@ -1076,7 +1071,7 @@
     };
     <span class="comment">// Type parameters, associated types, and where clauses.
     </span>(<span class="macro-nonterminal">$trait_</span>:ident &lt; $(<span class="macro-nonterminal">$types</span>:ident),* &gt; assoc $(<span class="macro-nonterminal">$atypes</span>:ident),* <span class="kw">where </span>$(<span class="macro-nonterminal">$preds</span>:tt)+) =&gt; {
-        <span class="macro">impl_downcast! </span>{
+        <span class="macro">impl_downcast!</span> {
             @impl_full
                 <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>, $(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>]
                 <span class="kw">for </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>, $(<span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>]
@@ -1084,7 +1079,7 @@
         }
     };
     (sync <span class="macro-nonterminal">$trait_</span>:ident &lt; $(<span class="macro-nonterminal">$types</span>:ident),* &gt; assoc $(<span class="macro-nonterminal">$atypes</span>:ident),* <span class="kw">where </span>$(<span class="macro-nonterminal">$preds</span>:tt)+) =&gt; {
-        <span class="macro">impl_downcast! </span>{
+        <span class="macro">impl_downcast!</span> {
             @impl_full_sync
                 <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>, $(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>]
                 <span class="kw">for </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>, $(<span class="macro-nonterminal">$atypes</span>),<span class="kw-2">*</span>]
@@ -1093,38 +1088,38 @@
     };
     <span class="comment">// Concretely-parametrized types.
     </span>(concrete <span class="macro-nonterminal">$trait_</span>:ident &lt; $(<span class="macro-nonterminal">$types</span>:ident),* &gt;) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[] <span class="kw">where </span>[] }
+        <span class="macro">impl_downcast!</span> { @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[] <span class="kw">where </span>[] }
     };
     (sync concrete <span class="macro-nonterminal">$trait_</span>:ident &lt; $(<span class="macro-nonterminal">$types</span>:ident),* &gt;) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[] <span class="kw">where </span>[] }
+        <span class="macro">impl_downcast!</span> { @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[] <span class="kw">where </span>[] }
     };
     <span class="comment">// Concretely-associated types types.
     </span>(concrete <span class="macro-nonterminal">$trait_</span>:ident assoc $(<span class="macro-nonterminal">$atypes</span>:ident = <span class="macro-nonterminal">$aty</span>:ty),<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$aty</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[] <span class="kw">where </span>[] }
+        <span class="macro">impl_downcast!</span> { @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$aty</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[] <span class="kw">where </span>[] }
     };
     (sync concrete <span class="macro-nonterminal">$trait_</span>:ident assoc $(<span class="macro-nonterminal">$atypes</span>:ident = <span class="macro-nonterminal">$aty</span>:ty),<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$aty</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[] <span class="kw">where </span>[] }
+        <span class="macro">impl_downcast!</span> { @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$aty</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[] <span class="kw">where </span>[] }
     };
     <span class="comment">// Concretely-parametrized types with concrete associated types.
     </span>(concrete <span class="macro-nonterminal">$trait_</span>:ident &lt; $(<span class="macro-nonterminal">$types</span>:ident),* &gt; assoc $(<span class="macro-nonterminal">$atypes</span>:ident = <span class="macro-nonterminal">$aty</span>:ty),<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>, $(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$aty</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[] <span class="kw">where </span>[] }
+        <span class="macro">impl_downcast!</span> { @impl_full <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>, $(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$aty</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[] <span class="kw">where </span>[] }
     };
     (sync concrete <span class="macro-nonterminal">$trait_</span>:ident &lt; $(<span class="macro-nonterminal">$types</span>:ident),* &gt; assoc $(<span class="macro-nonterminal">$atypes</span>:ident = <span class="macro-nonterminal">$aty</span>:ty),<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">impl_downcast! </span>{ @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>, $(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$aty</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[] <span class="kw">where </span>[] }
+        <span class="macro">impl_downcast!</span> { @impl_full_sync <span class="macro-nonterminal">$trait_ </span>[$(<span class="macro-nonterminal">$types</span>),<span class="kw-2">*</span>, $(<span class="macro-nonterminal">$atypes </span>= <span class="macro-nonterminal">$aty</span>),<span class="kw-2">*</span>] <span class="kw">for </span>[] <span class="kw">where </span>[] }
     };
 }
 
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>test {
-    <span class="macro">macro_rules! </span>test_mod {
+    <span class="macro">macro_rules!</span> test_mod {
         (
             <span class="macro-nonterminal">$test_mod_name</span>:ident,
             <span class="kw">trait </span><span class="macro-nonterminal">$base_trait</span>:path { $(<span class="macro-nonterminal">$base_impl</span>:tt)* },
             non_sync: { $(<span class="macro-nonterminal">$non_sync_def</span>:tt)+ },
             sync: { $(<span class="macro-nonterminal">$sync_def</span>:tt)+ }
         ) =&gt; {
-            <span class="macro">test_mod! </span>{
+            <span class="macro">test_mod!</span> {
                 <span class="macro-nonterminal">$test_mod_name</span>,
                 <span class="kw">trait </span><span class="macro-nonterminal">$base_trait </span>{ $(<span class="macro-nonterminal">$base_impl</span>:tt)* },
                 <span class="kw">type dyn </span><span class="macro-nonterminal">$base_trait</span>,
@@ -1260,7 +1255,7 @@
             non_sync: { $(<span class="macro-nonterminal">$non_sync_def</span>:tt)+ },
             sync: { $(<span class="macro-nonterminal">$sync_def</span>:tt)+ }
         ) =&gt; {
-            <span class="macro">test_mod! </span>{
+            <span class="macro">test_mod!</span> {
                 <span class="macro-nonterminal">$test_mod_name</span>,
                 <span class="kw">trait </span><span class="macro-nonterminal">$base_trait </span>{ $(<span class="macro-nonterminal">$base_impl</span>:tt)* },
                 <span class="kw">type </span><span class="macro-nonterminal">$base_trait</span>,

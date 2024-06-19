@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tree_magic_mini-3.0.3/src/fdo_magic/builtin/check.rs`."><title>check.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="tree_magic_mini" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tree_magic_mini-3.1.5/src/fdo_magic/builtin/check.rs`."><title>check.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-081576b923113409.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="tree_magic_mini" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0 (129f3b996 2024-06-10)" data-channel="1.79.0" data-search-js="search-bf21c90c8c1d92b1.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../tree_magic_mini/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -52,103 +51,57 @@
 <a href="#51" id="51">51</a>
 <a href="#52" id="52">52</a>
 <a href="#53" id="53">53</a>
-<a href="#54" id="54">54</a>
-<a href="#55" id="55">55</a>
-<a href="#56" id="56">56</a>
-<a href="#57" id="57">57</a>
-<a href="#58" id="58">58</a>
-<a href="#59" id="59">59</a>
-<a href="#60" id="60">60</a>
-<a href="#61" id="61">61</a>
-<a href="#62" id="62">62</a>
-<a href="#63" id="63">63</a>
-<a href="#64" id="64">64</a>
-<a href="#65" id="65">65</a>
-<a href="#66" id="66">66</a>
-<a href="#67" id="67">67</a>
-<a href="#68" id="68">68</a>
-<a href="#69" id="69">69</a>
-<a href="#70" id="70">70</a>
-<a href="#71" id="71">71</a>
-<a href="#72" id="72">72</a>
-<a href="#73" id="73">73</a>
-<a href="#74" id="74">74</a>
-<a href="#75" id="75">75</a>
-<a href="#76" id="76">76</a>
-</pre></div><pre class="rust"><code><span class="kw">use crate</span>::{fdo_magic, read_bytes, MIME};
+</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::ALL_RULES;
+<span class="kw">use crate</span>::{fdo_magic::check::from_u8_walker, read_bytes, Mime};
 <span class="kw">use </span>fnv::FnvHashMap;
 <span class="kw">use </span>petgraph::prelude::<span class="kw-2">*</span>;
-<span class="kw">use </span>std::path::Path;
+<span class="kw">use </span>std::fs::File;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>FdoMagic;
 
 <span class="kw">impl </span><span class="kw">crate</span>::Checker <span class="kw">for </span>FdoMagic {
-    <span class="kw">fn </span>from_u8(<span class="kw-2">&amp;</span><span class="self">self</span>, file: <span class="kw-2">&amp;</span>[u8], mimetype: <span class="kw-2">&amp;</span>str) -&gt; bool {
-        from_u8(file, mimetype)
+    <span class="kw">fn </span>match_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>, bytes: <span class="kw-2">&amp;</span>[u8], mimetype: <span class="kw-2">&amp;</span>str) -&gt; bool {
+        <span class="comment">// Get magic ruleset
+        </span><span class="kw">let </span><span class="prelude-val">Some</span>(graph) = ALL_RULES.get(mimetype) <span class="kw">else </span>{
+            <span class="kw">return </span><span class="bool-val">false</span>;
+        };
+
+        <span class="comment">// Check all rulesets
+        </span>graph
+            .externals(Incoming)
+            .any(|node| from_u8_walker(bytes, graph, node, <span class="bool-val">true</span>))
     }
 
-    <span class="kw">fn </span>from_filepath(<span class="kw-2">&amp;</span><span class="self">self</span>, filepath: <span class="kw-2">&amp;</span>Path, mimetype: <span class="kw-2">&amp;</span>str) -&gt; bool {
-        from_filepath(filepath, mimetype)
+    <span class="kw">fn </span>match_file(<span class="kw-2">&amp;</span><span class="self">self</span>, file: <span class="kw-2">&amp;</span>File, mimetype: <span class="kw-2">&amp;</span>str) -&gt; bool {
+        <span class="comment">// Get magic ruleset
+        </span><span class="kw">let </span><span class="prelude-val">Some</span>(magic_rules) = ALL_RULES.get(mimetype) <span class="kw">else </span>{
+            <span class="kw">return </span><span class="bool-val">false</span>;
+        };
+
+        <span class="comment">// Get # of bytes to read
+        </span><span class="kw">let </span>scanlen = magic_rules
+            .node_weights()
+            .map(|rule| rule.scan_len())
+            .max()
+            .unwrap_or(<span class="number">0</span>);
+
+        <span class="kw">let </span><span class="prelude-val">Ok</span>(bytes) = read_bytes(file, scanlen) <span class="kw">else </span>{
+            <span class="kw">return </span><span class="bool-val">false</span>;
+        };
+
+        <span class="self">self</span>.match_bytes(<span class="kw-2">&amp;</span>bytes, mimetype)
     }
 
-    <span class="kw">fn </span>get_supported(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;MIME&gt; {
+    <span class="kw">fn </span>get_supported(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;Mime&gt; {
         <span class="kw">super</span>::init::get_supported()
     }
 
-    <span class="kw">fn </span>get_subclasses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;(MIME, MIME)&gt; {
+    <span class="kw">fn </span>get_subclasses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;(Mime, Mime)&gt; {
         <span class="kw">super</span>::init::get_subclasses()
     }
 
-    <span class="kw">fn </span>get_aliaslist(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; FnvHashMap&lt;MIME, MIME&gt; {
+    <span class="kw">fn </span>get_aliaslist(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; FnvHashMap&lt;Mime, Mime&gt; {
         <span class="kw">super</span>::init::get_aliaslist()
     }
-}
-
-<span class="doccomment">/// Test against all rules
-</span><span class="attr">#[allow(unused_variables)]
-</span><span class="kw">pub fn </span>from_u8(file: <span class="kw-2">&amp;</span>[u8], mimetype: <span class="kw-2">&amp;</span>str) -&gt; bool {
-    <span class="comment">// Get magic ruleset
-    </span><span class="kw">let </span>graph = <span class="kw">match </span><span class="kw">super</span>::ALLRULES.get(mimetype) {
-        <span class="prelude-val">Some</span>(item) =&gt; item,
-        <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="bool-val">false</span>, <span class="comment">// No rule for this mime
-    </span>};
-
-    <span class="comment">// Check all rulesets
-    </span><span class="kw">for </span>x <span class="kw">in </span>graph.externals(Incoming) {
-        <span class="kw">if </span>fdo_magic::check::from_u8_walker(file, mimetype, graph, x, <span class="bool-val">true</span>) {
-            <span class="kw">return </span><span class="bool-val">true</span>;
-        }
-    }
-
-    <span class="bool-val">false
-</span>}
-
-<span class="doccomment">/// This only exists for the case of a direct match_filepath call
-/// and even then we could probably get rid of this...
-</span><span class="attr">#[allow(unused_variables)]
-</span><span class="kw">pub fn </span>from_filepath(filepath: <span class="kw-2">&amp;</span>Path, mimetype: <span class="kw-2">&amp;</span>str) -&gt; bool {
-    <span class="comment">// Get magic ruleset
-    </span><span class="kw">let </span>magic_rules = <span class="kw">match </span><span class="kw">super</span>::ALLRULES.get(mimetype) {
-        <span class="prelude-val">Some</span>(item) =&gt; item,
-        <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="bool-val">false</span>, <span class="comment">// No rule for this mime
-    </span>};
-
-    <span class="comment">// Get # of bytes to read
-    </span><span class="kw">let </span><span class="kw-2">mut </span>scanlen = <span class="number">0</span>;
-    <span class="kw">for </span>x <span class="kw">in </span>magic_rules.raw_nodes() {
-        <span class="kw">let </span>y = <span class="kw-2">&amp;</span>x.weight;
-        <span class="kw">let </span>tmplen = y.start_off <span class="kw">as </span>usize + y.val.len() + y.region_len <span class="kw">as </span>usize;
-
-        <span class="kw">if </span>tmplen &gt; scanlen {
-            scanlen = tmplen;
-        }
-    }
-
-    <span class="kw">let </span>b = <span class="kw">match </span>read_bytes(filepath, scanlen) {
-        <span class="prelude-val">Ok</span>(x) =&gt; x,
-        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="bool-val">false</span>,
-    };
-
-    from_u8(b.as_slice(), mimetype)
 }
 </code></pre></div></section></main></body></html>

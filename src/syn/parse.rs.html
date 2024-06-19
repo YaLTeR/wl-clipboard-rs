@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.52/src/parse.rs`."><title>parse.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.66/src/parse.rs`."><title>parse.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-081576b923113409.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0 (129f3b996 2024-06-10)" data-channel="1.79.0" data-search-js="search-bf21c90c8c1d92b1.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../syn/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1380,6 +1379,22 @@
 <a href="#1379" id="1379">1379</a>
 <a href="#1380" id="1380">1380</a>
 <a href="#1381" id="1381">1381</a>
+<a href="#1382" id="1382">1382</a>
+<a href="#1383" id="1383">1383</a>
+<a href="#1384" id="1384">1384</a>
+<a href="#1385" id="1385">1385</a>
+<a href="#1386" id="1386">1386</a>
+<a href="#1387" id="1387">1387</a>
+<a href="#1388" id="1388">1388</a>
+<a href="#1389" id="1389">1389</a>
+<a href="#1390" id="1390">1390</a>
+<a href="#1391" id="1391">1391</a>
+<a href="#1392" id="1392">1392</a>
+<a href="#1393" id="1393">1393</a>
+<a href="#1394" id="1394">1394</a>
+<a href="#1395" id="1395">1395</a>
+<a href="#1396" id="1396">1396</a>
+<a href="#1397" id="1397">1397</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Parsing interface for parsing a token stream into a syntax tree node.
 //!
 //! Parsing in Syn is built on parser functions that take in a [`ParseStream`]
@@ -1570,6 +1585,8 @@
 <span class="kw">use </span><span class="kw">crate</span>::punctuated::Punctuated;
 <span class="kw">use </span><span class="kw">crate</span>::token::Token;
 <span class="kw">use </span>proc_macro2::{Delimiter, Group, Literal, Punct, Span, TokenStream, TokenTree};
+<span class="attr">#[cfg(feature = <span class="string">"printing"</span>)]
+</span><span class="kw">use </span>quote::ToTokens;
 <span class="kw">use </span>std::cell::Cell;
 <span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug, Display};
 <span class="attr">#[cfg(feature = <span class="string">"extra-traits"</span>)]
@@ -1577,6 +1594,7 @@
 <span class="kw">use </span>std::marker::PhantomData;
 <span class="kw">use </span>std::mem;
 <span class="kw">use </span>std::ops::Deref;
+<span class="kw">use </span>std::panic::{RefUnwindSafe, UnwindSafe};
 <span class="kw">use </span>std::rc::Rc;
 <span class="kw">use </span>std::str::FromStr;
 
@@ -1662,6 +1680,9 @@
         Debug::fmt(<span class="kw-2">&amp;</span><span class="self">self</span>.cursor().token_stream(), f)
     }
 }
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; UnwindSafe <span class="kw">for </span>ParseBuffer&lt;<span class="lifetime">'a</span>&gt; {}
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; RefUnwindSafe <span class="kw">for </span>ParseBuffer&lt;<span class="lifetime">'a</span>&gt; {}
 
 <span class="doccomment">/// Cursor state associated with speculative parsing.
 ///
@@ -1994,11 +2015,6 @@
     /// ```
     </span><span class="kw">pub fn </span>peek2&lt;T: Peek&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, token: T) -&gt; bool {
         <span class="kw">fn </span>peek2(buffer: <span class="kw-2">&amp;</span>ParseBuffer, peek: <span class="kw">fn</span>(Cursor) -&gt; bool) -&gt; bool {
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(group) = buffer.cursor().group(Delimiter::None) {
-                <span class="kw">if </span>group.<span class="number">0</span>.skip().map_or(<span class="bool-val">false</span>, peek) {
-                    <span class="kw">return </span><span class="bool-val">true</span>;
-                }
-            }
             buffer.cursor().skip().map_or(<span class="bool-val">false</span>, peek)
         }
 
@@ -2009,11 +2025,6 @@
     <span class="doccomment">/// Looks at the third-next token in the parse stream.
     </span><span class="kw">pub fn </span>peek3&lt;T: Peek&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, token: T) -&gt; bool {
         <span class="kw">fn </span>peek3(buffer: <span class="kw-2">&amp;</span>ParseBuffer, peek: <span class="kw">fn</span>(Cursor) -&gt; bool) -&gt; bool {
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(group) = buffer.cursor().group(Delimiter::None) {
-                <span class="kw">if </span>group.<span class="number">0</span>.skip().and_then(Cursor::skip).map_or(<span class="bool-val">false</span>, peek) {
-                    <span class="kw">return </span><span class="bool-val">true</span>;
-                }
-            }
             buffer
                 .cursor()
                 .skip()
@@ -2540,14 +2551,14 @@
     }
 }
 
-<span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"parsing"</span>)))]
+<span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"parsing"</span>)))]
 </span><span class="kw">impl</span>&lt;T: Parse&gt; Parse <span class="kw">for </span>Box&lt;T&gt; {
     <span class="kw">fn </span>parse(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         input.parse().map(Box::new)
     }
 }
 
-<span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"parsing"</span>)))]
+<span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"parsing"</span>)))]
 </span><span class="kw">impl</span>&lt;T: Parse + Token&gt; Parse <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;T&gt; {
     <span class="kw">fn </span>parse(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">if </span>T::peek(input.cursor()) {
@@ -2558,14 +2569,14 @@
     }
 }
 
-<span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"parsing"</span>)))]
+<span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"parsing"</span>)))]
 </span><span class="kw">impl </span>Parse <span class="kw">for </span>TokenStream {
     <span class="kw">fn </span>parse(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         input.step(|cursor| <span class="prelude-val">Ok</span>((cursor.token_stream(), Cursor::empty())))
     }
 }
 
-<span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"parsing"</span>)))]
+<span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"parsing"</span>)))]
 </span><span class="kw">impl </span>Parse <span class="kw">for </span>TokenTree {
     <span class="kw">fn </span>parse(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         input.step(|cursor| <span class="kw">match </span>cursor.token_tree() {
@@ -2575,7 +2586,7 @@
     }
 }
 
-<span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"parsing"</span>)))]
+<span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"parsing"</span>)))]
 </span><span class="kw">impl </span>Parse <span class="kw">for </span>Group {
     <span class="kw">fn </span>parse(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         input.step(|cursor| {
@@ -2589,7 +2600,7 @@
     }
 }
 
-<span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"parsing"</span>)))]
+<span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"parsing"</span>)))]
 </span><span class="kw">impl </span>Parse <span class="kw">for </span>Punct {
     <span class="kw">fn </span>parse(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         input.step(|cursor| <span class="kw">match </span>cursor.punct() {
@@ -2599,7 +2610,7 @@
     }
 }
 
-<span class="attr">#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"parsing"</span>)))]
+<span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"parsing"</span>)))]
 </span><span class="kw">impl </span>Parse <span class="kw">for </span>Literal {
     <span class="kw">fn </span>parse(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         input.step(|cursor| <span class="kw">match </span>cursor.literal() {
@@ -2628,7 +2639,7 @@
     /// This function will check that the input is fully parsed. If there are
     /// any unparsed tokens at the end of the stream, an error is returned.
     </span><span class="attr">#[cfg(feature = <span class="string">"proc-macro"</span>)]
-    #[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"proc-macro"</span>)))]
+    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"proc-macro"</span>)))]
     </span><span class="kw">fn </span>parse(<span class="self">self</span>, tokens: proc_macro::TokenStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Output&gt; {
         <span class="self">self</span>.parse2(proc_macro2::TokenStream::from(tokens))
     }
@@ -2736,8 +2747,28 @@
     }
 }
 
+<span class="attr">#[cfg(feature = <span class="string">"printing"</span>)]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"printing"</span>)))]
+</span><span class="kw">impl </span>ToTokens <span class="kw">for </span>Nothing {
+    <span class="kw">fn </span>to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>, tokens: <span class="kw-2">&amp;mut </span>TokenStream) {
+        <span class="kw">let _ </span>= tokens;
+    }
+}
+
+<span class="attr">#[cfg(feature = <span class="string">"clone-impls"</span>)]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"clone-impls"</span>)))]
+</span><span class="kw">impl </span>Clone <span class="kw">for </span>Nothing {
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw-2">*</span><span class="self">self
+    </span>}
+}
+
+<span class="attr">#[cfg(feature = <span class="string">"clone-impls"</span>)]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"clone-impls"</span>)))]
+</span><span class="kw">impl </span>Copy <span class="kw">for </span>Nothing {}
+
 <span class="attr">#[cfg(feature = <span class="string">"extra-traits"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
 </span><span class="kw">impl </span>Debug <span class="kw">for </span>Nothing {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
         f.write_str(<span class="string">"Nothing"</span>)
@@ -2745,11 +2776,11 @@
 }
 
 <span class="attr">#[cfg(feature = <span class="string">"extra-traits"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
 </span><span class="kw">impl </span>Eq <span class="kw">for </span>Nothing {}
 
 <span class="attr">#[cfg(feature = <span class="string">"extra-traits"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
 </span><span class="kw">impl </span>PartialEq <span class="kw">for </span>Nothing {
     <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, _other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
         <span class="bool-val">true
@@ -2757,7 +2788,7 @@
 }
 
 <span class="attr">#[cfg(feature = <span class="string">"extra-traits"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"extra-traits"</span>)))]
 </span><span class="kw">impl </span>Hash <span class="kw">for </span>Nothing {
     <span class="kw">fn </span>hash&lt;H: Hasher&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, _state: <span class="kw-2">&amp;mut </span>H) {}
 }

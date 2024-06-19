@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.2.5/src/map.rs`."><title>map.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="indexmap" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.2.6/src/map.rs`."><title>map.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-081576b923113409.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="indexmap" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0 (129f3b996 2024-06-10)" data-channel="1.79.0" data-search-js="search-bf21c90c8c1d92b1.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../indexmap/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1416,17 +1415,12 @@
 <a href="#1415" id="1415">1415</a>
 <a href="#1416" id="1416">1416</a>
 <a href="#1417" id="1417">1417</a>
-<a href="#1418" id="1418">1418</a>
-<a href="#1419" id="1419">1419</a>
-<a href="#1420" id="1420">1420</a>
-<a href="#1421" id="1421">1421</a>
-<a href="#1422" id="1422">1422</a>
-<a href="#1423" id="1423">1423</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! [`IndexMap`] is a hash table where the iteration order of the key-value
 //! pairs is independent of the hash values of the keys.
 
 </span><span class="kw">mod </span>core;
 <span class="kw">mod </span>iter;
+<span class="kw">mod </span>mutable;
 <span class="kw">mod </span>slice;
 
 <span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
@@ -1441,8 +1435,8 @@
 <span class="kw">pub use </span><span class="self">self</span>::iter::{
     Drain, IntoIter, IntoKeys, IntoValues, Iter, IterMut, Keys, Splice, Values, ValuesMut,
 };
+<span class="kw">pub use </span><span class="self">self</span>::mutable::MutableKeys;
 <span class="kw">pub use </span><span class="self">self</span>::slice::Slice;
-<span class="kw">pub use </span><span class="kw">crate</span>::mutable_keys::MutableKeys;
 
 <span class="attr">#[cfg(feature = <span class="string">"rayon"</span>)]
 </span><span class="kw">pub use </span><span class="kw">crate</span>::rayon::map <span class="kw">as </span>rayon;
@@ -1957,9 +1951,9 @@
     <span class="doccomment">/// Return `true` if an equivalent to `key` exists in the map.
     ///
     /// Computes in **O(1)** time (average).
-    </span><span class="kw">pub fn </span>contains_key&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; bool
+    </span><span class="kw">pub fn </span>contains_key&lt;Q&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; bool
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="self">self</span>.get_index_of(key).is_some()
     }
@@ -1968,9 +1962,9 @@
     /// else `None`.
     ///
     /// Computes in **O(1)** time (average).
-    </span><span class="kw">pub fn </span>get&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>V&gt;
+    </span><span class="kw">pub fn </span>get&lt;Q&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>V&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(i) = <span class="self">self</span>.get_index_of(key) {
             <span class="kw">let </span>entry = <span class="kw-2">&amp;</span><span class="self">self</span>.as_entries()[i];
@@ -1984,9 +1978,9 @@
     /// if it is present, else `None`.
     ///
     /// Computes in **O(1)** time (average).
-    </span><span class="kw">pub fn </span>get_key_value&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;</span>V)&gt;
+    </span><span class="kw">pub fn </span>get_key_value&lt;Q&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;</span>V)&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(i) = <span class="self">self</span>.get_index_of(key) {
             <span class="kw">let </span>entry = <span class="kw-2">&amp;</span><span class="self">self</span>.as_entries()[i];
@@ -1997,9 +1991,9 @@
     }
 
     <span class="doccomment">/// Return item index, key and value
-    </span><span class="kw">pub fn </span>get_full&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(usize, <span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;</span>V)&gt;
+    </span><span class="kw">pub fn </span>get_full&lt;Q&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(usize, <span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;</span>V)&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(i) = <span class="self">self</span>.get_index_of(key) {
             <span class="kw">let </span>entry = <span class="kw-2">&amp;</span><span class="self">self</span>.as_entries()[i];
@@ -2012,9 +2006,9 @@
     <span class="doccomment">/// Return item index, if it exists in the map
     ///
     /// Computes in **O(1)** time (average).
-    </span><span class="kw">pub fn </span>get_index_of&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt;
+    </span><span class="kw">pub fn </span>get_index_of&lt;Q&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="kw">match </span><span class="self">self</span>.as_entries() {
             [] =&gt; <span class="prelude-val">None</span>,
@@ -2026,9 +2020,9 @@
         }
     }
 
-    <span class="kw">pub fn </span>get_mut&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>V&gt;
+    <span class="kw">pub fn </span>get_mut&lt;Q&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>V&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(i) = <span class="self">self</span>.get_index_of(key) {
             <span class="kw">let </span>entry = <span class="kw-2">&amp;mut </span><span class="self">self</span>.as_entries_mut()[i];
@@ -2038,9 +2032,9 @@
         </span>}
     }
 
-    <span class="kw">pub fn </span>get_full_mut&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(usize, <span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;mut </span>V)&gt;
+    <span class="kw">pub fn </span>get_full_mut&lt;Q&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(usize, <span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;mut </span>V)&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(i) = <span class="self">self</span>.get_index_of(key) {
             <span class="kw">let </span>entry = <span class="kw-2">&amp;mut </span><span class="self">self</span>.as_entries_mut()[i];
@@ -2059,9 +2053,9 @@
     /// [`.shift_remove(key)`][Self::shift_remove] instead.
     </span><span class="attr">#[deprecated(note = <span class="string">"`remove` disrupts the map order -- \
         use `swap_remove` or `shift_remove` for explicit behavior."</span>)]
-    </span><span class="kw">pub fn </span>remove&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;V&gt;
+    </span><span class="kw">pub fn </span>remove&lt;Q&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;V&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="self">self</span>.swap_remove(key)
     }
@@ -2074,9 +2068,9 @@
     /// use [`.shift_remove_entry(key)`][Self::shift_remove_entry] instead.
     </span><span class="attr">#[deprecated(note = <span class="string">"`remove_entry` disrupts the map order -- \
         use `swap_remove_entry` or `shift_remove_entry` for explicit behavior."</span>)]
-    </span><span class="kw">pub fn </span>remove_entry&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(K, V)&gt;
+    </span><span class="kw">pub fn </span>remove_entry&lt;Q&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(K, V)&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="self">self</span>.swap_remove_entry(key)
     }
@@ -2091,9 +2085,9 @@
     /// Return `None` if `key` is not in map.
     ///
     /// Computes in **O(1)** time (average).
-    </span><span class="kw">pub fn </span>swap_remove&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;V&gt;
+    </span><span class="kw">pub fn </span>swap_remove&lt;Q&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;V&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="self">self</span>.swap_remove_full(key).map(third)
     }
@@ -2107,9 +2101,9 @@
     /// Return `None` if `key` is not in map.
     ///
     /// Computes in **O(1)** time (average).
-    </span><span class="kw">pub fn </span>swap_remove_entry&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(K, V)&gt;
+    </span><span class="kw">pub fn </span>swap_remove_entry&lt;Q&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(K, V)&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="kw">match </span><span class="self">self</span>.swap_remove_full(key) {
             <span class="prelude-val">Some</span>((<span class="kw">_</span>, key, value)) =&gt; <span class="prelude-val">Some</span>((key, value)),
@@ -2127,9 +2121,9 @@
     /// Return `None` if `key` is not in map.
     ///
     /// Computes in **O(1)** time (average).
-    </span><span class="kw">pub fn </span>swap_remove_full&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(usize, K, V)&gt;
+    </span><span class="kw">pub fn </span>swap_remove_full&lt;Q&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(usize, K, V)&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="kw">match </span><span class="self">self</span>.as_entries() {
             [x] <span class="kw">if </span>key.equivalent(<span class="kw-2">&amp;</span>x.key) =&gt; {
@@ -2154,9 +2148,9 @@
     /// Return `None` if `key` is not in map.
     ///
     /// Computes in **O(n)** time (average).
-    </span><span class="kw">pub fn </span>shift_remove&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;V&gt;
+    </span><span class="kw">pub fn </span>shift_remove&lt;Q&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;V&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="self">self</span>.shift_remove_full(key).map(third)
     }
@@ -2170,9 +2164,9 @@
     /// Return `None` if `key` is not in map.
     ///
     /// Computes in **O(n)** time (average).
-    </span><span class="kw">pub fn </span>shift_remove_entry&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(K, V)&gt;
+    </span><span class="kw">pub fn </span>shift_remove_entry&lt;Q&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(K, V)&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="kw">match </span><span class="self">self</span>.shift_remove_full(key) {
             <span class="prelude-val">Some</span>((<span class="kw">_</span>, key, value)) =&gt; <span class="prelude-val">Some</span>((key, value)),
@@ -2190,9 +2184,9 @@
     /// Return `None` if `key` is not in map.
     ///
     /// Computes in **O(n)** time (average).
-    </span><span class="kw">pub fn </span>shift_remove_full&lt;Q: <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(usize, K, V)&gt;
+    </span><span class="kw">pub fn </span>shift_remove_full&lt;Q&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="prelude-ty">Option</span>&lt;(usize, K, V)&gt;
     <span class="kw">where
-        </span>Q: Hash + Equivalent&lt;K&gt;,
+        </span>Q: <span class="question-mark">?</span>Sized + Hash + Equivalent&lt;K&gt;,
     {
         <span class="kw">match </span><span class="self">self</span>.as_entries() {
             [x] <span class="kw">if </span>key.equivalent(<span class="kw-2">&amp;</span>x.key) =&gt; {
@@ -2230,13 +2224,6 @@
         </span>F: FnMut(<span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;mut </span>V) -&gt; bool,
     {
         <span class="self">self</span>.core.retain_in_order(<span class="kw">move </span>|k, v| keep(k, v));
-    }
-
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>retain_mut&lt;F&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, keep: F)
-    <span class="kw">where
-        </span>F: FnMut(<span class="kw-2">&amp;mut </span>K, <span class="kw-2">&amp;mut </span>V) -&gt; bool,
-    {
-        <span class="self">self</span>.core.retain_in_order(keep);
     }
 
     <span class="doccomment">/// Sort the map’s key-value pairs by the default ordering of the keys.
