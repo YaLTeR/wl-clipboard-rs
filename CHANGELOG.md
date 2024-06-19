@@ -2,11 +2,14 @@
 
 ## Unreleased
 
+## v0.9.0 (19th June 2024)
+
 - **Breaking** Removed `utils::copy_data`. It forked into a `/usr/bin/env cat`
   for copying. All internal uses of the function have been changed to simply
   use `std::io::copy` instead.
 - Replaced `nix` with `rustix`, following `wayland-rs`.
 - Replaced the deprecated `structopt` with `clap` itself.
+- Updated dependencies.
 
 ## v0.8.1 (7th Mar 2024)
 

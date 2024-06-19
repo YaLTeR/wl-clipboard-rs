@@ -105,7 +105,7 @@
 //! - `wl-copy`: implements `wl-copy` from [wl-clipboard](https://github.com/bugaevc/wl-clipboard).
 //! - `wl-clip`: a Wayland version of `xclip`.
 
-#![doc(html_root_url = "https://docs.rs/wl-clipboard-rs/0.8.1")]
+#![doc(html_root_url = "https://docs.rs/wl-clipboard-rs/0.9.0")]
 #![deny(unsafe_code)]
 
 mod common;
