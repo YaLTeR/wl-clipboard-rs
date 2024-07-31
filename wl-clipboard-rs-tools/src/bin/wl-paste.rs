@@ -32,7 +32,7 @@ struct Options {
     /// Do not append a newline character
     ///
     /// By default the newline character is appended automatically when pasting text MIME types.
-    #[arg(long, short, conflicts_with = "list-types")]
+    #[arg(long, short, conflicts_with = "list_types")]
     no_newline: bool,
 
     /// Pick the seat to work with
@@ -51,7 +51,7 @@ struct Options {
         name = "MIME/TYPE",
         long = "type",
         short = 't',
-        conflicts_with = "list-types"
+        conflicts_with = "list_types"
     )]
     mime_type: Option<String>,
 
