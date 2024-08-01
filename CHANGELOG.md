@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added man page and shell completion generation to `wl-clipboard-rs-tools`.
+
 ## v0.9.0 (19th June 2024)
 
 - **Breaking** Removed `utils::copy_data`. It forked into a `/usr/bin/env cat`
