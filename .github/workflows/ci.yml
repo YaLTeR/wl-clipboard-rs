@@ -17,7 +17,7 @@ jobs:
         features: ['', dlopen]
 
     name: ${{ matrix.rust }} - ${{ matrix.features }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -25,9 +25,9 @@ jobs:
           show-progress: false
 
       - name: Install Rust
-        run: |
-          rustup set auto-self-update check-only
-          rustup toolchain install ${{ matrix.rust }} --profile minimal
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
 
       - uses: Swatinem/rust-cache@v2
 
@@ -37,7 +37,7 @@ jobs:
       - name: Set up XDG_RUNTIME_DIR
         run: |
           mkdir .runtime
-          echo "XDG_RUNTIME_DIR=$PWD/.runtime" >> $GITHUB_ENV
+          echo "XDG_RUNTIME_DIR=$PWD/.runtime" >> "$GITHUB_ENV"
 
       - name: Test
         run: cargo test --all --features=${{ matrix.features }}
@@ -54,14 +54,14 @@ jobs:
           matrix.features == '' &&
           github.event_name == 'push' &&
           github.ref == 'refs/heads/master'
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./target/doc
 
   clippy:
     name: clippy
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -69,9 +69,9 @@ jobs:
           show-progress: false
 
       - name: Install Rust
-        run: |
-          rustup set auto-self-update check-only
-          rustup toolchain install stable --profile minimal --component clippy
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
 
       - uses: Swatinem/rust-cache@v2
 
@@ -79,7 +79,7 @@ jobs:
         run: cargo clippy --all --all-targets
 
   rustfmt:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -87,10 +87,9 @@ jobs:
           show-progress: false
 
       - name: Install Rust
-        run: |
-          rustup set auto-self-update check-only
-          rustup toolchain install nightly --profile minimal --component rustfmt
-          rustup override set nightly
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rustfmt
 
       - name: Run rustfmt
         run: cargo fmt --all -- --check
