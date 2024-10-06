@@ -2,7 +2,10 @@
 
 ## Unreleased
 
+## v0.9.1 (6th Oct 2024)
+
 - Added man page and shell completion generation to `wl-clipboard-rs-tools`.
+- Updated dependencies.
 
 ## v0.9.0 (19th June 2024)
 
