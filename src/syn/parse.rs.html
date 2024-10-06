@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.66/src/parse.rs`."><title>parse.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.79/src/parse.rs`."><title>parse.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1395,6 +1395,23 @@
 <a href="#1395" id="1395">1395</a>
 <a href="#1396" id="1396">1396</a>
 <a href="#1397" id="1397">1397</a>
+<a href="#1398" id="1398">1398</a>
+<a href="#1399" id="1399">1399</a>
+<a href="#1400" id="1400">1400</a>
+<a href="#1401" id="1401">1401</a>
+<a href="#1402" id="1402">1402</a>
+<a href="#1403" id="1403">1403</a>
+<a href="#1404" id="1404">1404</a>
+<a href="#1405" id="1405">1405</a>
+<a href="#1406" id="1406">1406</a>
+<a href="#1407" id="1407">1407</a>
+<a href="#1408" id="1408">1408</a>
+<a href="#1409" id="1409">1409</a>
+<a href="#1410" id="1410">1410</a>
+<a href="#1411" id="1411">1411</a>
+<a href="#1412" id="1412">1412</a>
+<a href="#1413" id="1413">1413</a>
+<a href="#1414" id="1414">1414</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Parsing interface for parsing a token stream into a syntax tree node.
 //!
 //! Parsing in Syn is built on parser functions that take in a [`ParseStream`]
@@ -1660,10 +1677,11 @@
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Drop <span class="kw">for </span>ParseBuffer&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(unexpected_span) = span_of_unexpected_ignoring_nones(<span class="self">self</span>.cursor()) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>((unexpected_span, delimiter)) = span_of_unexpected_ignoring_nones(<span class="self">self</span>.cursor())
+        {
             <span class="kw">let </span>(inner, old_span) = inner_unexpected(<span class="self">self</span>);
             <span class="kw">if </span>old_span.is_none() {
-                inner.set(Unexpected::Some(unexpected_span));
+                inner.set(Unexpected::Some(unexpected_span, delimiter));
             }
         }
     }
@@ -1794,7 +1812,7 @@
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>Unexpected {
     <span class="prelude-val">None</span>,
-    <span class="prelude-val">Some</span>(Span),
+    <span class="prelude-val">Some</span>(Span, Delimiter),
     Chain(Rc&lt;Cell&lt;Unexpected&gt;&gt;),
 }
 
@@ -1808,7 +1826,7 @@
     <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
         <span class="kw">match </span><span class="self">self </span>{
             Unexpected::None =&gt; Unexpected::None,
-            Unexpected::Some(span) =&gt; Unexpected::Some(<span class="kw-2">*</span>span),
+            Unexpected::Some(span, delimiter) =&gt; Unexpected::Some(<span class="kw-2">*</span>span, <span class="kw-2">*</span>delimiter),
             Unexpected::Chain(next) =&gt; Unexpected::Chain(next.clone()),
         }
     }
@@ -1823,12 +1841,12 @@
     ret
 }
 
-<span class="kw">fn </span>inner_unexpected(buffer: <span class="kw-2">&amp;</span>ParseBuffer) -&gt; (Rc&lt;Cell&lt;Unexpected&gt;&gt;, <span class="prelude-ty">Option</span>&lt;Span&gt;) {
+<span class="kw">fn </span>inner_unexpected(buffer: <span class="kw-2">&amp;</span>ParseBuffer) -&gt; (Rc&lt;Cell&lt;Unexpected&gt;&gt;, <span class="prelude-ty">Option</span>&lt;(Span, Delimiter)&gt;) {
     <span class="kw">let </span><span class="kw-2">mut </span>unexpected = get_unexpected(buffer);
     <span class="kw">loop </span>{
         <span class="kw">match </span>cell_clone(<span class="kw-2">&amp;</span>unexpected) {
             Unexpected::None =&gt; <span class="kw">return </span>(unexpected, <span class="prelude-val">None</span>),
-            Unexpected::Some(span) =&gt; <span class="kw">return </span>(unexpected, <span class="prelude-val">Some</span>(span)),
+            Unexpected::Some(span, delimiter) =&gt; <span class="kw">return </span>(unexpected, <span class="prelude-val">Some</span>((span, delimiter))),
             Unexpected::Chain(next) =&gt; unexpected = next,
         }
     }
@@ -1838,7 +1856,7 @@
     cell_clone(<span class="kw-2">&amp;</span>buffer.unexpected).unwrap()
 }
 
-<span class="kw">fn </span>span_of_unexpected_ignoring_nones(<span class="kw-2">mut </span>cursor: Cursor) -&gt; <span class="prelude-ty">Option</span>&lt;Span&gt; {
+<span class="kw">fn </span>span_of_unexpected_ignoring_nones(<span class="kw-2">mut </span>cursor: Cursor) -&gt; <span class="prelude-ty">Option</span>&lt;(Span, Delimiter)&gt; {
     <span class="kw">if </span>cursor.eof() {
         <span class="kw">return </span><span class="prelude-val">None</span>;
     }
@@ -1851,7 +1869,7 @@
     <span class="kw">if </span>cursor.eof() {
         <span class="prelude-val">None
     </span>} <span class="kw">else </span>{
-        <span class="prelude-val">Some</span>(cursor.span())
+        <span class="prelude-val">Some</span>((cursor.span(), cursor.scope_delimiter()))
     }
 }
 
@@ -2140,10 +2158,12 @@
         Punctuated::parse_terminated_with(<span class="self">self</span>, parser)
     }
 
-    <span class="doccomment">/// Returns whether there are tokens remaining in this stream.
+    <span class="doccomment">/// Returns whether there are no more tokens remaining to be parsed from
+    /// this stream.
     ///
-    /// This method returns true at the end of the content of a set of
-    /// delimiters, as well as at the very end of the complete macro input.
+    /// This method returns true upon reaching the end of the content within a
+    /// set of delimiters, as well as at the end of the tokens provided to the
+    /// outermost parsing entry point.
     ///
     /// # Example
     ///
@@ -2545,7 +2565,7 @@
 
     <span class="kw">fn </span>check_unexpected(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">match </span>inner_unexpected(<span class="self">self</span>).<span class="number">1 </span>{
-            <span class="prelude-val">Some</span>(span) =&gt; <span class="prelude-val">Err</span>(Error::new(span, <span class="string">"unexpected token"</span>)),
+            <span class="prelude-val">Some</span>((span, delimiter)) =&gt; <span class="prelude-val">Err</span>(err_unexpected_token(span, delimiter)),
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(()),
         }
     }
@@ -2683,8 +2703,10 @@
         <span class="kw">let </span>state = tokens_to_parse_buffer(<span class="kw-2">&amp;</span>buf);
         <span class="kw">let </span>node = <span class="self">self</span>(<span class="kw-2">&amp;</span>state)<span class="question-mark">?</span>;
         state.check_unexpected()<span class="question-mark">?</span>;
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(unexpected_span) = span_of_unexpected_ignoring_nones(state.cursor()) {
-            <span class="prelude-val">Err</span>(Error::new(unexpected_span, <span class="string">"unexpected token"</span>))
+        <span class="kw">if let </span><span class="prelude-val">Some</span>((unexpected_span, delimiter)) =
+            span_of_unexpected_ignoring_nones(state.cursor())
+        {
+            <span class="prelude-val">Err</span>(err_unexpected_token(unexpected_span, delimiter))
         } <span class="kw">else </span>{
             <span class="prelude-val">Ok</span>(node)
         }
@@ -2697,8 +2719,10 @@
         <span class="kw">let </span>state = new_parse_buffer(scope, cursor, unexpected);
         <span class="kw">let </span>node = <span class="self">self</span>(<span class="kw-2">&amp;</span>state)<span class="question-mark">?</span>;
         state.check_unexpected()<span class="question-mark">?</span>;
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(unexpected_span) = span_of_unexpected_ignoring_nones(state.cursor()) {
-            <span class="prelude-val">Err</span>(Error::new(unexpected_span, <span class="string">"unexpected token"</span>))
+        <span class="kw">if let </span><span class="prelude-val">Some</span>((unexpected_span, delimiter)) =
+            span_of_unexpected_ignoring_nones(state.cursor())
+        {
+            <span class="prelude-val">Err</span>(err_unexpected_token(unexpected_span, delimiter))
         } <span class="kw">else </span>{
             <span class="prelude-val">Ok</span>(node)
         }
@@ -2707,6 +2731,16 @@
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>parse_scoped&lt;F: Parser&gt;(f: F, scope: Span, tokens: TokenStream) -&gt; <span class="prelude-ty">Result</span>&lt;F::Output&gt; {
     f.__parse_scoped(scope, tokens)
+}
+
+<span class="kw">fn </span>err_unexpected_token(span: Span, delimiter: Delimiter) -&gt; Error {
+    <span class="kw">let </span>msg = <span class="kw">match </span>delimiter {
+        Delimiter::Parenthesis =&gt; <span class="string">"unexpected token, expected `)`"</span>,
+        Delimiter::Brace =&gt; <span class="string">"unexpected token, expected `}`"</span>,
+        Delimiter::Bracket =&gt; <span class="string">"unexpected token, expected `]`"</span>,
+        Delimiter::None =&gt; <span class="string">"unexpected token"</span>,
+    };
+    Error::new(span, msg)
 }
 
 <span class="doccomment">/// An empty syntax tree node that consumes no tokens when parsed.

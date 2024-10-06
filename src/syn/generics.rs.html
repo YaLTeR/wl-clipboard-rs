@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.66/src/generics.rs`."><title>generics.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.79/src/generics.rs`."><title>generics.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1282,8 +1282,6 @@
 <a href="#1282" id="1282">1282</a>
 <a href="#1283" id="1283">1283</a>
 <a href="#1284" id="1284">1284</a>
-<a href="#1285" id="1285">1285</a>
-<a href="#1286" id="1286">1286</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::attr::Attribute;
 <span class="kw">use </span><span class="kw">crate</span>::expr::Expr;
 <span class="kw">use </span><span class="kw">crate</span>::ident::Ident;
@@ -1389,70 +1387,46 @@
 }
 
 <span class="kw">impl </span>Generics {
-    <span class="doccomment">/// Returns an
-    /// &lt;code
-    ///   style="padding-right:0;"&gt;Iterator&amp;lt;Item = &amp;amp;&lt;/code&gt;&lt;a
-    ///   href="struct.LifetimeParam.html"&gt;&lt;code
-    ///   style="padding-left:0;padding-right:0;"&gt;LifetimeParam&lt;/code&gt;&lt;/a&gt;&lt;code
-    ///   style="padding-left:0;"&gt;&amp;gt;&lt;/code&gt;
-    /// over the lifetime parameters in `self.params`.
-    </span><span class="kw">pub fn </span>lifetimes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Lifetimes {
-        Lifetimes(<span class="self">self</span>.params.iter())
+    <span class="macro">return_impl_trait!</span> {
+        <span class="doccomment">/// Iterator over the lifetime parameters in `self.params`.
+        </span><span class="kw">pub fn </span>lifetimes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span>LifetimeParam&gt; [Lifetimes] {
+            Lifetimes(<span class="self">self</span>.params.iter())
+        }
     }
 
-    <span class="doccomment">/// Returns an
-    /// &lt;code
-    ///   style="padding-right:0;"&gt;Iterator&amp;lt;Item = &amp;amp;mut &lt;/code&gt;&lt;a
-    ///   href="struct.LifetimeParam.html"&gt;&lt;code
-    ///   style="padding-left:0;padding-right:0;"&gt;LifetimeParam&lt;/code&gt;&lt;/a&gt;&lt;code
-    ///   style="padding-left:0;"&gt;&amp;gt;&lt;/code&gt;
-    /// over the lifetime parameters in `self.params`.
-    </span><span class="kw">pub fn </span>lifetimes_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; LifetimesMut {
-        LifetimesMut(<span class="self">self</span>.params.iter_mut())
+    <span class="macro">return_impl_trait!</span> {
+        <span class="doccomment">/// Iterator over the lifetime parameters in `self.params`.
+        </span><span class="kw">pub fn </span>lifetimes_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;mut </span>LifetimeParam&gt; [LifetimesMut] {
+            LifetimesMut(<span class="self">self</span>.params.iter_mut())
+        }
     }
 
-    <span class="doccomment">/// Returns an
-    /// &lt;code
-    ///   style="padding-right:0;"&gt;Iterator&amp;lt;Item = &amp;amp;&lt;/code&gt;&lt;a
-    ///   href="struct.TypeParam.html"&gt;&lt;code
-    ///   style="padding-left:0;padding-right:0;"&gt;TypeParam&lt;/code&gt;&lt;/a&gt;&lt;code
-    ///   style="padding-left:0;"&gt;&amp;gt;&lt;/code&gt;
-    /// over the type parameters in `self.params`.
-    </span><span class="kw">pub fn </span>type_params(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; TypeParams {
-        TypeParams(<span class="self">self</span>.params.iter())
+    <span class="macro">return_impl_trait!</span> {
+        <span class="doccomment">/// Iterator over the type parameters in `self.params`.
+        </span><span class="kw">pub fn </span>type_params(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span>TypeParam&gt; [TypeParams] {
+            TypeParams(<span class="self">self</span>.params.iter())
+        }
     }
 
-    <span class="doccomment">/// Returns an
-    /// &lt;code
-    ///   style="padding-right:0;"&gt;Iterator&amp;lt;Item = &amp;amp;mut &lt;/code&gt;&lt;a
-    ///   href="struct.TypeParam.html"&gt;&lt;code
-    ///   style="padding-left:0;padding-right:0;"&gt;TypeParam&lt;/code&gt;&lt;/a&gt;&lt;code
-    ///   style="padding-left:0;"&gt;&amp;gt;&lt;/code&gt;
-    /// over the type parameters in `self.params`.
-    </span><span class="kw">pub fn </span>type_params_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; TypeParamsMut {
-        TypeParamsMut(<span class="self">self</span>.params.iter_mut())
+    <span class="macro">return_impl_trait!</span> {
+        <span class="doccomment">/// Iterator over the type parameters in `self.params`.
+        </span><span class="kw">pub fn </span>type_params_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;mut </span>TypeParam&gt; [TypeParamsMut] {
+            TypeParamsMut(<span class="self">self</span>.params.iter_mut())
+        }
     }
 
-    <span class="doccomment">/// Returns an
-    /// &lt;code
-    ///   style="padding-right:0;"&gt;Iterator&amp;lt;Item = &amp;amp;&lt;/code&gt;&lt;a
-    ///   href="struct.ConstParam.html"&gt;&lt;code
-    ///   style="padding-left:0;padding-right:0;"&gt;ConstParam&lt;/code&gt;&lt;/a&gt;&lt;code
-    ///   style="padding-left:0;"&gt;&amp;gt;&lt;/code&gt;
-    /// over the constant parameters in `self.params`.
-    </span><span class="kw">pub fn </span>const_params(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ConstParams {
-        ConstParams(<span class="self">self</span>.params.iter())
+    <span class="macro">return_impl_trait!</span> {
+        <span class="doccomment">/// Iterator over the constant parameters in `self.params`.
+        </span><span class="kw">pub fn </span>const_params(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span>ConstParam&gt; [ConstParams] {
+            ConstParams(<span class="self">self</span>.params.iter())
+        }
     }
 
-    <span class="doccomment">/// Returns an
-    /// &lt;code
-    ///   style="padding-right:0;"&gt;Iterator&amp;lt;Item = &amp;amp;mut &lt;/code&gt;&lt;a
-    ///   href="struct.ConstParam.html"&gt;&lt;code
-    ///   style="padding-left:0;padding-right:0;"&gt;ConstParam&lt;/code&gt;&lt;/a&gt;&lt;code
-    ///   style="padding-left:0;"&gt;&amp;gt;&lt;/code&gt;
-    /// over the constant parameters in `self.params`.
-    </span><span class="kw">pub fn </span>const_params_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; ConstParamsMut {
-        ConstParamsMut(<span class="self">self</span>.params.iter_mut())
+    <span class="macro">return_impl_trait!</span> {
+        <span class="doccomment">/// Iterator over the constant parameters in `self.params`.
+        </span><span class="kw">pub fn </span>const_params_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;mut </span>ConstParam&gt; [ConstParamsMut] {
+            ConstParamsMut(<span class="self">self</span>.params.iter_mut())
+        }
     }
 
     <span class="doccomment">/// Initializes an empty `where`-clause if there is not one present already.
@@ -1461,6 +1435,34 @@
             where_token: &lt;<span class="macro">Token!</span>[<span class="kw">where</span>]&gt;::default(),
             predicates: Punctuated::new(),
         })
+    }
+
+    <span class="doccomment">/// Split a type's generics into the pieces required for impl'ing a trait
+    /// for that type.
+    ///
+    /// ```
+    /// # use proc_macro2::{Span, Ident};
+    /// # use quote::quote;
+    /// #
+    /// # let generics: syn::Generics = Default::default();
+    /// # let name = Ident::new("MyType", Span::call_site());
+    /// #
+    /// let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+    /// quote! {
+    ///     impl #impl_generics MyTrait for #name #ty_generics #where_clause {
+    ///         // ...
+    ///     }
+    /// }
+    /// # ;
+    /// ```
+    </span><span class="attr">#[cfg(feature = <span class="string">"printing"</span>)]
+    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"printing"</span>)))]
+    </span><span class="kw">pub fn </span>split_for_impl(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (ImplGenerics, TypeGenerics, <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>WhereClause&gt;) {
+        (
+            ImplGenerics(<span class="self">self</span>),
+            TypeGenerics(<span class="self">self</span>),
+            <span class="self">self</span>.where_clause.as_ref(),
+        )
     }
 }
 
@@ -1595,39 +1597,6 @@
     doc(cfg(all(any(feature = <span class="string">"full"</span>, feature = <span class="string">"derive"</span>), feature = <span class="string">"printing"</span>)))
 )]
 </span><span class="kw">pub struct </span>Turbofish&lt;<span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Generics);
-
-<span class="attr">#[cfg(feature = <span class="string">"printing"</span>)]
-</span><span class="kw">impl </span>Generics {
-    <span class="doccomment">/// Split a type's generics into the pieces required for impl'ing a trait
-    /// for that type.
-    ///
-    /// ```
-    /// # use proc_macro2::{Span, Ident};
-    /// # use quote::quote;
-    /// #
-    /// # let generics: syn::Generics = Default::default();
-    /// # let name = Ident::new("MyType", Span::call_site());
-    /// #
-    /// let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
-    /// quote! {
-    ///     impl #impl_generics MyTrait for #name #ty_generics #where_clause {
-    ///         // ...
-    ///     }
-    /// }
-    /// # ;
-    /// ```
-    </span><span class="attr">#[cfg_attr(
-        docsrs,
-        doc(cfg(all(any(feature = <span class="string">"full"</span>, feature = <span class="string">"derive"</span>), feature = <span class="string">"printing"</span>)))
-    )]
-    </span><span class="kw">pub fn </span>split_for_impl(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (ImplGenerics, TypeGenerics, <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>WhereClause&gt;) {
-        (
-            ImplGenerics(<span class="self">self</span>),
-            TypeGenerics(<span class="self">self</span>),
-            <span class="self">self</span>.where_clause.as_ref(),
-        )
-    }
-}
 
 <span class="attr">#[cfg(feature = <span class="string">"printing"</span>)]
 </span><span class="macro">macro_rules!</span> generics_wrapper_impls {
@@ -2057,6 +2026,33 @@
             }
 
             <span class="kw">let </span>begin = input.fork();
+
+            <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">"full"</span>) &amp;&amp; input.peek(<span class="macro">Token!</span>[<span class="kw">use</span>]) {
+                input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">use</span>]&gt;()<span class="question-mark">?</span>;
+                input.parse::&lt;<span class="macro">Token!</span>[&lt;]&gt;()<span class="question-mark">?</span>;
+                <span class="kw">loop </span>{
+                    <span class="kw">let </span>lookahead = input.lookahead1();
+                    <span class="kw">if </span>lookahead.peek(Lifetime) {
+                        input.parse::&lt;Lifetime&gt;()<span class="question-mark">?</span>;
+                    } <span class="kw">else if </span>lookahead.peek(Ident) {
+                        input.parse::&lt;Ident&gt;()<span class="question-mark">?</span>;
+                    } <span class="kw">else if </span>lookahead.peek(<span class="macro">Token!</span>[&gt;]) {
+                        <span class="kw">break</span>;
+                    } <span class="kw">else </span>{
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(lookahead.error());
+                    }
+                    <span class="kw">let </span>lookahead = input.lookahead1();
+                    <span class="kw">if </span>lookahead.peek(<span class="macro">Token!</span>[,]) {
+                        input.parse::&lt;<span class="macro">Token!</span>[,]&gt;()<span class="question-mark">?</span>;
+                    } <span class="kw">else if </span>lookahead.peek(<span class="macro">Token!</span>[&gt;]) {
+                        <span class="kw">break</span>;
+                    } <span class="kw">else </span>{
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(lookahead.error());
+                    }
+                }
+                input.parse::&lt;<span class="macro">Token!</span>[&gt;]&gt;()<span class="question-mark">?</span>;
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(TypeParamBound::Verbatim(verbatim::between(<span class="kw-2">&amp;</span>begin, input)));
+            }
 
             <span class="kw">let </span>content;
             <span class="kw">let </span>(paren_token, content) = <span class="kw">if </span>input.peek(token::Paren) {

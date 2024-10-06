@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.66/src/lit.rs`."><title>lit.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.79/src/lit.rs`."><title>lit.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1828,6 +1828,45 @@
 <a href="#1828" id="1828">1828</a>
 <a href="#1829" id="1829">1829</a>
 <a href="#1830" id="1830">1830</a>
+<a href="#1831" id="1831">1831</a>
+<a href="#1832" id="1832">1832</a>
+<a href="#1833" id="1833">1833</a>
+<a href="#1834" id="1834">1834</a>
+<a href="#1835" id="1835">1835</a>
+<a href="#1836" id="1836">1836</a>
+<a href="#1837" id="1837">1837</a>
+<a href="#1838" id="1838">1838</a>
+<a href="#1839" id="1839">1839</a>
+<a href="#1840" id="1840">1840</a>
+<a href="#1841" id="1841">1841</a>
+<a href="#1842" id="1842">1842</a>
+<a href="#1843" id="1843">1843</a>
+<a href="#1844" id="1844">1844</a>
+<a href="#1845" id="1845">1845</a>
+<a href="#1846" id="1846">1846</a>
+<a href="#1847" id="1847">1847</a>
+<a href="#1848" id="1848">1848</a>
+<a href="#1849" id="1849">1849</a>
+<a href="#1850" id="1850">1850</a>
+<a href="#1851" id="1851">1851</a>
+<a href="#1852" id="1852">1852</a>
+<a href="#1853" id="1853">1853</a>
+<a href="#1854" id="1854">1854</a>
+<a href="#1855" id="1855">1855</a>
+<a href="#1856" id="1856">1856</a>
+<a href="#1857" id="1857">1857</a>
+<a href="#1858" id="1858">1858</a>
+<a href="#1859" id="1859">1859</a>
+<a href="#1860" id="1860">1860</a>
+<a href="#1861" id="1861">1861</a>
+<a href="#1862" id="1862">1862</a>
+<a href="#1863" id="1863">1863</a>
+<a href="#1864" id="1864">1864</a>
+<a href="#1865" id="1865">1865</a>
+<a href="#1866" id="1866">1866</a>
+<a href="#1867" id="1867">1867</a>
+<a href="#1868" id="1868">1868</a>
+<a href="#1869" id="1869">1869</a>
 </pre></div><pre class="rust"><code><span class="attr">#[cfg(feature = <span class="string">"parsing"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::lookahead;
 <span class="attr">#[cfg(feature = <span class="string">"parsing"</span>)]
@@ -2686,8 +2725,11 @@
         value, Lit, LitBool, LitByte, LitByteStr, LitCStr, LitChar, LitFloat, LitFloatRepr, LitInt,
         LitIntRepr, LitStr,
     };
-    <span class="kw">use </span><span class="kw">crate</span>::parse::{Parse, ParseStream};
-    <span class="kw">use </span>proc_macro2::{Literal, Punct};
+    <span class="kw">use </span><span class="kw">crate</span>::parse::{Parse, ParseStream, Unexpected};
+    <span class="kw">use </span><span class="kw">crate</span>::token::{<span class="self">self</span>, Token};
+    <span class="kw">use </span>proc_macro2::{Literal, Punct, Span};
+    <span class="kw">use </span>std::cell::Cell;
+    <span class="kw">use </span>std::rc::Rc;
 
     <span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"parsing"</span>)))]
     </span><span class="kw">impl </span>Parse <span class="kw">for </span>Lit {
@@ -2847,6 +2889,42 @@
             }
         }
     }
+
+    <span class="kw">fn </span>peek_impl(cursor: Cursor, peek: <span class="kw">fn</span>(ParseStream) -&gt; bool) -&gt; bool {
+        <span class="kw">let </span>scope = Span::call_site();
+        <span class="kw">let </span>unexpected = Rc::new(Cell::new(Unexpected::None));
+        <span class="kw">let </span>buffer = <span class="kw">crate</span>::parse::new_parse_buffer(scope, cursor, unexpected);
+        peek(<span class="kw-2">&amp;</span>buffer)
+    }
+
+    <span class="macro">macro_rules!</span> impl_token {
+        (<span class="macro-nonterminal">$display</span>:literal <span class="macro-nonterminal">$name</span>:ty) =&gt; {
+            <span class="kw">impl </span>Token <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
+                <span class="kw">fn </span>peek(cursor: Cursor) -&gt; bool {
+                    <span class="kw">fn </span>peek(input: ParseStream) -&gt; bool {
+                        &lt;<span class="macro-nonterminal">$name </span><span class="kw">as </span>Parse&gt;::parse(input).is_ok()
+                    }
+                    peek_impl(cursor, peek)
+                }
+
+                <span class="kw">fn </span>display() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str {
+                    <span class="macro-nonterminal">$display
+                </span>}
+            }
+
+            <span class="kw">impl </span>token::private::Sealed <span class="kw">for </span><span class="macro-nonterminal">$name </span>{}
+        };
+    }
+
+    <span class="macro">impl_token!</span>(<span class="string">"literal" </span>Lit);
+    <span class="macro">impl_token!</span>(<span class="string">"string literal" </span>LitStr);
+    <span class="macro">impl_token!</span>(<span class="string">"byte string literal" </span>LitByteStr);
+    <span class="macro">impl_token!</span>(<span class="string">"C-string literal" </span>LitCStr);
+    <span class="macro">impl_token!</span>(<span class="string">"byte literal" </span>LitByte);
+    <span class="macro">impl_token!</span>(<span class="string">"character literal" </span>LitChar);
+    <span class="macro">impl_token!</span>(<span class="string">"integer literal" </span>LitInt);
+    <span class="macro">impl_token!</span>(<span class="string">"floating point literal" </span>LitFloat);
+    <span class="macro">impl_token!</span>(<span class="string">"boolean literal" </span>LitBool);
 }
 
 <span class="attr">#[cfg(feature = <span class="string">"printing"</span>)]

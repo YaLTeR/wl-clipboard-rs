@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/thiserror-impl-1.0.61/src/expand.rs`."><title>expand.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="thiserror_impl" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/thiserror-impl-1.0.64/src/expand.rs`."><title>expand.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="thiserror_impl" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -560,6 +560,14 @@
 <a href="#560" id="560">560</a>
 <a href="#561" id="561">561</a>
 <a href="#562" id="562">562</a>
+<a href="#563" id="563">563</a>
+<a href="#564" id="564">564</a>
+<a href="#565" id="565">565</a>
+<a href="#566" id="566">566</a>
+<a href="#567" id="567">567</a>
+<a href="#568" id="568">568</a>
+<a href="#569" id="569">569</a>
+<a href="#570" id="570">570</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::ast::{Enum, Field, Input, Struct};
 <span class="kw">use </span><span class="kw">crate</span>::attr::Trait;
 <span class="kw">use </span><span class="kw">crate</span>::generics::InferredBounds;
@@ -598,6 +606,7 @@
         #error
 
         <span class="attr">#[allow(unused_qualifications)]
+        #[automatically_derived]
         </span><span class="kw">impl </span>#impl_generics std::error::Error <span class="kw">for </span>#ty #ty_generics #where_clause
         <span class="kw">where
             </span><span class="comment">// Work around trivial bounds being unstable.
@@ -606,6 +615,7 @@
         {}
 
         <span class="attr">#[allow(unused_qualifications)]
+        #[automatically_derived]
         </span><span class="kw">impl </span>#impl_generics ::core::fmt::Display <span class="kw">for </span>#ty #ty_generics #where_clause {
             <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, __formatter: <span class="kw-2">&amp;mut </span>::core::fmt::Formatter) -&gt; ::core::fmt::Result {
                 <span class="macro">::core::unreachable!</span>()
@@ -740,6 +750,7 @@
         <span class="kw">let </span>display_where_clause = display_inferred_bounds.augment_where_clause(input.generics);
         <span class="macro">quote!</span> {
             <span class="attr">#[allow(unused_qualifications)]
+            #[automatically_derived]
             </span><span class="kw">impl </span>#impl_generics ::core::fmt::Display <span class="kw">for </span>#ty #ty_generics #display_where_clause {
                 <span class="attr">#[allow(clippy::used_underscore_binding)]
                 </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, __formatter: <span class="kw-2">&amp;mut </span>::core::fmt::Formatter) -&gt; ::core::fmt::Result {
@@ -755,6 +766,7 @@
         <span class="kw">let </span>body = from_initializer(from_field, backtrace_field);
         <span class="macro">quote!</span> {
             <span class="attr">#[allow(unused_qualifications)]
+            #[automatically_derived]
             </span><span class="kw">impl </span>#impl_generics ::core::convert::From&lt;#from&gt; <span class="kw">for </span>#ty #ty_generics #where_clause {
                 <span class="attr">#[allow(deprecated)]
                 </span><span class="kw">fn </span>from(source: #from) -&gt; <span class="self">Self </span>{
@@ -773,6 +785,7 @@
 
     <span class="macro">quote!</span> {
         <span class="attr">#[allow(unused_qualifications)]
+        #[automatically_derived]
         </span><span class="kw">impl </span>#impl_generics std::error::Error <span class="kw">for </span>#ty #ty_generics #error_where_clause {
             #source_method
             #provide_method
@@ -989,6 +1002,7 @@
         <span class="kw">let </span>display_where_clause = display_inferred_bounds.augment_where_clause(input.generics);
         <span class="prelude-val">Some</span>(<span class="macro">quote!</span> {
             <span class="attr">#[allow(unused_qualifications)]
+            #[automatically_derived]
             </span><span class="kw">impl </span>#impl_generics ::core::fmt::Display <span class="kw">for </span>#ty #ty_generics #display_where_clause {
                 <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, __formatter: <span class="kw-2">&amp;mut </span>::core::fmt::Formatter) -&gt; ::core::fmt::Result {
                     #use_as_display
@@ -1011,6 +1025,7 @@
         <span class="kw">let </span>body = from_initializer(from_field, backtrace_field);
         <span class="prelude-val">Some</span>(<span class="macro">quote!</span> {
             <span class="attr">#[allow(unused_qualifications)]
+            #[automatically_derived]
             </span><span class="kw">impl </span>#impl_generics ::core::convert::From&lt;#from&gt; <span class="kw">for </span>#ty #ty_generics #where_clause {
                 <span class="attr">#[allow(deprecated)]
                 </span><span class="kw">fn </span>from(source: #from) -&gt; <span class="self">Self </span>{
@@ -1029,6 +1044,7 @@
 
     <span class="macro">quote!</span> {
         <span class="attr">#[allow(unused_qualifications)]
+        #[automatically_derived]
         </span><span class="kw">impl </span>#impl_generics std::error::Error <span class="kw">for </span>#ty #ty_generics #error_where_clause {
             #source_method
             #provide_method

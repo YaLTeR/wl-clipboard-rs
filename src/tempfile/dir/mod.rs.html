@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tempfile-3.10.1/src/dir/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="tempfile" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="icon" href="https://www.rust-lang.org/favicon.ico"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tempfile-3.13.0/src/dir/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="tempfile" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="icon" href="https://www.rust-lang.org/favicon.ico"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -476,6 +476,23 @@
 <a href="#476" id="476">476</a>
 <a href="#477" id="477">477</a>
 <a href="#478" id="478">478</a>
+<a href="#479" id="479">479</a>
+<a href="#480" id="480">480</a>
+<a href="#481" id="481">481</a>
+<a href="#482" id="482">482</a>
+<a href="#483" id="483">483</a>
+<a href="#484" id="484">484</a>
+<a href="#485" id="485">485</a>
+<a href="#486" id="486">486</a>
+<a href="#487" id="487">487</a>
+<a href="#488" id="488">488</a>
+<a href="#489" id="489">489</a>
+<a href="#490" id="490">490</a>
+<a href="#491" id="491">491</a>
+<a href="#492" id="492">492</a>
+<a href="#493" id="493">493</a>
+<a href="#494" id="494">494</a>
+<a href="#495" id="495">495</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT
 // file at the top-level directory of this distribution and at
 // http://rust-lang.org/COPYRIGHT.
@@ -494,6 +511,9 @@
 
 <span class="kw">use </span><span class="kw">crate</span>::error::IoResultExt;
 <span class="kw">use </span><span class="kw">crate</span>::Builder;
+
+<span class="attr">#[cfg(doc)]
+</span><span class="kw">use </span><span class="kw">crate</span>::env;
 
 <span class="doccomment">/// Create a new temporary directory.
 ///
@@ -515,15 +535,9 @@
 /// ```
 /// use tempfile::tempdir;
 /// use std::fs::File;
-/// use std::io::{self, Write};
+/// use std::io::Write;
 ///
-/// # fn main() {
-/// #     if let Err(_) = run() {
-/// #         ::std::process::exit(1);
-/// #     }
-/// # }
-/// # fn run() -&gt; Result&lt;(), io::Error&gt; {
-/// // Create a directory inside of `std::env::temp_dir()`
+/// // Create a directory inside of `env::temp_dir()`
 /// let tmp_dir = tempdir()?;
 ///
 /// let file_path = tmp_dir.path().join("my-temporary-note.txt");
@@ -534,8 +548,7 @@
 /// // `tmp_file` will be deleted here.
 /// drop(tmp_file);
 /// tmp_dir.close()?;
-/// # Ok(())
-/// # }
+/// # Ok::&lt;(), std::io::Error&gt;(())
 /// ```
 ///
 /// [`TempDir`]: struct.TempDir.html
@@ -564,14 +577,8 @@
 /// ```
 /// use tempfile::tempdir_in;
 /// use std::fs::File;
-/// use std::io::{self, Write};
+/// use std::io::Write;
 ///
-/// # fn main() {
-/// #     if let Err(_) = run() {
-/// #         ::std::process::exit(1);
-/// #     }
-/// # }
-/// # fn run() -&gt; Result&lt;(), io::Error&gt; {
 /// // Create a directory inside of the current directory.
 /// let tmp_dir = tempdir_in(".")?;
 ///
@@ -583,8 +590,7 @@
 /// // `tmp_file` will be deleted here.
 /// drop(tmp_file);
 /// tmp_dir.close()?;
-/// # Ok(())
-/// # }
+/// # Ok::&lt;(), std::io::Error&gt;(())
 /// ```
 ///
 /// [`TempDir`]: struct.TempDir.html
@@ -601,7 +607,7 @@
 /// `TempDir` creates a new directory with a randomly generated name.
 ///
 /// The default constructor, [`TempDir::new()`], creates directories in
-/// the location returned by [`std::env::temp_dir()`], but `TempDir`
+/// the location returned by [`env::temp_dir()`], but `TempDir`
 /// can be configured to manage a temporary directory in any location
 /// by constructing with a [`Builder`].
 ///
@@ -636,12 +642,9 @@
 /// use std::io::Write;
 /// use tempfile::TempDir;
 ///
-/// # use std::io;
-/// # fn run() -&gt; Result&lt;(), io::Error&gt; {
-/// // Create a directory inside of `std::env::temp_dir()`
+/// // Create a directory inside of `env::temp_dir()`
 /// let tmp_dir = TempDir::new()?;
-/// # Ok(())
-/// # }
+/// # Ok::&lt;(), std::io::Error&gt;(())
 /// ```
 ///
 /// Create a temporary directory with a prefix in its name:
@@ -651,13 +654,10 @@
 /// use std::io::Write;
 /// use tempfile::Builder;
 ///
-/// # use std::io;
-/// # fn run() -&gt; Result&lt;(), io::Error&gt; {
-/// // Create a directory inside of `std::env::temp_dir()`,
+/// // Create a directory inside of `env::temp_dir()`,
 /// // whose name will begin with 'example'.
 /// let tmp_dir = Builder::new().prefix("example").tempdir()?;
-/// # Ok(())
-/// # }
+/// # Ok::&lt;(), std::io::Error&gt;(())
 /// ```
 ///
 /// [`File`]: http://doc.rust-lang.org/std/fs/struct.File.html
@@ -668,11 +668,11 @@
 /// [`TempDir::new()`]: struct.TempDir.html#method.new
 /// [`TempDir::path()`]: struct.TempDir.html#method.path
 /// [`TempDir`]: struct.TempDir.html
-/// [`std::env::temp_dir()`]: https://doc.rust-lang.org/std/env/fn.temp_dir.html
 /// [`std::fs`]: http://doc.rust-lang.org/std/fs/index.html
 /// [`std::process::exit()`]: http://doc.rust-lang.org/std/process/fn.exit.html
 </span><span class="kw">pub struct </span>TempDir {
     path: Box&lt;Path&gt;,
+    keep: bool,
 }
 
 <span class="kw">impl </span>TempDir {
@@ -694,9 +694,7 @@
     /// use std::io::Write;
     /// use tempfile::TempDir;
     ///
-    /// # use std::io;
-    /// # fn run() -&gt; Result&lt;(), io::Error&gt; {
-    /// // Create a directory inside of `std::env::temp_dir()`
+    /// // Create a directory inside of `env::temp_dir()`
     /// let tmp_dir = TempDir::new()?;
     ///
     /// let file_path = tmp_dir.path().join("my-temporary-note.txt");
@@ -705,8 +703,7 @@
     ///
     /// // `tmp_dir` goes out of scope, the directory as well as
     /// // `tmp_file` will be deleted here.
-    /// # Ok(())
-    /// # }
+    /// # Ok::&lt;(), std::io::Error&gt;(())
     /// ```
     ///
     /// [`Builder`]: struct.Builder.html
@@ -729,15 +726,12 @@
     /// use std::io::Write;
     /// use tempfile::TempDir;
     ///
-    /// # use std::io;
-    /// # fn run() -&gt; Result&lt;(), io::Error&gt; {
     /// // Create a directory inside of the current directory
     /// let tmp_dir = TempDir::new_in(".")?;
     /// let file_path = tmp_dir.path().join("my-temporary-note.txt");
     /// let mut tmp_file = File::create(file_path)?;
     /// writeln!(tmp_file, "Brian was here. Briefly.")?;
-    /// # Ok(())
-    /// # }
+    /// # Ok::&lt;(), std::io::Error&gt;(())
     /// ```
     </span><span class="kw">pub fn </span>new_in&lt;P: AsRef&lt;Path&gt;&gt;(dir: P) -&gt; io::Result&lt;TempDir&gt; {
         Builder::new().tempdir_in(dir)
@@ -758,17 +752,66 @@
     /// use std::io::Write;
     /// use tempfile::TempDir;
     ///
-    /// # use std::io;
-    /// # fn run() -&gt; Result&lt;(), io::Error&gt; {
     /// // Create a directory inside of the current directory
     /// let tmp_dir = TempDir::with_prefix("foo-")?;
     /// let tmp_name = tmp_dir.path().file_name().unwrap().to_str().unwrap();
     /// assert!(tmp_name.starts_with("foo-"));
-    /// # Ok(())
-    /// # }
+    /// # Ok::&lt;(), std::io::Error&gt;(())
     /// ```
     </span><span class="kw">pub fn </span>with_prefix&lt;S: AsRef&lt;OsStr&gt;&gt;(prefix: S) -&gt; io::Result&lt;TempDir&gt; {
         Builder::new().prefix(<span class="kw-2">&amp;</span>prefix).tempdir()
+    }
+
+    <span class="doccomment">/// Attempts to make a temporary directory with the specified suffix inside of
+    /// `env::temp_dir()`. The directory and everything inside it will be automatically
+    /// deleted once the returned `TempDir` is destroyed.
+    ///
+    /// # Errors
+    ///
+    /// If the directory can not be created, `Err` is returned.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::fs::{self, File};
+    /// use std::io::Write;
+    /// use tempfile::TempDir;
+    ///
+    /// // Create a directory inside of the current directory
+    /// let tmp_dir = TempDir::with_suffix("-foo")?;
+    /// let tmp_name = tmp_dir.path().file_name().unwrap().to_str().unwrap();
+    /// assert!(tmp_name.ends_with("-foo"));
+    /// # Ok::&lt;(), std::io::Error&gt;(())
+    /// ```
+    </span><span class="kw">pub fn </span>with_suffix&lt;S: AsRef&lt;OsStr&gt;&gt;(suffix: S) -&gt; io::Result&lt;TempDir&gt; {
+        Builder::new().suffix(<span class="kw-2">&amp;</span>suffix).tempdir()
+    }
+    <span class="doccomment">/// Attempts to make a temporary directory with the specified prefix inside
+    /// the specified directory. The directory and everything inside it will be
+    /// automatically deleted once the returned `TempDir` is destroyed.
+    ///
+    /// # Errors
+    ///
+    /// If the directory can not be created, `Err` is returned.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::fs::{self, File};
+    /// use std::io::Write;
+    /// use tempfile::TempDir;
+    ///
+    /// // Create a directory inside of the current directory
+    /// let tmp_dir = TempDir::with_suffix_in("-foo", ".")?;
+    /// let tmp_name = tmp_dir.path().file_name().unwrap().to_str().unwrap();
+    /// assert!(tmp_name.ends_with("-foo"));
+    /// # Ok::&lt;(), std::io::Error&gt;(())
+    /// ```
+    </span><span class="kw">pub fn </span>with_suffix_in&lt;S: AsRef&lt;OsStr&gt;, P: AsRef&lt;Path&gt;&gt;(
+        suffix: S,
+        dir: P,
+    ) -&gt; io::Result&lt;TempDir&gt; {
+        Builder::new().suffix(<span class="kw-2">&amp;</span>suffix).tempdir_in(dir)
     }
 
     <span class="doccomment">/// Attempts to make a temporary directory with the specified prefix inside
@@ -786,14 +829,11 @@
     /// use std::io::Write;
     /// use tempfile::TempDir;
     ///
-    /// # use std::io;
-    /// # fn run() -&gt; Result&lt;(), io::Error&gt; {
     /// // Create a directory inside of the current directory
     /// let tmp_dir = TempDir::with_prefix_in("foo-", ".")?;
     /// let tmp_name = tmp_dir.path().file_name().unwrap().to_str().unwrap();
     /// assert!(tmp_name.starts_with("foo-"));
-    /// # Ok(())
-    /// # }
+    /// # Ok::&lt;(), std::io::Error&gt;(())
     /// ```
     </span><span class="kw">pub fn </span>with_prefix_in&lt;S: AsRef&lt;OsStr&gt;, P: AsRef&lt;Path&gt;&gt;(
         prefix: S,
@@ -811,8 +851,6 @@
     /// ```
     /// use tempfile::TempDir;
     ///
-    /// # use std::io;
-    /// # fn run() -&gt; Result&lt;(), io::Error&gt; {
     /// let tmp_path;
     ///
     /// {
@@ -827,8 +865,7 @@
     ///
     /// // Temp directory should be deleted by now
     /// assert_eq!(tmp_path.exists(), false);
-    /// # Ok(())
-    /// # }
+    /// # Ok::&lt;(), std::io::Error&gt;(())
     /// ```
     </span><span class="attr">#[must_use]
     </span><span class="kw">pub fn </span>path(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>path::Path {
@@ -849,8 +886,6 @@
     /// use std::fs;
     /// use tempfile::TempDir;
     ///
-    /// # use std::io;
-    /// # fn run() -&gt; Result&lt;(), io::Error&gt; {
     /// let tmp_dir = TempDir::new()?;
     ///
     /// // Persist the temporary directory to disk,
@@ -859,8 +894,7 @@
     ///
     /// // Delete the temporary directory ourselves.
     /// fs::remove_dir_all(tmp_path)?;
-    /// # Ok(())
-    /// # }
+    /// # Ok::&lt;(), std::io::Error&gt;(())
     /// ```
     </span><span class="attr">#[must_use]
     </span><span class="kw">pub fn </span>into_path(<span class="self">self</span>) -&gt; PathBuf {
@@ -894,9 +928,7 @@
     /// use std::io::Write;
     /// use tempfile::TempDir;
     ///
-    /// # use std::io;
-    /// # fn run() -&gt; Result&lt;(), io::Error&gt; {
-    /// // Create a directory inside of `std::env::temp_dir()`.
+    /// // Create a directory inside of `env::temp_dir()`.
     /// let tmp_dir = TempDir::new()?;
     /// let file_path = tmp_dir.path().join("my-temporary-note.txt");
     /// let mut tmp_file = File::create(file_path)?;
@@ -909,8 +941,7 @@
     /// // succeeded.
     /// drop(tmp_file);
     /// tmp_dir.close()?;
-    /// # Ok(())
-    /// # }
+    /// # Ok::&lt;(), std::io::Error&gt;(())
     /// ```
     </span><span class="kw">pub fn </span>close(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; io::Result&lt;()&gt; {
         <span class="kw">let </span>result = remove_dir_all(<span class="self">self</span>.path()).with_err_path(|| <span class="self">self</span>.path());
@@ -942,15 +973,18 @@
 
 <span class="kw">impl </span>Drop <span class="kw">for </span>TempDir {
     <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="kw">let _ </span>= remove_dir_all(<span class="self">self</span>.path());
+        <span class="kw">if </span>!<span class="self">self</span>.keep {
+            <span class="kw">let _ </span>= remove_dir_all(<span class="self">self</span>.path());
+        }
     }
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create(
     path: PathBuf,
     permissions: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>std::fs::Permissions&gt;,
+    keep: bool,
 ) -&gt; io::Result&lt;TempDir&gt; {
-    imp::create(path, permissions)
+    imp::create(path, permissions, keep)
 }
 
 <span class="kw">mod </span>imp;

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.34/src/net/send_recv/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.37/src/net/send_recv/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -401,6 +401,33 @@
 <a href="#401" id="401">401</a>
 <a href="#402" id="402">402</a>
 <a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! `recv`, `send`, and variants.
 
 </span><span class="attr">#![allow(unsafe_code)]
@@ -413,6 +440,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::net::{SocketAddr, SocketAddrAny, SocketAddrV4, SocketAddrV6};
 <span class="kw">use crate</span>::{backend, io};
 <span class="kw">use </span>backend::fd::{AsFd, BorrowedFd};
+<span class="kw">use </span>core::cmp::min;
 <span class="kw">use </span>core::mem::MaybeUninit;
 
 <span class="kw">pub use </span>backend::net::send_recv::{RecvFlags, SendFlags};
@@ -437,6 +465,9 @@
 
 <span class="doccomment">/// `recv(fd, buf, flags)`—Reads data from a socket.
 ///
+/// This takes a `&amp;mut [u8]` which Rust requires to contain initialized memory.
+/// To use an uninitialized buffer, use [`recv_uninit`].
+///
 /// # References
 ///  - [Beej's Guide to Network Programming]
 ///  - [POSIX]
@@ -451,7 +482,7 @@
 ///  - [glibc]
 ///
 /// [Beej's Guide to Network Programming]: https://beej.us/guide/bgnet/html/split/system-calls-or-bust.html#sendrecv
-/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/recv.html
+/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/recv.html
 /// [Linux]: https://man7.org/linux/man-pages/man2/recv.2.html
 /// [Apple]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/recv.2.html
 /// [Winsock]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-recv
@@ -471,6 +502,11 @@
 /// This is equivalent to [`recv`], except that it can read into uninitialized
 /// memory. It returns the slice that was initialized by this function and the
 /// slice that remains uninitialized.
+///
+/// Because this interface returns the length via the returned slice, it's
+/// unsable to return the untruncated length that would be returned when the
+/// `RecvFlags::TRUNC` flag is used. If you need the untruncated length, use
+/// [`recv`].
 </span><span class="attr">#[inline]
 </span><span class="kw">pub fn </span>recv_uninit&lt;Fd: AsFd&gt;(
     fd: Fd,
@@ -478,10 +514,12 @@
     flags: RecvFlags,
 ) -&gt; io::Result&lt;(<span class="kw-2">&amp;mut </span>[u8], <span class="kw-2">&amp;mut </span>[MaybeUninit&lt;u8&gt;])&gt; {
     <span class="kw">let </span>length = <span class="kw">unsafe </span>{
-        backend::net::syscalls::recv(fd.as_fd(), buf.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>u8, buf.len(), flags)
-    };
+        backend::net::syscalls::recv(fd.as_fd(), buf.as_mut_ptr().cast::&lt;u8&gt;(), buf.len(), flags)<span class="question-mark">?
+    </span>};
 
-    <span class="prelude-val">Ok</span>(<span class="kw">unsafe </span>{ split_init(buf, length<span class="question-mark">?</span>) })
+    <span class="comment">// If the `TRUNC` flag is set, the returned `length` may be longer than the
+    // buffer length.
+    </span><span class="prelude-val">Ok</span>(<span class="kw">unsafe </span>{ split_init(buf, min(length, buf.len())) })
 }
 
 <span class="doccomment">/// `send(fd, buf, flags)`—Writes data to a socket.
@@ -500,7 +538,7 @@
 ///  - [glibc]
 ///
 /// [Beej's Guide to Network Programming]: https://beej.us/guide/bgnet/html/split/system-calls-or-bust.html#sendrecv
-/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/send.html
+/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/send.html
 /// [Linux]: https://man7.org/linux/man-pages/man2/send.2.html
 /// [Apple]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/send.2.html
 /// [Winsock]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send
@@ -518,6 +556,9 @@
 <span class="doccomment">/// `recvfrom(fd, buf, flags, addr, len)`—Reads data from a socket and
 /// returns the sender address.
 ///
+/// This takes a `&amp;mut [u8]` which Rust requires to contain initialized memory.
+/// To use an uninitialized buffer, use [`recvfrom_uninit`].
+///
 /// # References
 ///  - [Beej's Guide to Network Programming]
 ///  - [POSIX]
@@ -532,7 +573,7 @@
 ///  - [glibc]
 ///
 /// [Beej's Guide to Network Programming]: https://beej.us/guide/bgnet/html/split/system-calls-or-bust.html#sendtorecv
-/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html
+/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/recvfrom.html
 /// [Linux]: https://man7.org/linux/man-pages/man2/recvfrom.2.html
 /// [Apple]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/recvfrom.2.html
 /// [Winsock]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-recvfrom
@@ -557,6 +598,11 @@
 /// This is equivalent to [`recvfrom`], except that it can read into
 /// uninitialized memory. It returns the slice that was initialized by this
 /// function and the slice that remains uninitialized.
+///
+/// Because this interface returns the length via the returned slice, it's
+/// unsable to return the untruncated length that would be returned when the
+/// `RecvFlags::TRUNC` flag is used. If you need the untruncated length, use
+/// [`recvfrom`].
 </span><span class="attr">#[allow(clippy::type_complexity)]
 #[inline]
 </span><span class="kw">pub fn </span>recvfrom_uninit&lt;Fd: AsFd&gt;(
@@ -565,9 +611,17 @@
     flags: RecvFlags,
 ) -&gt; io::Result&lt;(<span class="kw-2">&amp;mut </span>[u8], <span class="kw-2">&amp;mut </span>[MaybeUninit&lt;u8&gt;], <span class="prelude-ty">Option</span>&lt;SocketAddrAny&gt;)&gt; {
     <span class="kw">let </span>(length, addr) = <span class="kw">unsafe </span>{
-        backend::net::syscalls::recvfrom(fd.as_fd(), buf.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>u8, buf.len(), flags)<span class="question-mark">?
+        backend::net::syscalls::recvfrom(
+            fd.as_fd(),
+            buf.as_mut_ptr().cast::&lt;u8&gt;(),
+            buf.len(),
+            flags,
+        )<span class="question-mark">?
     </span>};
-    <span class="kw">let </span>(init, uninit) = <span class="kw">unsafe </span>{ split_init(buf, length) };
+
+    <span class="comment">// If the `TRUNC` flag is set, the returned `length` may be longer than the
+    // buffer length.
+    </span><span class="kw">let </span>(init, uninit) = <span class="kw">unsafe </span>{ split_init(buf, min(length, buf.len())) };
     <span class="prelude-val">Ok</span>((init, uninit, addr))
 }
 
@@ -588,7 +642,7 @@
 ///  - [glibc]
 ///
 /// [Beej's Guide to Network Programming]: https://beej.us/guide/bgnet/html/split/system-calls-or-bust.html#sendtorecv
-/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html
+/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/sendto.html
 /// [Linux]: https://man7.org/linux/man-pages/man2/sendto.2.html
 /// [Apple]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/sendto.2.html
 /// [Winsock]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto
@@ -636,7 +690,7 @@
 ///  - [glibc]
 ///
 /// [Beej's Guide to Network Programming]: https://beej.us/guide/bgnet/html/split/system-calls-or-bust.html#sendtorecv
-/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html
+/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/sendto.html
 /// [Linux]: https://man7.org/linux/man-pages/man2/sendto.2.html
 /// [Apple]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/sendto.2.html
 /// [Winsock]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto
@@ -688,7 +742,7 @@
 ///  - [glibc]
 ///
 /// [Beej's Guide to Network Programming]: https://beej.us/guide/bgnet/html/split/system-calls-or-bust.html#sendtorecv
-/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html
+/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/sendto.html
 /// [Linux]: https://man7.org/linux/man-pages/man2/sendto.2.html
 /// [Apple]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/sendto.2.html
 /// [Winsock]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto
@@ -726,7 +780,7 @@
 ///  - [glibc]
 ///
 /// [Beej's Guide to Network Programming]: https://beej.us/guide/bgnet/html/split/system-calls-or-bust.html#sendtorecv
-/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html
+/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/sendto.html
 /// [Linux]: https://man7.org/linux/man-pages/man2/sendto.2.html
 /// [Apple]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/sendto.2.html
 /// [Winsock]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto
@@ -764,7 +818,7 @@
 ///  - [glibc]
 ///
 /// [Beej's Guide to Network Programming]: https://beej.us/guide/bgnet/html/split/system-calls-or-bust.html#sendtorecv
-/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html
+/// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/sendto.html
 /// [Linux]: https://man7.org/linux/man-pages/man2/sendto.2.html
 /// [Apple]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/sendto.2.html
 /// [Winsock]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto

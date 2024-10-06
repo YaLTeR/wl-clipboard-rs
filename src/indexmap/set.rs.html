@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.2.6/src/set.rs`."><title>set.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="indexmap" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.6.0/src/set.rs`."><title>set.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="indexmap" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1167,6 +1167,127 @@
 <a href="#1167" id="1167">1167</a>
 <a href="#1168" id="1168">1168</a>
 <a href="#1169" id="1169">1169</a>
+<a href="#1170" id="1170">1170</a>
+<a href="#1171" id="1171">1171</a>
+<a href="#1172" id="1172">1172</a>
+<a href="#1173" id="1173">1173</a>
+<a href="#1174" id="1174">1174</a>
+<a href="#1175" id="1175">1175</a>
+<a href="#1176" id="1176">1176</a>
+<a href="#1177" id="1177">1177</a>
+<a href="#1178" id="1178">1178</a>
+<a href="#1179" id="1179">1179</a>
+<a href="#1180" id="1180">1180</a>
+<a href="#1181" id="1181">1181</a>
+<a href="#1182" id="1182">1182</a>
+<a href="#1183" id="1183">1183</a>
+<a href="#1184" id="1184">1184</a>
+<a href="#1185" id="1185">1185</a>
+<a href="#1186" id="1186">1186</a>
+<a href="#1187" id="1187">1187</a>
+<a href="#1188" id="1188">1188</a>
+<a href="#1189" id="1189">1189</a>
+<a href="#1190" id="1190">1190</a>
+<a href="#1191" id="1191">1191</a>
+<a href="#1192" id="1192">1192</a>
+<a href="#1193" id="1193">1193</a>
+<a href="#1194" id="1194">1194</a>
+<a href="#1195" id="1195">1195</a>
+<a href="#1196" id="1196">1196</a>
+<a href="#1197" id="1197">1197</a>
+<a href="#1198" id="1198">1198</a>
+<a href="#1199" id="1199">1199</a>
+<a href="#1200" id="1200">1200</a>
+<a href="#1201" id="1201">1201</a>
+<a href="#1202" id="1202">1202</a>
+<a href="#1203" id="1203">1203</a>
+<a href="#1204" id="1204">1204</a>
+<a href="#1205" id="1205">1205</a>
+<a href="#1206" id="1206">1206</a>
+<a href="#1207" id="1207">1207</a>
+<a href="#1208" id="1208">1208</a>
+<a href="#1209" id="1209">1209</a>
+<a href="#1210" id="1210">1210</a>
+<a href="#1211" id="1211">1211</a>
+<a href="#1212" id="1212">1212</a>
+<a href="#1213" id="1213">1213</a>
+<a href="#1214" id="1214">1214</a>
+<a href="#1215" id="1215">1215</a>
+<a href="#1216" id="1216">1216</a>
+<a href="#1217" id="1217">1217</a>
+<a href="#1218" id="1218">1218</a>
+<a href="#1219" id="1219">1219</a>
+<a href="#1220" id="1220">1220</a>
+<a href="#1221" id="1221">1221</a>
+<a href="#1222" id="1222">1222</a>
+<a href="#1223" id="1223">1223</a>
+<a href="#1224" id="1224">1224</a>
+<a href="#1225" id="1225">1225</a>
+<a href="#1226" id="1226">1226</a>
+<a href="#1227" id="1227">1227</a>
+<a href="#1228" id="1228">1228</a>
+<a href="#1229" id="1229">1229</a>
+<a href="#1230" id="1230">1230</a>
+<a href="#1231" id="1231">1231</a>
+<a href="#1232" id="1232">1232</a>
+<a href="#1233" id="1233">1233</a>
+<a href="#1234" id="1234">1234</a>
+<a href="#1235" id="1235">1235</a>
+<a href="#1236" id="1236">1236</a>
+<a href="#1237" id="1237">1237</a>
+<a href="#1238" id="1238">1238</a>
+<a href="#1239" id="1239">1239</a>
+<a href="#1240" id="1240">1240</a>
+<a href="#1241" id="1241">1241</a>
+<a href="#1242" id="1242">1242</a>
+<a href="#1243" id="1243">1243</a>
+<a href="#1244" id="1244">1244</a>
+<a href="#1245" id="1245">1245</a>
+<a href="#1246" id="1246">1246</a>
+<a href="#1247" id="1247">1247</a>
+<a href="#1248" id="1248">1248</a>
+<a href="#1249" id="1249">1249</a>
+<a href="#1250" id="1250">1250</a>
+<a href="#1251" id="1251">1251</a>
+<a href="#1252" id="1252">1252</a>
+<a href="#1253" id="1253">1253</a>
+<a href="#1254" id="1254">1254</a>
+<a href="#1255" id="1255">1255</a>
+<a href="#1256" id="1256">1256</a>
+<a href="#1257" id="1257">1257</a>
+<a href="#1258" id="1258">1258</a>
+<a href="#1259" id="1259">1259</a>
+<a href="#1260" id="1260">1260</a>
+<a href="#1261" id="1261">1261</a>
+<a href="#1262" id="1262">1262</a>
+<a href="#1263" id="1263">1263</a>
+<a href="#1264" id="1264">1264</a>
+<a href="#1265" id="1265">1265</a>
+<a href="#1266" id="1266">1266</a>
+<a href="#1267" id="1267">1267</a>
+<a href="#1268" id="1268">1268</a>
+<a href="#1269" id="1269">1269</a>
+<a href="#1270" id="1270">1270</a>
+<a href="#1271" id="1271">1271</a>
+<a href="#1272" id="1272">1272</a>
+<a href="#1273" id="1273">1273</a>
+<a href="#1274" id="1274">1274</a>
+<a href="#1275" id="1275">1275</a>
+<a href="#1276" id="1276">1276</a>
+<a href="#1277" id="1277">1277</a>
+<a href="#1278" id="1278">1278</a>
+<a href="#1279" id="1279">1279</a>
+<a href="#1280" id="1280">1280</a>
+<a href="#1281" id="1281">1281</a>
+<a href="#1282" id="1282">1282</a>
+<a href="#1283" id="1283">1283</a>
+<a href="#1284" id="1284">1284</a>
+<a href="#1285" id="1285">1285</a>
+<a href="#1286" id="1286">1286</a>
+<a href="#1287" id="1287">1287</a>
+<a href="#1288" id="1288">1288</a>
+<a href="#1289" id="1289">1289</a>
+<a href="#1290" id="1290">1290</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! A hash set implemented using [`IndexMap`]
 
 </span><span class="kw">mod </span>iter;
@@ -1530,7 +1651,7 @@
     ///
     /// This is equivalent to finding the position with
     /// [`binary_search`][Self::binary_search], and if needed calling
-    /// [`shift_insert`][Self::shift_insert] for a new value.
+    /// [`insert_before`][Self::insert_before] for a new value.
     ///
     /// If the sorted item is found in the set, it returns the index of that
     /// existing item and `false`, without any change. Otherwise, it inserts the
@@ -1552,16 +1673,106 @@
         (index, existing.is_none())
     }
 
-    <span class="doccomment">/// Insert the value into the set at the given index.
+    <span class="doccomment">/// Insert the value into the set before the value at the given index, or at the end.
     ///
-    /// If an equivalent item already exists in the set, it returns
-    /// `false` leaving the original value in the set, but moving it to
-    /// the new position in the set. Otherwise, it inserts the new
-    /// item at the given index and returns `true`.
+    /// If an equivalent item already exists in the set, it returns `false` leaving the
+    /// original value in the set, but moved to the new position. The returned index
+    /// will either be the given index or one less, depending on how the value moved.
+    /// (See [`shift_insert`](Self::shift_insert) for different behavior here.)
+    ///
+    /// Otherwise, it inserts the new value exactly at the given index and returns `true`.
     ///
     /// ***Panics*** if `index` is out of bounds.
+    /// Valid indices are `0..=set.len()` (inclusive).
     ///
     /// Computes in **O(n)** time (average).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use indexmap::IndexSet;
+    /// let mut set: IndexSet&lt;char&gt; = ('a'..='z').collect();
+    ///
+    /// // The new value '*' goes exactly at the given index.
+    /// assert_eq!(set.get_index_of(&amp;'*'), None);
+    /// assert_eq!(set.insert_before(10, '*'), (10, true));
+    /// assert_eq!(set.get_index_of(&amp;'*'), Some(10));
+    ///
+    /// // Moving the value 'a' up will shift others down, so this moves *before* 10 to index 9.
+    /// assert_eq!(set.insert_before(10, 'a'), (9, false));
+    /// assert_eq!(set.get_index_of(&amp;'a'), Some(9));
+    /// assert_eq!(set.get_index_of(&amp;'*'), Some(10));
+    ///
+    /// // Moving the value 'z' down will shift others up, so this moves to exactly 10.
+    /// assert_eq!(set.insert_before(10, 'z'), (10, false));
+    /// assert_eq!(set.get_index_of(&amp;'z'), Some(10));
+    /// assert_eq!(set.get_index_of(&amp;'*'), Some(11));
+    ///
+    /// // Moving or inserting before the endpoint is also valid.
+    /// assert_eq!(set.len(), 27);
+    /// assert_eq!(set.insert_before(set.len(), '*'), (26, false));
+    /// assert_eq!(set.get_index_of(&amp;'*'), Some(26));
+    /// assert_eq!(set.insert_before(set.len(), '+'), (27, true));
+    /// assert_eq!(set.get_index_of(&amp;'+'), Some(27));
+    /// assert_eq!(set.len(), 28);
+    /// ```
+    </span><span class="kw">pub fn </span>insert_before(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: usize, value: T) -&gt; (usize, bool) {
+        <span class="kw">let </span>(index, existing) = <span class="self">self</span>.map.insert_before(index, value, ());
+        (index, existing.is_none())
+    }
+
+    <span class="doccomment">/// Insert the value into the set at the given index.
+    ///
+    /// If an equivalent item already exists in the set, it returns `false` leaving
+    /// the original value in the set, but moved to the given index.
+    /// Note that existing values **cannot** be moved to `index == set.len()`!
+    /// (See [`insert_before`](Self::insert_before) for different behavior here.)
+    ///
+    /// Otherwise, it inserts the new value at the given index and returns `true`.
+    ///
+    /// ***Panics*** if `index` is out of bounds.
+    /// Valid indices are `0..set.len()` (exclusive) when moving an existing value, or
+    /// `0..=set.len()` (inclusive) when inserting a new value.
+    ///
+    /// Computes in **O(n)** time (average).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use indexmap::IndexSet;
+    /// let mut set: IndexSet&lt;char&gt; = ('a'..='z').collect();
+    ///
+    /// // The new value '*' goes exactly at the given index.
+    /// assert_eq!(set.get_index_of(&amp;'*'), None);
+    /// assert_eq!(set.shift_insert(10, '*'), true);
+    /// assert_eq!(set.get_index_of(&amp;'*'), Some(10));
+    ///
+    /// // Moving the value 'a' up to 10 will shift others down, including the '*' that was at 10.
+    /// assert_eq!(set.shift_insert(10, 'a'), false);
+    /// assert_eq!(set.get_index_of(&amp;'a'), Some(10));
+    /// assert_eq!(set.get_index_of(&amp;'*'), Some(9));
+    ///
+    /// // Moving the value 'z' down to 9 will shift others up, including the '*' that was at 9.
+    /// assert_eq!(set.shift_insert(9, 'z'), false);
+    /// assert_eq!(set.get_index_of(&amp;'z'), Some(9));
+    /// assert_eq!(set.get_index_of(&amp;'*'), Some(10));
+    ///
+    /// // Existing values can move to len-1 at most, but new values can insert at the endpoint.
+    /// assert_eq!(set.len(), 27);
+    /// assert_eq!(set.shift_insert(set.len() - 1, '*'), false);
+    /// assert_eq!(set.get_index_of(&amp;'*'), Some(26));
+    /// assert_eq!(set.shift_insert(set.len(), '+'), true);
+    /// assert_eq!(set.get_index_of(&amp;'+'), Some(27));
+    /// assert_eq!(set.len(), 28);
+    /// ```
+    ///
+    /// ```should_panic
+    /// use indexmap::IndexSet;
+    /// let mut set: IndexSet&lt;char&gt; = ('a'..='z').collect();
+    ///
+    /// // This is an invalid index for moving an existing value!
+    /// set.shift_insert(set.len(), 'a');
+    /// ```
     </span><span class="kw">pub fn </span>shift_insert(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: usize, value: T) -&gt; bool {
         <span class="self">self</span>.map.shift_insert(index, value, ()).is_none()
     }
@@ -1669,6 +1880,36 @@
         I: IntoIterator&lt;Item = T&gt;,
     {
         Splice::new(<span class="self">self</span>, range, replace_with.into_iter())
+    }
+
+    <span class="doccomment">/// Moves all values from `other` into `self`, leaving `other` empty.
+    ///
+    /// This is equivalent to calling [`insert`][Self::insert] for each value
+    /// from `other` in order, which means that values that already exist
+    /// in `self` are unchanged in their current position.
+    ///
+    /// See also [`union`][Self::union] to iterate the combined values by
+    /// reference, without modifying `self` or `other`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use indexmap::IndexSet;
+    ///
+    /// let mut a = IndexSet::from([3, 2, 1]);
+    /// let mut b = IndexSet::from([3, 4, 5]);
+    /// let old_capacity = b.capacity();
+    ///
+    /// a.append(&amp;mut b);
+    ///
+    /// assert_eq!(a.len(), 5);
+    /// assert_eq!(b.len(), 0);
+    /// assert_eq!(b.capacity(), old_capacity);
+    ///
+    /// assert!(a.iter().eq(&amp;[3, 2, 1, 4, 5]));
+    /// ```
+    </span><span class="kw">pub fn </span>append&lt;S2&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="kw-2">&amp;mut </span>IndexSet&lt;T, S2&gt;) {
+        <span class="self">self</span>.map.append(<span class="kw-2">&amp;mut </span>other.map);
     }
 }
 
@@ -1847,6 +2088,7 @@
     /// This preserves the order of the remaining elements.
     ///
     /// Computes in **O(1)** time (average).
+    </span><span class="attr">#[doc(alias = <span class="string">"pop_last"</span>)] </span><span class="comment">// like `BTreeSet`
     </span><span class="kw">pub fn </span>pop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;T&gt; {
         <span class="self">self</span>.map.pop().map(|(x, ())| x)
     }
@@ -2031,7 +2273,7 @@
 
     <span class="doccomment">/// Get a value by index
     ///
-    /// Valid indices are *0 &lt;= index &lt; self.len()*
+    /// Valid indices are `0 &lt;= index &lt; self.len()`.
     ///
     /// Computes in **O(1)** time.
     </span><span class="kw">pub fn </span>get_index(<span class="kw-2">&amp;</span><span class="self">self</span>, index: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt; {
@@ -2040,7 +2282,7 @@
 
     <span class="doccomment">/// Returns a slice of values in the given range of indices.
     ///
-    /// Valid indices are *0 &lt;= index &lt; self.len()*
+    /// Valid indices are `0 &lt;= index &lt; self.len()`.
     ///
     /// Computes in **O(1)** time.
     </span><span class="kw">pub fn </span>get_range&lt;R: RangeBounds&lt;usize&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, range: R) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Slice&lt;T&gt;&gt; {
@@ -2065,7 +2307,7 @@
 
     <span class="doccomment">/// Remove the value by index
     ///
-    /// Valid indices are *0 &lt;= index &lt; self.len()*
+    /// Valid indices are `0 &lt;= index &lt; self.len()`.
     ///
     /// Like [`Vec::swap_remove`], the value is removed by swapping it with the
     /// last element of the set and popping it off. **This perturbs
@@ -2078,7 +2320,7 @@
 
     <span class="doccomment">/// Remove the value by index
     ///
-    /// Valid indices are *0 &lt;= index &lt; self.len()*
+    /// Valid indices are `0 &lt;= index &lt; self.len()`.
     ///
     /// Like [`Vec::remove`], the value is removed by shifting all of the
     /// elements that follow it, preserving their relative order.

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.34/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.37/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -393,6 +393,8 @@
 <a href="#393" id="393">393</a>
 <a href="#394" id="394">394</a>
 <a href="#395" id="395">395</a>
+<a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! `rustix` provides efficient memory-safe and [I/O-safe] wrappers to
 //! POSIX-like, Unix-like, Linux, and Winsock syscall-like APIs, with
 //! configurable backends.
@@ -495,7 +497,7 @@
 #![allow(stable_features)]
 #![cfg_attr(linux_raw, deny(unsafe_code))]
 #![cfg_attr(rustc_attrs, feature(rustc_attrs))]
-#![cfg_attr(doc_cfg, feature(doc_cfg))]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 #![cfg_attr(all(wasi_ext, target_os = <span class="string">"wasi"</span>, feature = <span class="string">"std"</span>), feature(wasi_ext))]
 #![cfg_attr(core_ffi_c, feature(core_ffi_c))]
 #![cfg_attr(core_c_str, feature(core_c_str))]
@@ -522,7 +524,10 @@
     allow(unused_imports)
 )]
 
-#[cfg(all(feature = <span class="string">"alloc"</span>, not(feature = <span class="string">"rustc-dep-of-std"</span>)))]
+#[cfg(all(feature = <span class="string">"rustc-dep-of-std"</span>, feature = <span class="string">"alloc"</span>))]
+</span><span class="kw">extern crate </span>rustc_std_workspace_alloc <span class="kw">as </span>alloc;
+
+<span class="attr">#[cfg(all(feature = <span class="string">"alloc"</span>, not(feature = <span class="string">"rustc-dep-of-std"</span>)))]
 </span><span class="kw">extern crate </span>alloc;
 
 <span class="comment">// Use `static_assertions` macros if we have them, or a polyfill otherwise.
@@ -588,63 +593,62 @@
 
 <span class="comment">// The public API modules.
 </span><span class="attr">#[cfg(feature = <span class="string">"event"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"event"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"event"</span>)))]
 </span><span class="kw">pub mod </span>event;
-<span class="attr">#[cfg(not(windows))]
-</span><span class="kw">pub mod </span>ffi;
+<span class="kw">pub mod </span>ffi;
 <span class="attr">#[cfg(not(windows))]
 #[cfg(feature = <span class="string">"fs"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"fs"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"fs"</span>)))]
 </span><span class="kw">pub mod </span>fs;
 <span class="kw">pub mod </span>io;
 <span class="attr">#[cfg(linux_kernel)]
 #[cfg(feature = <span class="string">"io_uring"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"io_uring"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"io_uring"</span>)))]
 </span><span class="kw">pub mod </span>io_uring;
 <span class="kw">pub mod </span>ioctl;
 <span class="attr">#[cfg(not(any(windows, target_os = <span class="string">"espidf"</span>, target_os = <span class="string">"vita"</span>, target_os = <span class="string">"wasi"</span>)))]
 #[cfg(feature = <span class="string">"mm"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"mm"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"mm"</span>)))]
 </span><span class="kw">pub mod </span>mm;
 <span class="attr">#[cfg(linux_kernel)]
 #[cfg(feature = <span class="string">"mount"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"mount"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"mount"</span>)))]
 </span><span class="kw">pub mod </span>mount;
 <span class="attr">#[cfg(not(any(target_os = <span class="string">"redox"</span>, target_os = <span class="string">"wasi"</span>)))]
 #[cfg(feature = <span class="string">"net"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"net"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"net"</span>)))]
 </span><span class="kw">pub mod </span>net;
 <span class="attr">#[cfg(not(any(windows, target_os = <span class="string">"espidf"</span>)))]
 #[cfg(feature = <span class="string">"param"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"param"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"param"</span>)))]
 </span><span class="kw">pub mod </span>param;
 <span class="attr">#[cfg(not(windows))]
 #[cfg(any(feature = <span class="string">"fs"</span>, feature = <span class="string">"mount"</span>, feature = <span class="string">"net"</span>))]
 #[cfg_attr(
-    doc_cfg,
+    docsrs,
     doc(cfg(any(feature = <span class="string">"fs"</span>, feature = <span class="string">"mount"</span>, feature = <span class="string">"net"</span>)))
 )]
 </span><span class="kw">pub mod </span>path;
 <span class="attr">#[cfg(feature = <span class="string">"pipe"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"pipe"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"pipe"</span>)))]
 #[cfg(not(any(windows, target_os = <span class="string">"wasi"</span>)))]
 </span><span class="kw">pub mod </span>pipe;
 <span class="attr">#[cfg(not(windows))]
 #[cfg(feature = <span class="string">"process"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"process"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"process"</span>)))]
 </span><span class="kw">pub mod </span>process;
 <span class="attr">#[cfg(feature = <span class="string">"procfs"</span>)]
 #[cfg(linux_kernel)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"procfs"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"procfs"</span>)))]
 </span><span class="kw">pub mod </span>procfs;
 <span class="attr">#[cfg(not(windows))]
 #[cfg(not(target_os = <span class="string">"wasi"</span>))]
 #[cfg(feature = <span class="string">"pty"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"pty"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"pty"</span>)))]
 </span><span class="kw">pub mod </span>pty;
 <span class="attr">#[cfg(not(windows))]
 #[cfg(feature = <span class="string">"rand"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"rand"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"rand"</span>)))]
 </span><span class="kw">pub mod </span>rand;
 <span class="attr">#[cfg(not(any(
     windows,
@@ -654,27 +658,27 @@
     target_os = <span class="string">"wasi"
 </span>)))]
 #[cfg(feature = <span class="string">"shm"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"shm"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"shm"</span>)))]
 </span><span class="kw">pub mod </span>shm;
 <span class="attr">#[cfg(not(windows))]
 #[cfg(feature = <span class="string">"stdio"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"stdio"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"stdio"</span>)))]
 </span><span class="kw">pub mod </span>stdio;
 <span class="attr">#[cfg(feature = <span class="string">"system"</span>)]
 #[cfg(not(any(windows, target_os = <span class="string">"wasi"</span>)))]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"system"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"system"</span>)))]
 </span><span class="kw">pub mod </span>system;
 <span class="attr">#[cfg(not(any(windows, target_os = <span class="string">"vita"</span>)))]
 #[cfg(feature = <span class="string">"termios"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"termios"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"termios"</span>)))]
 </span><span class="kw">pub mod </span>termios;
 <span class="attr">#[cfg(not(windows))]
 #[cfg(feature = <span class="string">"thread"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"thread"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"thread"</span>)))]
 </span><span class="kw">pub mod </span>thread;
 <span class="attr">#[cfg(not(any(windows, target_os = <span class="string">"espidf"</span>)))]
 #[cfg(feature = <span class="string">"time"</span>)]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"time"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"time"</span>)))]
 </span><span class="kw">pub mod </span>time;
 
 <span class="comment">// "runtime" is also a public API module, but it's only for libc-like users.
@@ -682,7 +686,7 @@
 #[cfg(feature = <span class="string">"runtime"</span>)]
 #[cfg(linux_raw)]
 #[cfg_attr(not(document_experimental_runtime_api), doc(hidden))]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"runtime"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"runtime"</span>)))]
 </span><span class="kw">pub mod </span>runtime;
 
 <span class="comment">// Temporarily provide some mount functions for use in the fs module for
@@ -707,7 +711,7 @@
         target_arch = <span class="string">"x86"</span>,
     )
 ))]
-#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">"fs"</span>)))]
+#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"fs"</span>)))]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>fs;
 
 <span class="comment">// Similarly, declare `path` as a non-public module if needed.

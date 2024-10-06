@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.31.0/src/reader/slice_reader.rs`."><title>slice_reader.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.36.2/src/reader/slice_reader.rs`."><title>slice_reader.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -354,46 +354,12 @@
 <a href="#354" id="354">354</a>
 <a href="#355" id="355">355</a>
 <a href="#356" id="356">356</a>
-<a href="#357" id="357">357</a>
-<a href="#358" id="358">358</a>
-<a href="#359" id="359">359</a>
-<a href="#360" id="360">360</a>
-<a href="#361" id="361">361</a>
-<a href="#362" id="362">362</a>
-<a href="#363" id="363">363</a>
-<a href="#364" id="364">364</a>
-<a href="#365" id="365">365</a>
-<a href="#366" id="366">366</a>
-<a href="#367" id="367">367</a>
-<a href="#368" id="368">368</a>
-<a href="#369" id="369">369</a>
-<a href="#370" id="370">370</a>
-<a href="#371" id="371">371</a>
-<a href="#372" id="372">372</a>
-<a href="#373" id="373">373</a>
-<a href="#374" id="374">374</a>
-<a href="#375" id="375">375</a>
-<a href="#376" id="376">376</a>
-<a href="#377" id="377">377</a>
-<a href="#378" id="378">378</a>
-<a href="#379" id="379">379</a>
-<a href="#380" id="380">380</a>
-<a href="#381" id="381">381</a>
-<a href="#382" id="382">382</a>
-<a href="#383" id="383">383</a>
-<a href="#384" id="384">384</a>
-<a href="#385" id="385">385</a>
-<a href="#386" id="386">386</a>
-<a href="#387" id="387">387</a>
-<a href="#388" id="388">388</a>
-<a href="#389" id="389">389</a>
-<a href="#390" id="390">390</a>
-<a href="#391" id="391">391</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! This is an implementation of [`Reader`] for reading from a `&amp;[u8]` as
 //! underlying byte stream. This implementation supports not using an
 //! intermediate buffer as the byte slice itself can be used to borrow from.
 
 </span><span class="kw">use </span>std::borrow::Cow;
+<span class="kw">use </span>std::io;
 
 <span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::reader::EncodingRef;
@@ -403,9 +369,9 @@
 <span class="kw">use </span><span class="kw">crate</span>::errors::{Error, <span class="prelude-ty">Result</span>};
 <span class="kw">use </span><span class="kw">crate</span>::events::Event;
 <span class="kw">use </span><span class="kw">crate</span>::name::QName;
-<span class="kw">use </span><span class="kw">crate</span>::reader::{is_whitespace, BangType, ReadElementState, Reader, Span, XmlSource};
-
-<span class="kw">use </span>memchr;
+<span class="kw">use </span><span class="kw">crate</span>::parser::Parser;
+<span class="kw">use </span><span class="kw">crate</span>::reader::{BangType, ReadTextResult, Reader, Span, XmlSource};
+<span class="kw">use </span><span class="kw">crate</span>::utils::is_whitespace;
 
 <span class="doccomment">/// This is an implementation for reading from a `&amp;[u8]` as underlying byte stream.
 /// This implementation supports not using an intermediate buffer as the byte slice
@@ -445,7 +411,7 @@
     ///        &lt;tag2&gt;Test 2&lt;/tag2&gt;
     ///     &lt;/tag1&gt;
     /// "#);
-    /// reader.trim_text(true);
+    /// reader.config_mut().trim_text(true);
     ///
     /// let mut count = 0;
     /// let mut txt = Vec::new();
@@ -475,7 +441,7 @@
     /// Manages nested cases where parent and child elements have the _literally_
     /// same name.
     ///
-    /// If corresponding [`End`] event will not be found, the [`Error::UnexpectedEof`]
+    /// If a corresponding [`End`] event is not found, an error of type [`Error::IllFormed`]
     /// will be returned. In particularly, that error will be returned if you call
     /// this method without consuming the corresponding [`Start`] event first.
     ///
@@ -522,7 +488,7 @@
     ///         &lt;/inner&gt;
     ///     &lt;/outer&gt;
     /// "#);
-    /// reader.trim_text(true);
+    /// reader.config_mut().trim_text(true);
     ///
     /// let start = BytesStart::new("outer");
     /// let end   = start.to_end().into_owned();
@@ -542,8 +508,8 @@
     /// [`Start`]: Event::Start
     /// [`End`]: Event::End
     /// [`BytesStart::to_end()`]: crate::events::BytesStart::to_end
-    /// [`expand_empty_elements`]: Self::expand_empty_elements
-    /// [`check_end_names`]: Self::check_end_names
+    /// [`expand_empty_elements`]: crate::reader::Config::expand_empty_elements
+    /// [`check_end_names`]: crate::reader::Config::check_end_names
     /// [the specification]: https://www.w3.org/TR/xml11/#dt-etag
     </span><span class="kw">pub fn </span>read_to_end(<span class="kw-2">&amp;mut </span><span class="self">self</span>, end: QName) -&gt; <span class="prelude-ty">Result</span>&lt;Span&gt; {
         <span class="prelude-val">Ok</span>(<span class="macro">read_to_end!</span>(<span class="self">self</span>, end, (), read_event_impl, {}))
@@ -586,7 +552,7 @@
     ///         &lt;p&gt;For example, elements not needed to be &amp;quot;closed&amp;quot;
     ///     &lt;/html&gt;
     /// ");
-    /// reader.trim_text(true);
+    /// reader.config_mut().trim_text(true);
     ///
     /// let start = BytesStart::new("html");
     /// let end   = start.to_end().into_owned();
@@ -594,7 +560,7 @@
     /// // First, we read a start event...
     /// assert_eq!(reader.read_event().unwrap(), Event::Start(start));
     /// // ...and disable checking of end names because we expect HTML further...
-    /// reader.check_end_names(false);
+    /// reader.config_mut().check_end_names = false;
     ///
     /// // ...then, we could read text content until close tag.
     /// // This call will correctly handle nested &lt;html&gt; elements.
@@ -607,7 +573,7 @@
     /// assert!(matches!(text, Cow::Borrowed(_)));
     ///
     /// // Now we can enable checks again
-    /// reader.check_end_names(true);
+    /// reader.config_mut().check_end_names = true;
     ///
     /// // At the end we should get an Eof event, because we ate the whole XML
     /// assert_eq!(reader.read_event().unwrap(), Event::Eof);
@@ -620,7 +586,10 @@
         </span><span class="kw">let </span>buffer = <span class="self">self</span>.reader;
         <span class="kw">let </span>span = <span class="self">self</span>.read_to_end(end)<span class="question-mark">?</span>;
 
-        <span class="self">self</span>.decoder().decode(<span class="kw-2">&amp;</span>buffer[<span class="number">0</span>..span.len()])
+        <span class="kw">let </span>len = span.end - span.start;
+        <span class="comment">// SAFETY: `span` can only contain indexes up to usize::MAX because it
+        // was created from offsets from a single &amp;[u8] slice
+        </span><span class="self">self</span>.decoder().decode(<span class="kw-2">&amp;</span>buffer[<span class="number">0</span>..len <span class="kw">as </span>usize])
     }
 }
 
@@ -630,7 +599,8 @@
 /// that will be borrowed by events. This implementation provides a zero-copy deserialization
 </span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; XmlSource&lt;<span class="lifetime">'a</span>, ()&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8] {
     <span class="attr">#[cfg(not(feature = <span class="string">"encoding"</span>))]
-    </span><span class="kw">fn </span>remove_utf8_bom(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    #[inline]
+    </span><span class="kw">fn </span>remove_utf8_bom(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;()&gt; {
         <span class="kw">if </span><span class="self">self</span>.starts_with(<span class="kw">crate</span>::encoding::UTF8_BOM) {
             <span class="kw-2">*</span><span class="self">self </span>= <span class="kw-2">&amp;</span><span class="self">self</span>[<span class="kw">crate</span>::encoding::UTF8_BOM.len()..];
         }
@@ -638,7 +608,8 @@
     }
 
     <span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
-    </span><span class="kw">fn </span>detect_encoding(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>Encoding&gt;&gt; {
+    #[inline]
+    </span><span class="kw">fn </span>detect_encoding(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>Encoding&gt;&gt; {
         <span class="kw">if let </span><span class="prelude-val">Some</span>((enc, bom_len)) = <span class="kw">crate</span>::encoding::detect_encoding(<span class="self">self</span>) {
             <span class="kw-2">*</span><span class="self">self </span>= <span class="kw-2">&amp;</span><span class="self">self</span>[bom_len..];
             <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(enc));
@@ -646,97 +617,77 @@
         <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
     }
 
-    <span class="kw">fn </span>read_bytes_until(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        byte: u8,
-        _buf: (),
-        position: <span class="kw-2">&amp;mut </span>usize,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]&gt;&gt; {
-        <span class="comment">// search byte must be within the ascii range
-        </span><span class="macro">debug_assert!</span>(byte.is_ascii());
-        <span class="kw">if </span><span class="self">self</span>.is_empty() {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>read_text(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _buf: (), position: <span class="kw-2">&amp;mut </span>u64) -&gt; ReadTextResult&lt;<span class="lifetime">'a</span>, ()&gt; {
+        <span class="kw">match </span>memchr::memchr(<span class="string">b'&lt;'</span>, <span class="self">self</span>) {
+            <span class="prelude-val">Some</span>(<span class="number">0</span>) =&gt; {
+                <span class="kw-2">*</span>position += <span class="number">1</span>;
+                <span class="kw-2">*</span><span class="self">self </span>= <span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">1</span>..];
+                ReadTextResult::Markup(())
+            }
+            <span class="prelude-val">Some</span>(i) =&gt; {
+                <span class="kw-2">*</span>position += i <span class="kw">as </span>u64 + <span class="number">1</span>;
+                <span class="kw">let </span>bytes = <span class="kw-2">&amp;</span><span class="self">self</span>[..i];
+                <span class="kw-2">*</span><span class="self">self </span>= <span class="kw-2">&amp;</span><span class="self">self</span>[i + <span class="number">1</span>..];
+                ReadTextResult::UpToMarkup(bytes)
+            }
+            <span class="prelude-val">None </span>=&gt; {
+                <span class="kw-2">*</span>position += <span class="self">self</span>.len() <span class="kw">as </span>u64;
+                <span class="kw">let </span>bytes = <span class="kw-2">&amp;</span><span class="self">self</span>[..];
+                <span class="kw-2">*</span><span class="self">self </span>= <span class="kw-2">&amp;</span>[];
+                ReadTextResult::UpToEof(bytes)
+            }
         }
-
-        <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="kw">if let </span><span class="prelude-val">Some</span>(i) = memchr::memchr(byte, <span class="self">self</span>) {
-            <span class="kw-2">*</span>position += i + <span class="number">1</span>;
-            <span class="kw">let </span>bytes = <span class="kw-2">&amp;</span><span class="self">self</span>[..i];
-            <span class="kw-2">*</span><span class="self">self </span>= <span class="kw-2">&amp;</span><span class="self">self</span>[i + <span class="number">1</span>..];
-            bytes
-        } <span class="kw">else </span>{
-            <span class="kw-2">*</span>position += <span class="self">self</span>.len();
-            <span class="kw">let </span>bytes = <span class="kw-2">&amp;</span><span class="self">self</span>[..];
-            <span class="kw-2">*</span><span class="self">self </span>= <span class="kw-2">&amp;</span>[];
-            bytes
-        }))
     }
 
-    <span class="kw">fn </span>read_bang_element(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        _buf: (),
-        position: <span class="kw-2">&amp;mut </span>usize,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;(BangType, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8])&gt;&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>read_with&lt;P&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>parser: P, _buf: (), position: <span class="kw-2">&amp;mut </span>u64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]&gt;
+    <span class="kw">where
+        </span>P: Parser,
+    {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(i) = parser.feed(<span class="self">self</span>) {
+            <span class="comment">// +1 for `&gt;` which we do not include
+            </span><span class="kw-2">*</span>position += i <span class="kw">as </span>u64 + <span class="number">1</span>;
+            <span class="kw">let </span>bytes = <span class="kw-2">&amp;</span><span class="self">self</span>[..i];
+            <span class="kw-2">*</span><span class="self">self </span>= <span class="kw-2">&amp;</span><span class="self">self</span>[i + <span class="number">1</span>..];
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(bytes);
+        }
+
+        <span class="kw-2">*</span>position += <span class="self">self</span>.len() <span class="kw">as </span>u64;
+        <span class="prelude-val">Err</span>(Error::Syntax(P::eof_error()))
+    }
+
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>read_bang_element(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _buf: (), position: <span class="kw-2">&amp;mut </span>u64) -&gt; <span class="prelude-ty">Result</span>&lt;(BangType, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8])&gt; {
         <span class="comment">// Peeked one bang ('!') before being called, so it's guaranteed to
         // start with it.
         </span><span class="macro">debug_assert_eq!</span>(<span class="self">self</span>[<span class="number">0</span>], <span class="string">b'!'</span>);
 
-        <span class="kw">let </span>bang_type = BangType::new(<span class="self">self</span>[<span class="number">1</span>..].first().copied())<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>bang_type = BangType::new(<span class="self">self</span>[<span class="number">1</span>..].first().copied())<span class="question-mark">?</span>;
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>((bytes, i)) = bang_type.parse(<span class="kw-2">&amp;</span>[], <span class="self">self</span>) {
-            <span class="kw-2">*</span>position += i;
+            <span class="kw-2">*</span>position += i <span class="kw">as </span>u64;
             <span class="kw-2">*</span><span class="self">self </span>= <span class="kw-2">&amp;</span><span class="self">self</span>[i..];
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>((bang_type, bytes)));
+            <span class="kw">return </span><span class="prelude-val">Ok</span>((bang_type, bytes));
         }
 
-        <span class="comment">// Note: Do not update position, so the error points to
-        // somewhere sane rather than at the EOF
-        </span><span class="prelude-val">Err</span>(bang_type.to_err())
+        <span class="kw-2">*</span>position += <span class="self">self</span>.len() <span class="kw">as </span>u64;
+        <span class="prelude-val">Err</span>(bang_type.to_err())
     }
 
-    <span class="kw">fn </span>read_element(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _buf: (), position: <span class="kw-2">&amp;mut </span>usize) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]&gt;&gt; {
-        <span class="kw">if </span><span class="self">self</span>.is_empty() {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
-        }
-
-        <span class="kw">let </span><span class="kw-2">mut </span>state = ReadElementState::Elem;
-
-        <span class="kw">if let </span><span class="prelude-val">Some</span>((bytes, i)) = state.change(<span class="self">self</span>) {
-            <span class="comment">// Position now just after the `&gt;` symbol
-            </span><span class="kw-2">*</span>position += i;
-            <span class="kw-2">*</span><span class="self">self </span>= <span class="kw-2">&amp;</span><span class="self">self</span>[i..];
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(bytes));
-        }
-
-        <span class="comment">// Note: Do not update position, so the error points to a sane place
-        // rather than at the EOF.
-        </span><span class="prelude-val">Err</span>(Error::UnexpectedEof(<span class="string">"Element"</span>.to_string()))
-
-        <span class="comment">// FIXME: Figure out why the other one works without UnexpectedEof
-    </span>}
-
-    <span class="kw">fn </span>skip_whitespace(<span class="kw-2">&amp;mut </span><span class="self">self</span>, position: <span class="kw-2">&amp;mut </span>usize) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>skip_whitespace(<span class="kw-2">&amp;mut </span><span class="self">self</span>, position: <span class="kw-2">&amp;mut </span>u64) -&gt; io::Result&lt;()&gt; {
         <span class="kw">let </span>whitespaces = <span class="self">self
             </span>.iter()
             .position(|b| !is_whitespace(<span class="kw-2">*</span>b))
             .unwrap_or(<span class="self">self</span>.len());
-        <span class="kw-2">*</span>position += whitespaces;
+        <span class="kw-2">*</span>position += whitespaces <span class="kw">as </span>u64;
         <span class="kw-2">*</span><span class="self">self </span>= <span class="kw-2">&amp;</span><span class="self">self</span>[whitespaces..];
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn </span>skip_one(<span class="kw-2">&amp;mut </span><span class="self">self</span>, byte: u8, position: <span class="kw-2">&amp;mut </span>usize) -&gt; <span class="prelude-ty">Result</span>&lt;bool&gt; {
-        <span class="comment">// search byte must be within the ascii range
-        </span><span class="macro">debug_assert!</span>(byte.is_ascii());
-        <span class="kw">if </span><span class="self">self</span>.first() == <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>byte) {
-            <span class="kw-2">*</span><span class="self">self </span>= <span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">1</span>..];
-            <span class="kw-2">*</span>position += <span class="number">1</span>;
-            <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)
-        } <span class="kw">else </span>{
-            <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
-        }
-    }
-
-    <span class="kw">fn </span>peek_one(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;u8&gt;&gt; {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>peek_one(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;<span class="prelude-ty">Option</span>&lt;u8&gt;&gt; {
         <span class="prelude-val">Ok</span>(<span class="self">self</span>.first().copied())
     }
 }
@@ -758,26 +709,5 @@
         identity,
         ()
     );
-
-    <span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
-    </span><span class="kw">mod </span>encoding {
-        <span class="kw">use </span><span class="kw">crate</span>::events::Event;
-        <span class="kw">use </span><span class="kw">crate</span>::reader::Reader;
-        <span class="kw">use </span>encoding_rs::UTF_8;
-        <span class="kw">use </span>pretty_assertions::assert_eq;
-
-        <span class="doccomment">/// Checks that XML declaration cannot change the encoding from UTF-8 if
-        /// a `Reader` was created using `from_str` method
-        </span><span class="attr">#[test]
-        </span><span class="kw">fn </span>str_always_has_utf8() {
-            <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_str(<span class="string">"&lt;?xml encoding='UTF-16'?&gt;"</span>);
-
-            <span class="macro">assert_eq!</span>(reader.decoder().encoding(), UTF_8);
-            reader.read_event().unwrap();
-            <span class="macro">assert_eq!</span>(reader.decoder().encoding(), UTF_8);
-
-            <span class="macro">assert_eq!</span>(reader.read_event().unwrap(), Event::Eof);
-        }
-    }
 }
 </code></pre></div></section></main></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.31.0/src/reader/state.rs`."><title>state.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.36.2/src/reader/state.rs`."><title>state.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -285,39 +285,92 @@
 <a href="#285" id="285">285</a>
 <a href="#286" id="286">286</a>
 <a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
+<a href="#341" id="341">341</a>
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
+<a href="#345" id="345">345</a>
+<a href="#346" id="346">346</a>
 </pre></div><pre class="rust"><code><span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
 </span><span class="kw">use </span>encoding_rs::UTF_8;
 
 <span class="kw">use </span><span class="kw">crate</span>::encoding::Decoder;
-<span class="kw">use </span><span class="kw">crate</span>::errors::{Error, <span class="prelude-ty">Result</span>};
-<span class="kw">use </span><span class="kw">crate</span>::events::{BytesCData, BytesDecl, BytesEnd, BytesStart, BytesText, Event};
+<span class="kw">use </span><span class="kw">crate</span>::errors::{Error, IllFormedError, <span class="prelude-ty">Result</span>, SyntaxError};
+<span class="kw">use </span><span class="kw">crate</span>::events::{BytesCData, BytesDecl, BytesEnd, BytesPI, BytesStart, BytesText, Event};
 <span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::reader::EncodingRef;
-<span class="kw">use </span><span class="kw">crate</span>::reader::{is_whitespace, BangType, ParseState};
-
-<span class="kw">use </span>memchr;
+<span class="kw">use </span><span class="kw">crate</span>::reader::{BangType, Config, ParseState};
+<span class="kw">use </span><span class="kw">crate</span>::utils::{is_whitespace, name_len};
 
 <span class="doccomment">/// A struct that holds a current reader state and a parser configuration.
 /// It is independent on a way of reading data: the reader feed data into it and
 /// get back produced [`Event`]s.
-</span><span class="attr">#[derive(Clone)]
+</span><span class="attr">#[derive(Clone, Debug)]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>ReaderState {
     <span class="doccomment">/// Number of bytes read from the source of data since the reader was created
-    </span><span class="kw">pub </span>offset: usize,
+    </span><span class="kw">pub </span>offset: u64,
+    <span class="doccomment">/// A snapshot of an `offset` of the last error returned. It can be less than
+    /// `offset`, because some errors conveniently report at earlier position,
+    /// and changing `offset` is not possible, because `Error::IllFormed` errors
+    /// are recoverable.
+    </span><span class="kw">pub </span>last_error_offset: u64,
     <span class="doccomment">/// Defines how to process next byte
     </span><span class="kw">pub </span>state: ParseState,
-    <span class="doccomment">/// Expand empty element into an opening and closing element
-    </span><span class="kw">pub </span>expand_empty_elements: bool,
-    <span class="doccomment">/// Trims leading whitespace in Text events, skip the element if text is empty
-    </span><span class="kw">pub </span>trim_text_start: bool,
-    <span class="doccomment">/// Trims trailing whitespace in Text events.
-    </span><span class="kw">pub </span>trim_text_end: bool,
-    <span class="doccomment">/// Trims trailing whitespaces from markup names in closing tags `&lt;/a &gt;`
-    </span><span class="kw">pub </span>trim_markup_names_in_closing_tags: bool,
-    <span class="doccomment">/// Check if [`Event::End`] nodes match last [`Event::Start`] node
-    </span><span class="kw">pub </span>check_end_names: bool,
-    <span class="doccomment">/// Check if comments contains `--` (false per default)
-    </span><span class="kw">pub </span>check_comments: bool,
+    <span class="doccomment">/// User-defined settings that affect parsing
+    </span><span class="kw">pub </span>config: Config,
     <span class="doccomment">/// All currently Started elements which didn't have a matching
     /// End element yet.
     ///
@@ -346,30 +399,38 @@
 }
 
 <span class="kw">impl </span>ReaderState {
-    <span class="doccomment">/// Trims whitespaces from `bytes`, if required, and returns a [`Text`] event.
+    <span class="doccomment">/// Trims end whitespaces from `bytes`, if required, and returns a text event.
     ///
     /// # Parameters
     /// - `bytes`: data from the start of stream to the first `&lt;` or from `&gt;` to `&lt;`
-    ///
-    /// [`Text`]: Event::Text
-    </span><span class="kw">pub fn </span>emit_text&lt;<span class="lifetime">'b</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bytes: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'b</span>&gt;&gt; {
+    </span><span class="kw">pub fn </span>emit_text&lt;<span class="lifetime">'b</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bytes: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]) -&gt; BytesText&lt;<span class="lifetime">'b</span>&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>content = bytes;
 
-        <span class="kw">if </span><span class="self">self</span>.trim_text_end {
+        <span class="kw">if </span><span class="self">self</span>.config.trim_text_end {
             <span class="comment">// Skip the ending '&lt;'
             </span><span class="kw">let </span>len = bytes
                 .iter()
                 .rposition(|<span class="kw-2">&amp;</span>b| !is_whitespace(b))
-                .map_or_else(|| bytes.len(), |p| p + <span class="number">1</span>);
+                .map_or(<span class="number">0</span>, |p| p + <span class="number">1</span>);
             content = <span class="kw-2">&amp;</span>bytes[..len];
         }
-
-        <span class="prelude-val">Ok</span>(Event::Text(BytesText::wrap(content, <span class="self">self</span>.decoder())))
+        BytesText::wrap(content, <span class="self">self</span>.decoder())
     }
 
-    <span class="doccomment">/// reads `BytesElement` starting with a `!`,
-    /// return `Comment`, `CData` or `DocType` event
+    <span class="doccomment">/// Returns `Comment`, `CData` or `DocType` event.
+    ///
+    /// `buf` contains data between `&lt;` and `&gt;`:
+    /// - CDATA: `![CDATA[...]]`
+    /// - Comment: `!--...--`
+    /// - Doctype (uppercase): `!D...`
+    /// - Doctype (lowercase): `!d...`
     </span><span class="kw">pub fn </span>emit_bang&lt;<span class="lifetime">'b</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bang_type: BangType, buf: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'b</span>&gt;&gt; {
+        <span class="macro">debug_assert_eq!</span>(
+            buf.first(),
+            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="string">b'!'</span>),
+            <span class="string">"CDATA, comment or DOCTYPE should start from '!'"
+        </span>);
+
         <span class="kw">let </span>uncased_starts_with = |string: <span class="kw-2">&amp;</span>[u8], prefix: <span class="kw-2">&amp;</span>[u8]| {
             string.len() &gt;= prefix.len() &amp;&amp; string[..prefix.len()].eq_ignore_ascii_case(prefix)
         };
@@ -378,52 +439,99 @@
         <span class="kw">match </span>bang_type {
             BangType::Comment <span class="kw">if </span>buf.starts_with(<span class="string">b"!--"</span>) =&gt; {
                 <span class="macro">debug_assert!</span>(buf.ends_with(<span class="string">b"--"</span>));
-                <span class="kw">if </span><span class="self">self</span>.check_comments {
+                <span class="kw">if </span><span class="self">self</span>.config.check_comments {
                     <span class="comment">// search if '--' not in comments
-                    </span><span class="kw">if let </span><span class="prelude-val">Some</span>(p) = memchr::memchr_iter(<span class="string">b'-'</span>, <span class="kw-2">&amp;</span>buf[<span class="number">3</span>..len - <span class="number">2</span>])
-                        .position(|p| buf[<span class="number">3 </span>+ p + <span class="number">1</span>] == <span class="string">b'-'</span>)
-                    {
-                        <span class="self">self</span>.offset += len - p;
-                        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::UnexpectedToken(<span class="string">"--"</span>.to_string()));
+                    </span><span class="kw">let </span><span class="kw-2">mut </span>haystack = <span class="kw-2">&amp;</span>buf[<span class="number">3</span>..len - <span class="number">2</span>];
+                    <span class="kw">let </span><span class="kw-2">mut </span>off = <span class="number">0</span>;
+                    <span class="kw">while let </span><span class="prelude-val">Some</span>(p) = memchr::memchr(<span class="string">b'-'</span>, haystack) {
+                        off += p + <span class="number">1</span>;
+                        <span class="comment">// if next byte after `-` is also `-`, return an error
+                        </span><span class="kw">if </span>buf[<span class="number">3 </span>+ off] == <span class="string">b'-' </span>{
+                            <span class="comment">// Explanation of the magic:
+                            //
+                            // - `self.offset`` just after `&gt;`,
+                            // - `buf` contains `!-- con--tent --`
+                            // - `p` is counted from byte after `&lt;!--`
+                            //
+                            // &lt;!-- con--tent --&gt;:
+                            //  ~~~~~~~~~~~~~~~~ : - buf
+                            //   : ===========   : - zone of search (possible values of `p`)
+                            //   : |---p         : - p is counted from | (| is 0)
+                            //   : :   :         ^ - self.offset
+                            //   ^ :   :           - self.offset - len
+                            //     ^   :           - self.offset - len + 2
+                            //         ^           - self.offset - len + 2 + p
+                            </span><span class="self">self</span>.last_error_offset = <span class="self">self</span>.offset - len <span class="kw">as </span>u64 + <span class="number">2 </span>+ p <span class="kw">as </span>u64;
+                            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::IllFormed(IllFormedError::DoubleHyphenInComment));
+                        }
+                        <span class="comment">// Continue search after single `-` (+1 to skip it)
+                        </span>haystack = <span class="kw-2">&amp;</span>haystack[p + <span class="number">1</span>..];
                     }
                 }
                 <span class="prelude-val">Ok</span>(Event::Comment(BytesText::wrap(
-                    <span class="kw-2">&amp;</span>buf[<span class="number">3</span>..len - <span class="number">2</span>],
+                    <span class="comment">// Cut of `!--` and `--` from start and end
+                    </span><span class="kw-2">&amp;</span>buf[<span class="number">3</span>..len - <span class="number">2</span>],
                     <span class="self">self</span>.decoder(),
                 )))
             }
-            BangType::CData <span class="kw">if </span>uncased_starts_with(buf, <span class="string">b"![CDATA["</span>) =&gt; {
+            <span class="comment">// XML requires uppercase only:
+            // https://www.w3.org/TR/xml11/#sec-cdata-sect
+            // Even HTML5 required uppercase only:
+            // https://html.spec.whatwg.org/multipage/parsing.html#markup-declaration-open-state
+            </span>BangType::CData <span class="kw">if </span>buf.starts_with(<span class="string">b"![CDATA["</span>) =&gt; {
                 <span class="macro">debug_assert!</span>(buf.ends_with(<span class="string">b"]]"</span>));
                 <span class="prelude-val">Ok</span>(Event::CData(BytesCData::wrap(
-                    <span class="kw-2">&amp;</span>buf[<span class="number">8</span>..len - <span class="number">2</span>],
+                    <span class="comment">// Cut of `![CDATA[` and `]]` from start and end
+                    </span><span class="kw-2">&amp;</span>buf[<span class="number">8</span>..len - <span class="number">2</span>],
                     <span class="self">self</span>.decoder(),
                 )))
             }
-            BangType::DocType <span class="kw">if </span>uncased_starts_with(buf, <span class="string">b"!DOCTYPE"</span>) =&gt; {
-                <span class="kw">let </span>start = buf[<span class="number">8</span>..]
-                    .iter()
-                    .position(|b| !is_whitespace(<span class="kw-2">*</span>b))
-                    .unwrap_or(len - <span class="number">8</span>);
-                <span class="kw">if </span>start + <span class="number">8 </span>&gt;= len {
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::EmptyDocType);
+            <span class="comment">// XML requires uppercase only, but we will check that on validation stage:
+            // https://www.w3.org/TR/xml11/#sec-prolog-dtd
+            // HTML5 allows mixed case for doctype declarations:
+            // https://html.spec.whatwg.org/multipage/parsing.html#markup-declaration-open-state
+            </span>BangType::DocType(<span class="number">0</span>) <span class="kw">if </span>uncased_starts_with(buf, <span class="string">b"!DOCTYPE"</span>) =&gt; {
+                <span class="kw">match </span>buf[<span class="number">8</span>..].iter().position(|<span class="kw-2">&amp;</span>b| !is_whitespace(b)) {
+                    <span class="prelude-val">Some</span>(start) =&gt; <span class="prelude-val">Ok</span>(Event::DocType(BytesText::wrap(
+                        <span class="comment">// Cut of `!DOCTYPE` and any number of spaces from start
+                        </span><span class="kw-2">&amp;</span>buf[<span class="number">8 </span>+ start..],
+                        <span class="self">self</span>.decoder(),
+                    ))),
+                    <span class="prelude-val">None </span>=&gt; {
+                        <span class="comment">// Because we here, we at least read `&lt;!DOCTYPE&gt;` and offset after `&gt;`.
+                        // We want report error at place where name is expected - this is just
+                        // before `&gt;`
+                        </span><span class="self">self</span>.last_error_offset = <span class="self">self</span>.offset - <span class="number">1</span>;
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::IllFormed(IllFormedError::MissingDoctypeName));
+                    }
                 }
-                <span class="prelude-val">Ok</span>(Event::DocType(BytesText::wrap(
-                    <span class="kw-2">&amp;</span>buf[<span class="number">8 </span>+ start..],
-                    <span class="self">self</span>.decoder(),
-                )))
             }
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(bang_type.to_err()),
+            <span class="kw">_ </span>=&gt; {
+                <span class="comment">// &lt;!....&gt;
+                //  ^^^^^ - `buf` does not contain `&lt;` and `&gt;`, but `self.offset` is after `&gt;`.
+                // ^------- We report error at that position, so we need to subtract 2 and buf len
+                </span><span class="self">self</span>.last_error_offset = <span class="self">self</span>.offset - len <span class="kw">as </span>u64 - <span class="number">2</span>;
+                <span class="prelude-val">Err</span>(bang_type.to_err())
+            }
         }
     }
 
     <span class="doccomment">/// Wraps content of `buf` into the [`Event::End`] event. Does the check that
-    /// end name matches the last opened start name if `self.check_end_names` is set.
+    /// end name matches the last opened start name if `self.config.check_end_names` is set.
+    ///
+    /// `buf` contains data between `&lt;` and `&gt;`, for example `/tag`.
     </span><span class="kw">pub fn </span>emit_end&lt;<span class="lifetime">'b</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'b</span>&gt;&gt; {
+        <span class="macro">debug_assert_eq!</span>(
+            buf.first(),
+            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="string">b'/'</span>),
+            <span class="string">"closing tag should start from '/'"
+        </span>);
+
         <span class="comment">// Strip the `/` character. `content` contains data between `&lt;/` and `&gt;`
         </span><span class="kw">let </span>content = <span class="kw-2">&amp;</span>buf[<span class="number">1</span>..];
         <span class="comment">// XML standard permits whitespaces after the markup name in closing tags.
         // Let's strip them from the buffer before comparing tag names.
-        </span><span class="kw">let </span>name = <span class="kw">if </span><span class="self">self</span>.trim_markup_names_in_closing_tags {
+        </span><span class="kw">let </span>name = <span class="kw">if </span><span class="self">self</span>.config.trim_markup_names_in_closing_tags {
             <span class="kw">if let </span><span class="prelude-val">Some</span>(pos_end_name) = content.iter().rposition(|<span class="kw-2">&amp;</span>b| !is_whitespace(b)) {
                 <span class="kw-2">&amp;</span>content[..pos_end_name + <span class="number">1</span>]
             } <span class="kw">else </span>{
@@ -434,33 +542,37 @@
         };
 
         <span class="kw">let </span>decoder = <span class="self">self</span>.decoder();
-        <span class="kw">let </span>mismatch_err = |expected: String, found: <span class="kw-2">&amp;</span>[u8], offset: <span class="kw-2">&amp;mut </span>usize| {
-            <span class="kw-2">*</span>offset -= buf.len();
-            <span class="prelude-val">Err</span>(Error::EndEventMismatch {
-                expected,
-                found: decoder.decode(found).unwrap_or_default().into_owned(),
-            })
-        };
 
         <span class="comment">// Get the index in self.opened_buffer of the name of the last opened tag
         </span><span class="kw">match </span><span class="self">self</span>.opened_starts.pop() {
             <span class="prelude-val">Some</span>(start) =&gt; {
-                <span class="kw">if </span><span class="self">self</span>.check_end_names {
+                <span class="kw">if </span><span class="self">self</span>.config.check_end_names {
                     <span class="kw">let </span>expected = <span class="kw-2">&amp;</span><span class="self">self</span>.opened_buffer[start..];
                     <span class="kw">if </span>name != expected {
                         <span class="kw">let </span>expected = decoder.decode(expected).unwrap_or_default().into_owned();
                         <span class="comment">// #513: In order to allow error recovery we should drop content of the buffer
                         </span><span class="self">self</span>.opened_buffer.truncate(start);
 
-                        <span class="kw">return </span>mismatch_err(expected, name, <span class="kw-2">&amp;mut </span><span class="self">self</span>.offset);
+                        <span class="comment">// Report error at start of the end tag at `&lt;` character
+                        // -2 for `&lt;` and `&gt;`
+                        </span><span class="self">self</span>.last_error_offset = <span class="self">self</span>.offset - buf.len() <span class="kw">as </span>u64 - <span class="number">2</span>;
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::IllFormed(IllFormedError::MismatchedEndTag {
+                            expected,
+                            found: decoder.decode(name).unwrap_or_default().into_owned(),
+                        }));
                     }
                 }
 
                 <span class="self">self</span>.opened_buffer.truncate(start);
             }
             <span class="prelude-val">None </span>=&gt; {
-                <span class="kw">if </span><span class="self">self</span>.check_end_names {
-                    <span class="kw">return </span>mismatch_err(<span class="string">""</span>.to_string(), <span class="kw-2">&amp;</span>buf[<span class="number">1</span>..], <span class="kw-2">&amp;mut </span><span class="self">self</span>.offset);
+                <span class="kw">if </span>!<span class="self">self</span>.config.allow_unmatched_ends {
+                    <span class="comment">// Report error at start of the end tag at `&lt;` character
+                    // -2 for `&lt;` and `&gt;`
+                    </span><span class="self">self</span>.last_error_offset = <span class="self">self</span>.offset - buf.len() <span class="kw">as </span>u64 - <span class="number">2</span>;
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::IllFormed(IllFormedError::UnmatchedEndTag(
+                        decoder.decode(name).unwrap_or_default().into_owned(),
+                    )));
                 }
             }
         }
@@ -468,13 +580,24 @@
         <span class="prelude-val">Ok</span>(Event::End(BytesEnd::wrap(name.into())))
     }
 
-    <span class="doccomment">/// reads `BytesElement` starting with a `?`,
-    /// return `Decl` or `PI` event
+    <span class="doccomment">/// `buf` contains data between `&lt;` and `&gt;` and the first byte is `?`.
+    /// `self.offset` already after the `&gt;`
+    ///
+    /// Returns `Decl` or `PI` event
     </span><span class="kw">pub fn </span>emit_question_mark&lt;<span class="lifetime">'b</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'b</span>&gt;&gt; {
+        <span class="macro">debug_assert!</span>(buf.len() &gt; <span class="number">0</span>);
+        <span class="macro">debug_assert_eq!</span>(buf[<span class="number">0</span>], <span class="string">b'?'</span>);
+
         <span class="kw">let </span>len = buf.len();
-        <span class="kw">if </span>len &gt; <span class="number">2 </span>&amp;&amp; buf[len - <span class="number">1</span>] == <span class="string">b'?' </span>{
-            <span class="kw">if </span>len &gt; <span class="number">5 </span>&amp;&amp; <span class="kw-2">&amp;</span>buf[<span class="number">1</span>..<span class="number">4</span>] == <span class="string">b"xml" </span>&amp;&amp; is_whitespace(buf[<span class="number">4</span>]) {
-                <span class="kw">let </span>event = BytesDecl::from_start(BytesStart::wrap(<span class="kw-2">&amp;</span>buf[<span class="number">1</span>..len - <span class="number">1</span>], <span class="number">3</span>));
+        <span class="comment">// We accept at least &lt;??&gt;
+        //                     ~~ - len = 2
+        </span><span class="kw">if </span>len &gt; <span class="number">1 </span>&amp;&amp; buf[len - <span class="number">1</span>] == <span class="string">b'?' </span>{
+            <span class="comment">// Cut of `?` and `?` from start and end
+            </span><span class="kw">let </span>content = <span class="kw-2">&amp;</span>buf[<span class="number">1</span>..len - <span class="number">1</span>];
+            <span class="kw">let </span>len = content.len();
+
+            <span class="kw">if </span>content.starts_with(<span class="string">b"xml"</span>) &amp;&amp; (len == <span class="number">3 </span>|| is_whitespace(content[<span class="number">3</span>])) {
+                <span class="kw">let </span>event = BytesDecl::from_start(BytesStart::wrap(content, <span class="number">3</span>));
 
                 <span class="comment">// Try getting encoding from the declaration event
                 </span><span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
@@ -486,11 +609,14 @@
 
                 <span class="prelude-val">Ok</span>(Event::Decl(event))
             } <span class="kw">else </span>{
-                <span class="prelude-val">Ok</span>(Event::PI(BytesText::wrap(<span class="kw-2">&amp;</span>buf[<span class="number">1</span>..len - <span class="number">1</span>], <span class="self">self</span>.decoder())))
+                <span class="prelude-val">Ok</span>(Event::PI(BytesPI::wrap(content, name_len(content))))
             }
         } <span class="kw">else </span>{
-            <span class="self">self</span>.offset -= len;
-            <span class="prelude-val">Err</span>(Error::UnexpectedEof(<span class="string">"XmlDecl"</span>.to_string()))
+            <span class="comment">// &lt;?....EOF
+            //  ^^^^^ - `buf` does not contains `&lt;`, but we want to report error at `&lt;`,
+            //          so we move offset to it (-2 for `&lt;` and `&gt;`)
+            </span><span class="self">self</span>.last_error_offset = <span class="self">self</span>.offset - len <span class="kw">as </span>u64 - <span class="number">2</span>;
+            <span class="prelude-val">Err</span>(Error::Syntax(SyntaxError::UnclosedPIOrXmlDecl))
         }
     }
 
@@ -498,42 +624,38 @@
     ///
     /// # Parameters
     /// - `content`: Content of a tag between `&lt;` and `&gt;`
-    </span><span class="kw">pub fn </span>emit_start&lt;<span class="lifetime">'b</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, content: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'b</span>&gt;&gt; {
-        <span class="kw">let </span>len = content.len();
-        <span class="kw">let </span>name_end = content
-            .iter()
-            .position(|<span class="kw-2">&amp;</span>b| is_whitespace(b))
-            .unwrap_or(len);
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="string">b'/'</span>) = content.last() {
+    </span><span class="kw">pub fn </span>emit_start&lt;<span class="lifetime">'b</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, content: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]) -&gt; Event&lt;<span class="lifetime">'b</span>&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(content) = content.strip_suffix(<span class="string">b"/"</span>) {
             <span class="comment">// This is self-closed tag `&lt;something/&gt;`
-            </span><span class="kw">let </span>name_len = <span class="kw">if </span>name_end &lt; len { name_end } <span class="kw">else </span>{ len - <span class="number">1 </span>};
-            <span class="kw">let </span>event = BytesStart::wrap(<span class="kw-2">&amp;</span>content[..len - <span class="number">1</span>], name_len);
+            </span><span class="kw">let </span>event = BytesStart::wrap(content, name_len(content));
 
-            <span class="kw">if </span><span class="self">self</span>.expand_empty_elements {
-                <span class="self">self</span>.state = ParseState::Empty;
+            <span class="kw">if </span><span class="self">self</span>.config.expand_empty_elements {
+                <span class="self">self</span>.state = ParseState::InsideEmpty;
                 <span class="self">self</span>.opened_starts.push(<span class="self">self</span>.opened_buffer.len());
-                <span class="self">self</span>.opened_buffer.extend(<span class="kw-2">&amp;</span>content[..name_len]);
-                <span class="prelude-val">Ok</span>(Event::Start(event))
+                <span class="self">self</span>.opened_buffer.extend(event.name().as_ref());
+                Event::Start(event)
             } <span class="kw">else </span>{
-                <span class="prelude-val">Ok</span>(Event::Empty(event))
+                Event::Empty(event)
             }
         } <span class="kw">else </span>{
+            <span class="kw">let </span>event = BytesStart::wrap(content, name_len(content));
+
             <span class="comment">// #514: Always store names event when .check_end_names == false,
             // because checks can be temporary disabled and when they would be
             // enabled, we should have that information
             </span><span class="self">self</span>.opened_starts.push(<span class="self">self</span>.opened_buffer.len());
-            <span class="self">self</span>.opened_buffer.extend(<span class="kw-2">&amp;</span>content[..name_end]);
-            <span class="prelude-val">Ok</span>(Event::Start(BytesStart::wrap(content, name_end)))
+            <span class="self">self</span>.opened_buffer.extend(event.name().as_ref());
+            Event::Start(event)
         }
     }
 
     <span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>close_expanded_empty(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'static</span>&gt;&gt; {
-        <span class="self">self</span>.state = ParseState::ClosedTag;
+    </span><span class="kw">pub fn </span>close_expanded_empty(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; BytesEnd&lt;<span class="lifetime">'static</span>&gt; {
+        <span class="self">self</span>.state = ParseState::InsideText;
         <span class="kw">let </span>name = <span class="self">self
             </span>.opened_buffer
             .split_off(<span class="self">self</span>.opened_starts.pop().unwrap());
-        <span class="prelude-val">Ok</span>(Event::End(BytesEnd::wrap(name.into())))
+        BytesEnd::wrap(name.into())
     }
 
     <span class="doccomment">/// Get the decoder, used to decode bytes, read by this reader, to the strings.
@@ -545,7 +667,7 @@
     /// defaults to UTF-8.
     ///
     /// [`encoding`]: ../../index.html#encoding
-    </span><span class="kw">pub fn </span>decoder(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Decoder {
+    </span><span class="kw">pub const fn </span>decoder(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Decoder {
         Decoder {
             <span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
             </span>encoding: <span class="self">self</span>.encoding.encoding(),
@@ -557,13 +679,9 @@
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             offset: <span class="number">0</span>,
+            last_error_offset: <span class="number">0</span>,
             state: ParseState::Init,
-            expand_empty_elements: <span class="bool-val">false</span>,
-            trim_text_start: <span class="bool-val">false</span>,
-            trim_text_end: <span class="bool-val">false</span>,
-            trim_markup_names_in_closing_tags: <span class="bool-val">true</span>,
-            check_end_names: <span class="bool-val">true</span>,
-            check_comments: <span class="bool-val">false</span>,
+            config: Config::default(),
             opened_buffer: Vec::new(),
             opened_starts: Vec::new(),
 

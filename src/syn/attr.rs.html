@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.66/src/attr.rs`."><title>attr.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.79/src/attr.rs`."><title>attr.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -791,6 +791,37 @@
 <a href="#791" id="791">791</a>
 <a href="#792" id="792">792</a>
 <a href="#793" id="793">793</a>
+<a href="#794" id="794">794</a>
+<a href="#795" id="795">795</a>
+<a href="#796" id="796">796</a>
+<a href="#797" id="797">797</a>
+<a href="#798" id="798">798</a>
+<a href="#799" id="799">799</a>
+<a href="#800" id="800">800</a>
+<a href="#801" id="801">801</a>
+<a href="#802" id="802">802</a>
+<a href="#803" id="803">803</a>
+<a href="#804" id="804">804</a>
+<a href="#805" id="805">805</a>
+<a href="#806" id="806">806</a>
+<a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
+<a href="#809" id="809">809</a>
+<a href="#810" id="810">810</a>
+<a href="#811" id="811">811</a>
+<a href="#812" id="812">812</a>
+<a href="#813" id="813">813</a>
+<a href="#814" id="814">814</a>
+<a href="#815" id="815">815</a>
+<a href="#816" id="816">816</a>
+<a href="#817" id="817">817</a>
+<a href="#818" id="818">818</a>
+<a href="#819" id="819">819</a>
+<a href="#820" id="820">820</a>
+<a href="#821" id="821">821</a>
+<a href="#822" id="822">822</a>
+<a href="#823" id="823">823</a>
+<a href="#824" id="824">824</a>
 </pre></div><pre class="rust"><code><span class="attr">#[cfg(feature = <span class="string">"parsing"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::error::Error;
 <span class="attr">#[cfg(feature = <span class="string">"parsing"</span>)]
@@ -1241,7 +1272,7 @@
     }
 }
 
-<span class="macro">ast_enum_of_structs!</span> {
+<span class="macro">ast_enum!</span> {
     <span class="doccomment">/// Content of a compile-time structured attribute.
     ///
     /// ## Path
@@ -1418,6 +1449,24 @@
     }
 }
 
+<span class="kw">impl </span>From&lt;Path&gt; <span class="kw">for </span>Meta {
+    <span class="kw">fn </span>from(meta: Path) -&gt; Meta {
+        Meta::Path(meta)
+    }
+}
+
+<span class="kw">impl </span>From&lt;MetaList&gt; <span class="kw">for </span>Meta {
+    <span class="kw">fn </span>from(meta: MetaList) -&gt; Meta {
+        Meta::List(meta)
+    }
+}
+
+<span class="kw">impl </span>From&lt;MetaNameValue&gt; <span class="kw">for </span>Meta {
+    <span class="kw">fn </span>from(meta: MetaNameValue) -&gt; Meta {
+        Meta::NameValue(meta)
+    }
+}
+
 <span class="attr">#[cfg(feature = <span class="string">"parsing"</span>)]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>parsing {
     <span class="kw">use </span><span class="kw">crate</span>::attr::{AttrStyle, Attribute, Meta, MetaList, MetaNameValue};
@@ -1550,7 +1599,9 @@
 
 <span class="attr">#[cfg(feature = <span class="string">"printing"</span>)]
 </span><span class="kw">mod </span>printing {
-    <span class="kw">use </span><span class="kw">crate</span>::attr::{AttrStyle, Attribute, MetaList, MetaNameValue};
+    <span class="kw">use </span><span class="kw">crate</span>::attr::{AttrStyle, Attribute, Meta, MetaList, MetaNameValue};
+    <span class="kw">use </span><span class="kw">crate</span>::path;
+    <span class="kw">use </span><span class="kw">crate</span>::path::printing::PathStyle;
     <span class="kw">use </span>proc_macro2::TokenStream;
     <span class="kw">use </span>quote::ToTokens;
 
@@ -1568,9 +1619,20 @@
     }
 
     <span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"printing"</span>)))]
+    </span><span class="kw">impl </span>ToTokens <span class="kw">for </span>Meta {
+        <span class="kw">fn </span>to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>, tokens: <span class="kw-2">&amp;mut </span>TokenStream) {
+            <span class="kw">match </span><span class="self">self </span>{
+                Meta::Path(path) =&gt; path::printing::print_path(tokens, path, PathStyle::Mod),
+                Meta::List(meta_list) =&gt; meta_list.to_tokens(tokens),
+                Meta::NameValue(meta_name_value) =&gt; meta_name_value.to_tokens(tokens),
+            }
+        }
+    }
+
+    <span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"printing"</span>)))]
     </span><span class="kw">impl </span>ToTokens <span class="kw">for </span>MetaList {
         <span class="kw">fn </span>to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>, tokens: <span class="kw-2">&amp;mut </span>TokenStream) {
-            <span class="self">self</span>.path.to_tokens(tokens);
+            path::printing::print_path(tokens, <span class="kw-2">&amp;</span><span class="self">self</span>.path, PathStyle::Mod);
             <span class="self">self</span>.delimiter.surround(tokens, <span class="self">self</span>.tokens.clone());
         }
     }
@@ -1578,7 +1640,7 @@
     <span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"printing"</span>)))]
     </span><span class="kw">impl </span>ToTokens <span class="kw">for </span>MetaNameValue {
         <span class="kw">fn </span>to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>, tokens: <span class="kw-2">&amp;mut </span>TokenStream) {
-            <span class="self">self</span>.path.to_tokens(tokens);
+            path::printing::print_path(tokens, <span class="kw-2">&amp;</span><span class="self">self</span>.path, PathStyle::Mod);
             <span class="self">self</span>.eq_token.to_tokens(tokens);
             <span class="self">self</span>.value.to_tokens(tokens);
         }

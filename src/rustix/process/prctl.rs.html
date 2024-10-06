@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.34/src/process/prctl.rs`."><title>prctl.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.37/src/process/prctl.rs`."><title>prctl.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1149,6 +1149,7 @@
 <a href="#1149" id="1149">1149</a>
 <a href="#1150" id="1150">1150</a>
 <a href="#1151" id="1151">1151</a>
+<a href="#1152" id="1152">1152</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Bindings for the Linux `prctl` system call.
 //!
 //! There are similarities (but also differences) with FreeBSD's `procctl`
@@ -1180,11 +1181,11 @@
 <span class="doccomment">/// Get the current value of the parent process death signal.
 ///
 /// # References
-///  - [Linux: `prctl(PR_GET_PDEATHSIG,...)`]
-///  - [FreeBSD: `procctl(PROC_PDEATHSIG_STATUS,...)`]
+///  - [Linux: `prctl(PR_GET_PDEATHSIG,…)`]
+///  - [FreeBSD: `procctl(PROC_PDEATHSIG_STATUS,…)`]
 ///
-/// [Linux: `prctl(PR_GET_PDEATHSIG,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
-/// [FreeBSD: `procctl(PROC_PDEATHSIG_STATUS,...)`]: https://man.freebsd.org/cgi/man.cgi?query=procctl&amp;sektion=2
+/// [Linux: `prctl(PR_GET_PDEATHSIG,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [FreeBSD: `procctl(PROC_PDEATHSIG_STATUS,…)`]: https://man.freebsd.org/cgi/man.cgi?query=procctl&amp;sektion=2
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_GET_PDEATHSIG"</span>)]
 </span><span class="kw">pub fn </span>parent_process_death_signal() -&gt; io::Result&lt;<span class="prelude-ty">Option</span>&lt;Signal&gt;&gt; {
@@ -1196,11 +1197,11 @@
 <span class="doccomment">/// Set the parent-death signal of the calling process.
 ///
 /// # References
-///  - [Linux: `prctl(PR_SET_PDEATHSIG,...)`]
-///  - [FreeBSD: `procctl(PROC_PDEATHSIG_CTL,...)`]
+///  - [Linux: `prctl(PR_SET_PDEATHSIG,…)`]
+///  - [FreeBSD: `procctl(PROC_PDEATHSIG_CTL,…)`]
 ///
-/// [Linux: `prctl(PR_SET_PDEATHSIG,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
-/// [FreeBSD: `procctl(PROC_PDEATHSIG_CTL,...)`]: https://man.freebsd.org/cgi/man.cgi?query=procctl&amp;sektion=2
+/// [Linux: `prctl(PR_SET_PDEATHSIG,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [FreeBSD: `procctl(PROC_PDEATHSIG_CTL,…)`]: https://man.freebsd.org/cgi/man.cgi?query=procctl&amp;sektion=2
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_PDEATHSIG"</span>)]
 </span><span class="kw">pub fn </span>set_parent_process_death_signal(signal: <span class="prelude-ty">Option</span>&lt;Signal&gt;) -&gt; io::Result&lt;()&gt; {
@@ -1250,9 +1251,9 @@
 <span class="doccomment">/// Get the current state of the calling process' `dumpable` attribute.
 ///
 /// # References
-///  - [`prctl(PR_GET_DUMPABLE,...)`]
+///  - [`prctl(PR_GET_DUMPABLE,…)`]
 ///
-/// [`prctl(PR_GET_DUMPABLE,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_GET_DUMPABLE,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_GET_DUMPABLE"</span>)]
 </span><span class="kw">pub fn </span>dumpable_behavior() -&gt; io::Result&lt;DumpableBehavior&gt; {
@@ -1261,19 +1262,20 @@
 
 <span class="kw">const </span>PR_SET_DUMPABLE: c_int = <span class="number">4</span>;
 
-<span class="doccomment">/// Set the state of the `dumpable` attribute, which determines whether the
-/// process can be traced and whether core dumps are produced for the calling
-/// process upon delivery of a signal whose default behavior is to produce a
-/// core dump.
+<span class="doccomment">/// Set the state of the `dumpable` attribute.
+///
+/// This attribute determines whether the process can be traced and whether
+/// core dumps are produced for the calling process upon delivery of a signal
+/// whose default behavior is to produce a core dump.
 ///
 /// A similar function with the same name is available on FreeBSD (as part of
 /// the `procctl` interface), but it has an extra argument which allows to
 /// select a process other then the current process.
 ///
 /// # References
-///  - [`prctl(PR_SET_DUMPABLE,...)`]
+///  - [`prctl(PR_SET_DUMPABLE,…)`]
 ///
-/// [`prctl(PR_SET_DUMPABLE,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_DUMPABLE,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_DUMPABLE"</span>)]
 </span><span class="kw">pub fn </span>set_dumpable_behavior(config: DumpableBehavior) -&gt; io::Result&lt;()&gt; {
@@ -1308,9 +1310,9 @@
 <span class="doccomment">/// Get unaligned access control bits.
 ///
 /// # References
-///  - [`prctl(PR_GET_UNALIGN,...)`]
+///  - [`prctl(PR_GET_UNALIGN,…)`]
 ///
-/// [`prctl(PR_GET_UNALIGN,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_GET_UNALIGN,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_GET_UNALIGN"</span>)]
 </span><span class="kw">pub fn </span>unaligned_access_control() -&gt; io::Result&lt;UnalignedAccessControl&gt; {
@@ -1323,9 +1325,9 @@
 <span class="doccomment">/// Set unaligned access control bits.
 ///
 /// # References
-///  - [`prctl(PR_SET_UNALIGN,...)`]
+///  - [`prctl(PR_SET_UNALIGN,…)`]
 ///
-/// [`prctl(PR_SET_UNALIGN,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_UNALIGN,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_UNALIGN"</span>)]
 </span><span class="kw">pub fn </span>set_unaligned_access_control(config: UnalignedAccessControl) -&gt; io::Result&lt;()&gt; {
@@ -1357,9 +1359,9 @@
 <span class="doccomment">/// Get floating point emulation control bits.
 ///
 /// # References
-///  - [`prctl(PR_GET_FPEMU,...)`]
+///  - [`prctl(PR_GET_FPEMU,…)`]
 ///
-/// [`prctl(PR_GET_FPEMU,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_GET_FPEMU,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_GET_FPEMU"</span>)]
 </span><span class="kw">pub fn </span>floating_point_emulation_control() -&gt; io::Result&lt;FloatingPointEmulationControl&gt; {
@@ -1372,9 +1374,9 @@
 <span class="doccomment">/// Set floating point emulation control bits.
 ///
 /// # References
-///  - [`prctl(PR_SET_FPEMU,...)`]
+///  - [`prctl(PR_SET_FPEMU,…)`]
 ///
-/// [`prctl(PR_SET_FPEMU,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_FPEMU,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_FPEMU"</span>)]
 </span><span class="kw">pub fn </span>set_floating_point_emulation_control(
@@ -1419,9 +1421,9 @@
 <span class="doccomment">/// Get floating point exception mode.
 ///
 /// # References
-///  - [`prctl(PR_GET_FPEXC,...)`]
+///  - [`prctl(PR_GET_FPEXC,…)`]
 ///
-/// [`prctl(PR_GET_FPEXC,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_GET_FPEXC,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_GET_FPEXEC"</span>)]
 </span><span class="kw">pub fn </span>floating_point_exception_mode() -&gt; io::Result&lt;<span class="prelude-ty">Option</span>&lt;FloatingPointExceptionMode&gt;&gt; {
@@ -1434,9 +1436,9 @@
 <span class="doccomment">/// Set floating point exception mode.
 ///
 /// # References
-///  - [`prctl(PR_SET_FPEXC,...)`]
+///  - [`prctl(PR_SET_FPEXC,…)`]
 ///
-/// [`prctl(PR_SET_FPEXC,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_FPEXC,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_FPEXEC"</span>)]
 </span><span class="kw">pub fn </span>set_floating_point_exception_mode(
@@ -1481,9 +1483,9 @@
 <span class="doccomment">/// Get which process timing method is currently in use.
 ///
 /// # References
-///  - [`prctl(PR_GET_TIMING,...)`]
+///  - [`prctl(PR_GET_TIMING,…)`]
 ///
-/// [`prctl(PR_GET_TIMING,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_GET_TIMING,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_GET_TIMING"</span>)]
 </span><span class="kw">pub fn </span>timing_method() -&gt; io::Result&lt;TimingMethod&gt; {
@@ -1496,9 +1498,9 @@
 /// accurate timestamp-based process timing.
 ///
 /// # References
-///  - [`prctl(PR_SET_TIMING,...)`]
+///  - [`prctl(PR_SET_TIMING,…)`]
 ///
-/// [`prctl(PR_SET_TIMING,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_TIMING,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_TIMING"</span>)]
 </span><span class="kw">pub fn </span>set_timing_method(method: TimingMethod) -&gt; io::Result&lt;()&gt; {
@@ -1543,9 +1545,9 @@
 <span class="doccomment">/// Get the endianness of the calling process.
 ///
 /// # References
-///  - [`prctl(PR_GET_ENDIAN,...)`]
+///  - [`prctl(PR_GET_ENDIAN,…)`]
 ///
-/// [`prctl(PR_GET_ENDIAN,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_GET_ENDIAN,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_GET_ENDIAN"</span>)]
 </span><span class="kw">pub fn </span>endian_mode() -&gt; io::Result&lt;EndianMode&gt; {
@@ -1557,14 +1559,14 @@
 <span class="doccomment">/// Set the endianness of the calling process.
 ///
 /// # References
-///  - [`prctl(PR_SET_ENDIAN,...)`]
+///  - [`prctl(PR_SET_ENDIAN,…)`]
 ///
 /// # Safety
 ///
 /// Please ensure the conditions necessary to safely call this function, as
 /// detailed in the references above.
 ///
-/// [`prctl(PR_SET_ENDIAN,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_ENDIAN,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_ENDIAN"</span>)]
 </span><span class="kw">pub unsafe fn </span>set_endian_mode(mode: EndianMode) -&gt; io::Result&lt;()&gt; {
@@ -1606,9 +1608,9 @@
 <span class="doccomment">/// Get the state of the flag determining if the timestamp counter can be read.
 ///
 /// # References
-///  - [`prctl(PR_GET_TSC,...)`]
+///  - [`prctl(PR_GET_TSC,…)`]
 ///
-/// [`prctl(PR_GET_TSC,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_GET_TSC,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_GET_TSC"</span>)]
 </span><span class="kw">pub fn </span>time_stamp_counter_readability() -&gt; io::Result&lt;TimeStampCounterReadability&gt; {
@@ -1621,9 +1623,9 @@
 /// by the process.
 ///
 /// # References
-///  - [`prctl(PR_SET_TSC,...)`]
+///  - [`prctl(PR_SET_TSC,…)`]
 ///
-/// [`prctl(PR_SET_TSC,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_TSC,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_TSC"</span>)]
 </span><span class="kw">pub fn </span>set_time_stamp_counter_readability(
@@ -1642,11 +1644,11 @@
 <span class="doccomment">/// Enable or disable all performance counters attached to the calling process.
 ///
 /// # References
-///  - [`prctl(PR_TASK_PERF_EVENTS_ENABLE,...)`]
-///  - [`prctl(PR_TASK_PERF_EVENTS_DISABLE,...)`]
+///  - [`prctl(PR_TASK_PERF_EVENTS_ENABLE,…)`]
+///  - [`prctl(PR_TASK_PERF_EVENTS_DISABLE,…)`]
 ///
-/// [`prctl(PR_TASK_PERF_EVENTS_ENABLE,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
-/// [`prctl(PR_TASK_PERF_EVENTS_DISABLE,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_TASK_PERF_EVENTS_ENABLE,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_TASK_PERF_EVENTS_DISABLE,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_TASK_PERF_EVENTS_ENABLE"</span>)]
 #[doc(alias = <span class="string">"PR_TASK_PERF_EVENTS_DISABLE"</span>)]
@@ -1703,9 +1705,9 @@
 <span class="doccomment">/// Get the current per-process machine check kill policy.
 ///
 /// # References
-///  - [`prctl(PR_MCE_KILL_GET,...)`]
+///  - [`prctl(PR_MCE_KILL_GET,…)`]
 ///
-/// [`prctl(PR_MCE_KILL_GET,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_MCE_KILL_GET,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_MCE_KILL_GET"</span>)]
 </span><span class="kw">pub fn </span>machine_check_memory_corruption_kill_policy(
@@ -1722,9 +1724,9 @@
 <span class="doccomment">/// Set the machine check memory corruption kill policy for the calling thread.
 ///
 /// # References
-///  - [`prctl(PR_MCE_KILL,...)`]
+///  - [`prctl(PR_MCE_KILL,…)`]
 ///
-/// [`prctl(PR_MCE_KILL,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_MCE_KILL,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_MCE_KILL"</span>)]
 </span><span class="kw">pub fn </span>set_machine_check_memory_corruption_kill_policy(
@@ -1796,14 +1798,14 @@
 /// process.
 ///
 /// # References
-///  - [`prctl(PR_SET_MM,...)`]
+///  - [`prctl(PR_SET_MM,…)`]
 ///
 /// # Safety
 ///
 /// Please ensure the conditions necessary to safely call this function, as
 /// detailed in the references above.
 ///
-/// [`prctl(PR_SET_MM,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_MM,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_MM"</span>)]
 </span><span class="kw">pub unsafe fn </span>set_virtual_memory_map_address(
@@ -1818,9 +1820,9 @@
 /// new executable file.
 ///
 /// # References
-///  - [`prctl(PR_SET_MM,PR_SET_MM_EXE_FILE,...)`]
+///  - [`prctl(PR_SET_MM,PR_SET_MM_EXE_FILE,…)`]
 ///
-/// [`prctl(PR_SET_MM,PR_SET_MM_EXE_FILE,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_MM,PR_SET_MM_EXE_FILE,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_MM"</span>)]
 #[doc(alias = <span class="string">"PR_SET_MM_EXE_FILE"</span>)]
@@ -1832,14 +1834,14 @@
 <span class="doccomment">/// Set a new auxiliary vector.
 ///
 /// # References
-///  - [`prctl(PR_SET_MM,PR_SET_MM_AUXV,...)`]
+///  - [`prctl(PR_SET_MM,PR_SET_MM_AUXV,…)`]
 ///
 /// # Safety
 ///
 /// Please ensure the conditions necessary to safely call this function, as
 /// detailed in the references above.
 ///
-/// [`prctl(PR_SET_MM,PR_SET_MM_AUXV,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_MM,PR_SET_MM_AUXV,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_MM"</span>)]
 #[doc(alias = <span class="string">"PR_SET_MM_AUXV"</span>)]
@@ -1857,9 +1859,9 @@
 <span class="doccomment">/// Get the size of the [`PrctlMmMap`] the kernel expects.
 ///
 /// # References
-///  - [`prctl(PR_SET_MM,PR_SET_MM_MAP_SIZE,...)`]
+///  - [`prctl(PR_SET_MM,PR_SET_MM_MAP_SIZE,…)`]
 ///
-/// [`prctl(PR_SET_MM,PR_SET_MM_MAP_SIZE,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_MM,PR_SET_MM_MAP_SIZE,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_MM"</span>)]
 #[doc(alias = <span class="string">"PR_SET_MM_MAP_SIZE"</span>)]
@@ -1911,14 +1913,14 @@
 /// [`PrctlMmMap`].
 ///
 /// # References
-///  - [`prctl(PR_SET_MM,PR_SET_MM_MAP,...)`]
+///  - [`prctl(PR_SET_MM,PR_SET_MM_MAP,…)`]
 ///
 /// # Safety
 ///
 /// Please ensure the conditions necessary to safely call this function, as
 /// detailed in the references above.
 ///
-/// [`prctl(PR_SET_MM,PR_SET_MM_MAP,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_MM,PR_SET_MM_MAP,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_MM"</span>)]
 #[doc(alias = <span class="string">"PR_SET_MM_MAP"</span>)]
@@ -1956,9 +1958,9 @@
 /// were a direct process ancestor.
 ///
 /// # References
-///  - [`prctl(PR_SET_PTRACER,...)`]
+///  - [`prctl(PR_SET_PTRACER,…)`]
 ///
-/// [`prctl(PR_SET_PTRACER,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_PTRACER,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_PTRACER"</span>)]
 </span><span class="kw">pub fn </span>set_ptracer(tracer: PTracer) -&gt; io::Result&lt;()&gt; {
@@ -1980,9 +1982,9 @@
 <span class="doccomment">/// Get the `child subreaper` setting of the calling process.
 ///
 /// # References
-///  - [`prctl(PR_GET_CHILD_SUBREAPER,...)`]
+///  - [`prctl(PR_GET_CHILD_SUBREAPER,…)`]
 ///
-/// [`prctl(PR_GET_CHILD_SUBREAPER,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_GET_CHILD_SUBREAPER,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_GET_CHILD_SUBREAPER"</span>)]
 </span><span class="kw">pub fn </span>child_subreaper() -&gt; io::Result&lt;<span class="prelude-ty">Option</span>&lt;Pid&gt;&gt; {
@@ -1997,9 +1999,9 @@
 <span class="doccomment">/// Set the `child subreaper` attribute of the calling process.
 ///
 /// # References
-///  - [`prctl(PR_SET_CHILD_SUBREAPER,...)`]
+///  - [`prctl(PR_SET_CHILD_SUBREAPER,…)`]
 ///
-/// [`prctl(PR_SET_CHILD_SUBREAPER,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_CHILD_SUBREAPER,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_CHILD_SUBREAPER"</span>)]
 </span><span class="kw">pub fn </span>set_child_subreaper(pid: <span class="prelude-ty">Option</span>&lt;Pid&gt;) -&gt; io::Result&lt;()&gt; {
@@ -2042,9 +2044,9 @@
 <span class="doccomment">/// Get the current floating point mode.
 ///
 /// # References
-///  - [`prctl(PR_GET_FP_MODE,...)`]
+///  - [`prctl(PR_GET_FP_MODE,…)`]
 ///
-/// [`prctl(PR_GET_FP_MODE,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_GET_FP_MODE,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_GET_FP_MODE"</span>)]
 </span><span class="kw">pub fn </span>floating_point_mode() -&gt; io::Result&lt;FloatingPointMode&gt; {
@@ -2057,9 +2059,9 @@
 <span class="doccomment">/// Allow control of the floating point mode from user space.
 ///
 /// # References
-///  - [`prctl(PR_SET_FP_MODE,...)`]
+///  - [`prctl(PR_SET_FP_MODE,…)`]
 ///
-/// [`prctl(PR_SET_FP_MODE,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_FP_MODE,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_FP_MODE"</span>)]
 </span><span class="kw">pub fn </span>set_floating_point_mode(mode: FloatingPointMode) -&gt; io::Result&lt;()&gt; {
@@ -2144,9 +2146,9 @@
 <span class="doccomment">/// Get the state of the speculation misfeature.
 ///
 /// # References
-///  - [`prctl(PR_GET_SPECULATION_CTRL,...)`]
+///  - [`prctl(PR_GET_SPECULATION_CTRL,…)`]
 ///
-/// [`prctl(PR_GET_SPECULATION_CTRL,...)`]: https://www.kernel.org/doc/html/v5.18/userspace-api/spec_ctrl.html
+/// [`prctl(PR_GET_SPECULATION_CTRL,…)`]: https://www.kernel.org/doc/html/v6.10/userspace-api/spec_ctrl.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_GET_SPECULATION_CTRL"</span>)]
 </span><span class="kw">pub fn </span>speculative_feature_state(
@@ -2161,9 +2163,9 @@
 <span class="doccomment">/// Sets the state of the speculation misfeature.
 ///
 /// # References
-///  - [`prctl(PR_SET_SPECULATION_CTRL,...)`]
+///  - [`prctl(PR_SET_SPECULATION_CTRL,…)`]
 ///
-/// [`prctl(PR_SET_SPECULATION_CTRL,...)`]: https://www.kernel.org/doc/html/v5.18/userspace-api/spec_ctrl.html
+/// [`prctl(PR_SET_SPECULATION_CTRL,…)`]: https://www.kernel.org/doc/html/v6.10/userspace-api/spec_ctrl.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_SPECULATION_CTRL"</span>)]
 </span><span class="kw">pub fn </span>control_speculative_feature(
@@ -2184,9 +2186,9 @@
 <span class="doccomment">/// Get the `IO_FLUSHER` state of the caller.
 ///
 /// # References
-///  - [`prctl(PR_GET_IO_FLUSHER,...)`]
+///  - [`prctl(PR_GET_IO_FLUSHER,…)`]
 ///
-/// [`prctl(PR_GET_IO_FLUSHER,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_GET_IO_FLUSHER,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_GET_IO_FLUSHER"</span>)]
 </span><span class="kw">pub fn </span>is_io_flusher() -&gt; io::Result&lt;bool&gt; {
@@ -2199,9 +2201,9 @@
 /// when allocating memory.
 ///
 /// # References
-///  - [`prctl(PR_SET_IO_FLUSHER,...)`]
+///  - [`prctl(PR_SET_IO_FLUSHER,…)`]
 ///
-/// [`prctl(PR_SET_IO_FLUSHER,...)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
+/// [`prctl(PR_SET_IO_FLUSHER,…)`]: https://man7.org/linux/man-pages/man2/prctl.2.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_IO_FLUSHER"</span>)]
 </span><span class="kw">pub fn </span>configure_io_flusher_behavior(enable: bool) -&gt; io::Result&lt;()&gt; {
@@ -2217,9 +2219,9 @@
 <span class="doccomment">/// Get enabled pointer authentication keys.
 ///
 /// # References
-///  - [`prctl(PR_PAC_GET_ENABLED_KEYS,...)`]
+///  - [`prctl(PR_PAC_GET_ENABLED_KEYS,…)`]
 ///
-/// [`prctl(PR_PAC_GET_ENABLED_KEYS,...)`]: https://www.kernel.org/doc/html/v5.18/arm64/pointer-authentication.html
+/// [`prctl(PR_PAC_GET_ENABLED_KEYS,…)`]: https://www.kernel.org/doc/html/v6.10/arch/arm64/pointer-authentication.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_PAC_GET_ENABLED_KEYS"</span>)]
 </span><span class="kw">pub fn </span>enabled_pointer_authentication_keys() -&gt; io::Result&lt;PointerAuthenticationKeys&gt; {
@@ -2232,14 +2234,14 @@
 <span class="doccomment">/// Set enabled pointer authentication keys.
 ///
 /// # References
-///  - [`prctl(PR_PAC_SET_ENABLED_KEYS,...)`]
+///  - [`prctl(PR_PAC_SET_ENABLED_KEYS,…)`]
 ///
 /// # Safety
 ///
 /// Please ensure the conditions necessary to safely call this function, as
 /// detailed in the references above.
 ///
-/// [`prctl(PR_PAC_SET_ENABLED_KEYS,...)`]: https://www.kernel.org/doc/html/v5.18/arm64/pointer-authentication.html
+/// [`prctl(PR_PAC_SET_ENABLED_KEYS,…)`]: https://www.kernel.org/doc/html/v6.10/arch/arm64/pointer-authentication.html
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_PAC_SET_ENABLED_KEYS"</span>)]
 </span><span class="kw">pub unsafe fn </span>configure_pointer_authentication_keys(
@@ -2282,9 +2284,9 @@
 <span class="doccomment">/// Set the name for a virtual memory region.
 ///
 /// # References
-///  - [`prctl(PR_SET_VMA,PR_SET_VMA_ANON_NAME,...)`]
+///  - [`prctl(PR_SET_VMA,PR_SET_VMA_ANON_NAME,…)`]
 ///
-/// [`prctl(PR_SET_VMA,PR_SET_VMA_ANON_NAME,...)`]: https://lwn.net/Articles/867818/
+/// [`prctl(PR_SET_VMA,PR_SET_VMA_ANON_NAME,…)`]: https://lwn.net/Articles/867818/
 </span><span class="attr">#[inline]
 #[doc(alias = <span class="string">"PR_SET_VMA"</span>)]
 #[doc(alias = <span class="string">"PR_SET_VMA_ANON_NAME"</span>)]

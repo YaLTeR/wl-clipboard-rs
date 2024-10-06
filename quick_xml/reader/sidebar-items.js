@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["NsReader","Reader"],"type":["Span"]};
+window.SIDEBAR_ITEMS = {"struct":["BinaryStream","Config","NsReader","Reader"],"type":["Span"]};

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.66/src/buffer.rs`."><title>buffer.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.79/src/buffer.rs`."><title>buffer.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -429,9 +429,6 @@
 <a href="#429" id="429">429</a>
 <a href="#430" id="430">430</a>
 <a href="#431" id="431">431</a>
-<a href="#432" id="432">432</a>
-<a href="#433" id="433">433</a>
-<a href="#434" id="434">434</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! A stably addressed token buffer supporting efficient traversal based on a
 //! cheaply copyable cursor.
 
@@ -454,8 +451,9 @@
     Ident(Ident),
     Punct(Punct),
     Literal(Literal),
-    <span class="comment">// End entries contain the offset (negative) to the start of the buffer.
-    </span>End(isize),
+    <span class="comment">// End entries contain the offset (negative) to the start of the buffer, and
+    // offset (negative) to the matching Group entry.
+    </span>End(isize, isize),
 }
 
 <span class="doccomment">/// A buffer that can be efficiently traversed multiple times, unlike
@@ -476,12 +474,15 @@
                 TokenTree::Literal(literal) =&gt; entries.push(Entry::Literal(literal)),
                 TokenTree::Group(group) =&gt; {
                     <span class="kw">let </span>group_start_index = entries.len();
-                    entries.push(Entry::End(<span class="number">0</span>)); <span class="comment">// we replace this below
+                    entries.push(Entry::End(<span class="number">0</span>, <span class="number">0</span>)); <span class="comment">// we replace this below
                     </span><span class="self">Self</span>::recursive_new(entries, group.stream());
                     <span class="kw">let </span>group_end_index = entries.len();
-                    entries.push(Entry::End(-(group_end_index <span class="kw">as </span>isize)));
-                    <span class="kw">let </span>group_end_offset = group_end_index - group_start_index;
-                    entries[group_start_index] = Entry::Group(group, group_end_offset);
+                    <span class="kw">let </span>group_offset = group_end_index - group_start_index;
+                    entries.push(Entry::End(
+                        -(group_end_index <span class="kw">as </span>isize),
+                        -(group_offset <span class="kw">as </span>isize),
+                    ));
+                    entries[group_start_index] = Entry::Group(group, group_offset);
                 }
             }
         }
@@ -500,7 +501,7 @@
     </span><span class="kw">pub fn </span>new2(stream: TokenStream) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>entries = Vec::new();
         <span class="self">Self</span>::recursive_new(<span class="kw-2">&amp;mut </span>entries, stream);
-        entries.push(Entry::End(-(entries.len() <span class="kw">as </span>isize)));
+        entries.push(Entry::End(-(entries.len() <span class="kw">as </span>isize), <span class="number">0</span>));
         <span class="self">Self </span>{
             entries: entries.into_boxed_slice(),
         }
@@ -545,7 +546,7 @@
         // object in global storage.
         </span><span class="kw">struct </span>UnsafeSyncEntry(Entry);
         <span class="kw">unsafe impl </span>Sync <span class="kw">for </span>UnsafeSyncEntry {}
-        <span class="kw">static </span>EMPTY_ENTRY: UnsafeSyncEntry = UnsafeSyncEntry(Entry::End(<span class="number">0</span>));
+        <span class="kw">static </span>EMPTY_ENTRY: UnsafeSyncEntry = UnsafeSyncEntry(Entry::End(<span class="number">0</span>, <span class="number">0</span>));
 
         Cursor {
             ptr: <span class="kw-2">&amp;</span>EMPTY_ENTRY.<span class="number">0</span>,
@@ -562,7 +563,7 @@
         // past it, unless `ptr == scope`, which means that we're at the edge of
         // our cursor's scope. We should only have `ptr != scope` at the exit
         // from None-delimited groups entered with `ignore_none`.
-        </span><span class="kw">while let </span>Entry::End(<span class="kw">_</span>) = <span class="kw">unsafe </span>{ <span class="kw-2">&amp;*</span>ptr } {
+        </span><span class="kw">while let </span>Entry::End(..) = <span class="kw">unsafe </span>{ <span class="kw-2">&amp;*</span>ptr } {
             <span class="kw">if </span>ptr == scope {
                 <span class="kw">break</span>;
             }
@@ -734,7 +735,7 @@
             Entry::Literal(literal) =&gt; (literal.clone().into(), <span class="number">1</span>),
             Entry::Ident(ident) =&gt; (ident.clone().into(), <span class="number">1</span>),
             Entry::Punct(punct) =&gt; (punct.clone().into(), <span class="number">1</span>),
-            Entry::End(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
+            Entry::End(..) =&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
         };
 
         <span class="kw">let </span>rest = <span class="kw">unsafe </span>{ Cursor::create(<span class="self">self</span>.ptr.add(len), <span class="self">self</span>.scope) };
@@ -743,13 +744,20 @@
 
     <span class="doccomment">/// Returns the `Span` of the current token, or `Span::call_site()` if this
     /// cursor points to eof.
-    </span><span class="kw">pub fn </span>span(<span class="self">self</span>) -&gt; Span {
+    </span><span class="kw">pub fn </span>span(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; Span {
         <span class="kw">match </span><span class="self">self</span>.entry() {
             Entry::Group(group, <span class="kw">_</span>) =&gt; group.span(),
             Entry::Literal(literal) =&gt; literal.span(),
             Entry::Ident(ident) =&gt; ident.span(),
             Entry::Punct(punct) =&gt; punct.span(),
-            Entry::End(<span class="kw">_</span>) =&gt; Span::call_site(),
+            Entry::End(<span class="kw">_</span>, offset) =&gt; {
+                <span class="self">self</span>.ptr = <span class="kw">unsafe </span>{ <span class="self">self</span>.ptr.offset(<span class="kw-2">*</span>offset) };
+                <span class="kw">if let </span>Entry::Group(group, <span class="kw">_</span>) = <span class="self">self</span>.entry() {
+                    group.span_close()
+                } <span class="kw">else </span>{
+                    Span::call_site()
+                }
+            }
         }
     }
 
@@ -759,23 +767,6 @@
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>prev_span(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; Span {
         <span class="kw">if </span>start_of_buffer(<span class="self">self</span>) &lt; <span class="self">self</span>.ptr {
             <span class="self">self</span>.ptr = <span class="kw">unsafe </span>{ <span class="self">self</span>.ptr.offset(-<span class="number">1</span>) };
-            <span class="kw">if let </span>Entry::End(<span class="kw">_</span>) = <span class="self">self</span>.entry() {
-                <span class="comment">// Locate the matching Group begin token.
-                </span><span class="kw">let </span><span class="kw-2">mut </span>depth = <span class="number">1</span>;
-                <span class="kw">loop </span>{
-                    <span class="self">self</span>.ptr = <span class="kw">unsafe </span>{ <span class="self">self</span>.ptr.offset(-<span class="number">1</span>) };
-                    <span class="kw">match </span><span class="self">self</span>.entry() {
-                        Entry::Group(group, <span class="kw">_</span>) =&gt; {
-                            depth -= <span class="number">1</span>;
-                            <span class="kw">if </span>depth == <span class="number">0 </span>{
-                                <span class="kw">return </span>group.span();
-                            }
-                        }
-                        Entry::End(<span class="kw">_</span>) =&gt; depth += <span class="number">1</span>,
-                        Entry::Literal(<span class="kw">_</span>) | Entry::Ident(<span class="kw">_</span>) | Entry::Punct(<span class="kw">_</span>) =&gt; {}
-                    }
-                }
-            }
         }
         <span class="self">self</span>.span()
     }
@@ -788,7 +779,7 @@
         <span class="self">self</span>.ignore_none();
 
         <span class="kw">let </span>len = <span class="kw">match </span><span class="self">self</span>.entry() {
-            Entry::End(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
+            Entry::End(..) =&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
 
             <span class="comment">// Treat lifetimes as a single tt for the purposes of 'skip'.
             </span>Entry::Punct(punct) <span class="kw">if </span>punct.as_char() == <span class="string">'\'' </span>&amp;&amp; punct.spacing() == Spacing::Joint =&gt; {
@@ -803,6 +794,16 @@
         };
 
         <span class="prelude-val">Some</span>(<span class="kw">unsafe </span>{ Cursor::create(<span class="self">self</span>.ptr.add(len), <span class="self">self</span>.scope) })
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>scope_delimiter(<span class="self">self</span>) -&gt; Delimiter {
+        <span class="kw">match unsafe </span>{ <span class="kw-2">&amp;*</span><span class="self">self</span>.scope } {
+            Entry::End(<span class="kw">_</span>, offset) =&gt; <span class="kw">match unsafe </span>{ <span class="kw-2">&amp;*</span><span class="self">self</span>.scope.offset(<span class="kw-2">*</span>offset) } {
+                Entry::Group(group, <span class="kw">_</span>) =&gt; group.delimiter(),
+                <span class="kw">_ </span>=&gt; Delimiter::None,
+            },
+            <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
+        }
     }
 }
 
@@ -843,7 +844,7 @@
 <span class="kw">fn </span>start_of_buffer(cursor: Cursor) -&gt; <span class="kw-2">*const </span>Entry {
     <span class="kw">unsafe </span>{
         <span class="kw">match </span><span class="kw-2">&amp;*</span>cursor.scope {
-            Entry::End(offset) =&gt; cursor.scope.offset(<span class="kw-2">*</span>offset),
+            Entry::End(offset, <span class="kw">_</span>) =&gt; cursor.scope.offset(<span class="kw-2">*</span>offset),
             <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
         }
     }
@@ -856,13 +857,6 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>open_span_of_group(cursor: Cursor) -&gt; Span {
     <span class="kw">match </span>cursor.entry() {
         Entry::Group(group, <span class="kw">_</span>) =&gt; group.span_open(),
-        <span class="kw">_ </span>=&gt; cursor.span(),
-    }
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>close_span_of_group(cursor: Cursor) -&gt; Span {
-    <span class="kw">match </span>cursor.entry() {
-        Entry::Group(group, <span class="kw">_</span>) =&gt; group.span_close(),
         <span class="kw">_ </span>=&gt; cursor.span(),
     }
 }

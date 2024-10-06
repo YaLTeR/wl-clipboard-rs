@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.2.6/src/map.rs`."><title>map.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="indexmap" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.6.0/src/map.rs`."><title>map.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="indexmap" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1415,6 +1415,167 @@
 <a href="#1415" id="1415">1415</a>
 <a href="#1416" id="1416">1416</a>
 <a href="#1417" id="1417">1417</a>
+<a href="#1418" id="1418">1418</a>
+<a href="#1419" id="1419">1419</a>
+<a href="#1420" id="1420">1420</a>
+<a href="#1421" id="1421">1421</a>
+<a href="#1422" id="1422">1422</a>
+<a href="#1423" id="1423">1423</a>
+<a href="#1424" id="1424">1424</a>
+<a href="#1425" id="1425">1425</a>
+<a href="#1426" id="1426">1426</a>
+<a href="#1427" id="1427">1427</a>
+<a href="#1428" id="1428">1428</a>
+<a href="#1429" id="1429">1429</a>
+<a href="#1430" id="1430">1430</a>
+<a href="#1431" id="1431">1431</a>
+<a href="#1432" id="1432">1432</a>
+<a href="#1433" id="1433">1433</a>
+<a href="#1434" id="1434">1434</a>
+<a href="#1435" id="1435">1435</a>
+<a href="#1436" id="1436">1436</a>
+<a href="#1437" id="1437">1437</a>
+<a href="#1438" id="1438">1438</a>
+<a href="#1439" id="1439">1439</a>
+<a href="#1440" id="1440">1440</a>
+<a href="#1441" id="1441">1441</a>
+<a href="#1442" id="1442">1442</a>
+<a href="#1443" id="1443">1443</a>
+<a href="#1444" id="1444">1444</a>
+<a href="#1445" id="1445">1445</a>
+<a href="#1446" id="1446">1446</a>
+<a href="#1447" id="1447">1447</a>
+<a href="#1448" id="1448">1448</a>
+<a href="#1449" id="1449">1449</a>
+<a href="#1450" id="1450">1450</a>
+<a href="#1451" id="1451">1451</a>
+<a href="#1452" id="1452">1452</a>
+<a href="#1453" id="1453">1453</a>
+<a href="#1454" id="1454">1454</a>
+<a href="#1455" id="1455">1455</a>
+<a href="#1456" id="1456">1456</a>
+<a href="#1457" id="1457">1457</a>
+<a href="#1458" id="1458">1458</a>
+<a href="#1459" id="1459">1459</a>
+<a href="#1460" id="1460">1460</a>
+<a href="#1461" id="1461">1461</a>
+<a href="#1462" id="1462">1462</a>
+<a href="#1463" id="1463">1463</a>
+<a href="#1464" id="1464">1464</a>
+<a href="#1465" id="1465">1465</a>
+<a href="#1466" id="1466">1466</a>
+<a href="#1467" id="1467">1467</a>
+<a href="#1468" id="1468">1468</a>
+<a href="#1469" id="1469">1469</a>
+<a href="#1470" id="1470">1470</a>
+<a href="#1471" id="1471">1471</a>
+<a href="#1472" id="1472">1472</a>
+<a href="#1473" id="1473">1473</a>
+<a href="#1474" id="1474">1474</a>
+<a href="#1475" id="1475">1475</a>
+<a href="#1476" id="1476">1476</a>
+<a href="#1477" id="1477">1477</a>
+<a href="#1478" id="1478">1478</a>
+<a href="#1479" id="1479">1479</a>
+<a href="#1480" id="1480">1480</a>
+<a href="#1481" id="1481">1481</a>
+<a href="#1482" id="1482">1482</a>
+<a href="#1483" id="1483">1483</a>
+<a href="#1484" id="1484">1484</a>
+<a href="#1485" id="1485">1485</a>
+<a href="#1486" id="1486">1486</a>
+<a href="#1487" id="1487">1487</a>
+<a href="#1488" id="1488">1488</a>
+<a href="#1489" id="1489">1489</a>
+<a href="#1490" id="1490">1490</a>
+<a href="#1491" id="1491">1491</a>
+<a href="#1492" id="1492">1492</a>
+<a href="#1493" id="1493">1493</a>
+<a href="#1494" id="1494">1494</a>
+<a href="#1495" id="1495">1495</a>
+<a href="#1496" id="1496">1496</a>
+<a href="#1497" id="1497">1497</a>
+<a href="#1498" id="1498">1498</a>
+<a href="#1499" id="1499">1499</a>
+<a href="#1500" id="1500">1500</a>
+<a href="#1501" id="1501">1501</a>
+<a href="#1502" id="1502">1502</a>
+<a href="#1503" id="1503">1503</a>
+<a href="#1504" id="1504">1504</a>
+<a href="#1505" id="1505">1505</a>
+<a href="#1506" id="1506">1506</a>
+<a href="#1507" id="1507">1507</a>
+<a href="#1508" id="1508">1508</a>
+<a href="#1509" id="1509">1509</a>
+<a href="#1510" id="1510">1510</a>
+<a href="#1511" id="1511">1511</a>
+<a href="#1512" id="1512">1512</a>
+<a href="#1513" id="1513">1513</a>
+<a href="#1514" id="1514">1514</a>
+<a href="#1515" id="1515">1515</a>
+<a href="#1516" id="1516">1516</a>
+<a href="#1517" id="1517">1517</a>
+<a href="#1518" id="1518">1518</a>
+<a href="#1519" id="1519">1519</a>
+<a href="#1520" id="1520">1520</a>
+<a href="#1521" id="1521">1521</a>
+<a href="#1522" id="1522">1522</a>
+<a href="#1523" id="1523">1523</a>
+<a href="#1524" id="1524">1524</a>
+<a href="#1525" id="1525">1525</a>
+<a href="#1526" id="1526">1526</a>
+<a href="#1527" id="1527">1527</a>
+<a href="#1528" id="1528">1528</a>
+<a href="#1529" id="1529">1529</a>
+<a href="#1530" id="1530">1530</a>
+<a href="#1531" id="1531">1531</a>
+<a href="#1532" id="1532">1532</a>
+<a href="#1533" id="1533">1533</a>
+<a href="#1534" id="1534">1534</a>
+<a href="#1535" id="1535">1535</a>
+<a href="#1536" id="1536">1536</a>
+<a href="#1537" id="1537">1537</a>
+<a href="#1538" id="1538">1538</a>
+<a href="#1539" id="1539">1539</a>
+<a href="#1540" id="1540">1540</a>
+<a href="#1541" id="1541">1541</a>
+<a href="#1542" id="1542">1542</a>
+<a href="#1543" id="1543">1543</a>
+<a href="#1544" id="1544">1544</a>
+<a href="#1545" id="1545">1545</a>
+<a href="#1546" id="1546">1546</a>
+<a href="#1547" id="1547">1547</a>
+<a href="#1548" id="1548">1548</a>
+<a href="#1549" id="1549">1549</a>
+<a href="#1550" id="1550">1550</a>
+<a href="#1551" id="1551">1551</a>
+<a href="#1552" id="1552">1552</a>
+<a href="#1553" id="1553">1553</a>
+<a href="#1554" id="1554">1554</a>
+<a href="#1555" id="1555">1555</a>
+<a href="#1556" id="1556">1556</a>
+<a href="#1557" id="1557">1557</a>
+<a href="#1558" id="1558">1558</a>
+<a href="#1559" id="1559">1559</a>
+<a href="#1560" id="1560">1560</a>
+<a href="#1561" id="1561">1561</a>
+<a href="#1562" id="1562">1562</a>
+<a href="#1563" id="1563">1563</a>
+<a href="#1564" id="1564">1564</a>
+<a href="#1565" id="1565">1565</a>
+<a href="#1566" id="1566">1566</a>
+<a href="#1567" id="1567">1567</a>
+<a href="#1568" id="1568">1568</a>
+<a href="#1569" id="1569">1569</a>
+<a href="#1570" id="1570">1570</a>
+<a href="#1571" id="1571">1571</a>
+<a href="#1572" id="1572">1572</a>
+<a href="#1573" id="1573">1573</a>
+<a href="#1574" id="1574">1574</a>
+<a href="#1575" id="1575">1575</a>
+<a href="#1576" id="1576">1576</a>
+<a href="#1577" id="1577">1577</a>
+<a href="#1578" id="1578">1578</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! [`IndexMap`] is a hash table where the iteration order of the key-value
 //! pairs is independent of the hash values of the keys.
 
@@ -1433,8 +1594,9 @@
 <span class="kw">pub use </span><span class="self">self</span>::core::raw_entry_v1::{<span class="self">self</span>, RawEntryApiV1};
 <span class="kw">pub use </span><span class="self">self</span>::core::{Entry, IndexedEntry, OccupiedEntry, VacantEntry};
 <span class="kw">pub use </span><span class="self">self</span>::iter::{
-    Drain, IntoIter, IntoKeys, IntoValues, Iter, IterMut, Keys, Splice, Values, ValuesMut,
+    Drain, IntoIter, IntoKeys, IntoValues, Iter, IterMut, IterMut2, Keys, Splice, Values, ValuesMut,
 };
+<span class="kw">pub use </span><span class="self">self</span>::mutable::MutableEntryKey;
 <span class="kw">pub use </span><span class="self">self</span>::mutable::MutableKeys;
 <span class="kw">pub use </span><span class="self">self</span>::slice::Slice;
 
@@ -1836,7 +1998,7 @@
     ///
     /// This is equivalent to finding the position with
     /// [`binary_search_keys`][Self::binary_search_keys], then either updating
-    /// it or calling [`shift_insert`][Self::shift_insert] for a new key.
+    /// it or calling [`insert_before`][Self::insert_before] for a new key.
     ///
     /// If the sorted key is found in the map, its corresponding value is
     /// updated with `value`, and the older value is returned inside
@@ -1857,33 +2019,147 @@
     {
         <span class="kw">match </span><span class="self">self</span>.binary_search_keys(<span class="kw-2">&amp;</span>key) {
             <span class="prelude-val">Ok</span>(i) =&gt; (i, <span class="prelude-val">Some</span>(mem::replace(<span class="kw-2">&amp;mut </span><span class="self">self</span>[i], value))),
-            <span class="prelude-val">Err</span>(i) =&gt; (i, <span class="self">self</span>.shift_insert(i, key, value)),
+            <span class="prelude-val">Err</span>(i) =&gt; <span class="self">self</span>.insert_before(i, key, value),
+        }
+    }
+
+    <span class="doccomment">/// Insert a key-value pair in the map before the entry at the given index, or at the end.
+    ///
+    /// If an equivalent key already exists in the map: the key remains and
+    /// is moved to the new position in the map, its corresponding value is updated
+    /// with `value`, and the older value is returned inside `Some(_)`. The returned index
+    /// will either be the given index or one less, depending on how the entry moved.
+    /// (See [`shift_insert`](Self::shift_insert) for different behavior here.)
+    ///
+    /// If no equivalent key existed in the map: the new key-value pair is
+    /// inserted exactly at the given index, and `None` is returned.
+    ///
+    /// ***Panics*** if `index` is out of bounds.
+    /// Valid indices are `0..=map.len()` (inclusive).
+    ///
+    /// Computes in **O(n)** time (average).
+    ///
+    /// See also [`entry`][Self::entry] if you want to insert *or* modify,
+    /// perhaps only using the index for new entries with [`VacantEntry::shift_insert`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use indexmap::IndexMap;
+    /// let mut map: IndexMap&lt;char, ()&gt; = ('a'..='z').map(|c| (c, ())).collect();
+    ///
+    /// // The new key '*' goes exactly at the given index.
+    /// assert_eq!(map.get_index_of(&amp;'*'), None);
+    /// assert_eq!(map.insert_before(10, '*', ()), (10, None));
+    /// assert_eq!(map.get_index_of(&amp;'*'), Some(10));
+    ///
+    /// // Moving the key 'a' up will shift others down, so this moves *before* 10 to index 9.
+    /// assert_eq!(map.insert_before(10, 'a', ()), (9, Some(())));
+    /// assert_eq!(map.get_index_of(&amp;'a'), Some(9));
+    /// assert_eq!(map.get_index_of(&amp;'*'), Some(10));
+    ///
+    /// // Moving the key 'z' down will shift others up, so this moves to exactly 10.
+    /// assert_eq!(map.insert_before(10, 'z', ()), (10, Some(())));
+    /// assert_eq!(map.get_index_of(&amp;'z'), Some(10));
+    /// assert_eq!(map.get_index_of(&amp;'*'), Some(11));
+    ///
+    /// // Moving or inserting before the endpoint is also valid.
+    /// assert_eq!(map.len(), 27);
+    /// assert_eq!(map.insert_before(map.len(), '*', ()), (26, Some(())));
+    /// assert_eq!(map.get_index_of(&amp;'*'), Some(26));
+    /// assert_eq!(map.insert_before(map.len(), '+', ()), (27, None));
+    /// assert_eq!(map.get_index_of(&amp;'+'), Some(27));
+    /// assert_eq!(map.len(), 28);
+    /// ```
+    </span><span class="kw">pub fn </span>insert_before(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>index: usize, key: K, value: V) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;V&gt;) {
+        <span class="macro">assert!</span>(index &lt;= <span class="self">self</span>.len(), <span class="string">"index out of bounds"</span>);
+        <span class="kw">match </span><span class="self">self</span>.entry(key) {
+            Entry::Occupied(<span class="kw-2">mut </span>entry) =&gt; {
+                <span class="kw">if </span>index &gt; entry.index() {
+                    <span class="comment">// Some entries will shift down when this one moves up,
+                    // so "insert before index" becomes "move to index - 1",
+                    // keeping the entry at the original index unmoved.
+                    </span>index -= <span class="number">1</span>;
+                }
+                <span class="kw">let </span>old = mem::replace(entry.get_mut(), value);
+                entry.move_index(index);
+                (index, <span class="prelude-val">Some</span>(old))
+            }
+            Entry::Vacant(entry) =&gt; {
+                entry.shift_insert(index, value);
+                (index, <span class="prelude-val">None</span>)
+            }
         }
     }
 
     <span class="doccomment">/// Insert a key-value pair in the map at the given index.
     ///
     /// If an equivalent key already exists in the map: the key remains and
-    /// is moved to the new position in the map, its corresponding value is updated
+    /// is moved to the given index in the map, its corresponding value is updated
     /// with `value`, and the older value is returned inside `Some(_)`.
+    /// Note that existing entries **cannot** be moved to `index == map.len()`!
+    /// (See [`insert_before`](Self::insert_before) for different behavior here.)
     ///
     /// If no equivalent key existed in the map: the new key-value pair is
     /// inserted at the given index, and `None` is returned.
     ///
     /// ***Panics*** if `index` is out of bounds.
+    /// Valid indices are `0..map.len()` (exclusive) when moving an existing entry, or
+    /// `0..=map.len()` (inclusive) when inserting a new key.
     ///
     /// Computes in **O(n)** time (average).
     ///
     /// See also [`entry`][Self::entry] if you want to insert *or* modify,
     /// perhaps only using the index for new entries with [`VacantEntry::shift_insert`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use indexmap::IndexMap;
+    /// let mut map: IndexMap&lt;char, ()&gt; = ('a'..='z').map(|c| (c, ())).collect();
+    ///
+    /// // The new key '*' goes exactly at the given index.
+    /// assert_eq!(map.get_index_of(&amp;'*'), None);
+    /// assert_eq!(map.shift_insert(10, '*', ()), None);
+    /// assert_eq!(map.get_index_of(&amp;'*'), Some(10));
+    ///
+    /// // Moving the key 'a' up to 10 will shift others down, including the '*' that was at 10.
+    /// assert_eq!(map.shift_insert(10, 'a', ()), Some(()));
+    /// assert_eq!(map.get_index_of(&amp;'a'), Some(10));
+    /// assert_eq!(map.get_index_of(&amp;'*'), Some(9));
+    ///
+    /// // Moving the key 'z' down to 9 will shift others up, including the '*' that was at 9.
+    /// assert_eq!(map.shift_insert(9, 'z', ()), Some(()));
+    /// assert_eq!(map.get_index_of(&amp;'z'), Some(9));
+    /// assert_eq!(map.get_index_of(&amp;'*'), Some(10));
+    ///
+    /// // Existing keys can move to len-1 at most, but new keys can insert at the endpoint.
+    /// assert_eq!(map.len(), 27);
+    /// assert_eq!(map.shift_insert(map.len() - 1, '*', ()), Some(()));
+    /// assert_eq!(map.get_index_of(&amp;'*'), Some(26));
+    /// assert_eq!(map.shift_insert(map.len(), '+', ()), None);
+    /// assert_eq!(map.get_index_of(&amp;'+'), Some(27));
+    /// assert_eq!(map.len(), 28);
+    /// ```
+    ///
+    /// ```should_panic
+    /// use indexmap::IndexMap;
+    /// let mut map: IndexMap&lt;char, ()&gt; = ('a'..='z').map(|c| (c, ())).collect();
+    ///
+    /// // This is an invalid index for moving an existing key!
+    /// map.shift_insert(map.len(), 'a', ());
+    /// ```
     </span><span class="kw">pub fn </span>shift_insert(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: usize, key: K, value: V) -&gt; <span class="prelude-ty">Option</span>&lt;V&gt; {
+        <span class="kw">let </span>len = <span class="self">self</span>.len();
         <span class="kw">match </span><span class="self">self</span>.entry(key) {
             Entry::Occupied(<span class="kw-2">mut </span>entry) =&gt; {
+                <span class="macro">assert!</span>(index &lt; len, <span class="string">"index out of bounds"</span>);
                 <span class="kw">let </span>old = mem::replace(entry.get_mut(), value);
                 entry.move_index(index);
                 <span class="prelude-val">Some</span>(old)
             }
             Entry::Vacant(entry) =&gt; {
+                <span class="macro">assert!</span>(index &lt;= len, <span class="string">"index out of bounds"</span>);
                 entry.shift_insert(index, value);
                 <span class="prelude-val">None
             </span>}
@@ -1935,6 +2211,35 @@
         I: IntoIterator&lt;Item = (K, V)&gt;,
     {
         Splice::new(<span class="self">self</span>, range, replace_with.into_iter())
+    }
+
+    <span class="doccomment">/// Moves all key-value pairs from `other` into `self`, leaving `other` empty.
+    ///
+    /// This is equivalent to calling [`insert`][Self::insert] for each
+    /// key-value pair from `other` in order, which means that for keys that
+    /// already exist in `self`, their value is updated in the current position.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use indexmap::IndexMap;
+    ///
+    /// // Note: Key (3) is present in both maps.
+    /// let mut a = IndexMap::from([(3, "c"), (2, "b"), (1, "a")]);
+    /// let mut b = IndexMap::from([(3, "d"), (4, "e"), (5, "f")]);
+    /// let old_capacity = b.capacity();
+    ///
+    /// a.append(&amp;mut b);
+    ///
+    /// assert_eq!(a.len(), 5);
+    /// assert_eq!(b.len(), 0);
+    /// assert_eq!(b.capacity(), old_capacity);
+    ///
+    /// assert!(a.keys().eq(&amp;[3, 2, 1, 4, 5]));
+    /// assert_eq!(a[&amp;3], "d"); // "c" was overwritten.
+    /// ```
+    </span><span class="kw">pub fn </span>append&lt;S2&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="kw-2">&amp;mut </span>IndexMap&lt;K, V, S2&gt;) {
+        <span class="self">self</span>.extend(other.drain(..));
     }
 }
 
@@ -2208,6 +2513,7 @@
     /// This preserves the order of the remaining elements.
     ///
     /// Computes in **O(1)** time (average).
+    </span><span class="attr">#[doc(alias = <span class="string">"pop_last"</span>)] </span><span class="comment">// like `BTreeMap`
     </span><span class="kw">pub fn </span>pop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(K, V)&gt; {
         <span class="self">self</span>.core.pop()
     }
@@ -2421,7 +2727,7 @@
 
     <span class="doccomment">/// Get a key-value pair by index
     ///
-    /// Valid indices are *0 &lt;= index &lt; self.len()*
+    /// Valid indices are `0 &lt;= index &lt; self.len()`.
     ///
     /// Computes in **O(1)** time.
     </span><span class="kw">pub fn </span>get_index(<span class="kw-2">&amp;</span><span class="self">self</span>, index: usize) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;</span>V)&gt; {
@@ -2430,7 +2736,7 @@
 
     <span class="doccomment">/// Get a key-value pair by index
     ///
-    /// Valid indices are *0 &lt;= index &lt; self.len()*
+    /// Valid indices are `0 &lt;= index &lt; self.len()`.
     ///
     /// Computes in **O(1)** time.
     </span><span class="kw">pub fn </span>get_index_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: usize) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;mut </span>V)&gt; {
@@ -2439,7 +2745,7 @@
 
     <span class="doccomment">/// Get an entry in the map by index for in-place manipulation.
     ///
-    /// Valid indices are *0 &lt;= index &lt; self.len()*
+    /// Valid indices are `0 &lt;= index &lt; self.len()`.
     ///
     /// Computes in **O(1)** time.
     </span><span class="kw">pub fn </span>get_index_entry(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: usize) -&gt; <span class="prelude-ty">Option</span>&lt;IndexedEntry&lt;<span class="lifetime">'_</span>, K, V&gt;&gt; {
@@ -2451,7 +2757,7 @@
 
     <span class="doccomment">/// Returns a slice of key-value pairs in the given range of indices.
     ///
-    /// Valid indices are *0 &lt;= index &lt; self.len()*
+    /// Valid indices are `0 &lt;= index &lt; self.len()`.
     ///
     /// Computes in **O(1)** time.
     </span><span class="kw">pub fn </span>get_range&lt;R: RangeBounds&lt;usize&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, range: R) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Slice&lt;K, V&gt;&gt; {
@@ -2462,7 +2768,7 @@
 
     <span class="doccomment">/// Returns a mutable slice of key-value pairs in the given range of indices.
     ///
-    /// Valid indices are *0 &lt;= index &lt; self.len()*
+    /// Valid indices are `0 &lt;= index &lt; self.len()`.
     ///
     /// Computes in **O(1)** time.
     </span><span class="kw">pub fn </span>get_range_mut&lt;R: RangeBounds&lt;usize&gt;&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: R) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>Slice&lt;K, V&gt;&gt; {
@@ -2474,6 +2780,7 @@
     <span class="doccomment">/// Get the first key-value pair
     ///
     /// Computes in **O(1)** time.
+    </span><span class="attr">#[doc(alias = <span class="string">"first_key_value"</span>)] </span><span class="comment">// like `BTreeMap`
     </span><span class="kw">pub fn </span>first(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;</span>V)&gt; {
         <span class="self">self</span>.as_entries().first().map(Bucket::refs)
     }
@@ -2485,9 +2792,17 @@
         <span class="self">self</span>.as_entries_mut().first_mut().map(Bucket::ref_mut)
     }
 
+    <span class="doccomment">/// Get the first entry in the map for in-place manipulation.
+    ///
+    /// Computes in **O(1)** time.
+    </span><span class="kw">pub fn </span>first_entry(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;IndexedEntry&lt;<span class="lifetime">'_</span>, K, V&gt;&gt; {
+        <span class="self">self</span>.get_index_entry(<span class="number">0</span>)
+    }
+
     <span class="doccomment">/// Get the last key-value pair
     ///
     /// Computes in **O(1)** time.
+    </span><span class="attr">#[doc(alias = <span class="string">"last_key_value"</span>)] </span><span class="comment">// like `BTreeMap`
     </span><span class="kw">pub fn </span>last(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>K, <span class="kw-2">&amp;</span>V)&gt; {
         <span class="self">self</span>.as_entries().last().map(Bucket::refs)
     }
@@ -2499,9 +2814,16 @@
         <span class="self">self</span>.as_entries_mut().last_mut().map(Bucket::ref_mut)
     }
 
+    <span class="doccomment">/// Get the last entry in the map for in-place manipulation.
+    ///
+    /// Computes in **O(1)** time.
+    </span><span class="kw">pub fn </span>last_entry(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;IndexedEntry&lt;<span class="lifetime">'_</span>, K, V&gt;&gt; {
+        <span class="self">self</span>.get_index_entry(<span class="self">self</span>.len().checked_sub(<span class="number">1</span>)<span class="question-mark">?</span>)
+    }
+
     <span class="doccomment">/// Remove the key-value pair by index
     ///
-    /// Valid indices are *0 &lt;= index &lt; self.len()*
+    /// Valid indices are `0 &lt;= index &lt; self.len()`.
     ///
     /// Like [`Vec::swap_remove`], the pair is removed by swapping it with the
     /// last element of the map and popping it off. **This perturbs
@@ -2514,7 +2836,7 @@
 
     <span class="doccomment">/// Remove the key-value pair by index
     ///
-    /// Valid indices are *0 &lt;= index &lt; self.len()*
+    /// Valid indices are `0 &lt;= index &lt; self.len()`.
     ///
     /// Like [`Vec::remove`], the pair is removed by shifting all of the
     /// elements that follow it, preserving their relative order.

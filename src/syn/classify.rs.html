@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.66/src/classify.rs`."><title>classify.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.79/src/classify.rs`."><title>classify.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -375,14 +375,32 @@
 <a href="#375" id="375">375</a>
 <a href="#376" id="376">376</a>
 <a href="#377" id="377">377</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::expr::Expr;
-<span class="kw">use </span><span class="kw">crate</span>::generics::TypeParamBound;
-<span class="kw">use </span><span class="kw">crate</span>::path::{Path, PathArguments};
-<span class="kw">use </span><span class="kw">crate</span>::punctuated::Punctuated;
-<span class="kw">use </span><span class="kw">crate</span>::ty::{ReturnType, Type};
+<a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
+<a href="#380" id="380">380</a>
+<a href="#381" id="381">381</a>
+<a href="#382" id="382">382</a>
+<a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+</pre></div><pre class="rust"><code><span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+</span><span class="kw">use </span><span class="kw">crate</span>::expr::Expr;
+<span class="attr">#[cfg(any(feature = <span class="string">"printing"</span>, feature = <span class="string">"full"</span>))]
+</span><span class="kw">use </span><span class="kw">crate</span>::generics::TypeParamBound;
+<span class="attr">#[cfg(any(feature = <span class="string">"printing"</span>, feature = <span class="string">"full"</span>))]
+</span><span class="kw">use </span><span class="kw">crate</span>::path::{Path, PathArguments};
+<span class="attr">#[cfg(any(feature = <span class="string">"printing"</span>, feature = <span class="string">"full"</span>))]
+</span><span class="kw">use </span><span class="kw">crate</span>::punctuated::Punctuated;
+<span class="attr">#[cfg(any(feature = <span class="string">"printing"</span>, feature = <span class="string">"full"</span>))]
+</span><span class="kw">use </span><span class="kw">crate</span>::ty::{ReturnType, Type};
 <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
 </span><span class="kw">use </span>proc_macro2::{Delimiter, TokenStream, TokenTree};
-<span class="kw">use </span>std::ops::ControlFlow;
+<span class="attr">#[cfg(any(feature = <span class="string">"printing"</span>, feature = <span class="string">"full"</span>))]
+</span><span class="kw">use </span>std::ops::ControlFlow;
 
 <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>requires_semi_to_be_stmt(expr: <span class="kw-2">&amp;</span>Expr) -&gt; bool {
@@ -523,84 +541,37 @@
 </span>}
 
 <span class="attr">#[cfg(feature = <span class="string">"printing"</span>)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>confusable_with_adjacent_lt(<span class="kw-2">mut </span>expr: <span class="kw-2">&amp;</span>Expr) -&gt; bool {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>trailing_unparameterized_path(<span class="kw-2">mut </span>ty: <span class="kw-2">&amp;</span>Type) -&gt; bool {
     <span class="kw">loop </span>{
-        <span class="kw">match </span>expr {
-            Expr::Binary(e) =&gt; expr = <span class="kw-2">&amp;</span>e.right,
-            Expr::Cast(e) =&gt; <span class="kw">return </span>trailing_unparameterized_path(<span class="kw-2">&amp;</span>e.ty),
-            Expr::Reference(e) =&gt; expr = <span class="kw-2">&amp;</span>e.expr,
-            Expr::Unary(e) =&gt; expr = <span class="kw-2">&amp;</span>e.expr,
+        <span class="kw">match </span>ty {
+            Type::BareFn(t) =&gt; <span class="kw">match </span><span class="kw-2">&amp;</span>t.output {
+                ReturnType::Default =&gt; <span class="kw">return </span><span class="bool-val">false</span>,
+                ReturnType::Type(<span class="kw">_</span>, ret) =&gt; ty = ret,
+            },
+            Type::ImplTrait(t) =&gt; <span class="kw">match </span>last_type_in_bounds(<span class="kw-2">&amp;</span>t.bounds) {
+                ControlFlow::Break(trailing_path) =&gt; <span class="kw">return </span>trailing_path,
+                ControlFlow::Continue(t) =&gt; ty = t,
+            },
+            Type::Path(t) =&gt; <span class="kw">match </span>last_type_in_path(<span class="kw-2">&amp;</span>t.path) {
+                ControlFlow::Break(trailing_path) =&gt; <span class="kw">return </span>trailing_path,
+                ControlFlow::Continue(t) =&gt; ty = t,
+            },
+            Type::Ptr(t) =&gt; ty = <span class="kw-2">&amp;</span>t.elem,
+            Type::Reference(t) =&gt; ty = <span class="kw-2">&amp;</span>t.elem,
+            Type::TraitObject(t) =&gt; <span class="kw">match </span>last_type_in_bounds(<span class="kw-2">&amp;</span>t.bounds) {
+                ControlFlow::Break(trailing_path) =&gt; <span class="kw">return </span>trailing_path,
+                ControlFlow::Continue(t) =&gt; ty = t,
+            },
 
-            Expr::Array(<span class="kw">_</span>)
-            | Expr::Assign(<span class="kw">_</span>)
-            | Expr::Async(<span class="kw">_</span>)
-            | Expr::Await(<span class="kw">_</span>)
-            | Expr::Block(<span class="kw">_</span>)
-            | Expr::Break(<span class="kw">_</span>)
-            | Expr::Call(<span class="kw">_</span>)
-            | Expr::Closure(<span class="kw">_</span>)
-            | Expr::Const(<span class="kw">_</span>)
-            | Expr::Continue(<span class="kw">_</span>)
-            | Expr::Field(<span class="kw">_</span>)
-            | Expr::ForLoop(<span class="kw">_</span>)
-            | Expr::Group(<span class="kw">_</span>)
-            | Expr::If(<span class="kw">_</span>)
-            | Expr::Index(<span class="kw">_</span>)
-            | Expr::Infer(<span class="kw">_</span>)
-            | Expr::Let(<span class="kw">_</span>)
-            | Expr::Lit(<span class="kw">_</span>)
-            | Expr::Loop(<span class="kw">_</span>)
-            | Expr::Macro(<span class="kw">_</span>)
-            | Expr::Match(<span class="kw">_</span>)
-            | Expr::MethodCall(<span class="kw">_</span>)
-            | Expr::Paren(<span class="kw">_</span>)
-            | Expr::Path(<span class="kw">_</span>)
-            | Expr::Range(<span class="kw">_</span>)
-            | Expr::Repeat(<span class="kw">_</span>)
-            | Expr::Return(<span class="kw">_</span>)
-            | Expr::Struct(<span class="kw">_</span>)
-            | Expr::Try(<span class="kw">_</span>)
-            | Expr::TryBlock(<span class="kw">_</span>)
-            | Expr::Tuple(<span class="kw">_</span>)
-            | Expr::Unsafe(<span class="kw">_</span>)
-            | Expr::Verbatim(<span class="kw">_</span>)
-            | Expr::While(<span class="kw">_</span>)
-            | Expr::Yield(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="bool-val">false</span>,
-        }
-    }
-
-    <span class="kw">fn </span>trailing_unparameterized_path(<span class="kw-2">mut </span>ty: <span class="kw-2">&amp;</span>Type) -&gt; bool {
-        <span class="kw">loop </span>{
-            <span class="kw">match </span>ty {
-                Type::BareFn(t) =&gt; <span class="kw">match </span><span class="kw-2">&amp;</span>t.output {
-                    ReturnType::Default =&gt; <span class="kw">return </span><span class="bool-val">false</span>,
-                    ReturnType::Type(<span class="kw">_</span>, ret) =&gt; ty = ret,
-                },
-                Type::ImplTrait(t) =&gt; <span class="kw">match </span>last_type_in_bounds(<span class="kw-2">&amp;</span>t.bounds) {
-                    ControlFlow::Break(trailing_path) =&gt; <span class="kw">return </span>trailing_path,
-                    ControlFlow::Continue(t) =&gt; ty = t,
-                },
-                Type::Path(t) =&gt; <span class="kw">match </span>last_type_in_path(<span class="kw-2">&amp;</span>t.path) {
-                    ControlFlow::Break(trailing_path) =&gt; <span class="kw">return </span>trailing_path,
-                    ControlFlow::Continue(t) =&gt; ty = t,
-                },
-                Type::Ptr(t) =&gt; ty = <span class="kw-2">&amp;</span>t.elem,
-                Type::Reference(t) =&gt; ty = <span class="kw-2">&amp;</span>t.elem,
-                Type::TraitObject(t) =&gt; <span class="kw">match </span>last_type_in_bounds(<span class="kw-2">&amp;</span>t.bounds) {
-                    ControlFlow::Break(trailing_path) =&gt; <span class="kw">return </span>trailing_path,
-                    ControlFlow::Continue(t) =&gt; ty = t,
-                },
-
-                Type::Array(<span class="kw">_</span>)
-                | Type::Group(<span class="kw">_</span>)
-                | Type::Infer(<span class="kw">_</span>)
-                | Type::Macro(<span class="kw">_</span>)
-                | Type::Never(<span class="kw">_</span>)
-                | Type::Paren(<span class="kw">_</span>)
-                | Type::Slice(<span class="kw">_</span>)
-                | Type::Tuple(<span class="kw">_</span>)
-                | Type::Verbatim(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="bool-val">false</span>,
-            }
+            Type::Array(<span class="kw">_</span>)
+            | Type::Group(<span class="kw">_</span>)
+            | Type::Infer(<span class="kw">_</span>)
+            | Type::Macro(<span class="kw">_</span>)
+            | Type::Never(<span class="kw">_</span>)
+            | Type::Paren(<span class="kw">_</span>)
+            | Type::Slice(<span class="kw">_</span>)
+            | Type::Tuple(<span class="kw">_</span>)
+            | Type::Verbatim(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="bool-val">false</span>,
         }
     }
 
@@ -621,6 +592,59 @@
         <span class="kw">match </span>bounds.last().unwrap() {
             TypeParamBound::Trait(t) =&gt; last_type_in_path(<span class="kw-2">&amp;</span>t.path),
             TypeParamBound::Lifetime(<span class="kw">_</span>) | TypeParamBound::Verbatim(<span class="kw">_</span>) =&gt; ControlFlow::Break(<span class="bool-val">false</span>),
+        }
+    }
+}
+
+<span class="doccomment">/// Whether the expression's first token is the label of a loop/block.
+</span><span class="attr">#[cfg(all(feature = <span class="string">"printing"</span>, feature = <span class="string">"full"</span>))]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>expr_leading_label(<span class="kw-2">mut </span>expr: <span class="kw-2">&amp;</span>Expr) -&gt; bool {
+    <span class="kw">loop </span>{
+        <span class="kw">match </span>expr {
+            Expr::Block(e) =&gt; <span class="kw">return </span>e.label.is_some(),
+            Expr::ForLoop(e) =&gt; <span class="kw">return </span>e.label.is_some(),
+            Expr::Loop(e) =&gt; <span class="kw">return </span>e.label.is_some(),
+            Expr::While(e) =&gt; <span class="kw">return </span>e.label.is_some(),
+
+            Expr::Assign(e) =&gt; expr = <span class="kw-2">&amp;</span>e.left,
+            Expr::Await(e) =&gt; expr = <span class="kw-2">&amp;</span>e.base,
+            Expr::Binary(e) =&gt; expr = <span class="kw-2">&amp;</span>e.left,
+            Expr::Call(e) =&gt; expr = <span class="kw-2">&amp;</span>e.func,
+            Expr::Cast(e) =&gt; expr = <span class="kw-2">&amp;</span>e.expr,
+            Expr::Field(e) =&gt; expr = <span class="kw-2">&amp;</span>e.base,
+            Expr::Index(e) =&gt; expr = <span class="kw-2">&amp;</span>e.expr,
+            Expr::MethodCall(e) =&gt; expr = <span class="kw-2">&amp;</span>e.receiver,
+            Expr::Range(e) =&gt; <span class="kw">match </span><span class="kw-2">&amp;</span>e.start {
+                <span class="prelude-val">Some</span>(start) =&gt; expr = start,
+                <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="bool-val">false</span>,
+            },
+            Expr::Try(e) =&gt; expr = <span class="kw-2">&amp;</span>e.expr,
+
+            Expr::Array(<span class="kw">_</span>)
+            | Expr::Async(<span class="kw">_</span>)
+            | Expr::Break(<span class="kw">_</span>)
+            | Expr::Closure(<span class="kw">_</span>)
+            | Expr::Const(<span class="kw">_</span>)
+            | Expr::Continue(<span class="kw">_</span>)
+            | Expr::Group(<span class="kw">_</span>)
+            | Expr::If(<span class="kw">_</span>)
+            | Expr::Infer(<span class="kw">_</span>)
+            | Expr::Let(<span class="kw">_</span>)
+            | Expr::Lit(<span class="kw">_</span>)
+            | Expr::Macro(<span class="kw">_</span>)
+            | Expr::Match(<span class="kw">_</span>)
+            | Expr::Paren(<span class="kw">_</span>)
+            | Expr::Path(<span class="kw">_</span>)
+            | Expr::Reference(<span class="kw">_</span>)
+            | Expr::Repeat(<span class="kw">_</span>)
+            | Expr::Return(<span class="kw">_</span>)
+            | Expr::Struct(<span class="kw">_</span>)
+            | Expr::TryBlock(<span class="kw">_</span>)
+            | Expr::Tuple(<span class="kw">_</span>)
+            | Expr::Unary(<span class="kw">_</span>)
+            | Expr::Unsafe(<span class="kw">_</span>)
+            | Expr::Verbatim(<span class="kw">_</span>)
+            | Expr::Yield(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="bool-val">false</span>,
         }
     }
 }

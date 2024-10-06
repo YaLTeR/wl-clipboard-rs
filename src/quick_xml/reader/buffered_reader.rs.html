@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.31.0/src/reader/buffered_reader.rs`."><title>buffered_reader.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0 (051478957 2024-07-21)" data-channel="1.80.0" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.36.2/src/reader/buffered_reader.rs`."><title>buffered_reader.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -416,63 +416,6 @@
 <a href="#416" id="416">416</a>
 <a href="#417" id="417">417</a>
 <a href="#418" id="418">418</a>
-<a href="#419" id="419">419</a>
-<a href="#420" id="420">420</a>
-<a href="#421" id="421">421</a>
-<a href="#422" id="422">422</a>
-<a href="#423" id="423">423</a>
-<a href="#424" id="424">424</a>
-<a href="#425" id="425">425</a>
-<a href="#426" id="426">426</a>
-<a href="#427" id="427">427</a>
-<a href="#428" id="428">428</a>
-<a href="#429" id="429">429</a>
-<a href="#430" id="430">430</a>
-<a href="#431" id="431">431</a>
-<a href="#432" id="432">432</a>
-<a href="#433" id="433">433</a>
-<a href="#434" id="434">434</a>
-<a href="#435" id="435">435</a>
-<a href="#436" id="436">436</a>
-<a href="#437" id="437">437</a>
-<a href="#438" id="438">438</a>
-<a href="#439" id="439">439</a>
-<a href="#440" id="440">440</a>
-<a href="#441" id="441">441</a>
-<a href="#442" id="442">442</a>
-<a href="#443" id="443">443</a>
-<a href="#444" id="444">444</a>
-<a href="#445" id="445">445</a>
-<a href="#446" id="446">446</a>
-<a href="#447" id="447">447</a>
-<a href="#448" id="448">448</a>
-<a href="#449" id="449">449</a>
-<a href="#450" id="450">450</a>
-<a href="#451" id="451">451</a>
-<a href="#452" id="452">452</a>
-<a href="#453" id="453">453</a>
-<a href="#454" id="454">454</a>
-<a href="#455" id="455">455</a>
-<a href="#456" id="456">456</a>
-<a href="#457" id="457">457</a>
-<a href="#458" id="458">458</a>
-<a href="#459" id="459">459</a>
-<a href="#460" id="460">460</a>
-<a href="#461" id="461">461</a>
-<a href="#462" id="462">462</a>
-<a href="#463" id="463">463</a>
-<a href="#464" id="464">464</a>
-<a href="#465" id="465">465</a>
-<a href="#466" id="466">466</a>
-<a href="#467" id="467">467</a>
-<a href="#468" id="468">468</a>
-<a href="#469" id="469">469</a>
-<a href="#470" id="470">470</a>
-<a href="#471" id="471">471</a>
-<a href="#472" id="472">472</a>
-<a href="#473" id="473">473</a>
-<a href="#474" id="474">474</a>
-<a href="#475" id="475">475</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! This is an implementation of [`Reader`] for reading from a [`BufRead`] as
 //! underlying byte stream.
 
@@ -480,17 +423,18 @@
 <span class="kw">use </span>std::io::{<span class="self">self</span>, BufRead, BufReader};
 <span class="kw">use </span>std::path::Path;
 
-<span class="kw">use </span>memchr;
-
 <span class="kw">use </span><span class="kw">crate</span>::errors::{Error, <span class="prelude-ty">Result</span>};
 <span class="kw">use </span><span class="kw">crate</span>::events::Event;
 <span class="kw">use </span><span class="kw">crate</span>::name::QName;
-<span class="kw">use </span><span class="kw">crate</span>::reader::{is_whitespace, BangType, ReadElementState, Reader, Span, XmlSource};
+<span class="kw">use </span><span class="kw">crate</span>::parser::Parser;
+<span class="kw">use </span><span class="kw">crate</span>::reader::{BangType, ReadTextResult, Reader, Span, XmlSource};
+<span class="kw">use </span><span class="kw">crate</span>::utils::is_whitespace;
 
 <span class="macro">macro_rules!</span> impl_buffered_source {
     ($(<span class="macro-nonterminal">$lf</span>:lifetime, <span class="macro-nonterminal">$reader</span>:tt, <span class="macro-nonterminal">$</span><span class="kw">async</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="kw">await</span>:<span class="macro-nonterminal">ident</span>)<span class="question-mark">?</span>) =&gt; {
         <span class="attr">#[cfg(not(feature = <span class="string">"encoding"</span>))]
-        </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">remove_utf8_bom</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        #[inline]
+        </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">remove_utf8_bom</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;()&gt; {
             <span class="kw">use </span><span class="kw">crate</span>::encoding::UTF8_BOM;
 
             <span class="kw">loop </span>{
@@ -502,13 +446,14 @@
                         <span class="prelude-val">Ok</span>(())
                     },
                     <span class="prelude-val">Err</span>(<span class="kw-2">ref </span>e) <span class="kw">if </span>e.kind() == io::ErrorKind::Interrupted =&gt; <span class="kw">continue</span>,
-                    <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(Error::Io(e.into())),
+                    <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e),
                 };
             }
         }
 
         <span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
-        </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">detect_encoding</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>encoding_rs::Encoding&gt;&gt; {
+        #[inline]
+        </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">detect_encoding</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>encoding_rs::Encoding&gt;&gt; {
             <span class="kw">loop </span>{
                 <span class="kw">break match </span><span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.fill_buf() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
                     <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">n</span>) =&gt; <span class="kw">if let </span><span class="prelude-val">Some</span>((enc, bom_len)) = <span class="kw">crate</span>::encoding::detect_encoding(n) {
@@ -518,65 +463,111 @@
                         <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
                     },
                     <span class="prelude-val">Err</span>(<span class="kw-2">ref </span>e) <span class="kw">if </span>e.kind() == io::ErrorKind::Interrupted =&gt; <span class="kw">continue</span>,
-                    <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(Error::Io(e.into())),
+                    <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e),
                 };
             }
         }
 
         <span class="attr">#[inline]
-        </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">read_bytes_until </span>$(&lt;<span class="macro-nonterminal">$lf</span>&gt;)<span class="question-mark">? </span>(
+        </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">read_text </span>$(&lt;<span class="macro-nonterminal">$lf</span>&gt;)<span class="question-mark">? </span>(
             <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-            byte: u8,
             buf: <span class="kw-2">&amp;</span><span class="lifetime">'b </span><span class="kw-2">mut </span>Vec&lt;u8&gt;,
-            position: <span class="kw-2">&amp;mut </span>usize,
-        ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]&gt;&gt; {
-            <span class="comment">// search byte must be within the ascii range
-            </span><span class="macro">debug_assert!</span>(byte.is_ascii());
-
+            position: <span class="kw-2">&amp;mut </span>u64,
+        ) -&gt; ReadTextResult&lt;<span class="lifetime">'b</span>, <span class="kw-2">&amp;</span><span class="lifetime">'b </span><span class="kw-2">mut </span>Vec&lt;u8&gt;&gt; {
             <span class="kw">let </span><span class="kw-2">mut </span>read = <span class="number">0</span>;
-            <span class="kw">let </span><span class="kw-2">mut </span>done = <span class="bool-val">false</span>;
             <span class="kw">let </span>start = buf.len();
-            <span class="kw">while </span>!done {
-                <span class="kw">let </span>used = {
-                    <span class="kw">let </span>available = <span class="kw">match </span><span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.fill_buf() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                        <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">n</span>) <span class="kw">if </span>n.is_empty() =&gt; <span class="kw">break</span>,
-                        <span class="prelude-val">Ok</span>(n) =&gt; n,
-                        <span class="prelude-val">Err</span>(<span class="kw-2">ref </span>e) <span class="kw">if </span>e.kind() == io::ErrorKind::Interrupted =&gt; <span class="kw">continue</span>,
-                        <span class="prelude-val">Err</span>(e) =&gt; {
-                            <span class="kw-2">*</span>position += read;
-                            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Io(e.into()));
-                        }
-                    };
-
-                    <span class="kw">match </span>memchr::memchr(byte, available) {
-                        <span class="prelude-val">Some</span>(i) =&gt; {
-                            buf.extend_from_slice(<span class="kw-2">&amp;</span>available[..i]);
-                            done = <span class="bool-val">true</span>;
-                            i + <span class="number">1
-                        </span>}
-                        <span class="prelude-val">None </span>=&gt; {
-                            buf.extend_from_slice(available);
-                            available.len()
-                        }
+            <span class="kw">loop </span>{
+                <span class="kw">let </span>available = <span class="kw">match </span><span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.fill_buf() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
+                    <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">n</span>) <span class="kw">if </span>n.is_empty() =&gt; <span class="kw">break</span>,
+                    <span class="prelude-val">Ok</span>(n) =&gt; n,
+                    <span class="prelude-val">Err</span>(<span class="kw-2">ref </span>e) <span class="kw">if </span>e.kind() == io::ErrorKind::Interrupted =&gt; <span class="kw">continue</span>,
+                    <span class="prelude-val">Err</span>(e) =&gt; {
+                        <span class="kw-2">*</span>position += read;
+                        <span class="kw">return </span>ReadTextResult::Err(e);
                     }
                 };
-                <span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.consume(used);
-                read += used;
-            }
-            <span class="kw-2">*</span>position += read;
 
-            <span class="kw">if </span>read == <span class="number">0 </span>{
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
-            } <span class="kw">else </span>{
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>buf[start..]))
+                <span class="kw">match </span>memchr::memchr(<span class="string">b'&lt;'</span>, available) {
+                    <span class="comment">// Special handling is needed only on the first iteration.
+                    // On next iterations we already read something and should emit Text event
+                    </span><span class="prelude-val">Some</span>(<span class="number">0</span>) <span class="kw">if </span>read == <span class="number">0 </span>=&gt; {
+                        <span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.consume(<span class="number">1</span>);
+                        <span class="kw-2">*</span>position += <span class="number">1</span>;
+                        <span class="kw">return </span>ReadTextResult::Markup(buf);
+                    }
+                    <span class="prelude-val">Some</span>(i) =&gt; {
+                        buf.extend_from_slice(<span class="kw-2">&amp;</span>available[..i]);
+
+                        <span class="kw">let </span>used = i + <span class="number">1</span>;
+                        <span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.consume(used);
+                        read += used <span class="kw">as </span>u64;
+
+                        <span class="kw-2">*</span>position += read;
+                        <span class="kw">return </span>ReadTextResult::UpToMarkup(<span class="kw-2">&amp;</span>buf[start..]);
+                    }
+                    <span class="prelude-val">None </span>=&gt; {
+                        buf.extend_from_slice(available);
+
+                        <span class="kw">let </span>used = available.len();
+                        <span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.consume(used);
+                        read += used <span class="kw">as </span>u64;
+                    }
+                }
             }
+
+            <span class="kw-2">*</span>position += read;
+            ReadTextResult::UpToEof(<span class="kw-2">&amp;</span>buf[start..])
         }
 
-        $(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">read_bang_element </span>$(&lt;<span class="macro-nonterminal">$lf</span>&gt;)<span class="question-mark">? </span>(
+        <span class="attr">#[inline]
+        </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">read_with</span>&lt;$(<span class="macro-nonterminal">$lf</span>,)<span class="question-mark">? </span>P: Parser&gt;(
+            <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+            <span class="kw-2">mut </span>parser: P,
+            buf: <span class="kw-2">&amp;</span><span class="lifetime">'b </span><span class="kw-2">mut </span>Vec&lt;u8&gt;,
+            position: <span class="kw-2">&amp;mut </span>u64,
+        ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>read = <span class="number">0</span>;
+            <span class="kw">let </span>start = buf.len();
+            <span class="kw">loop </span>{
+                <span class="kw">let </span>available = <span class="kw">match </span><span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.fill_buf() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
+                    <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">n</span>) <span class="kw">if </span>n.is_empty() =&gt; <span class="kw">break</span>,
+                    <span class="prelude-val">Ok</span>(n) =&gt; n,
+                    <span class="prelude-val">Err</span>(<span class="kw-2">ref </span>e) <span class="kw">if </span>e.kind() == io::ErrorKind::Interrupted =&gt; <span class="kw">continue</span>,
+                    <span class="prelude-val">Err</span>(e) =&gt; {
+                        <span class="kw-2">*</span>position += read;
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Io(e.into()));
+                    }
+                };
+
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(i) = parser.feed(available) {
+                    buf.extend_from_slice(<span class="kw-2">&amp;</span>available[..i]);
+
+                    <span class="comment">// +1 for `&gt;` which we do not include
+                    </span><span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.consume(i + <span class="number">1</span>);
+                    read += i <span class="kw">as </span>u64 + <span class="number">1</span>;
+
+                    <span class="kw-2">*</span>position += read;
+                    <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span>buf[start..]);
+                }
+
+                <span class="comment">// The `&gt;` symbol not yet found, continue reading
+                </span>buf.extend_from_slice(available);
+
+                <span class="kw">let </span>used = available.len();
+                <span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.consume(used);
+                read += used <span class="kw">as </span>u64;
+            }
+
+            <span class="kw-2">*</span>position += read;
+            <span class="prelude-val">Err</span>(Error::Syntax(P::eof_error()))
+        }
+
+        <span class="attr">#[inline]
+        </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">read_bang_element </span>$(&lt;<span class="macro-nonterminal">$lf</span>&gt;)<span class="question-mark">? </span>(
             <span class="kw-2">&amp;mut </span><span class="self">self</span>,
             buf: <span class="kw-2">&amp;</span><span class="lifetime">'b </span><span class="kw-2">mut </span>Vec&lt;u8&gt;,
-            position: <span class="kw-2">&amp;mut </span>usize,
-        ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;(BangType, <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8])&gt;&gt; {
+            position: <span class="kw-2">&amp;mut </span>u64,
+        ) -&gt; <span class="prelude-ty">Result</span>&lt;(BangType, <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8])&gt; {
             <span class="comment">// Peeked one bang ('!') before being called, so it's guaranteed to
             // start with it.
             </span><span class="kw">let </span>start = buf.len();
@@ -584,13 +575,13 @@
             buf.push(<span class="string">b'!'</span>);
             <span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.consume(<span class="number">1</span>);
 
-            <span class="kw">let </span>bang_type = BangType::new(<span class="self">self</span>.peek_one() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? ?</span>)<span class="question-mark">?</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>bang_type = BangType::new(<span class="self">self</span>.peek_one() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? ?</span>)<span class="question-mark">?</span>;
 
             <span class="kw">loop </span>{
                 <span class="kw">match </span><span class="macro-nonterminal">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.fill_buf() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
                     <span class="comment">// Note: Do not update position, so the error points to
                     // somewhere sane rather than at the EOF
-                    </span><span class="prelude-val">Ok</span>(<span class="macro-nonterminal">n</span>) <span class="kw">if </span>n.is_empty() =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(bang_type.to_err()),
+                    </span><span class="prelude-val">Ok</span>(<span class="macro-nonterminal">n</span>) <span class="kw">if </span>n.is_empty() =&gt; <span class="kw">break</span>,
                     <span class="prelude-val">Ok</span>(available) =&gt; {
                         <span class="comment">// We only parse from start because we don't want to consider
                         // whatever is in the buffer before the bang element
@@ -598,16 +589,16 @@
                             buf.extend_from_slice(consumed);
 
                             <span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.consume(used);
-                            read += used;
+                            read += used <span class="kw">as </span>u64;
 
                             <span class="kw-2">*</span>position += read;
-                            <span class="kw">break</span>;
+                            <span class="kw">return </span><span class="prelude-val">Ok</span>((bang_type, <span class="kw-2">&amp;</span>buf[start..]));
                         } <span class="kw">else </span>{
                             buf.extend_from_slice(available);
 
                             <span class="kw">let </span>used = available.len();
                             <span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.consume(used);
-                            read += used;
+                            read += used <span class="kw">as </span>u64;
                         }
                     }
                     <span class="prelude-val">Err</span>(<span class="kw-2">ref </span>e) <span class="kw">if </span>e.kind() == io::ErrorKind::Interrupted =&gt; <span class="kw">continue</span>,
@@ -618,107 +609,48 @@
                 }
             }
 
-            <span class="kw">if </span>read == <span class="number">0 </span>{
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
-            } <span class="kw">else </span>{
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>((bang_type, <span class="kw-2">&amp;</span>buf[start..])))
-            }
+            <span class="kw-2">*</span>position += read;
+            <span class="prelude-val">Err</span>(bang_type.to_err())
         }
 
         <span class="attr">#[inline]
-        </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">read_element </span>$(&lt;<span class="macro-nonterminal">$lf</span>&gt;)<span class="question-mark">? </span>(
-            <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-            buf: <span class="kw-2">&amp;</span><span class="lifetime">'b </span><span class="kw-2">mut </span>Vec&lt;u8&gt;,
-            position: <span class="kw-2">&amp;mut </span>usize,
-        ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]&gt;&gt; {
-            <span class="kw">let </span><span class="kw-2">mut </span>state = ReadElementState::Elem;
-            <span class="kw">let </span><span class="kw-2">mut </span>read = <span class="number">0</span>;
-
-            <span class="kw">let </span>start = buf.len();
-            <span class="kw">loop </span>{
-                <span class="kw">match </span><span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.fill_buf() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                    <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">n</span>) <span class="kw">if </span>n.is_empty() =&gt; <span class="kw">break</span>,
-                    <span class="prelude-val">Ok</span>(available) =&gt; {
-                        <span class="kw">if let </span><span class="prelude-val">Some</span>((consumed, used)) = state.change(available) {
-                            buf.extend_from_slice(consumed);
-
-                            <span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.consume(used);
-                            read += used;
-
-                            <span class="comment">// Position now just after the `&gt;` symbol
-                            </span><span class="kw-2">*</span>position += read;
-                            <span class="kw">break</span>;
-                        } <span class="kw">else </span>{
-                            <span class="comment">// The `&gt;` symbol not yet found, continue reading
-                            </span>buf.extend_from_slice(available);
-
-                            <span class="kw">let </span>used = available.len();
-                            <span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.consume(used);
-                            read += used;
-                        }
-                    }
-                    <span class="prelude-val">Err</span>(<span class="kw-2">ref </span>e) <span class="kw">if </span>e.kind() == io::ErrorKind::Interrupted =&gt; <span class="kw">continue</span>,
-                    <span class="prelude-val">Err</span>(e) =&gt; {
-                        <span class="kw-2">*</span>position += read;
-                        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Io(e.into()));
-                    }
-                };
-            }
-
-            <span class="kw">if </span>read == <span class="number">0 </span>{
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
-            } <span class="kw">else </span>{
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>buf[start..]))
-            }
-        }
-
-        $(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">skip_whitespace</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, position: <span class="kw-2">&amp;mut </span>usize) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">skip_whitespace</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, position: <span class="kw-2">&amp;mut </span>u64) -&gt; io::Result&lt;()&gt; {
             <span class="kw">loop </span>{
                 <span class="kw">break match </span><span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.fill_buf() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
                     <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">n</span>) =&gt; {
                         <span class="kw">let </span>count = n.iter().position(|b| !is_whitespace(<span class="kw-2">*</span>b)).unwrap_or(n.len());
                         <span class="kw">if </span>count &gt; <span class="number">0 </span>{
                             <span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.consume(count);
-                            <span class="kw-2">*</span>position += count;
+                            <span class="kw-2">*</span>position += count <span class="kw">as </span>u64;
                             <span class="kw">continue</span>;
                         } <span class="kw">else </span>{
                             <span class="prelude-val">Ok</span>(())
                         }
                     }
                     <span class="prelude-val">Err</span>(<span class="kw-2">ref </span>e) <span class="kw">if </span>e.kind() == io::ErrorKind::Interrupted =&gt; <span class="kw">continue</span>,
-                    <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(Error::Io(e.into())),
+                    <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e),
                 };
             }
         }
 
-        $(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">skip_one</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, byte: u8, position: <span class="kw-2">&amp;mut </span>usize) -&gt; <span class="prelude-ty">Result</span>&lt;bool&gt; {
-            <span class="comment">// search byte must be within the ascii range
-            </span><span class="macro">debug_assert!</span>(byte.is_ascii());
-
-            <span class="kw">match </span><span class="self">self</span>.peek_one() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? ? </span>{
-                <span class="prelude-val">Some</span>(<span class="macro-nonterminal">b</span>) <span class="kw">if </span>b == byte =&gt; {
-                    <span class="kw-2">*</span>position += <span class="number">1</span>;
-                    <span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.consume(<span class="number">1</span>);
-                    <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)
-                }
-                <span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>),
-            }
-        }
-
-        $(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">peek_one</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;u8&gt;&gt; {
+        <span class="attr">#[inline]
+        </span>$(<span class="macro-nonterminal">$</span><span class="kw">async</span>)<span class="question-mark">? </span><span class="kw">fn </span><span class="macro-nonterminal">peek_one</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;<span class="prelude-ty">Option</span>&lt;u8&gt;&gt; {
             <span class="kw">loop </span>{
                 <span class="kw">break match </span><span class="self">self </span>$(.<span class="macro-nonterminal">$reader</span>)<span class="question-mark">? </span>.fill_buf() $(.<span class="macro-nonterminal">$</span><span class="kw">await</span>)<span class="question-mark">? </span>{
-                    <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">n</span>) <span class="kw">if </span>n.is_empty() =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
-                    <span class="prelude-val">Ok</span>(n) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(n[<span class="number">0</span>])),
+                    <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">n</span>) =&gt; <span class="prelude-val">Ok</span>(n.first().cloned()),
                     <span class="prelude-val">Err</span>(<span class="kw-2">ref </span>e) <span class="kw">if </span>e.kind() == io::ErrorKind::Interrupted =&gt; <span class="kw">continue</span>,
-                    <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(Error::Io(e.into())),
+                    <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e),
                 };
             }
         }
     };
 }
 
-<span class="comment">// Make it public for use in async implementations
+<span class="comment">// Make it public for use in async implementations.
+// New rustc reports
+// &gt; warning: the item `impl_buffered_source` is imported redundantly
+// so make it public only when async feature is enabled
+</span><span class="attr">#[cfg(feature = <span class="string">"async-tokio"</span>)]
 </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">use </span>impl_buffered_source;
 
 <span class="doccomment">/// Implementation of `XmlSource` for any `BufRead` reader using a user-given
@@ -758,7 +690,7 @@
     ///                 &lt;tag2&gt;Test 2&lt;/tag2&gt;
     ///              &lt;/tag1&gt;"#;
     /// let mut reader = Reader::from_str(xml);
-    /// reader.trim_text(true);
+    /// reader.config_mut().trim_text(true);
     /// let mut count = 0;
     /// let mut buf = Vec::new();
     /// let mut txt = Vec::new();
@@ -766,7 +698,7 @@
     ///     match reader.read_event_into(&amp;mut buf) {
     ///         Ok(Event::Start(_)) =&gt; count += 1,
     ///         Ok(Event::Text(e)) =&gt; txt.push(e.unescape().unwrap().into_owned()),
-    ///         Err(e) =&gt; panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+    ///         Err(e) =&gt; panic!("Error at position {}: {:?}", reader.error_position(), e),
     ///         Ok(Event::Eof) =&gt; break,
     ///         _ =&gt; (),
     ///     }
@@ -791,7 +723,7 @@
     /// Manages nested cases where parent and child elements have the _literally_
     /// same name.
     ///
-    /// If corresponding [`End`] event will not be found, the [`Error::UnexpectedEof`]
+    /// If a corresponding [`End`] event is not found, an error of type [`Error::IllFormed`]
     /// will be returned. In particularly, that error will be returned if you call
     /// this method without consuming the corresponding [`Start`] event first.
     ///
@@ -843,7 +775,7 @@
     ///         &lt;/inner&gt;
     ///     &lt;/outer&gt;
     /// "#);
-    /// reader.trim_text(true);
+    /// reader.config_mut().trim_text(true);
     /// let mut buf = Vec::new();
     ///
     /// let start = BytesStart::new("outer");
@@ -865,8 +797,8 @@
     /// [`End`]: Event::End
     /// [`BytesStart::to_end()`]: crate::events::BytesStart::to_end
     /// [`read_to_end()`]: Self::read_to_end
-    /// [`expand_empty_elements`]: Self::expand_empty_elements
-    /// [`check_end_names`]: Self::check_end_names
+    /// [`expand_empty_elements`]: crate::reader::Config::expand_empty_elements
+    /// [`check_end_names`]: crate::reader::Config::check_end_names
     /// [the specification]: https://www.w3.org/TR/xml11/#dt-etag
     </span><span class="kw">pub fn </span>read_to_end_into(<span class="kw-2">&amp;mut </span><span class="self">self</span>, end: QName, buf: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Span&gt; {
         <span class="prelude-val">Ok</span>(<span class="macro">read_to_end!</span>(<span class="self">self</span>, end, buf, read_event_impl, {
@@ -886,7 +818,7 @@
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>test {
-    <span class="kw">use </span><span class="kw">crate</span>::reader::test::{check, small_buffers};
+    <span class="kw">use </span><span class="kw">crate</span>::reader::test::check;
     <span class="kw">use </span><span class="kw">crate</span>::reader::XmlSource;
 
     <span class="doccomment">/// Default buffer constructor just pass the byte array from the test
@@ -901,51 +833,5 @@
         identity,
         <span class="kw-2">&amp;mut </span>Vec::new()
     );
-
-    <span class="macro">small_buffers!</span>(
-        <span class="attr">#[test]
-        </span>read_event_into: std::io::BufReader&lt;<span class="kw">_</span>&gt;
-    );
-
-    <span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
-    </span><span class="kw">mod </span>encoding {
-        <span class="kw">use </span><span class="kw">crate</span>::events::Event;
-        <span class="kw">use </span><span class="kw">crate</span>::reader::Reader;
-        <span class="kw">use </span>encoding_rs::{UTF_16LE, UTF_8, WINDOWS_1251};
-        <span class="kw">use </span>pretty_assertions::assert_eq;
-
-        <span class="doccomment">/// Checks that encoding is detected by BOM and changed after XML declaration
-        /// BOM indicates UTF-16LE, but XML - windows-1251
-        </span><span class="attr">#[test]
-        </span><span class="kw">fn </span>bom_detected() {
-            <span class="kw">let </span><span class="kw-2">mut </span>reader =
-                Reader::from_reader(<span class="string">b"\xFF\xFE&lt;?xml encoding='windows-1251'?&gt;"</span>.as_ref());
-            <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
-
-            <span class="macro">assert_eq!</span>(reader.decoder().encoding(), UTF_8);
-            reader.read_event_into(<span class="kw-2">&amp;mut </span>buf).unwrap();
-            <span class="macro">assert_eq!</span>(reader.decoder().encoding(), WINDOWS_1251);
-
-            <span class="macro">assert_eq!</span>(reader.read_event_into(<span class="kw-2">&amp;mut </span>buf).unwrap(), Event::Eof);
-        }
-
-        <span class="doccomment">/// Checks that encoding is changed by XML declaration, but only once
-        </span><span class="attr">#[test]
-        </span><span class="kw">fn </span>xml_declaration() {
-            <span class="kw">let </span><span class="kw-2">mut </span>reader = Reader::from_reader(
-                <span class="string">b"&lt;?xml encoding='UTF-16'?&gt;&lt;?xml encoding='windows-1251'?&gt;"</span>.as_ref(),
-            );
-            <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
-
-            <span class="macro">assert_eq!</span>(reader.decoder().encoding(), UTF_8);
-            reader.read_event_into(<span class="kw-2">&amp;mut </span>buf).unwrap();
-            <span class="macro">assert_eq!</span>(reader.decoder().encoding(), UTF_16LE);
-
-            reader.read_event_into(<span class="kw-2">&amp;mut </span>buf).unwrap();
-            <span class="macro">assert_eq!</span>(reader.decoder().encoding(), UTF_16LE);
-
-            <span class="macro">assert_eq!</span>(reader.read_event_into(<span class="kw-2">&amp;mut </span>buf).unwrap(), Event::Eof);
-        }
-    }
 }
 </code></pre></div></section></main></body></html>
