@@ -16,18 +16,12 @@ use wayland_client::protocol::wl_registry::WlRegistry;
 use wayland_client::protocol::wl_seat::WlSeat;
 use wayland_client::{
     delegate_dispatch, event_created_child, ConnectError, Dispatch, DispatchError, EventQueue,
-    Proxy,
-};
-use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_device_v1::{
-    self, ZwlrDataControlDeviceV1,
-};
-use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
-use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1;
-use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_source_v1::{
-    self, ZwlrDataControlSourceV1,
 };
 
 use crate::common::{self, initialize};
+use crate::data_control::{
+    self, impl_dispatch_device, impl_dispatch_manager, impl_dispatch_offer, impl_dispatch_source,
+};
 use crate::seat_data::SeatData;
 use crate::utils::is_text;
 
@@ -40,8 +34,8 @@ pub enum ClipboardType {
     Regular,
     /// The "primary" clipboard.
     ///
-    /// Working with the "primary" clipboard requires the compositor to support the data-control
-    /// protocol of version 2 or above.
+    /// Working with the "primary" clipboard requires the compositor to support ext-data-control,
+    /// or wlr-data-control version 2 or above.
     Primary,
     /// Operate on both clipboards at once.
     ///
@@ -144,7 +138,7 @@ pub struct Options {
 pub struct PreparedCopy {
     queue: EventQueue<State>,
     state: State,
-    sources: Vec<ZwlrDataControlSourceV1>,
+    sources: Vec<data_control::Source>,
 }
 
 /// Errors that can occur for copying the source data to a temporary file.
@@ -194,11 +188,10 @@ pub enum Error {
     WaylandCommunication(#[source] DispatchError),
 
     #[error(
-        "A required Wayland protocol ({} version {}) is not supported by the compositor",
-        name,
-        version
+        "A required Wayland protocol (ext-data-control, or wlr-data-control version {version}) \
+         is not supported by the compositor"
     )]
-    MissingProtocol { name: &'static str, version: u32 },
+    MissingProtocol { version: u32 },
 
     #[error("The compositor does not support primary selection")]
     PrimarySelectionUnsupported,
@@ -227,7 +220,7 @@ impl From<common::Error> for Error {
             SocketOpenError(err) => Error::SocketOpenError(err),
             WaylandConnection(err) => Error::WaylandConnection(err),
             WaylandCommunication(err) => Error::WaylandCommunication(err.into()),
-            MissingProtocol { name, version } => Error::MissingProtocol { name, version },
+            MissingProtocol { version } => Error::MissingProtocol { version },
         }
     }
 }
@@ -273,115 +266,75 @@ impl Dispatch<WlRegistry, GlobalListContents> for State {
     }
 }
 
-impl Dispatch<ZwlrDataControlManagerV1, ()> for State {
-    fn event(
-        _state: &mut Self,
-        _proxy: &ZwlrDataControlManagerV1,
-        _event: <ZwlrDataControlManagerV1 as wayland_client::Proxy>::Event,
-        _data: &(),
-        _conn: &wayland_client::Connection,
-        _qhandle: &wayland_client::QueueHandle<Self>,
-    ) {
-    }
-}
+impl_dispatch_manager!(State);
 
-impl Dispatch<ZwlrDataControlDeviceV1, WlSeat> for State {
-    fn event(
-        state: &mut Self,
-        _device: &ZwlrDataControlDeviceV1,
-        event: <ZwlrDataControlDeviceV1 as Proxy>::Event,
-        seat: &WlSeat,
-        _conn: &wayland_client::Connection,
-        _qhandle: &wayland_client::QueueHandle<Self>,
-    ) {
-        match event {
-            zwlr_data_control_device_v1::Event::DataOffer { id } => id.destroy(),
-            zwlr_data_control_device_v1::Event::Finished => {
-                state.common.seats.get_mut(seat).unwrap().set_device(None);
-            }
-            zwlr_data_control_device_v1::Event::PrimarySelection { .. } => {
-                state.got_primary_selection = true;
-            }
-            _ => (),
+impl_dispatch_device!(State, WlSeat, |state: &mut Self, event, seat| {
+    match event {
+        Event::DataOffer { id } => id.destroy(),
+        Event::Finished => {
+            state.common.seats.get_mut(seat).unwrap().set_device(None);
         }
-    }
-
-    event_created_child!(State, ZwlrDataControlDeviceV1, [
-        zwlr_data_control_device_v1::EVT_DATA_OFFER_OPCODE => (ZwlrDataControlOfferV1, ()),
-    ]);
-}
-
-impl Dispatch<ZwlrDataControlOfferV1, ()> for State {
-    fn event(
-        _state: &mut Self,
-        _offer: &ZwlrDataControlOfferV1,
-        _event: <ZwlrDataControlOfferV1 as wayland_client::Proxy>::Event,
-        _data: &(),
-        _conn: &wayland_client::Connection,
-        _qhandle: &wayland_client::QueueHandle<Self>,
-    ) {
-    }
-}
-
-impl Dispatch<ZwlrDataControlSourceV1, ()> for State {
-    fn event(
-        state: &mut Self,
-        source: &ZwlrDataControlSourceV1,
-        event: <ZwlrDataControlSourceV1 as Proxy>::Event,
-        _data: &(),
-        _conn: &wayland_client::Connection,
-        _qhandle: &wayland_client::QueueHandle<Self>,
-    ) {
-        match event {
-            zwlr_data_control_source_v1::Event::Send { mime_type, fd } => {
-                // Check if some other source already handled a paste request and indicated that we should
-                // quit.
-                if state.should_quit {
-                    source.destroy();
-                    return;
-                }
-
-                // I'm not sure if it's the compositor's responsibility to check that the mime type is
-                // valid. Let's check here just in case.
-                if !state.data_paths.contains_key(&mime_type) {
-                    return;
-                }
-
-                let data_path = &state.data_paths[&mime_type];
-
-                let file = File::open(data_path).map_err(DataSourceError::FileOpen);
-                let result = file.and_then(|mut data_file| {
-                    // Clear O_NONBLOCK, otherwise io::copy() will stop halfway.
-                    fcntl_setfl(&fd, OFlags::empty())
-                        .map_err(io::Error::from)
-                        .map_err(DataSourceError::Copy)?;
-
-                    let mut target_file = File::from(fd);
-                    io::copy(&mut data_file, &mut target_file).map_err(DataSourceError::Copy)
-                });
-
-                if let Err(err) = result {
-                    state.error = Some(err);
-                }
-
-                let done = if let ServeRequests::Only(left) = state.serve_requests {
-                    let left = left.checked_sub(1).unwrap();
-                    state.serve_requests = ServeRequests::Only(left);
-                    left == 0
-                } else {
-                    false
-                };
-
-                if done || state.error.is_some() {
-                    state.should_quit = true;
-                    source.destroy();
-                }
-            }
-            zwlr_data_control_source_v1::Event::Cancelled => source.destroy(),
-            _ => (),
+        Event::PrimarySelection { .. } => {
+            state.got_primary_selection = true;
         }
+        _ => (),
     }
-}
+});
+
+impl_dispatch_offer!(State);
+
+impl_dispatch_source!(State, |state: &mut Self,
+                              source: data_control::Source,
+                              event| {
+    match event {
+        Event::Send { mime_type, fd } => {
+            // Check if some other source already handled a paste request and indicated that we should
+            // quit.
+            if state.should_quit {
+                source.destroy();
+                return;
+            }
+
+            // I'm not sure if it's the compositor's responsibility to check that the mime type is
+            // valid. Let's check here just in case.
+            if !state.data_paths.contains_key(&mime_type) {
+                return;
+            }
+
+            let data_path = &state.data_paths[&mime_type];
+
+            let file = File::open(data_path).map_err(DataSourceError::FileOpen);
+            let result = file.and_then(|mut data_file| {
+                // Clear O_NONBLOCK, otherwise io::copy() will stop halfway.
+                fcntl_setfl(&fd, OFlags::empty())
+                    .map_err(io::Error::from)
+                    .map_err(DataSourceError::Copy)?;
+
+                let mut target_file = File::from(fd);
+                io::copy(&mut data_file, &mut target_file).map_err(DataSourceError::Copy)
+            });
+
+            if let Err(err) = result {
+                state.error = Some(err);
+            }
+
+            let done = if let ServeRequests::Only(left) = state.serve_requests {
+                let left = left.checked_sub(1).unwrap();
+                state.serve_requests = ServeRequests::Only(left);
+                left == 0
+            } else {
+                false
+            };
+
+            if done || state.error.is_some() {
+                state.should_quit = true;
+                source.destroy();
+            }
+        }
+        Event::Cancelled => source.destroy(),
+        _ => (),
+    }
+});
 
 impl Options {
     /// Creates a blank new set of options ready for configuration.
@@ -676,7 +629,7 @@ fn get_devices(
     primary: bool,
     seat: Seat,
     socket_name: Option<OsString>,
-) -> Result<(EventQueue<State>, State, Vec<ZwlrDataControlDeviceV1>), Error> {
+) -> Result<(EventQueue<State>, State, Vec<data_control::Device>), Error> {
     let (mut queue, mut common) = initialize(primary, socket_name)?;
 
     // Check if there are no seats.
@@ -980,7 +933,7 @@ fn prepare_copy_internal(
             let data_source = state
                 .common
                 .clipboard_manager
-                .create_data_source(&queue.handle(), ());
+                .create_data_source(&queue.handle());
 
             for mime_type in state.data_paths.keys() {
                 data_source.offer(mime_type.clone());

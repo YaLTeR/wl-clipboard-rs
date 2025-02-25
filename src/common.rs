@@ -5,17 +5,19 @@ use std::path::PathBuf;
 use std::{env, io};
 
 use wayland_backend::client::WaylandError;
-use wayland_client::globals::{registry_queue_init, BindError, GlobalError, GlobalListContents};
+use wayland_client::globals::{registry_queue_init, GlobalError, GlobalListContents};
 use wayland_client::protocol::wl_registry::WlRegistry;
 use wayland_client::protocol::wl_seat::{self, WlSeat};
 use wayland_client::{ConnectError, Connection, Dispatch, EventQueue, Proxy};
+use wayland_protocols::ext::data_control::v1::client::ext_data_control_manager_v1::ExtDataControlManagerV1;
 use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
 
+use crate::data_control::Manager;
 use crate::seat_data::SeatData;
 
 pub struct State {
     pub seats: HashMap<WlSeat, SeatData>,
-    pub clipboard_manager: ZwlrDataControlManagerV1,
+    pub clipboard_manager: Manager,
 }
 
 #[derive(thiserror::Error, Debug)]
@@ -30,9 +32,10 @@ pub enum Error {
     WaylandCommunication(#[source] WaylandError),
 
     #[error(
-        "A required Wayland protocol ({name} version {version}) is not supported by the compositor"
+        "A required Wayland protocol (ext-data-control, or wlr-data-control version {version}) \
+         is not supported by the compositor"
     )]
-    MissingProtocol { name: &'static str, version: u32 },
+    MissingProtocol { version: u32 },
 }
 
 impl<S> Dispatch<WlSeat, (), S> for State
@@ -62,6 +65,7 @@ pub fn initialize<S>(
 where
     S: Dispatch<WlRegistry, GlobalListContents> + 'static,
     S: Dispatch<ZwlrDataControlManagerV1, ()>,
+    S: Dispatch<ExtDataControlManagerV1, ()>,
     S: Dispatch<WlSeat, ()>,
     S: AsMut<State>,
 {
@@ -95,18 +99,15 @@ where
                                        })?;
     let qh = &queue.handle();
 
-    let data_control_version = if primary { 2 } else { 1 };
-
     // Verify that we got the clipboard manager.
-    let clipboard_manager = match globals.bind(qh, data_control_version..=data_control_version, ())
-    {
-        Ok(manager) => manager,
-        Err(BindError::NotPresent | BindError::UnsupportedVersion) => {
-            return Err(Error::MissingProtocol {
-                name: ZwlrDataControlManagerV1::interface().name,
-                version: data_control_version,
-            })
-        }
+    let ext_manager = globals.bind(qh, 1..=1, ()).ok().map(Manager::Ext);
+
+    let wlr_v = if primary { 2 } else { 1 };
+    let wlr_manager = || globals.bind(qh, wlr_v..=wlr_v, ()).ok().map(Manager::Zwlr);
+
+    let clipboard_manager = match ext_manager.or_else(wlr_manager) {
+        Some(manager) => manager,
+        None => return Err(Error::MissingProtocol { version: wlr_v }),
     };
 
     let registry = globals.registry();

@@ -1,5 +1,4 @@
-use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_device_v1::ZwlrDataControlDeviceV1;
-use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1;
+use crate::data_control::{Device, Offer};
 
 #[derive(Default)]
 pub struct SeatData {
@@ -7,13 +6,13 @@ pub struct SeatData {
     pub name: Option<String>,
 
     /// The data device of this seat, if any.
-    pub device: Option<ZwlrDataControlDeviceV1>,
+    pub device: Option<Device>,
 
     /// The data offer of this seat, if any.
-    pub offer: Option<ZwlrDataControlOfferV1>,
+    pub offer: Option<Offer>,
 
     /// The primary-selection data offer of this seat, if any.
-    pub primary_offer: Option<ZwlrDataControlOfferV1>,
+    pub primary_offer: Option<Offer>,
 }
 
 impl SeatData {
@@ -25,7 +24,7 @@ impl SeatData {
     /// Sets this seat's device.
     ///
     /// Destroys the old one, if any.
-    pub fn set_device(&mut self, device: Option<ZwlrDataControlDeviceV1>) {
+    pub fn set_device(&mut self, device: Option<Device>) {
         let old_device = self.device.take();
         self.device = device;
 
@@ -37,7 +36,7 @@ impl SeatData {
     /// Sets this seat's data offer.
     ///
     /// Destroys the old one, if any.
-    pub fn set_offer(&mut self, new_offer: Option<ZwlrDataControlOfferV1>) {
+    pub fn set_offer(&mut self, new_offer: Option<Offer>) {
         let old_offer = self.offer.take();
         self.offer = new_offer;
 
@@ -49,7 +48,7 @@ impl SeatData {
     /// Sets this seat's primary-selection data offer.
     ///
     /// Destroys the old one, if any.
-    pub fn set_primary_offer(&mut self, new_offer: Option<ZwlrDataControlOfferV1>) {
+    pub fn set_primary_offer(&mut self, new_offer: Option<Offer>) {
         let old_offer = self.primary_offer.take();
         self.primary_offer = new_offer;
 

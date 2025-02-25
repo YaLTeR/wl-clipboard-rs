@@ -10,11 +10,12 @@ use wayland_client::protocol::wl_seat::WlSeat;
 use wayland_client::{
     event_created_child, ConnectError, Connection, Dispatch, DispatchError, Proxy,
 };
-use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_device_v1::{
-    self, ZwlrDataControlDeviceV1,
-};
+use wayland_protocols::ext::data_control::v1::client::ext_data_control_manager_v1::ExtDataControlManagerV1;
 use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
-use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1;
+
+use crate::data_control::{
+    impl_dispatch_device, impl_dispatch_manager, impl_dispatch_offer, Manager,
+};
 
 /// Checks if the given MIME type represents plain text.
 ///
@@ -37,8 +38,8 @@ pub fn is_text(mime_type: &str) -> bool {
 struct PrimarySelectionState {
     // Any seat that we get from the compositor.
     seat: Option<WlSeat>,
-    clipboard_manager: Option<ZwlrDataControlManagerV1>,
-    clipboard_manager_was_v1: bool,
+    clipboard_manager: Option<Manager>,
+    saw_zwlr_v1: bool,
     got_primary_selection: bool,
 }
 
@@ -62,14 +63,19 @@ impl Dispatch<WlRegistry, ()> for PrimarySelectionState {
                 state.seat = Some(seat);
             }
 
-            if interface == ZwlrDataControlManagerV1::interface().name {
-                assert_eq!(state.clipboard_manager, None);
+            if state.clipboard_manager.is_none() {
+                if interface == ZwlrDataControlManagerV1::interface().name {
+                    if version == 1 {
+                        state.saw_zwlr_v1 = true;
+                    } else {
+                        let manager = registry.bind(name, 2, qh, ());
+                        state.clipboard_manager = Some(Manager::Zwlr(manager));
+                    }
+                }
 
-                if version == 1 {
-                    state.clipboard_manager_was_v1 = true;
-                } else {
-                    let manager = registry.bind(name, 2, qh, ());
-                    state.clipboard_manager = Some(manager);
+                if interface == ExtDataControlManagerV1::interface().name {
+                    let manager = registry.bind(name, 1, qh, ());
+                    state.clipboard_manager = Some(Manager::Ext(manager));
                 }
             }
         }
@@ -88,48 +94,15 @@ impl Dispatch<WlSeat, ()> for PrimarySelectionState {
     }
 }
 
-impl Dispatch<ZwlrDataControlManagerV1, ()> for PrimarySelectionState {
-    fn event(
-        _state: &mut Self,
-        _proxy: &ZwlrDataControlManagerV1,
-        _event: <ZwlrDataControlManagerV1 as Proxy>::Event,
-        _data: &(),
-        _conn: &Connection,
-        _qhandle: &wayland_client::QueueHandle<Self>,
-    ) {
-    }
-}
+impl_dispatch_manager!(PrimarySelectionState);
 
-impl Dispatch<ZwlrDataControlDeviceV1, ()> for PrimarySelectionState {
-    fn event(
-        state: &mut Self,
-        _device: &ZwlrDataControlDeviceV1,
-        event: <ZwlrDataControlDeviceV1 as wayland_client::Proxy>::Event,
-        _data: &(),
-        _conn: &wayland_client::Connection,
-        _qh: &wayland_client::QueueHandle<Self>,
-    ) {
-        if let zwlr_data_control_device_v1::Event::PrimarySelection { id: _ } = event {
-            state.got_primary_selection = true;
-        }
+impl_dispatch_device!(PrimarySelectionState, (), |state: &mut Self, event, _| {
+    if let Event::PrimarySelection { id: _ } = event {
+        state.got_primary_selection = true;
     }
+});
 
-    event_created_child!(PrimarySelectionState, ZwlrDataControlDeviceV1, [
-        zwlr_data_control_device_v1::EVT_DATA_OFFER_OPCODE => (ZwlrDataControlOfferV1, ()),
-    ]);
-}
-
-impl Dispatch<ZwlrDataControlOfferV1, ()> for PrimarySelectionState {
-    fn event(
-        _state: &mut Self,
-        _offer: &ZwlrDataControlOfferV1,
-        _event: <ZwlrDataControlOfferV1 as wayland_client::Proxy>::Event,
-        _data: &(),
-        _conn: &wayland_client::Connection,
-        _qhandle: &wayland_client::QueueHandle<Self>,
-    ) {
-    }
-}
+impl_dispatch_offer!(PrimarySelectionState);
 
 /// Errors that can occur when checking whether the primary selection is supported.
 #[derive(thiserror::Error, Debug)]
@@ -147,11 +120,10 @@ pub enum PrimarySelectionCheckError {
     WaylandCommunication(#[source] DispatchError),
 
     #[error(
-        "A required Wayland protocol ({} version {}) is not supported by the compositor",
-        name,
-        version
+        "A required Wayland protocol (ext-data-control, or wlr-data-control version 1) \
+         is not supported by the compositor"
     )]
-    MissingProtocol { name: &'static str, version: u32 },
+    MissingProtocol,
 }
 
 /// Checks if the compositor supports the primary selection.
@@ -165,19 +137,19 @@ pub enum PrimarySelectionCheckError {
 ///
 /// match is_primary_selection_supported() {
 ///     Ok(supported) => {
-///         // We have our definitive result. False means that either data-control version 1
-///         // is present (which does not support the primary selection), or that data-control
-///         // version 2 is present and it did not signal the primary selection support.
+///         // We have our definitive result. False means that ext/wlr-data-control is present
+///         // and did not signal the primary selection support, or that only wlr-data-control
+///         // version 1 is present (which does not support primary selection).
 ///     },
 ///     Err(PrimarySelectionCheckError::NoSeats) => {
 ///         // Impossible to give a definitive result. Primary selection may or may not be
 ///         // supported.
 ///
-///         // The required protocol (data-control version 2) is there, but there are no seats.
-///         // Unfortunately, at least one seat is needed to check for the primary clipboard
-///         // support.
+///         // The required protocol (ext-data-control, or wlr-data-control version 2) is there,
+///         // but there are no seats. Unfortunately, at least one seat is needed to check for the
+///         // primary clipboard support.
 ///     },
-///     Err(PrimarySelectionCheckError::MissingProtocol { .. }) => {
+///     Err(PrimarySelectionCheckError::MissingProtocol) => {
 ///         // The data-control protocol (required for wl-clipboard-rs operation) is not
 ///         // supported by the compositor.
 ///     },
@@ -225,7 +197,7 @@ pub(crate) fn is_primary_selection_supported_internal(
     let mut state = PrimarySelectionState {
         seat: None,
         clipboard_manager: None,
-        clipboard_manager_was_v1: false,
+        saw_zwlr_v1: false,
         got_primary_selection: false,
     };
 
@@ -235,17 +207,15 @@ pub(crate) fn is_primary_selection_supported_internal(
         .roundtrip(&mut state)
         .map_err(PrimarySelectionCheckError::WaylandCommunication)?;
 
-    // If data control is present but is version 1, then return false as version 1 does not support primary clipboard.
-    if state.clipboard_manager_was_v1 {
+    // If data control is present but is version 1, then return false as version 1 does not support
+    // primary clipboard.
+    if state.clipboard_manager.is_none() && state.saw_zwlr_v1 {
         return Ok(false);
     }
 
     // Verify that we got the clipboard manager.
     let Some(ref clipboard_manager) = state.clipboard_manager else {
-        return Err(PrimarySelectionCheckError::MissingProtocol {
-            name: ZwlrDataControlManagerV1::interface().name,
-            version: 1,
-        });
+        return Err(PrimarySelectionCheckError::MissingProtocol);
     };
 
     // Check if there are no seats.
