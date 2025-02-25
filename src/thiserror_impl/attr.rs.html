@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/thiserror-impl-1.0.64/src/attr.rs`."><title>attr.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="thiserror_impl" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">thiserror_impl/</div>attr.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-impl-2.0.11/src/attr.rs`."><title>attr.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="thiserror_impl" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../../static.files/src-script-56102188.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">thiserror_impl/</div>attr.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
 <a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -273,22 +273,106 @@
 <a href="#272" id="272">272</a>
 <a href="#273" id="273">273</a>
 <a href="#274" id="274">274</a>
-<a href="#275" id="275">275</a></pre></div><pre class="rust"><code><span class="kw">use </span>proc_macro2::{Delimiter, Group, Literal, Punct, Spacing, Span, TokenStream, TokenTree};
-<span class="kw">use </span>quote::{format_ident, quote, ToTokens};
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
+<a href="#341" id="341">341</a>
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
+<a href="#345" id="345">345</a>
+<a href="#346" id="346">346</a>
+<a href="#347" id="347">347</a>
+<a href="#348" id="348">348</a>
+<a href="#349" id="349">349</a>
+<a href="#350" id="350">350</a>
+<a href="#351" id="351">351</a>
+<a href="#352" id="352">352</a>
+<a href="#353" id="353">353</a>
+<a href="#354" id="354">354</a>
+<a href="#355" id="355">355</a>
+<a href="#356" id="356">356</a>
+<a href="#357" id="357">357</a>
+<a href="#358" id="358">358</a></pre></div><pre class="rust"><code><span class="kw">use </span>proc_macro2::{Delimiter, Group, Literal, Punct, Spacing, Span, TokenStream, TokenTree};
+<span class="kw">use </span>quote::{format_ident, quote, quote_spanned, ToTokens};
 <span class="kw">use </span>std::collections::BTreeSet <span class="kw">as </span>Set;
 <span class="kw">use </span>syn::parse::discouraged::Speculative;
-<span class="kw">use </span>syn::parse::ParseStream;
+<span class="kw">use </span>syn::parse::{End, ParseStream};
 <span class="kw">use </span>syn::{
-    braced, bracketed, parenthesized, token, Attribute, Error, Ident, Index, LitFloat, LitInt,
-    LitStr, Meta, <span class="prelude-ty">Result</span>, Token,
+    braced, bracketed, parenthesized, token, Attribute, Error, ExprPath, Ident, Index, LitFloat,
+    LitInt, LitStr, Meta, <span class="prelude-ty">Result</span>, Token,
 };
 
 <span class="kw">pub struct </span>Attrs&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>display: <span class="prelude-ty">Option</span>&lt;Display&lt;<span class="lifetime">'a</span>&gt;&gt;,
-    <span class="kw">pub </span>source: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Attribute&gt;,
+    <span class="kw">pub </span>source: <span class="prelude-ty">Option</span>&lt;Source&lt;<span class="lifetime">'a</span>&gt;&gt;,
     <span class="kw">pub </span>backtrace: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Attribute&gt;,
-    <span class="kw">pub </span>from: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Attribute&gt;,
+    <span class="kw">pub </span>from: <span class="prelude-ty">Option</span>&lt;From&lt;<span class="lifetime">'a</span>&gt;&gt;,
     <span class="kw">pub </span>transparent: <span class="prelude-ty">Option</span>&lt;Transparent&lt;<span class="lifetime">'a</span>&gt;&gt;,
+    <span class="kw">pub </span>fmt: <span class="prelude-ty">Option</span>&lt;Fmt&lt;<span class="lifetime">'a</span>&gt;&gt;,
 }
 
 <span class="attr">#[derive(Clone)]
@@ -298,13 +382,33 @@
     <span class="kw">pub </span>args: TokenStream,
     <span class="kw">pub </span>requires_fmt_machinery: bool,
     <span class="kw">pub </span>has_bonus_display: bool,
+    <span class="kw">pub </span>infinite_recursive: bool,
     <span class="kw">pub </span>implied_bounds: Set&lt;(usize, Trait)&gt;,
+    <span class="kw">pub </span>bindings: Vec&lt;(Ident, TokenStream)&gt;,
+}
+
+<span class="attr">#[derive(Copy, Clone)]
+</span><span class="kw">pub struct </span>Source&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">pub </span>original: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Attribute,
+    <span class="kw">pub </span>span: Span,
+}
+
+<span class="attr">#[derive(Copy, Clone)]
+</span><span class="kw">pub struct </span>From&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">pub </span>original: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Attribute,
+    <span class="kw">pub </span>span: Span,
 }
 
 <span class="attr">#[derive(Copy, Clone)]
 </span><span class="kw">pub struct </span>Transparent&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>original: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Attribute,
     <span class="kw">pub </span>span: Span,
+}
+
+<span class="attr">#[derive(Clone)]
+</span><span class="kw">pub struct </span>Fmt&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">pub </span>original: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Attribute,
+    <span class="kw">pub </span>path: ExprPath,
 }
 
 <span class="attr">#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Debug)]
@@ -327,6 +431,7 @@
         backtrace: <span class="prelude-val">None</span>,
         from: <span class="prelude-val">None</span>,
         transparent: <span class="prelude-val">None</span>,
+        fmt: <span class="prelude-val">None</span>,
     };
 
     <span class="kw">for </span>attr <span class="kw">in </span>input {
@@ -337,7 +442,13 @@
             <span class="kw">if </span>attrs.source.is_some() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new_spanned(attr, <span class="string">"duplicate #[source] attribute"</span>));
             }
-            attrs.source = <span class="prelude-val">Some</span>(attr);
+            <span class="kw">let </span>span = (attr.pound_token.span)
+                .join(attr.bracket_token.span.join())
+                .unwrap_or(attr.path().get_ident().unwrap().span());
+            attrs.source = <span class="prelude-val">Some</span>(Source {
+                original: attr,
+                span,
+            });
         } <span class="kw">else if </span>attr.path().is_ident(<span class="string">"backtrace"</span>) {
             attr.meta.require_path_only()<span class="question-mark">?</span>;
             <span class="kw">if </span>attrs.backtrace.is_some() {
@@ -355,7 +466,13 @@
             <span class="kw">if </span>attrs.from.is_some() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new_spanned(attr, <span class="string">"duplicate #[from] attribute"</span>));
             }
-            attrs.from = <span class="prelude-val">Some</span>(attr);
+            <span class="kw">let </span>span = (attr.pound_token.span)
+                .join(attr.bracket_token.span.join())
+                .unwrap_or(attr.path().get_ident().unwrap().span());
+            attrs.from = <span class="prelude-val">Some</span>(From {
+                original: attr,
+                span,
+            });
         }
     }
 
@@ -363,10 +480,17 @@
 }
 
 <span class="kw">fn </span>parse_error_attribute&lt;<span class="lifetime">'a</span>&gt;(attrs: <span class="kw-2">&amp;mut </span>Attrs&lt;<span class="lifetime">'a</span>&gt;, attr: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Attribute) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-    <span class="macro">syn::custom_keyword!</span>(transparent);
+    <span class="kw">mod </span>kw {
+        <span class="macro">syn::custom_keyword!</span>(transparent);
+        <span class="macro">syn::custom_keyword!</span>(fmt);
+    }
 
     attr.parse_args_with(|input: ParseStream| {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(kw) = input.parse::&lt;<span class="prelude-ty">Option</span>&lt;transparent&gt;&gt;()<span class="question-mark">? </span>{
+        <span class="kw">let </span>lookahead = input.lookahead1();
+        <span class="kw">let </span>fmt = <span class="kw">if </span>lookahead.peek(LitStr) {
+            input.parse::&lt;LitStr&gt;()<span class="question-mark">?
+        </span>} <span class="kw">else if </span>lookahead.peek(kw::transparent) {
+            <span class="kw">let </span>kw: kw::transparent = input.parse()<span class="question-mark">?</span>;
             <span class="kw">if </span>attrs.transparent.is_some() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new_spanned(
                     attr,
@@ -378,14 +502,27 @@
                 span: kw.span,
             });
             <span class="kw">return </span><span class="prelude-val">Ok</span>(());
-        }
+        } <span class="kw">else if </span>lookahead.peek(kw::fmt) {
+            input.parse::&lt;kw::fmt&gt;()<span class="question-mark">?</span>;
+            input.parse::&lt;<span class="macro">Token!</span>[=]&gt;()<span class="question-mark">?</span>;
+            <span class="kw">let </span>path: ExprPath = input.parse()<span class="question-mark">?</span>;
+            <span class="kw">if </span>attrs.fmt.is_some() {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new_spanned(
+                    attr,
+                    <span class="string">"duplicate #[error(fmt = ...)] attribute"</span>,
+                ));
+            }
+            attrs.fmt = <span class="prelude-val">Some</span>(Fmt {
+                original: attr,
+                path,
+            });
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+        } <span class="kw">else </span>{
+            <span class="kw">return </span><span class="prelude-val">Err</span>(lookahead.error());
+        };
 
-        <span class="kw">let </span>fmt: LitStr = input.parse()<span class="question-mark">?</span>;
-
-        <span class="kw">let </span>ahead = input.fork();
-        ahead.parse::&lt;<span class="prelude-ty">Option</span>&lt;<span class="macro">Token!</span>[,]&gt;&gt;()<span class="question-mark">?</span>;
-        <span class="kw">let </span>args = <span class="kw">if </span>ahead.is_empty() {
-            input.advance_to(<span class="kw-2">&amp;</span>ahead);
+        <span class="kw">let </span>args = <span class="kw">if </span>input.is_empty() || input.peek(<span class="macro">Token!</span>[,]) &amp;&amp; input.peek2(End) {
+            input.parse::&lt;<span class="prelude-ty">Option</span>&lt;<span class="macro">Token!</span>[,]&gt;&gt;()<span class="question-mark">?</span>;
             TokenStream::new()
         } <span class="kw">else </span>{
             parse_token_expr(input, <span class="bool-val">false</span>)<span class="question-mark">?
@@ -399,7 +536,9 @@
             args,
             requires_fmt_machinery,
             has_bonus_display: <span class="bool-val">false</span>,
+            infinite_recursive: <span class="bool-val">false</span>,
             implied_bounds: Set::new(),
+            bindings: Vec::new(),
         };
         <span class="kw">if </span>attrs.display.is_some() {
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new_spanned(
@@ -415,6 +554,13 @@
 <span class="kw">fn </span>parse_token_expr(input: ParseStream, <span class="kw-2">mut </span>begin_expr: bool) -&gt; <span class="prelude-ty">Result</span>&lt;TokenStream&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>tokens = Vec::new();
     <span class="kw">while </span>!input.is_empty() {
+        <span class="kw">if </span>input.peek(token::Group) {
+            <span class="kw">let </span>group: TokenTree = input.parse()<span class="question-mark">?</span>;
+            tokens.push(group);
+            begin_expr = <span class="bool-val">false</span>;
+            <span class="kw">continue</span>;
+        }
+
         <span class="kw">if </span>begin_expr &amp;&amp; input.peek(<span class="macro">Token!</span>[.]) {
             <span class="kw">if </span>input.peek2(Ident) {
                 input.parse::&lt;<span class="macro">Token!</span>[.]&gt;()<span class="question-mark">?</span>;
@@ -513,19 +659,39 @@
 
 <span class="kw">impl </span>ToTokens <span class="kw">for </span>Display&lt;<span class="lifetime">'_</span>&gt; {
     <span class="kw">fn </span>to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>, tokens: <span class="kw-2">&amp;mut </span>TokenStream) {
+        <span class="kw">if </span><span class="self">self</span>.infinite_recursive {
+            <span class="kw">let </span>span = <span class="self">self</span>.fmt.span();
+            tokens.extend(<span class="macro">quote_spanned!</span> {span=&gt;
+                <span class="attr">#[warn(unconditional_recursion)]
+                </span><span class="kw">fn </span>_fmt() { _fmt() }
+            });
+        }
+
         <span class="kw">let </span>fmt = <span class="kw-2">&amp;</span><span class="self">self</span>.fmt;
         <span class="kw">let </span>args = <span class="kw-2">&amp;</span><span class="self">self</span>.args;
 
         <span class="comment">// Currently `write!(f, "text")` produces less efficient code than
         // `f.write_str("text")`. We recognize the case when the format string
         // has no braces and no interpolated values, and generate simpler code.
-        </span>tokens.extend(<span class="kw">if </span><span class="self">self</span>.requires_fmt_machinery {
+        </span><span class="kw">let </span>write = <span class="kw">if </span><span class="self">self</span>.requires_fmt_machinery {
             <span class="macro">quote!</span> {
                 <span class="macro">::core::write!</span>(__formatter, #fmt #args)
             }
         } <span class="kw">else </span>{
             <span class="macro">quote!</span> {
                 __formatter.write_str(#fmt)
+            }
+        };
+
+        tokens.extend(<span class="kw">if </span><span class="self">self</span>.bindings.is_empty() {
+            write
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>locals = <span class="self">self</span>.bindings.iter().map(|(local, _value)| local);
+            <span class="kw">let </span>values = <span class="self">self</span>.bindings.iter().map(|(_local, value)| value);
+            <span class="macro">quote!</span> {
+                <span class="kw">match </span>(#(#values,)<span class="kw-2">*</span>) {
+                    (#(#locals,)<span class="kw-2">*</span>) =&gt; #write
+                }
             }
         });
     }

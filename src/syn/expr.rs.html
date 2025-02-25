@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/syn-2.0.79/src/expr.rs`."><title>expr.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">syn/</div>expr.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/syn-2.0.98/src/expr.rs`."><title>expr.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="syn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../../static.files/src-script-56102188.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">syn/</div>expr.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
 <a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -3930,18 +3930,189 @@
 <a href="#3929" id="3929">3929</a>
 <a href="#3930" id="3930">3930</a>
 <a href="#3931" id="3931">3931</a>
-<a href="#3932" id="3932">3932</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::attr::Attribute;
+<a href="#3932" id="3932">3932</a>
+<a href="#3933" id="3933">3933</a>
+<a href="#3934" id="3934">3934</a>
+<a href="#3935" id="3935">3935</a>
+<a href="#3936" id="3936">3936</a>
+<a href="#3937" id="3937">3937</a>
+<a href="#3938" id="3938">3938</a>
+<a href="#3939" id="3939">3939</a>
+<a href="#3940" id="3940">3940</a>
+<a href="#3941" id="3941">3941</a>
+<a href="#3942" id="3942">3942</a>
+<a href="#3943" id="3943">3943</a>
+<a href="#3944" id="3944">3944</a>
+<a href="#3945" id="3945">3945</a>
+<a href="#3946" id="3946">3946</a>
+<a href="#3947" id="3947">3947</a>
+<a href="#3948" id="3948">3948</a>
+<a href="#3949" id="3949">3949</a>
+<a href="#3950" id="3950">3950</a>
+<a href="#3951" id="3951">3951</a>
+<a href="#3952" id="3952">3952</a>
+<a href="#3953" id="3953">3953</a>
+<a href="#3954" id="3954">3954</a>
+<a href="#3955" id="3955">3955</a>
+<a href="#3956" id="3956">3956</a>
+<a href="#3957" id="3957">3957</a>
+<a href="#3958" id="3958">3958</a>
+<a href="#3959" id="3959">3959</a>
+<a href="#3960" id="3960">3960</a>
+<a href="#3961" id="3961">3961</a>
+<a href="#3962" id="3962">3962</a>
+<a href="#3963" id="3963">3963</a>
+<a href="#3964" id="3964">3964</a>
+<a href="#3965" id="3965">3965</a>
+<a href="#3966" id="3966">3966</a>
+<a href="#3967" id="3967">3967</a>
+<a href="#3968" id="3968">3968</a>
+<a href="#3969" id="3969">3969</a>
+<a href="#3970" id="3970">3970</a>
+<a href="#3971" id="3971">3971</a>
+<a href="#3972" id="3972">3972</a>
+<a href="#3973" id="3973">3973</a>
+<a href="#3974" id="3974">3974</a>
+<a href="#3975" id="3975">3975</a>
+<a href="#3976" id="3976">3976</a>
+<a href="#3977" id="3977">3977</a>
+<a href="#3978" id="3978">3978</a>
+<a href="#3979" id="3979">3979</a>
+<a href="#3980" id="3980">3980</a>
+<a href="#3981" id="3981">3981</a>
+<a href="#3982" id="3982">3982</a>
+<a href="#3983" id="3983">3983</a>
+<a href="#3984" id="3984">3984</a>
+<a href="#3985" id="3985">3985</a>
+<a href="#3986" id="3986">3986</a>
+<a href="#3987" id="3987">3987</a>
+<a href="#3988" id="3988">3988</a>
+<a href="#3989" id="3989">3989</a>
+<a href="#3990" id="3990">3990</a>
+<a href="#3991" id="3991">3991</a>
+<a href="#3992" id="3992">3992</a>
+<a href="#3993" id="3993">3993</a>
+<a href="#3994" id="3994">3994</a>
+<a href="#3995" id="3995">3995</a>
+<a href="#3996" id="3996">3996</a>
+<a href="#3997" id="3997">3997</a>
+<a href="#3998" id="3998">3998</a>
+<a href="#3999" id="3999">3999</a>
+<a href="#4000" id="4000">4000</a>
+<a href="#4001" id="4001">4001</a>
+<a href="#4002" id="4002">4002</a>
+<a href="#4003" id="4003">4003</a>
+<a href="#4004" id="4004">4004</a>
+<a href="#4005" id="4005">4005</a>
+<a href="#4006" id="4006">4006</a>
+<a href="#4007" id="4007">4007</a>
+<a href="#4008" id="4008">4008</a>
+<a href="#4009" id="4009">4009</a>
+<a href="#4010" id="4010">4010</a>
+<a href="#4011" id="4011">4011</a>
+<a href="#4012" id="4012">4012</a>
+<a href="#4013" id="4013">4013</a>
+<a href="#4014" id="4014">4014</a>
+<a href="#4015" id="4015">4015</a>
+<a href="#4016" id="4016">4016</a>
+<a href="#4017" id="4017">4017</a>
+<a href="#4018" id="4018">4018</a>
+<a href="#4019" id="4019">4019</a>
+<a href="#4020" id="4020">4020</a>
+<a href="#4021" id="4021">4021</a>
+<a href="#4022" id="4022">4022</a>
+<a href="#4023" id="4023">4023</a>
+<a href="#4024" id="4024">4024</a>
+<a href="#4025" id="4025">4025</a>
+<a href="#4026" id="4026">4026</a>
+<a href="#4027" id="4027">4027</a>
+<a href="#4028" id="4028">4028</a>
+<a href="#4029" id="4029">4029</a>
+<a href="#4030" id="4030">4030</a>
+<a href="#4031" id="4031">4031</a>
+<a href="#4032" id="4032">4032</a>
+<a href="#4033" id="4033">4033</a>
+<a href="#4034" id="4034">4034</a>
+<a href="#4035" id="4035">4035</a>
+<a href="#4036" id="4036">4036</a>
+<a href="#4037" id="4037">4037</a>
+<a href="#4038" id="4038">4038</a>
+<a href="#4039" id="4039">4039</a>
+<a href="#4040" id="4040">4040</a>
+<a href="#4041" id="4041">4041</a>
+<a href="#4042" id="4042">4042</a>
+<a href="#4043" id="4043">4043</a>
+<a href="#4044" id="4044">4044</a>
+<a href="#4045" id="4045">4045</a>
+<a href="#4046" id="4046">4046</a>
+<a href="#4047" id="4047">4047</a>
+<a href="#4048" id="4048">4048</a>
+<a href="#4049" id="4049">4049</a>
+<a href="#4050" id="4050">4050</a>
+<a href="#4051" id="4051">4051</a>
+<a href="#4052" id="4052">4052</a>
+<a href="#4053" id="4053">4053</a>
+<a href="#4054" id="4054">4054</a>
+<a href="#4055" id="4055">4055</a>
+<a href="#4056" id="4056">4056</a>
+<a href="#4057" id="4057">4057</a>
+<a href="#4058" id="4058">4058</a>
+<a href="#4059" id="4059">4059</a>
+<a href="#4060" id="4060">4060</a>
+<a href="#4061" id="4061">4061</a>
+<a href="#4062" id="4062">4062</a>
+<a href="#4063" id="4063">4063</a>
+<a href="#4064" id="4064">4064</a>
+<a href="#4065" id="4065">4065</a>
+<a href="#4066" id="4066">4066</a>
+<a href="#4067" id="4067">4067</a>
+<a href="#4068" id="4068">4068</a>
+<a href="#4069" id="4069">4069</a>
+<a href="#4070" id="4070">4070</a>
+<a href="#4071" id="4071">4071</a>
+<a href="#4072" id="4072">4072</a>
+<a href="#4073" id="4073">4073</a>
+<a href="#4074" id="4074">4074</a>
+<a href="#4075" id="4075">4075</a>
+<a href="#4076" id="4076">4076</a>
+<a href="#4077" id="4077">4077</a>
+<a href="#4078" id="4078">4078</a>
+<a href="#4079" id="4079">4079</a>
+<a href="#4080" id="4080">4080</a>
+<a href="#4081" id="4081">4081</a>
+<a href="#4082" id="4082">4082</a>
+<a href="#4083" id="4083">4083</a>
+<a href="#4084" id="4084">4084</a>
+<a href="#4085" id="4085">4085</a>
+<a href="#4086" id="4086">4086</a>
+<a href="#4087" id="4087">4087</a>
+<a href="#4088" id="4088">4088</a>
+<a href="#4089" id="4089">4089</a>
+<a href="#4090" id="4090">4090</a>
+<a href="#4091" id="4091">4091</a>
+<a href="#4092" id="4092">4092</a>
+<a href="#4093" id="4093">4093</a>
+<a href="#4094" id="4094">4094</a>
+<a href="#4095" id="4095">4095</a>
+<a href="#4096" id="4096">4096</a>
+<a href="#4097" id="4097">4097</a>
+<a href="#4098" id="4098">4098</a>
+<a href="#4099" id="4099">4099</a>
+<a href="#4100" id="4100">4100</a>
+<a href="#4101" id="4101">4101</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::attr::Attribute;
 <span class="attr">#[cfg(all(feature = <span class="string">"parsing"</span>, feature = <span class="string">"full"</span>))]
 </span><span class="kw">use </span><span class="kw">crate</span>::error::Result;
+<span class="attr">#[cfg(feature = <span class="string">"parsing"</span>)]
+</span><span class="kw">use </span><span class="kw">crate</span>::ext::IdentExt <span class="kw">as _</span>;
 <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::generics::BoundLifetimes;
 <span class="kw">use </span><span class="kw">crate</span>::ident::Ident;
-<span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+<span class="attr">#[cfg(any(feature = <span class="string">"parsing"</span>, feature = <span class="string">"full"</span>))]
 </span><span class="kw">use </span><span class="kw">crate</span>::lifetime::Lifetime;
 <span class="kw">use </span><span class="kw">crate</span>::lit::Lit;
 <span class="kw">use </span><span class="kw">crate</span>::mac::Macro;
 <span class="kw">use </span><span class="kw">crate</span>::op::{BinOp, UnOp};
-<span class="attr">#[cfg(all(feature = <span class="string">"parsing"</span>, feature = <span class="string">"full"</span>))]
+<span class="attr">#[cfg(feature = <span class="string">"parsing"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::parse::ParseStream;
 <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::pat::Pat;
@@ -4133,6 +4304,9 @@
 
         <span class="doccomment">/// A range expression: `1..2`, `1..`, `..2`, `1..=2`, `..=2`.
         </span>Range(ExprRange),
+
+        <span class="doccomment">/// Address-of operation: `&amp;raw const place` or `&amp;raw mut place`.
+        </span>RawAddr(ExprRawAddr),
 
         <span class="doccomment">/// A referencing operation: `&amp;a` or `&amp;mut a`.
         </span>Reference(ExprReference),
@@ -4507,6 +4681,18 @@
 }
 
 <span class="macro">ast_struct!</span> {
+    <span class="doccomment">/// Address-of operation: `&amp;raw const place` or `&amp;raw mut place`.
+    </span><span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"full"</span>)))]
+    </span><span class="kw">pub struct </span>ExprRawAddr #full {
+        <span class="kw">pub </span>attrs: Vec&lt;Attribute&gt;,
+        <span class="kw">pub </span>and_token: <span class="macro">Token!</span>[<span class="kw-2">&amp;</span>],
+        <span class="kw">pub </span>raw: <span class="macro">Token!</span>[raw],
+        <span class="kw">pub </span>mutability: PointerMutability,
+        <span class="kw">pub </span>expr: Box&lt;Expr&gt;,
+    }
+}
+
+<span class="macro">ast_struct!</span> {
     <span class="doccomment">/// A referencing operation: `&amp;a` or `&amp;mut a`.
     </span><span class="attr">#[cfg_attr(docsrs, doc(cfg(any(feature = <span class="string">"full"</span>, feature = <span class="string">"derive"</span>))))]
     </span><span class="kw">pub struct </span>ExprReference {
@@ -4806,6 +4992,36 @@
         parsing::parse_with_earlier_boundary_rule(input)
     }
 
+    <span class="doccomment">/// Returns whether the next token in the parse stream is one that might
+    /// possibly form the beginning of an expr.
+    ///
+    /// This classification is a load-bearing part of the grammar of some Rust
+    /// expressions, notably `return` and `break`. For example `return &lt; …` will
+    /// never parse `&lt;` as a binary operator regardless of what comes after,
+    /// because `&lt;` is a legal starting token for an expression and so it's
+    /// required to be continued as a return value, such as `return &lt;Struct as
+    /// Trait&gt;::CONST`. Meanwhile `return &gt; …` treats the `&gt;` as a binary
+    /// operator because it cannot be a starting token for any Rust expression.
+    </span><span class="attr">#[cfg(feature = <span class="string">"parsing"</span>)]
+    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"parsing"</span>)))]
+    </span><span class="kw">pub fn </span>peek(input: ParseStream) -&gt; bool {
+        input.peek(Ident::peek_any) &amp;&amp; !input.peek(<span class="macro">Token!</span>[<span class="kw">as</span>]) <span class="comment">// value name or keyword
+            </span>|| input.peek(token::Paren) <span class="comment">// tuple
+            </span>|| input.peek(token::Bracket) <span class="comment">// array
+            </span>|| input.peek(token::Brace) <span class="comment">// block
+            </span>|| input.peek(Lit) <span class="comment">// literal
+            </span>|| input.peek(<span class="macro">Token!</span>[!]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[!=]) <span class="comment">// operator not
+            </span>|| input.peek(<span class="macro">Token!</span>[-]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[-=]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[-&gt;]) <span class="comment">// unary minus
+            </span>|| input.peek(<span class="macro">Token!</span>[<span class="kw-2">*</span>]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[<span class="kw-2">*</span>=]) <span class="comment">// dereference
+            </span>|| input.peek(<span class="macro">Token!</span>[|]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[|=]) <span class="comment">// closure
+            </span>|| input.peek(<span class="macro">Token!</span>[<span class="kw-2">&amp;</span>]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[&amp;=]) <span class="comment">// reference
+            </span>|| input.peek(<span class="macro">Token!</span>[..]) <span class="comment">// range
+            </span>|| input.peek(<span class="macro">Token!</span>[&lt;]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[&lt;=]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[&lt;&lt;=]) <span class="comment">// associated path
+            </span>|| input.peek(<span class="macro">Token!</span>[::]) <span class="comment">// absolute path
+            </span>|| input.peek(Lifetime) <span class="comment">// labeled loop
+            </span>|| input.peek(<span class="macro">Token!</span>[#]) <span class="comment">// expression attributes
+    </span>}
+
     <span class="attr">#[cfg(all(feature = <span class="string">"parsing"</span>, feature = <span class="string">"full"</span>))]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>replace_attrs(<span class="kw-2">&amp;mut </span><span class="self">self</span>, new: Vec&lt;Attribute&gt;) -&gt; Vec&lt;Attribute&gt; {
         <span class="kw">match </span><span class="self">self </span>{
@@ -4836,6 +5052,7 @@
             | Expr::Paren(ExprParen { attrs, .. })
             | Expr::Path(ExprPath { attrs, .. })
             | Expr::Range(ExprRange { attrs, .. })
+            | Expr::RawAddr(ExprRawAddr { attrs, .. })
             | Expr::Reference(ExprReference { attrs, .. })
             | Expr::Repeat(ExprRepeat { attrs, .. })
             | Expr::Return(ExprReturn { attrs, .. })
@@ -4916,6 +5133,16 @@
         <span class="kw">match </span><span class="self">self </span>{
             Member::Named(m) =&gt; <span class="prelude-val">Some</span>(m.span()),
             Member::Unnamed(m) =&gt; <span class="prelude-val">Some</span>(m.span),
+        }
+    }
+}
+
+<span class="attr">#[cfg(any(feature = <span class="string">"parsing"</span>, feature = <span class="string">"printing"</span>))]
+</span><span class="kw">impl </span>Member {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_named(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">match </span><span class="self">self </span>{
+            Member::Named(<span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
+            Member::Unnamed(<span class="kw">_</span>) =&gt; <span class="bool-val">false</span>,
         }
     }
 }
@@ -5031,6 +5258,17 @@
     }
 }
 
+<span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+</span><span class="macro">ast_enum!</span> {
+    <span class="doccomment">/// Mutability of a raw pointer (`*const T`, `*mut T`), in which non-mutable
+    /// isn't the implicit default.
+    </span><span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"full"</span>)))]
+    </span><span class="kw">pub enum </span>PointerMutability {
+        Const(<span class="macro">Token!</span>[<span class="kw">const</span>]),
+        Mut(<span class="macro">Token!</span>[<span class="kw-2">mut</span>]),
+    }
+}
+
 <span class="attr">#[cfg(feature = <span class="string">"parsing"</span>)]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>parsing {
     <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
@@ -5043,16 +5281,14 @@
     </span><span class="kw">use </span><span class="kw">crate</span>::expr::{
         Arm, ExprArray, ExprAssign, ExprAsync, ExprAwait, ExprBlock, ExprBreak, ExprClosure,
         ExprConst, ExprContinue, ExprForLoop, ExprIf, ExprInfer, ExprLet, ExprLoop, ExprMatch,
-        ExprRange, ExprRepeat, ExprReturn, ExprTry, ExprTryBlock, ExprUnsafe, ExprWhile, ExprYield,
-        Label, RangeLimits,
+        ExprRange, ExprRawAddr, ExprRepeat, ExprReturn, ExprTry, ExprTryBlock, ExprUnsafe,
+        ExprWhile, ExprYield, Label, PointerMutability, RangeLimits,
     };
     <span class="kw">use </span><span class="kw">crate</span>::expr::{
         Expr, ExprBinary, ExprCall, ExprCast, ExprField, ExprGroup, ExprIndex, ExprLit, ExprMacro,
         ExprMethodCall, ExprParen, ExprPath, ExprReference, ExprStruct, ExprTuple, ExprUnary,
         FieldValue, Index, Member,
     };
-    <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
-    </span><span class="kw">use </span><span class="kw">crate</span>::ext::IdentExt <span class="kw">as _</span>;
     <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
     </span><span class="kw">use </span><span class="kw">crate</span>::generics::BoundLifetimes;
     <span class="kw">use </span><span class="kw">crate</span>::ident::Ident;
@@ -5080,11 +5316,6 @@
     <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
     </span><span class="kw">use </span>proc_macro2::TokenStream;
     <span class="kw">use </span>std::mem;
-
-    <span class="kw">mod </span>kw {
-        <span class="macro">crate::custom_keyword!</span>(builtin);
-        <span class="macro">crate::custom_keyword!</span>(raw);
-    }
 
     <span class="comment">// When we're parsing expressions which occur before blocks, like in an if
     // statement's condition, we cannot parse a struct literal.
@@ -5177,25 +5408,6 @@
     }
 
     <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
-    </span><span class="kw">fn </span>can_begin_expr(input: ParseStream) -&gt; bool {
-        input.peek(Ident::peek_any) <span class="comment">// value name or keyword
-            </span>|| input.peek(token::Paren) <span class="comment">// tuple
-            </span>|| input.peek(token::Bracket) <span class="comment">// array
-            </span>|| input.peek(token::Brace) <span class="comment">// block
-            </span>|| input.peek(Lit) <span class="comment">// literal
-            </span>|| input.peek(<span class="macro">Token!</span>[!]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[!=]) <span class="comment">// operator not
-            </span>|| input.peek(<span class="macro">Token!</span>[-]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[-=]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[-&gt;]) <span class="comment">// unary minus
-            </span>|| input.peek(<span class="macro">Token!</span>[<span class="kw-2">*</span>]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[<span class="kw-2">*</span>=]) <span class="comment">// dereference
-            </span>|| input.peek(<span class="macro">Token!</span>[|]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[|=]) <span class="comment">// closure
-            </span>|| input.peek(<span class="macro">Token!</span>[<span class="kw-2">&amp;</span>]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[&amp;=]) <span class="comment">// reference
-            </span>|| input.peek(<span class="macro">Token!</span>[..]) <span class="comment">// range notation
-            </span>|| input.peek(<span class="macro">Token!</span>[&lt;]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[&lt;=]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[&lt;&lt;=]) <span class="comment">// associated path
-            </span>|| input.peek(<span class="macro">Token!</span>[::]) <span class="comment">// global path
-            </span>|| input.peek(Lifetime) <span class="comment">// labeled loop
-            </span>|| input.peek(<span class="macro">Token!</span>[#]) <span class="comment">// expression attributes
-    </span>}
-
-    <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
     </span><span class="kw">fn </span>parse_expr(
         input: ParseStream,
         <span class="kw-2">mut </span>lhs: Expr,
@@ -5204,14 +5416,18 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Expr&gt; {
         <span class="kw">loop </span>{
             <span class="kw">let </span>ahead = input.fork();
-            <span class="kw">if let </span>Expr::Range(ExprRange { end: <span class="prelude-val">Some</span>(<span class="kw">_</span>), .. }) = lhs {
-                <span class="comment">// A range with an upper bound cannot be the left-hand side of
-                // another binary operator.
+            <span class="kw">if let </span>Expr::Range(<span class="kw">_</span>) = lhs {
+                <span class="comment">// A range cannot be the left-hand side of another binary operator.
                 </span><span class="kw">break</span>;
             } <span class="kw">else if let </span><span class="prelude-val">Ok</span>(op) = ahead.parse::&lt;BinOp&gt;() {
                 <span class="kw">let </span>precedence = Precedence::of_binop(<span class="kw-2">&amp;</span>op);
                 <span class="kw">if </span>precedence &lt; base {
                     <span class="kw">break</span>;
+                }
+                <span class="kw">if </span>precedence == Precedence::Assign {
+                    <span class="kw">if let </span>Expr::Range(<span class="kw">_</span>) = lhs {
+                        <span class="kw">break</span>;
+                    }
                 }
                 <span class="kw">if </span>precedence == Precedence::Compare {
                     <span class="kw">if let </span>Expr::Binary(lhs) = <span class="kw-2">&amp;</span>lhs {
@@ -5228,7 +5444,13 @@
                     op,
                     right,
                 });
-            } <span class="kw">else if </span>Precedence::Assign &gt;= base &amp;&amp; input.peek(<span class="macro">Token!</span>[=]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[=&gt;])
+            } <span class="kw">else if </span>Precedence::Assign &gt;= base
+                &amp;&amp; input.peek(<span class="macro">Token!</span>[=])
+                &amp;&amp; !input.peek(<span class="macro">Token!</span>[=&gt;])
+                &amp;&amp; <span class="kw">match </span>lhs {
+                    Expr::Range(<span class="kw">_</span>) =&gt; <span class="bool-val">false</span>,
+                    <span class="kw">_ </span>=&gt; <span class="bool-val">true</span>,
+                }
             {
                 <span class="kw">let </span>eq_token: <span class="macro">Token!</span>[=] = input.parse()<span class="question-mark">?</span>;
                 <span class="kw">let </span>right = parse_binop_rhs(input, allow_struct, Precedence::Assign)<span class="question-mark">?</span>;
@@ -5400,7 +5622,7 @@
 
         <span class="kw">if </span>input.peek(<span class="macro">Token!</span>[<span class="kw-2">&amp;</span>]) {
             <span class="kw">let </span>and_token: <span class="macro">Token!</span>[<span class="kw-2">&amp;</span>] = input.parse()<span class="question-mark">?</span>;
-            <span class="kw">let </span>raw: <span class="prelude-ty">Option</span>&lt;kw::raw&gt; = <span class="kw">if </span>input.peek(kw::raw)
+            <span class="kw">let </span>raw: <span class="prelude-ty">Option</span>&lt;<span class="macro">Token!</span>[raw]&gt; = <span class="kw">if </span>input.peek(<span class="macro">Token!</span>[raw])
                 &amp;&amp; (input.peek2(<span class="macro">Token!</span>[<span class="kw-2">mut</span>]) || input.peek2(<span class="macro">Token!</span>[<span class="kw">const</span>]))
             {
                 <span class="prelude-val">Some</span>(input.parse()<span class="question-mark">?</span>)
@@ -5408,12 +5630,23 @@
                 <span class="prelude-val">None
             </span>};
             <span class="kw">let </span>mutability: <span class="prelude-ty">Option</span>&lt;<span class="macro">Token!</span>[<span class="kw-2">mut</span>]&gt; = input.parse()<span class="question-mark">?</span>;
-            <span class="kw">if </span>raw.is_some() &amp;&amp; mutability.is_none() {
-                input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">const</span>]&gt;()<span class="question-mark">?</span>;
-            }
+            <span class="kw">let </span>const_token: <span class="prelude-ty">Option</span>&lt;<span class="macro">Token!</span>[<span class="kw">const</span>]&gt; = <span class="kw">if </span>raw.is_some() &amp;&amp; mutability.is_none() {
+                <span class="prelude-val">Some</span>(input.parse()<span class="question-mark">?</span>)
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>};
             <span class="kw">let </span>expr = Box::new(unary_expr(input, allow_struct)<span class="question-mark">?</span>);
-            <span class="kw">if </span>raw.is_some() {
-                <span class="prelude-val">Ok</span>(Expr::Verbatim(verbatim::between(<span class="kw-2">&amp;</span>begin, input)))
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(raw) = raw {
+                <span class="prelude-val">Ok</span>(Expr::RawAddr(ExprRawAddr {
+                    attrs,
+                    and_token,
+                    raw,
+                    mutability: <span class="kw">match </span>mutability {
+                        <span class="prelude-val">Some</span>(mut_token) =&gt; PointerMutability::Mut(mut_token),
+                        <span class="prelude-val">None </span>=&gt; PointerMutability::Const(const_token.unwrap()),
+                    },
+                    expr,
+                }))
             } <span class="kw">else </span>{
                 <span class="prelude-val">Ok</span>(Expr::Reference(ExprReference {
                     attrs,
@@ -5551,7 +5784,12 @@
                     bracket_token: <span class="macro">bracketed!</span>(content <span class="kw">in </span>input),
                     index: content.parse()<span class="question-mark">?</span>,
                 });
-            } <span class="kw">else if </span>input.peek(<span class="macro">Token!</span>[<span class="question-mark">?</span>]) {
+            } <span class="kw">else if </span>input.peek(<span class="macro">Token!</span>[<span class="question-mark">?</span>])
+                &amp;&amp; <span class="kw">match </span>e {
+                    Expr::Range(<span class="kw">_</span>) =&gt; <span class="bool-val">false</span>,
+                    <span class="kw">_ </span>=&gt; <span class="bool-val">true</span>,
+                }
+            {
                 e = Expr::Try(ExprTry {
                     attrs: Vec::new(),
                     expr: Box::new(e),
@@ -5662,7 +5900,8 @@
             || input.peek(<span class="macro">Token!</span>[<span class="kw">async</span>]) &amp;&amp; (input.peek2(<span class="macro">Token!</span>[|]) || input.peek2(<span class="macro">Token!</span>[<span class="kw">move</span>]))
         {
             expr_closure(input, allow_struct).map(Expr::Closure)
-        } <span class="kw">else if </span>input.peek(kw::builtin) &amp;&amp; input.peek2(<span class="macro">Token!</span>[#]) {
+        } <span class="kw">else if </span>token::parsing::peek_keyword(input.cursor(), <span class="string">"builtin"</span>) &amp;&amp; input.peek2(<span class="macro">Token!</span>[#])
+        {
             expr_builtin(input)
         } <span class="kw">else if </span>input.peek(Ident)
             || input.peek(<span class="macro">Token!</span>[::])
@@ -5779,7 +6018,7 @@
     </span><span class="kw">fn </span>expr_builtin(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;Expr&gt; {
         <span class="kw">let </span>begin = input.fork();
 
-        input.parse::&lt;kw::builtin&gt;()<span class="question-mark">?</span>;
+        token::parsing::keyword(input, <span class="string">"builtin"</span>)<span class="question-mark">?</span>;
         input.parse::&lt;<span class="macro">Token!</span>[#]&gt;()<span class="question-mark">?</span>;
         input.parse::&lt;Ident&gt;()<span class="question-mark">?</span>;
 
@@ -6105,7 +6344,6 @@
                 <span class="kw">if </span>lookahead.peek(<span class="macro">Token!</span>[<span class="kw">if</span>]) {
                     expr.else_branch = <span class="prelude-val">Some</span>((else_token, Box::new(Expr::PLACEHOLDER)));
                     clauses.push(expr);
-                    <span class="kw">continue</span>;
                 } <span class="kw">else if </span>lookahead.peek(token::Brace) {
                     expr.else_branch = <span class="prelude-val">Some</span>((
                         else_token,
@@ -6205,10 +6443,7 @@
             <span class="kw">let </span>brace_token = <span class="macro">braced!</span>(content <span class="kw">in </span>input);
             attr::parsing::parse_inner(<span class="kw-2">&amp;</span>content, <span class="kw-2">&amp;mut </span>attrs)<span class="question-mark">?</span>;
 
-            <span class="kw">let </span><span class="kw-2">mut </span>arms = Vec::new();
-            <span class="kw">while </span>!content.is_empty() {
-                arms.push(content.call(Arm::parse)<span class="question-mark">?</span>);
-            }
+            <span class="kw">let </span>arms = Arm::parse_multiple(<span class="kw-2">&amp;</span>content)<span class="question-mark">?</span>;
 
             <span class="prelude-val">Ok</span>(ExprMatch {
                 attrs,
@@ -6293,6 +6528,21 @@
 
     <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
     #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"parsing"</span>)))]
+    </span><span class="kw">impl </span>Parse <span class="kw">for </span>ExprRawAddr {
+        <span class="kw">fn </span>parse(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+            <span class="kw">let </span>allow_struct = AllowStruct(<span class="bool-val">true</span>);
+            <span class="prelude-val">Ok</span>(ExprRawAddr {
+                attrs: Vec::new(),
+                and_token: input.parse()<span class="question-mark">?</span>,
+                raw: input.parse()<span class="question-mark">?</span>,
+                mutability: input.parse()<span class="question-mark">?</span>,
+                expr: Box::new(unary_expr(input, allow_struct)<span class="question-mark">?</span>),
+            })
+        }
+    }
+
+    <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"parsing"</span>)))]
     </span><span class="kw">impl </span>Parse <span class="kw">for </span>ExprReference {
         <span class="kw">fn </span>parse(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
             <span class="kw">let </span>allow_struct = AllowStruct(<span class="bool-val">true</span>);
@@ -6322,7 +6572,7 @@
                 attrs: Vec::new(),
                 return_token: input.parse()<span class="question-mark">?</span>,
                 expr: {
-                    <span class="kw">if </span>can_begin_expr(input) {
+                    <span class="kw">if </span>Expr::peek(input) {
                         <span class="prelude-val">Some</span>(input.parse()<span class="question-mark">?</span>)
                     } <span class="kw">else </span>{
                         <span class="prelude-val">None
@@ -6360,7 +6610,7 @@
                 attrs: Vec::new(),
                 yield_token: input.parse()<span class="question-mark">?</span>,
                 expr: {
-                    <span class="kw">if </span>can_begin_expr(input) {
+                    <span class="kw">if </span>Expr::peek(input) {
                         <span class="prelude-val">Some</span>(input.parse()<span class="question-mark">?</span>)
                     } <span class="kw">else </span>{
                         <span class="prelude-val">None
@@ -6573,7 +6823,7 @@
         }
 
         input.advance_to(<span class="kw-2">&amp;</span>ahead);
-        <span class="kw">let </span>expr = <span class="kw">if </span>can_begin_expr(input) &amp;&amp; (allow_struct.<span class="number">0 </span>|| !input.peek(token::Brace)) {
+        <span class="kw">let </span>expr = <span class="kw">if </span>Expr::peek(input) &amp;&amp; (allow_struct.<span class="number">0 </span>|| !input.peek(token::Brace)) {
             <span class="prelude-val">Some</span>(input.parse()<span class="question-mark">?</span>)
         } <span class="kw">else </span>{
             <span class="prelude-val">None
@@ -6732,7 +6982,23 @@
                 || input.peek(<span class="macro">Token!</span>[,])
                 || input.peek(<span class="macro">Token!</span>[;])
                 || input.peek(<span class="macro">Token!</span>[.]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[..])
-                || !allow_struct.<span class="number">0 </span>&amp;&amp; input.peek(token::Brace))
+                || input.peek(<span class="macro">Token!</span>[<span class="question-mark">?</span>])
+                || input.peek(<span class="macro">Token!</span>[=&gt;])
+                || !allow_struct.<span class="number">0 </span>&amp;&amp; input.peek(token::Brace)
+                || input.peek(<span class="macro">Token!</span>[=])
+                || input.peek(<span class="macro">Token!</span>[+])
+                || input.peek(<span class="macro">Token!</span>[/])
+                || input.peek(<span class="macro">Token!</span>[%])
+                || input.peek(<span class="macro">Token!</span>[^])
+                || input.peek(<span class="macro">Token!</span>[&gt;])
+                || input.peek(<span class="macro">Token!</span>[&lt;=])
+                || input.peek(<span class="macro">Token!</span>[!=])
+                || input.peek(<span class="macro">Token!</span>[-=])
+                || input.peek(<span class="macro">Token!</span>[<span class="kw-2">*</span>=])
+                || input.peek(<span class="macro">Token!</span>[&amp;=])
+                || input.peek(<span class="macro">Token!</span>[|=])
+                || input.peek(<span class="macro">Token!</span>[&lt;&lt;=])
+                || input.peek(<span class="macro">Token!</span>[<span class="kw">as</span>]))
         {
             <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
         } <span class="kw">else </span>{
@@ -6804,6 +7070,17 @@
             } <span class="kw">else </span>{
                 <span class="prelude-val">Err</span>(input.error(<span class="string">"expected identifier or integer"</span>))
             }
+        }
+    }
+
+    <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+    </span><span class="kw">impl </span>Arm {
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>parse_multiple(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="self">Self</span>&gt;&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>arms = Vec::new();
+            <span class="kw">while </span>!input.is_empty() {
+                arms.push(input.call(Arm::parse)<span class="question-mark">?</span>);
+            }
+            <span class="prelude-val">Ok</span>(arms)
         }
     }
 
@@ -6893,11 +7170,17 @@
         <span class="prelude-val">Ok</span>(!trailing_dot)
     }
 
-    <span class="kw">impl </span>Member {
-        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_named(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-            <span class="kw">match </span><span class="self">self </span>{
-                Member::Named(<span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
-                Member::Unnamed(<span class="kw">_</span>) =&gt; <span class="bool-val">false</span>,
+    <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"parsing"</span>)))]
+    </span><span class="kw">impl </span>Parse <span class="kw">for </span>PointerMutability {
+        <span class="kw">fn </span>parse(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+            <span class="kw">let </span>lookahead = input.lookahead1();
+            <span class="kw">if </span>lookahead.peek(<span class="macro">Token!</span>[<span class="kw">const</span>]) {
+                <span class="prelude-val">Ok</span>(PointerMutability::Const(input.parse()<span class="question-mark">?</span>))
+            } <span class="kw">else if </span>lookahead.peek(<span class="macro">Token!</span>[<span class="kw-2">mut</span>]) {
+                <span class="prelude-val">Ok</span>(PointerMutability::Mut(input.parse()<span class="question-mark">?</span>))
+            } <span class="kw">else </span>{
+                <span class="prelude-val">Err</span>(lookahead.error())
             }
         }
     }
@@ -6936,8 +7219,8 @@
     </span><span class="kw">use </span><span class="kw">crate</span>::expr::{
         Arm, ExprArray, ExprAssign, ExprAsync, ExprAwait, ExprBlock, ExprBreak, ExprClosure,
         ExprConst, ExprContinue, ExprForLoop, ExprIf, ExprInfer, ExprLet, ExprLoop, ExprMatch,
-        ExprRange, ExprRepeat, ExprReturn, ExprTry, ExprTryBlock, ExprUnsafe, ExprWhile, ExprYield,
-        Label, RangeLimits,
+        ExprRange, ExprRawAddr, ExprRepeat, ExprReturn, ExprTry, ExprTryBlock, ExprUnsafe,
+        ExprWhile, ExprYield, Label, PointerMutability, RangeLimits,
     };
     <span class="kw">use </span><span class="kw">crate</span>::expr::{
         Expr, ExprBinary, ExprCall, ExprCast, ExprField, ExprGroup, ExprIndex, ExprLit, ExprMacro,
@@ -6968,17 +7251,7 @@
     <span class="attr">#[cfg(not(feature = <span class="string">"full"</span>))]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>outer_attrs_to_tokens(_attrs: <span class="kw-2">&amp;</span>[Attribute], _tokens: <span class="kw-2">&amp;mut </span>TokenStream) {}
 
-    <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
-    </span><span class="kw">fn </span>print_condition(expr: <span class="kw-2">&amp;</span>Expr, tokens: <span class="kw-2">&amp;mut </span>TokenStream) {
-        print_subexpression(
-            expr,
-            classify::confusable_with_adjacent_block(expr),
-            tokens,
-            FixupContext::new_condition(),
-        );
-    }
-
-    <span class="kw">fn </span>print_subexpression(
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>print_subexpression(
         expr: <span class="kw-2">&amp;</span>Expr,
         needs_group: bool,
         tokens: <span class="kw-2">&amp;mut </span>TokenStream,
@@ -7010,7 +7283,7 @@
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>print_expr(expr: <span class="kw-2">&amp;</span>Expr, tokens: <span class="kw-2">&amp;mut </span>TokenStream, <span class="kw-2">mut </span>fixup: FixupContext) {
         <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
-        </span><span class="kw">let </span>needs_group = fixup.would_cause_statement_boundary(expr);
+        </span><span class="kw">let </span>needs_group = fixup.parenthesize(expr);
         <span class="attr">#[cfg(not(feature = <span class="string">"full"</span>))]
         </span><span class="kw">let </span>needs_group = <span class="bool-val">false</span>;
 
@@ -7035,7 +7308,7 @@
             Expr::Call(e) =&gt; print_expr_call(e, tokens, fixup),
             Expr::Cast(e) =&gt; print_expr_cast(e, tokens, fixup),
             <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
-            </span>Expr::Closure(e) =&gt; e.to_tokens(tokens),
+            </span>Expr::Closure(e) =&gt; print_expr_closure(e, tokens, fixup),
             <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
             </span>Expr::Const(e) =&gt; e.to_tokens(tokens),
             <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
@@ -7063,6 +7336,8 @@
             Expr::Path(e) =&gt; e.to_tokens(tokens),
             <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
             </span>Expr::Range(e) =&gt; print_expr_range(e, tokens, fixup),
+            <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+            </span>Expr::RawAddr(e) =&gt; print_expr_raw_addr(e, tokens, fixup),
             Expr::Reference(e) =&gt; print_expr_reference(e, tokens, fixup),
             <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
             </span>Expr::Repeat(e) =&gt; e.to_tokens(tokens),
@@ -7117,18 +7392,14 @@
     <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
     </span><span class="kw">fn </span>print_expr_assign(e: <span class="kw-2">&amp;</span>ExprAssign, tokens: <span class="kw-2">&amp;mut </span>TokenStream, fixup: FixupContext) {
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
-        print_subexpression(
-            <span class="kw-2">&amp;</span>e.left,
-            Precedence::of(<span class="kw-2">&amp;</span>e.left) &lt;= Precedence::Range,
-            tokens,
-            fixup.leftmost_subexpression(),
-        );
+        <span class="kw">let </span>(left_prec, left_fixup) =
+            fixup.leftmost_subexpression_with_operator(<span class="kw-2">&amp;</span>e.left, <span class="bool-val">false</span>, <span class="bool-val">false</span>, Precedence::Assign);
+        print_subexpression(<span class="kw-2">&amp;</span>e.left, left_prec &lt;= Precedence::Range, tokens, left_fixup);
         e.eq_token.to_tokens(tokens);
-        print_subexpression(
+        print_expr(
             <span class="kw-2">&amp;</span>e.right,
-            fixup.trailing_precedence(<span class="kw-2">&amp;</span>e.right) &lt; Precedence::Assign,
             tokens,
-            fixup.subsequent_subexpression(),
+            fixup.rightmost_subexpression_fixup(<span class="bool-val">false</span>, <span class="bool-val">false</span>, Precedence::Assign),
         );
     }
 
@@ -7154,11 +7425,12 @@
     <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
     </span><span class="kw">fn </span>print_expr_await(e: <span class="kw-2">&amp;</span>ExprAwait, tokens: <span class="kw-2">&amp;mut </span>TokenStream, fixup: FixupContext) {
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
+        <span class="kw">let </span>(left_prec, left_fixup) = fixup.leftmost_subexpression_with_dot(<span class="kw-2">&amp;</span>e.base);
         print_subexpression(
             <span class="kw-2">&amp;</span>e.base,
-            Precedence::of(<span class="kw-2">&amp;</span>e.base) &lt; Precedence::Unambiguous,
+            left_prec &lt; Precedence::Unambiguous,
             tokens,
-            fixup.leftmost_subexpression_with_dot(),
+            left_fixup,
         );
         e.dot_token.to_tokens(tokens);
         e.await_token.to_tokens(tokens);
@@ -7174,7 +7446,9 @@
     <span class="kw">fn </span>print_expr_binary(e: <span class="kw-2">&amp;</span>ExprBinary, tokens: <span class="kw-2">&amp;mut </span>TokenStream, fixup: FixupContext) {
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
 
-        <span class="kw">let </span>left_fixup = fixup.leftmost_subexpression_with_begin_operator(
+        <span class="kw">let </span>binop_prec = Precedence::of_binop(<span class="kw-2">&amp;</span>e.op);
+        <span class="kw">let </span>(left_prec, left_fixup) = fixup.leftmost_subexpression_with_operator(
+            <span class="kw-2">&amp;</span>e.left,
             <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
             </span><span class="kw">match </span><span class="kw-2">&amp;</span>e.op {
                 BinOp::Sub(<span class="kw">_</span>)
@@ -7191,25 +7465,29 @@
                 BinOp::Shl(<span class="kw">_</span>) | BinOp::Lt(<span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
                 <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
             },
+            <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+            </span>binop_prec,
         );
-
-        <span class="kw">let </span>binop_prec = Precedence::of_binop(<span class="kw-2">&amp;</span>e.op);
-        <span class="kw">let </span>left_prec = left_fixup.leading_precedence(<span class="kw-2">&amp;</span>e.left);
-        <span class="kw">let </span>right_prec = fixup.trailing_precedence(<span class="kw-2">&amp;</span>e.right);
-        <span class="kw">let </span>(left_needs_group, right_needs_group) = <span class="kw">match </span>binop_prec {
-            Precedence::Assign =&gt; (left_prec &lt;= Precedence::Range, right_prec &lt; binop_prec),
-            Precedence::Compare =&gt; (left_prec &lt;= binop_prec, right_prec &lt;= binop_prec),
-            <span class="kw">_ </span>=&gt; (left_prec &lt; binop_prec, right_prec &lt;= binop_prec),
+        <span class="kw">let </span>left_needs_group = <span class="kw">match </span>binop_prec {
+            Precedence::Assign =&gt; left_prec &lt;= Precedence::Range,
+            Precedence::Compare =&gt; left_prec &lt;= binop_prec,
+            <span class="kw">_ </span>=&gt; left_prec &lt; binop_prec,
         };
+
+        <span class="kw">let </span>right_fixup = fixup.rightmost_subexpression_fixup(
+            <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+            </span><span class="bool-val">false</span>,
+            <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+            </span><span class="bool-val">false</span>,
+            <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+            </span>binop_prec,
+        );
+        <span class="kw">let </span>right_needs_group = binop_prec != Precedence::Assign
+            &amp;&amp; right_fixup.rightmost_subexpression_precedence(<span class="kw-2">&amp;</span>e.right) &lt;= binop_prec;
 
         print_subexpression(<span class="kw-2">&amp;</span>e.left, left_needs_group, tokens, left_fixup);
         e.op.to_tokens(tokens);
-        print_subexpression(
-            <span class="kw-2">&amp;</span>e.right,
-            right_needs_group,
-            tokens,
-            fixup.subsequent_subexpression(),
-        );
+        print_subexpression(<span class="kw-2">&amp;</span>e.right, right_needs_group, tokens, right_fixup);
     }
 
     <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
@@ -7245,7 +7523,7 @@
                 //                     ^---------------------------------^
                 </span>e.label.is_none() &amp;&amp; classify::expr_leading_label(value),
                 tokens,
-                fixup.subsequent_subexpression(),
+                fixup.rightmost_subexpression_fixup(<span class="bool-val">true</span>, <span class="bool-val">true</span>, Precedence::Jump),
             );
         }
     }
@@ -7260,22 +7538,20 @@
     <span class="kw">fn </span>print_expr_call(e: <span class="kw-2">&amp;</span>ExprCall, tokens: <span class="kw-2">&amp;mut </span>TokenStream, fixup: FixupContext) {
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
 
-        <span class="kw">let </span>call_precedence = <span class="kw">if let </span>Expr::Field(<span class="kw">_</span>) = <span class="kw-2">&amp;*</span>e.func {
-            Precedence::MIN
-        } <span class="kw">else </span>{
-            Precedence::Unambiguous
-        };
-        <span class="kw">let </span>func_fixup = fixup.leftmost_subexpression_with_begin_operator(
+        <span class="kw">let </span>(left_prec, left_fixup) = fixup.leftmost_subexpression_with_operator(
+            <span class="kw-2">&amp;</span>e.func,
             <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
             </span><span class="bool-val">true</span>,
             <span class="bool-val">false</span>,
+            <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+            </span>Precedence::Unambiguous,
         );
-        print_subexpression(
-            <span class="kw-2">&amp;</span>e.func,
-            func_fixup.leading_precedence(<span class="kw-2">&amp;</span>e.func) &lt; call_precedence,
-            tokens,
-            func_fixup,
-        );
+        <span class="kw">let </span>needs_group = <span class="kw">if let </span>Expr::Field(func) = <span class="kw-2">&amp;*</span>e.func {
+            func.member.is_named()
+        } <span class="kw">else </span>{
+            left_prec &lt; Precedence::Unambiguous
+        };
+        print_subexpression(<span class="kw-2">&amp;</span>e.func, needs_group, tokens, left_fixup);
 
         e.paren_token.surround(tokens, |tokens| {
             e.args.to_tokens(tokens);
@@ -7291,12 +7567,15 @@
 
     <span class="kw">fn </span>print_expr_cast(e: <span class="kw-2">&amp;</span>ExprCast, tokens: <span class="kw-2">&amp;mut </span>TokenStream, fixup: FixupContext) {
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
-        print_subexpression(
+        <span class="kw">let </span>(left_prec, left_fixup) = fixup.leftmost_subexpression_with_operator(
             <span class="kw-2">&amp;</span>e.expr,
-            Precedence::of(<span class="kw-2">&amp;</span>e.expr) &lt; Precedence::Cast,
-            tokens,
-            fixup.leftmost_subexpression(),
+            <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+            </span><span class="bool-val">false</span>,
+            <span class="bool-val">false</span>,
+            <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+            </span>Precedence::Cast,
         );
+        print_subexpression(<span class="kw-2">&amp;</span>e.expr, left_prec &lt; Precedence::Cast, tokens, left_fixup);
         e.as_token.to_tokens(tokens);
         e.ty.to_tokens(tokens);
     }
@@ -7305,23 +7584,34 @@
     #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"printing"</span>)))]
     </span><span class="kw">impl </span>ToTokens <span class="kw">for </span>ExprClosure {
         <span class="kw">fn </span>to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>, tokens: <span class="kw-2">&amp;mut </span>TokenStream) {
-            outer_attrs_to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>.attrs, tokens);
-            <span class="self">self</span>.lifetimes.to_tokens(tokens);
-            <span class="self">self</span>.constness.to_tokens(tokens);
-            <span class="self">self</span>.movability.to_tokens(tokens);
-            <span class="self">self</span>.asyncness.to_tokens(tokens);
-            <span class="self">self</span>.capture.to_tokens(tokens);
-            <span class="self">self</span>.or1_token.to_tokens(tokens);
-            <span class="self">self</span>.inputs.to_tokens(tokens);
-            <span class="self">self</span>.or2_token.to_tokens(tokens);
-            <span class="self">self</span>.output.to_tokens(tokens);
-            <span class="kw">if </span><span class="macro">matches!</span>(<span class="self">self</span>.output, ReturnType::Default) || <span class="macro">matches!</span>(<span class="kw-2">*</span><span class="self">self</span>.body, Expr::Block(<span class="kw">_</span>)) {
-                <span class="self">self</span>.body.to_tokens(tokens);
-            } <span class="kw">else </span>{
-                token::Brace::default().surround(tokens, |tokens| {
-                    print_expr(<span class="kw-2">&amp;</span><span class="self">self</span>.body, tokens, FixupContext::new_stmt());
-                });
-            }
+            print_expr_closure(<span class="self">self</span>, tokens, FixupContext::NONE);
+        }
+    }
+
+    <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+    </span><span class="kw">fn </span>print_expr_closure(e: <span class="kw-2">&amp;</span>ExprClosure, tokens: <span class="kw-2">&amp;mut </span>TokenStream, fixup: FixupContext) {
+        outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
+        e.lifetimes.to_tokens(tokens);
+        e.constness.to_tokens(tokens);
+        e.movability.to_tokens(tokens);
+        e.asyncness.to_tokens(tokens);
+        e.capture.to_tokens(tokens);
+        e.or1_token.to_tokens(tokens);
+        e.inputs.to_tokens(tokens);
+        e.or2_token.to_tokens(tokens);
+        e.output.to_tokens(tokens);
+        <span class="kw">if </span><span class="macro">matches!</span>(e.output, ReturnType::Default)
+            || <span class="macro">matches!</span>(<span class="kw-2">&amp;*</span>e.body, Expr::Block(body) <span class="kw">if </span>body.attrs.is_empty() &amp;&amp; body.label.is_none())
+        {
+            print_expr(
+                <span class="kw-2">&amp;</span>e.body,
+                tokens,
+                fixup.rightmost_subexpression_fixup(<span class="bool-val">false</span>, <span class="bool-val">false</span>, Precedence::Jump),
+            );
+        } <span class="kw">else </span>{
+            token::Brace::default().surround(tokens, |tokens| {
+                print_expr(<span class="kw-2">&amp;</span>e.body, tokens, FixupContext::new_stmt());
+            });
         }
     }
 
@@ -7357,11 +7647,12 @@
 
     <span class="kw">fn </span>print_expr_field(e: <span class="kw-2">&amp;</span>ExprField, tokens: <span class="kw-2">&amp;mut </span>TokenStream, fixup: FixupContext) {
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
+        <span class="kw">let </span>(left_prec, left_fixup) = fixup.leftmost_subexpression_with_dot(<span class="kw-2">&amp;</span>e.base);
         print_subexpression(
             <span class="kw-2">&amp;</span>e.base,
-            Precedence::of(<span class="kw-2">&amp;</span>e.base) &lt; Precedence::Unambiguous,
+            left_prec &lt; Precedence::Unambiguous,
             tokens,
-            fixup.leftmost_subexpression_with_dot(),
+            left_fixup,
         );
         e.dot_token.to_tokens(tokens);
         e.member.to_tokens(tokens);
@@ -7376,7 +7667,7 @@
             <span class="self">self</span>.for_token.to_tokens(tokens);
             <span class="self">self</span>.pat.to_tokens(tokens);
             <span class="self">self</span>.in_token.to_tokens(tokens);
-            print_condition(<span class="kw-2">&amp;</span><span class="self">self</span>.expr, tokens);
+            print_expr(<span class="kw-2">&amp;</span><span class="self">self</span>.expr, tokens, FixupContext::new_condition());
             <span class="self">self</span>.body.brace_token.surround(tokens, |tokens| {
                 inner_attrs_to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>.attrs, tokens);
                 tokens.append_all(<span class="kw-2">&amp;</span><span class="self">self</span>.body.stmts);
@@ -7403,7 +7694,7 @@
             <span class="kw">let </span><span class="kw-2">mut </span>expr = <span class="self">self</span>;
             <span class="kw">loop </span>{
                 expr.if_token.to_tokens(tokens);
-                print_condition(<span class="kw-2">&amp;</span>expr.cond, tokens);
+                print_expr(<span class="kw-2">&amp;</span>expr.cond, tokens, FixupContext::new_condition());
                 expr.then_branch.to_tokens(tokens);
 
                 <span class="kw">let </span>(else_token, else_) = <span class="kw">match </span><span class="kw-2">&amp;</span>expr.else_branch {
@@ -7442,16 +7733,19 @@
 
     <span class="kw">fn </span>print_expr_index(e: <span class="kw-2">&amp;</span>ExprIndex, tokens: <span class="kw-2">&amp;mut </span>TokenStream, fixup: FixupContext) {
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
-        <span class="kw">let </span>obj_fixup = fixup.leftmost_subexpression_with_begin_operator(
+        <span class="kw">let </span>(left_prec, left_fixup) = fixup.leftmost_subexpression_with_operator(
+            <span class="kw-2">&amp;</span>e.expr,
             <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
             </span><span class="bool-val">true</span>,
             <span class="bool-val">false</span>,
+            <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+            </span>Precedence::Unambiguous,
         );
         print_subexpression(
             <span class="kw-2">&amp;</span>e.expr,
-            obj_fixup.leading_precedence(<span class="kw-2">&amp;</span>e.expr) &lt; Precedence::Unambiguous,
+            left_prec &lt; Precedence::Unambiguous,
             tokens,
-            obj_fixup,
+            left_fixup,
         );
         e.bracket_token.surround(tokens, |tokens| {
             e.index.to_tokens(tokens);
@@ -7481,12 +7775,8 @@
         e.let_token.to_tokens(tokens);
         e.pat.to_tokens(tokens);
         e.eq_token.to_tokens(tokens);
-        print_subexpression(
-            <span class="kw-2">&amp;</span>e.expr,
-            fixup.needs_group_as_let_scrutinee(<span class="kw-2">&amp;</span>e.expr),
-            tokens,
-            FixupContext::NONE,
-        );
+        <span class="kw">let </span>(right_prec, right_fixup) = fixup.rightmost_subexpression(<span class="kw-2">&amp;</span>e.expr, Precedence::Let);
+        print_subexpression(<span class="kw-2">&amp;</span>e.expr, right_prec &lt; Precedence::Let, tokens, right_fixup);
     }
 
     <span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"printing"</span>)))]
@@ -7525,7 +7815,7 @@
         <span class="kw">fn </span>to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>, tokens: <span class="kw-2">&amp;mut </span>TokenStream) {
             outer_attrs_to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>.attrs, tokens);
             <span class="self">self</span>.match_token.to_tokens(tokens);
-            print_condition(<span class="kw-2">&amp;</span><span class="self">self</span>.expr, tokens);
+            print_expr(<span class="kw-2">&amp;</span><span class="self">self</span>.expr, tokens, FixupContext::new_condition());
             <span class="self">self</span>.brace_token.surround(tokens, |tokens| {
                 inner_attrs_to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>.attrs, tokens);
                 <span class="kw">for </span>(i, arm) <span class="kw">in </span><span class="self">self</span>.arms.iter().enumerate() {
@@ -7553,11 +7843,12 @@
 
     <span class="kw">fn </span>print_expr_method_call(e: <span class="kw-2">&amp;</span>ExprMethodCall, tokens: <span class="kw-2">&amp;mut </span>TokenStream, fixup: FixupContext) {
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
+        <span class="kw">let </span>(left_prec, left_fixup) = fixup.leftmost_subexpression_with_dot(<span class="kw-2">&amp;</span>e.receiver);
         print_subexpression(
             <span class="kw-2">&amp;</span>e.receiver,
-            Precedence::of(<span class="kw-2">&amp;</span>e.receiver) &lt; Precedence::Unambiguous,
+            left_prec &lt; Precedence::Unambiguous,
             tokens,
-            fixup.leftmost_subexpression_with_dot(),
+            left_fixup,
         );
         e.dot_token.to_tokens(tokens);
         e.method.to_tokens(tokens);
@@ -7603,22 +7894,39 @@
     </span><span class="kw">fn </span>print_expr_range(e: <span class="kw-2">&amp;</span>ExprRange, tokens: <span class="kw-2">&amp;mut </span>TokenStream, fixup: FixupContext) {
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
         <span class="kw">if let </span><span class="prelude-val">Some</span>(start) = <span class="kw-2">&amp;</span>e.start {
-            print_subexpression(
-                start,
-                Precedence::of(start) &lt;= Precedence::Range,
-                tokens,
-                fixup.leftmost_subexpression(),
-            );
+            <span class="kw">let </span>(left_prec, left_fixup) =
+                fixup.leftmost_subexpression_with_operator(start, <span class="bool-val">true</span>, <span class="bool-val">false</span>, Precedence::Range);
+            print_subexpression(start, left_prec &lt;= Precedence::Range, tokens, left_fixup);
         }
         e.limits.to_tokens(tokens);
         <span class="kw">if let </span><span class="prelude-val">Some</span>(end) = <span class="kw-2">&amp;</span>e.end {
-            print_subexpression(
-                end,
-                fixup.trailing_precedence(end) &lt;= Precedence::Range,
-                tokens,
-                fixup.subsequent_subexpression(),
-            );
+            <span class="kw">let </span>right_fixup = fixup.rightmost_subexpression_fixup(<span class="bool-val">false</span>, <span class="bool-val">true</span>, Precedence::Range);
+            <span class="kw">let </span>right_prec = right_fixup.rightmost_subexpression_precedence(end);
+            print_subexpression(end, right_prec &lt;= Precedence::Range, tokens, right_fixup);
         }
+    }
+
+    <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"printing"</span>)))]
+    </span><span class="kw">impl </span>ToTokens <span class="kw">for </span>ExprRawAddr {
+        <span class="kw">fn </span>to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>, tokens: <span class="kw-2">&amp;mut </span>TokenStream) {
+            print_expr_raw_addr(<span class="self">self</span>, tokens, FixupContext::NONE);
+        }
+    }
+
+    <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+    </span><span class="kw">fn </span>print_expr_raw_addr(e: <span class="kw-2">&amp;</span>ExprRawAddr, tokens: <span class="kw-2">&amp;mut </span>TokenStream, fixup: FixupContext) {
+        outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
+        e.and_token.to_tokens(tokens);
+        e.raw.to_tokens(tokens);
+        e.mutability.to_tokens(tokens);
+        <span class="kw">let </span>(right_prec, right_fixup) = fixup.rightmost_subexpression(<span class="kw-2">&amp;</span>e.expr, Precedence::Prefix);
+        print_subexpression(
+            <span class="kw-2">&amp;</span>e.expr,
+            right_prec &lt; Precedence::Prefix,
+            tokens,
+            right_fixup,
+        );
     }
 
     <span class="attr">#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"printing"</span>)))]
@@ -7632,11 +7940,16 @@
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
         e.and_token.to_tokens(tokens);
         e.mutability.to_tokens(tokens);
+        <span class="kw">let </span>(right_prec, right_fixup) = fixup.rightmost_subexpression(
+            <span class="kw-2">&amp;</span>e.expr,
+            <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+            </span>Precedence::Prefix,
+        );
         print_subexpression(
             <span class="kw-2">&amp;</span>e.expr,
-            fixup.trailing_precedence(<span class="kw-2">&amp;</span>e.expr) &lt; Precedence::Prefix,
+            right_prec &lt; Precedence::Prefix,
             tokens,
-            fixup.subsequent_subexpression(),
+            right_fixup,
         );
     }
 
@@ -7666,7 +7979,11 @@
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
         e.return_token.to_tokens(tokens);
         <span class="kw">if let </span><span class="prelude-val">Some</span>(expr) = <span class="kw-2">&amp;</span>e.expr {
-            print_expr(expr, tokens, fixup.subsequent_subexpression());
+            print_expr(
+                expr,
+                tokens,
+                fixup.rightmost_subexpression_fixup(<span class="bool-val">true</span>, <span class="bool-val">false</span>, Precedence::Jump),
+            );
         }
     }
 
@@ -7698,11 +8015,12 @@
     <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
     </span><span class="kw">fn </span>print_expr_try(e: <span class="kw-2">&amp;</span>ExprTry, tokens: <span class="kw-2">&amp;mut </span>TokenStream, fixup: FixupContext) {
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
+        <span class="kw">let </span>(left_prec, left_fixup) = fixup.leftmost_subexpression_with_dot(<span class="kw-2">&amp;</span>e.expr);
         print_subexpression(
             <span class="kw-2">&amp;</span>e.expr,
-            Precedence::of(<span class="kw-2">&amp;</span>e.expr) &lt; Precedence::Unambiguous,
+            left_prec &lt; Precedence::Unambiguous,
             tokens,
-            fixup.leftmost_subexpression_with_dot(),
+            left_fixup,
         );
         e.question_token.to_tokens(tokens);
     }
@@ -7742,11 +8060,16 @@
     <span class="kw">fn </span>print_expr_unary(e: <span class="kw-2">&amp;</span>ExprUnary, tokens: <span class="kw-2">&amp;mut </span>TokenStream, fixup: FixupContext) {
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
         e.op.to_tokens(tokens);
+        <span class="kw">let </span>(right_prec, right_fixup) = fixup.rightmost_subexpression(
+            <span class="kw-2">&amp;</span>e.expr,
+            <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+            </span>Precedence::Prefix,
+        );
         print_subexpression(
             <span class="kw-2">&amp;</span>e.expr,
-            fixup.trailing_precedence(<span class="kw-2">&amp;</span>e.expr) &lt; Precedence::Prefix,
+            right_prec &lt; Precedence::Prefix,
             tokens,
-            fixup.subsequent_subexpression(),
+            right_fixup,
         );
     }
 
@@ -7770,7 +8093,7 @@
             outer_attrs_to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>.attrs, tokens);
             <span class="self">self</span>.label.to_tokens(tokens);
             <span class="self">self</span>.while_token.to_tokens(tokens);
-            print_condition(<span class="kw-2">&amp;</span><span class="self">self</span>.cond, tokens);
+            print_expr(<span class="kw-2">&amp;</span><span class="self">self</span>.cond, tokens, FixupContext::new_condition());
             <span class="self">self</span>.body.brace_token.surround(tokens, |tokens| {
                 inner_attrs_to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>.attrs, tokens);
                 tokens.append_all(<span class="kw-2">&amp;</span><span class="self">self</span>.body.stmts);
@@ -7791,7 +8114,11 @@
         outer_attrs_to_tokens(<span class="kw-2">&amp;</span>e.attrs, tokens);
         e.yield_token.to_tokens(tokens);
         <span class="kw">if let </span><span class="prelude-val">Some</span>(expr) = <span class="kw-2">&amp;</span>e.expr {
-            print_expr(expr, tokens, fixup.subsequent_subexpression());
+            print_expr(
+                expr,
+                tokens,
+                fixup.rightmost_subexpression_fixup(<span class="bool-val">true</span>, <span class="bool-val">false</span>, Precedence::Jump),
+            );
         }
     }
 
@@ -7858,6 +8185,17 @@
             <span class="kw">match </span><span class="self">self </span>{
                 RangeLimits::HalfOpen(t) =&gt; t.to_tokens(tokens),
                 RangeLimits::Closed(t) =&gt; t.to_tokens(tokens),
+            }
+        }
+    }
+
+    <span class="attr">#[cfg(feature = <span class="string">"full"</span>)]
+    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"printing"</span>)))]
+    </span><span class="kw">impl </span>ToTokens <span class="kw">for </span>PointerMutability {
+        <span class="kw">fn </span>to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>, tokens: <span class="kw-2">&amp;mut </span>TokenStream) {
+            <span class="kw">match </span><span class="self">self </span>{
+                PointerMutability::Const(const_token) =&gt; const_token.to_tokens(tokens),
+                PointerMutability::Mut(mut_token) =&gt; mut_token.to_tokens(tokens),
             }
         }
     }

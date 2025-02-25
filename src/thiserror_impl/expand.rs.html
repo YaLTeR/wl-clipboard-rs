@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/thiserror-impl-1.0.64/src/expand.rs`."><title>expand.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="thiserror_impl" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">thiserror_impl/</div>expand.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-impl-2.0.11/src/expand.rs`."><title>expand.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="thiserror_impl" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../../static.files/src-script-56102188.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">thiserror_impl/</div>expand.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
 <a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -568,22 +568,26 @@
 <a href="#567" id="567">567</a>
 <a href="#568" id="568">568</a>
 <a href="#569" id="569">569</a>
-<a href="#570" id="570">570</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::ast::{Enum, Field, Input, Struct};
+<a href="#570" id="570">570</a>
+<a href="#571" id="571">571</a>
+<a href="#572" id="572">572</a>
+<a href="#573" id="573">573</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::ast::{Enum, Field, Input, Struct};
 <span class="kw">use </span><span class="kw">crate</span>::attr::Trait;
+<span class="kw">use </span><span class="kw">crate</span>::fallback;
 <span class="kw">use </span><span class="kw">crate</span>::generics::InferredBounds;
-<span class="kw">use </span><span class="kw">crate</span>::span::MemberSpan;
-<span class="kw">use </span>proc_macro2::TokenStream;
+<span class="kw">use </span><span class="kw">crate</span>::unraw::MemberUnraw;
+<span class="kw">use </span>proc_macro2::{Ident, Span, TokenStream};
 <span class="kw">use </span>quote::{format_ident, quote, quote_spanned, ToTokens};
 <span class="kw">use </span>std::collections::BTreeSet <span class="kw">as </span>Set;
-<span class="kw">use </span>syn::{DeriveInput, GenericArgument, Member, PathArguments, <span class="prelude-ty">Result</span>, Token, Type};
+<span class="kw">use </span>syn::{DeriveInput, GenericArgument, PathArguments, <span class="prelude-ty">Result</span>, Token, Type};
 
 <span class="kw">pub fn </span>derive(input: <span class="kw-2">&amp;</span>DeriveInput) -&gt; TokenStream {
     <span class="kw">match </span>try_expand(input) {
         <span class="prelude-val">Ok</span>(expanded) =&gt; expanded,
         <span class="comment">// If there are invalid attributes in the input, expand to an Error impl
-        // anyway to minimize spurious knock-on errors in other code that uses
+        // anyway to minimize spurious secondary errors in other code that uses
         // this type as an Error.
-        </span><span class="prelude-val">Err</span>(error) =&gt; fallback(input, error),
+        </span><span class="prelude-val">Err</span>(error) =&gt; fallback::expand(input, error),
     }
 }
 
@@ -596,56 +600,28 @@
     })
 }
 
-<span class="kw">fn </span>fallback(input: <span class="kw-2">&amp;</span>DeriveInput, error: syn::Error) -&gt; TokenStream {
-    <span class="kw">let </span>ty = <span class="kw-2">&amp;</span>input.ident;
-    <span class="kw">let </span>(impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
-
-    <span class="kw">let </span>error = error.to_compile_error();
-
-    <span class="macro">quote!</span> {
-        #error
-
-        <span class="attr">#[allow(unused_qualifications)]
-        #[automatically_derived]
-        </span><span class="kw">impl </span>#impl_generics std::error::Error <span class="kw">for </span>#ty #ty_generics #where_clause
-        <span class="kw">where
-            </span><span class="comment">// Work around trivial bounds being unstable.
-            // https://github.com/rust-lang/rust/issues/48214
-            </span><span class="kw">for</span>&lt;<span class="lifetime">'workaround</span>&gt; #ty #ty_generics: ::core::fmt::Debug,
-        {}
-
-        <span class="attr">#[allow(unused_qualifications)]
-        #[automatically_derived]
-        </span><span class="kw">impl </span>#impl_generics ::core::fmt::Display <span class="kw">for </span>#ty #ty_generics #where_clause {
-            <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, __formatter: <span class="kw-2">&amp;mut </span>::core::fmt::Formatter) -&gt; ::core::fmt::Result {
-                <span class="macro">::core::unreachable!</span>()
-            }
-        }
-    }
-}
-
 <span class="kw">fn </span>impl_struct(input: Struct) -&gt; TokenStream {
-    <span class="kw">let </span>ty = <span class="kw-2">&amp;</span>input.ident;
+    <span class="kw">let </span>ty = call_site_ident(<span class="kw-2">&amp;</span>input.ident);
     <span class="kw">let </span>(impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
     <span class="kw">let </span><span class="kw-2">mut </span>error_inferred_bounds = InferredBounds::new();
 
     <span class="kw">let </span>source_body = <span class="kw">if let </span><span class="prelude-val">Some</span>(transparent_attr) = <span class="kw-2">&amp;</span>input.attrs.transparent {
         <span class="kw">let </span>only_field = <span class="kw-2">&amp;</span>input.fields[<span class="number">0</span>];
         <span class="kw">if </span>only_field.contains_generic {
-            error_inferred_bounds.insert(only_field.ty, <span class="macro">quote!</span>(std::error::Error));
+            error_inferred_bounds.insert(only_field.ty, <span class="macro">quote!</span>(::thiserror::__private::Error));
         }
         <span class="kw">let </span>member = <span class="kw-2">&amp;</span>only_field.member;
         <span class="prelude-val">Some</span>(<span class="macro">quote_spanned!</span> {transparent_attr.span=&gt;
-            std::error::Error::source(<span class="self">self</span>.#member.as_dyn_error())
+            ::thiserror::__private::Error::source(<span class="self">self</span>.#member.as_dyn_error())
         })
     } <span class="kw">else if let </span><span class="prelude-val">Some</span>(source_field) = input.source_field() {
         <span class="kw">let </span>source = <span class="kw-2">&amp;</span>source_field.member;
         <span class="kw">if </span>source_field.contains_generic {
             <span class="kw">let </span>ty = unoptional_type(source_field.ty);
-            error_inferred_bounds.insert(ty, <span class="macro">quote!</span>(std::error::Error + <span class="lifetime">'static</span>));
+            error_inferred_bounds.insert(ty, <span class="macro">quote!</span>(::thiserror::__private::Error + <span class="lifetime">'static</span>));
         }
         <span class="kw">let </span>asref = <span class="kw">if </span>type_is_option(source_field.ty) {
-            <span class="prelude-val">Some</span>(<span class="macro">quote_spanned!</span>(source.member_span()=&gt; .as_ref()<span class="question-mark">?</span>))
+            <span class="prelude-val">Some</span>(<span class="macro">quote_spanned!</span>(source.span()=&gt; .as_ref()<span class="question-mark">?</span>))
         } <span class="kw">else </span>{
             <span class="prelude-val">None
         </span>};
@@ -660,8 +636,8 @@
     </span>};
     <span class="kw">let </span>source_method = source_body.map(|body| {
         <span class="macro">quote!</span> {
-            <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ::core::option::Option&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>std::error::Error + <span class="lifetime">'static</span>)&gt; {
-                <span class="kw">use </span>thiserror::__private::AsDynError <span class="kw">as _</span>;
+            <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ::core::option::Option&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>::thiserror::__private::Error + <span class="lifetime">'static</span>)&gt; {
+                <span class="kw">use </span>::thiserror::__private::AsDynError <span class="kw">as _</span>;
                 #body
             }
         }
@@ -673,13 +649,13 @@
         <span class="kw">let </span>body = <span class="kw">if let </span><span class="prelude-val">Some</span>(source_field) = input.source_field() {
             <span class="kw">let </span>source = <span class="kw-2">&amp;</span>source_field.member;
             <span class="kw">let </span>source_provide = <span class="kw">if </span>type_is_option(source_field.ty) {
-                <span class="macro">quote_spanned!</span> {source.member_span()=&gt;
+                <span class="macro">quote_spanned!</span> {source.span()=&gt;
                     <span class="kw">if let </span>::core::option::Option::Some(source) = <span class="kw-2">&amp;</span><span class="self">self</span>.#source {
                         source.thiserror_provide(#request);
                     }
                 }
             } <span class="kw">else </span>{
-                <span class="macro">quote_spanned!</span> {source.member_span()=&gt;
+                <span class="macro">quote_spanned!</span> {source.span()=&gt;
                     <span class="self">self</span>.#source.thiserror_provide(#request);
                 }
             };
@@ -688,32 +664,32 @@
             </span>} <span class="kw">else if </span>type_is_option(backtrace_field.ty) {
                 <span class="prelude-val">Some</span>(<span class="macro">quote!</span> {
                     <span class="kw">if let </span>::core::option::Option::Some(backtrace) = <span class="kw-2">&amp;</span><span class="self">self</span>.#backtrace {
-                        #request.provide_ref::&lt;std::backtrace::Backtrace&gt;(backtrace);
+                        #request.provide_ref::&lt;::thiserror::__private::Backtrace&gt;(backtrace);
                     }
                 })
             } <span class="kw">else </span>{
                 <span class="prelude-val">Some</span>(<span class="macro">quote!</span> {
-                    #request.provide_ref::&lt;std::backtrace::Backtrace&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>.#backtrace);
+                    #request.provide_ref::&lt;::thiserror::__private::Backtrace&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>.#backtrace);
                 })
             };
             <span class="macro">quote!</span> {
-                <span class="kw">use </span>thiserror::__private::ThiserrorProvide <span class="kw">as _</span>;
+                <span class="kw">use </span>::thiserror::__private::ThiserrorProvide <span class="kw">as _</span>;
                 #source_provide
                 #self_provide
             }
         } <span class="kw">else if </span>type_is_option(backtrace_field.ty) {
             <span class="macro">quote!</span> {
                 <span class="kw">if let </span>::core::option::Option::Some(backtrace) = <span class="kw-2">&amp;</span><span class="self">self</span>.#backtrace {
-                    #request.provide_ref::&lt;std::backtrace::Backtrace&gt;(backtrace);
+                    #request.provide_ref::&lt;::thiserror::__private::Backtrace&gt;(backtrace);
                 }
             }
         } <span class="kw">else </span>{
             <span class="macro">quote!</span> {
-                #request.provide_ref::&lt;std::backtrace::Backtrace&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>.#backtrace);
+                #request.provide_ref::&lt;::thiserror::__private::Backtrace&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>.#backtrace);
             }
         };
         <span class="macro">quote!</span> {
-            <span class="kw">fn </span>provide&lt;<span class="lifetime">'_request</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'_request </span><span class="self">self</span>, #request: <span class="kw-2">&amp;mut </span>std::error::Request&lt;<span class="lifetime">'_request</span>&gt;) {
+            <span class="kw">fn </span>provide&lt;<span class="lifetime">'_request</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'_request </span><span class="self">self</span>, #request: <span class="kw-2">&amp;mut </span>::core::error::Request&lt;<span class="lifetime">'_request</span>&gt;) {
                 #body
             }
         }
@@ -761,19 +737,26 @@
     });
 
     <span class="kw">let </span>from_impl = input.from_field().map(|from_field| {
+        <span class="kw">let </span>span = from_field.attrs.from.unwrap().span;
         <span class="kw">let </span>backtrace_field = input.distinct_backtrace_field();
         <span class="kw">let </span>from = unoptional_type(from_field.ty);
-        <span class="kw">let </span>body = from_initializer(from_field, backtrace_field);
-        <span class="macro">quote!</span> {
-            <span class="attr">#[allow(unused_qualifications)]
-            #[automatically_derived]
-            </span><span class="kw">impl </span>#impl_generics ::core::convert::From&lt;#from&gt; <span class="kw">for </span>#ty #ty_generics #where_clause {
-                <span class="attr">#[allow(deprecated)]
-                </span><span class="kw">fn </span>from(source: #from) -&gt; <span class="self">Self </span>{
-                    #ty #body
-                }
+        <span class="kw">let </span>source_var = Ident::new(<span class="string">"source"</span>, span);
+        <span class="kw">let </span>body = from_initializer(from_field, backtrace_field, <span class="kw-2">&amp;</span>source_var);
+        <span class="kw">let </span>from_function = <span class="macro">quote!</span> {
+            <span class="kw">fn </span>from(#source_var: #from) -&gt; <span class="self">Self </span>{
+                #ty #body
             }
-        }
+        };
+        <span class="kw">let </span>from_impl = <span class="macro">quote_spanned!</span> {span=&gt;
+            <span class="attr">#[automatically_derived]
+            </span><span class="kw">impl </span>#impl_generics ::core::convert::From&lt;#from&gt; <span class="kw">for </span>#ty #ty_generics #where_clause {
+                #from_function
+            }
+        };
+        <span class="prelude-val">Some</span>(<span class="macro">quote!</span> {
+            <span class="attr">#[allow(deprecated, unused_qualifications, clippy::needless_lifetimes)]
+            </span>#from_impl
+        })
     });
 
     <span class="kw">if </span>input.generics.type_params().next().is_some() {
@@ -786,7 +769,7 @@
     <span class="macro">quote!</span> {
         <span class="attr">#[allow(unused_qualifications)]
         #[automatically_derived]
-        </span><span class="kw">impl </span>#impl_generics std::error::Error <span class="kw">for </span>#ty #ty_generics #error_where_clause {
+        </span><span class="kw">impl </span>#impl_generics ::thiserror::__private::Error <span class="kw">for </span>#ty #ty_generics #error_where_clause {
             #source_method
             #provide_method
         }
@@ -796,7 +779,7 @@
 }
 
 <span class="kw">fn </span>impl_enum(input: Enum) -&gt; TokenStream {
-    <span class="kw">let </span>ty = <span class="kw-2">&amp;</span>input.ident;
+    <span class="kw">let </span>ty = call_site_ident(<span class="kw-2">&amp;</span>input.ident);
     <span class="kw">let </span>(impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
     <span class="kw">let </span><span class="kw-2">mut </span>error_inferred_bounds = InferredBounds::new();
 
@@ -806,11 +789,11 @@
             <span class="kw">if let </span><span class="prelude-val">Some</span>(transparent_attr) = <span class="kw-2">&amp;</span>variant.attrs.transparent {
                 <span class="kw">let </span>only_field = <span class="kw-2">&amp;</span>variant.fields[<span class="number">0</span>];
                 <span class="kw">if </span>only_field.contains_generic {
-                    error_inferred_bounds.insert(only_field.ty, <span class="macro">quote!</span>(std::error::Error));
+                    error_inferred_bounds.insert(only_field.ty, <span class="macro">quote!</span>(::thiserror::__private::Error));
                 }
                 <span class="kw">let </span>member = <span class="kw-2">&amp;</span>only_field.member;
                 <span class="kw">let </span>source = <span class="macro">quote_spanned!</span> {transparent_attr.span=&gt;
-                    std::error::Error::source(transparent.as_dyn_error())
+                    ::thiserror::__private::Error::source(transparent.as_dyn_error())
                 };
                 <span class="macro">quote!</span> {
                     #ty::#ident {#member: transparent} =&gt; #source,
@@ -819,10 +802,10 @@
                 <span class="kw">let </span>source = <span class="kw-2">&amp;</span>source_field.member;
                 <span class="kw">if </span>source_field.contains_generic {
                     <span class="kw">let </span>ty = unoptional_type(source_field.ty);
-                    error_inferred_bounds.insert(ty, <span class="macro">quote!</span>(std::error::Error + <span class="lifetime">'static</span>));
+                    error_inferred_bounds.insert(ty, <span class="macro">quote!</span>(::thiserror::__private::Error + <span class="lifetime">'static</span>));
                 }
                 <span class="kw">let </span>asref = <span class="kw">if </span>type_is_option(source_field.ty) {
-                    <span class="prelude-val">Some</span>(<span class="macro">quote_spanned!</span>(source.member_span()=&gt; .as_ref()<span class="question-mark">?</span>))
+                    <span class="prelude-val">Some</span>(<span class="macro">quote_spanned!</span>(source.span()=&gt; .as_ref()<span class="question-mark">?</span>))
                 } <span class="kw">else </span>{
                     <span class="prelude-val">None
                 </span>};
@@ -840,8 +823,8 @@
             }
         });
         <span class="prelude-val">Some</span>(<span class="macro">quote!</span> {
-            <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ::core::option::Option&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>std::error::Error + <span class="lifetime">'static</span>)&gt; {
-                <span class="kw">use </span>thiserror::__private::AsDynError <span class="kw">as _</span>;
+            <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ::core::option::Option&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>::thiserror::__private::Error + <span class="lifetime">'static</span>)&gt; {
+                <span class="kw">use </span>::thiserror::__private::AsDynError <span class="kw">as _</span>;
                 <span class="attr">#[allow(deprecated)]
                 </span><span class="kw">match </span><span class="self">self </span>{
                     #(#arms)*
@@ -864,25 +847,25 @@
                     <span class="kw">let </span>source = <span class="kw-2">&amp;</span>source_field.member;
                     <span class="kw">let </span>varsource = <span class="macro">quote!</span>(source);
                     <span class="kw">let </span>source_provide = <span class="kw">if </span>type_is_option(source_field.ty) {
-                        <span class="macro">quote_spanned!</span> {source.member_span()=&gt;
+                        <span class="macro">quote_spanned!</span> {source.span()=&gt;
                             <span class="kw">if let </span>::core::option::Option::Some(source) = #varsource {
                                 source.thiserror_provide(#request);
                             }
                         }
                     } <span class="kw">else </span>{
-                        <span class="macro">quote_spanned!</span> {source.member_span()=&gt;
+                        <span class="macro">quote_spanned!</span> {source.span()=&gt;
                             #varsource.thiserror_provide(#request);
                         }
                     };
                     <span class="kw">let </span>self_provide = <span class="kw">if </span>type_is_option(backtrace_field.ty) {
                         <span class="macro">quote!</span> {
                             <span class="kw">if let </span>::core::option::Option::Some(backtrace) = backtrace {
-                                #request.provide_ref::&lt;std::backtrace::Backtrace&gt;(backtrace);
+                                #request.provide_ref::&lt;::thiserror::__private::Backtrace&gt;(backtrace);
                             }
                         }
                     } <span class="kw">else </span>{
                         <span class="macro">quote!</span> {
-                            #request.provide_ref::&lt;std::backtrace::Backtrace&gt;(backtrace);
+                            #request.provide_ref::&lt;::thiserror::__private::Backtrace&gt;(backtrace);
                         }
                     };
                     <span class="macro">quote!</span> {
@@ -891,7 +874,7 @@
                             #source: #varsource,
                             ..
                         } =&gt; {
-                            <span class="kw">use </span>thiserror::__private::ThiserrorProvide <span class="kw">as _</span>;
+                            <span class="kw">use </span>::thiserror::__private::ThiserrorProvide <span class="kw">as _</span>;
                             #source_provide
                             #self_provide
                         }
@@ -903,19 +886,19 @@
                     <span class="kw">let </span>backtrace = <span class="kw-2">&amp;</span>backtrace_field.member;
                     <span class="kw">let </span>varsource = <span class="macro">quote!</span>(source);
                     <span class="kw">let </span>source_provide = <span class="kw">if </span>type_is_option(source_field.ty) {
-                        <span class="macro">quote_spanned!</span> {backtrace.member_span()=&gt;
+                        <span class="macro">quote_spanned!</span> {backtrace.span()=&gt;
                             <span class="kw">if let </span>::core::option::Option::Some(source) = #varsource {
                                 source.thiserror_provide(#request);
                             }
                         }
                     } <span class="kw">else </span>{
-                        <span class="macro">quote_spanned!</span> {backtrace.member_span()=&gt;
+                        <span class="macro">quote_spanned!</span> {backtrace.span()=&gt;
                             #varsource.thiserror_provide(#request);
                         }
                     };
                     <span class="macro">quote!</span> {
                         #ty::#ident {#backtrace: #varsource, ..} =&gt; {
-                            <span class="kw">use </span>thiserror::__private::ThiserrorProvide <span class="kw">as _</span>;
+                            <span class="kw">use </span>::thiserror::__private::ThiserrorProvide <span class="kw">as _</span>;
                             #source_provide
                         }
                     }
@@ -925,12 +908,12 @@
                     <span class="kw">let </span>body = <span class="kw">if </span>type_is_option(backtrace_field.ty) {
                         <span class="macro">quote!</span> {
                             <span class="kw">if let </span>::core::option::Option::Some(backtrace) = backtrace {
-                                #request.provide_ref::&lt;std::backtrace::Backtrace&gt;(backtrace);
+                                #request.provide_ref::&lt;::thiserror::__private::Backtrace&gt;(backtrace);
                             }
                         }
                     } <span class="kw">else </span>{
                         <span class="macro">quote!</span> {
-                            #request.provide_ref::&lt;std::backtrace::Backtrace&gt;(backtrace);
+                            #request.provide_ref::&lt;::thiserror::__private::Backtrace&gt;(backtrace);
                         }
                     };
                     <span class="macro">quote!</span> {
@@ -945,7 +928,7 @@
             }
         });
         <span class="prelude-val">Some</span>(<span class="macro">quote!</span> {
-            <span class="kw">fn </span>provide&lt;<span class="lifetime">'_request</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'_request </span><span class="self">self</span>, #request: <span class="kw-2">&amp;mut </span>std::error::Request&lt;<span class="lifetime">'_request</span>&gt;) {
+            <span class="kw">fn </span>provide&lt;<span class="lifetime">'_request</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'_request </span><span class="self">self</span>, #request: <span class="kw-2">&amp;mut </span>::core::error::Request&lt;<span class="lifetime">'_request</span>&gt;) {
                 <span class="attr">#[allow(deprecated)]
                 </span><span class="kw">match </span><span class="self">self </span>{
                     #(#arms)*
@@ -972,19 +955,23 @@
         </span>};
         <span class="kw">let </span>arms = input.variants.iter().map(|variant| {
             <span class="kw">let </span><span class="kw-2">mut </span>display_implied_bounds = Set::new();
-            <span class="kw">let </span>display = <span class="kw">match </span><span class="kw-2">&amp;</span>variant.attrs.display {
-                <span class="prelude-val">Some</span>(display) =&gt; {
-                    display_implied_bounds.clone_from(<span class="kw-2">&amp;</span>display.implied_bounds);
-                    display.to_token_stream()
-                }
-                <span class="prelude-val">None </span>=&gt; {
-                    <span class="kw">let </span>only_field = <span class="kw">match </span><span class="kw-2">&amp;</span>variant.fields[<span class="number">0</span>].member {
-                        Member::Named(ident) =&gt; ident.clone(),
-                        Member::Unnamed(index) =&gt; <span class="macro">format_ident!</span>(<span class="string">"_{}"</span>, index),
-                    };
-                    display_implied_bounds.insert((<span class="number">0</span>, Trait::Display));
-                    <span class="macro">quote!</span>(::core::fmt::Display::fmt(#only_field, __formatter))
-                }
+            <span class="kw">let </span>display = <span class="kw">if let </span><span class="prelude-val">Some</span>(display) = <span class="kw-2">&amp;</span>variant.attrs.display {
+                display_implied_bounds.clone_from(<span class="kw-2">&amp;</span>display.implied_bounds);
+                display.to_token_stream()
+            } <span class="kw">else if let </span><span class="prelude-val">Some</span>(fmt) = <span class="kw-2">&amp;</span>variant.attrs.fmt {
+                <span class="kw">let </span>fmt_path = <span class="kw-2">&amp;</span>fmt.path;
+                <span class="kw">let </span>vars = variant.fields.iter().map(|field| <span class="kw">match </span><span class="kw-2">&amp;</span>field.member {
+                    MemberUnraw::Named(ident) =&gt; ident.to_local(),
+                    MemberUnraw::Unnamed(index) =&gt; <span class="macro">format_ident!</span>(<span class="string">"_{}"</span>, index),
+                });
+                <span class="macro">quote!</span>(#fmt_path(#(#vars,)* __formatter))
+            } <span class="kw">else </span>{
+                <span class="kw">let </span>only_field = <span class="kw">match </span><span class="kw-2">&amp;</span>variant.fields[<span class="number">0</span>].member {
+                    MemberUnraw::Named(ident) =&gt; ident.to_local(),
+                    MemberUnraw::Unnamed(index) =&gt; <span class="macro">format_ident!</span>(<span class="string">"_{}"</span>, index),
+                };
+                display_implied_bounds.insert((<span class="number">0</span>, Trait::Display));
+                <span class="macro">quote!</span>(::core::fmt::Display::fmt(#only_field, __formatter))
             };
             <span class="kw">for </span>(field, bound) <span class="kw">in </span>display_implied_bounds {
                 <span class="kw">let </span>field = <span class="kw-2">&amp;</span>variant.fields[field];
@@ -1019,19 +1006,26 @@
 
     <span class="kw">let </span>from_impls = input.variants.iter().filter_map(|variant| {
         <span class="kw">let </span>from_field = variant.from_field()<span class="question-mark">?</span>;
+        <span class="kw">let </span>span = from_field.attrs.from.unwrap().span;
         <span class="kw">let </span>backtrace_field = variant.distinct_backtrace_field();
         <span class="kw">let </span>variant = <span class="kw-2">&amp;</span>variant.ident;
         <span class="kw">let </span>from = unoptional_type(from_field.ty);
-        <span class="kw">let </span>body = from_initializer(from_field, backtrace_field);
-        <span class="prelude-val">Some</span>(<span class="macro">quote!</span> {
-            <span class="attr">#[allow(unused_qualifications)]
-            #[automatically_derived]
-            </span><span class="kw">impl </span>#impl_generics ::core::convert::From&lt;#from&gt; <span class="kw">for </span>#ty #ty_generics #where_clause {
-                <span class="attr">#[allow(deprecated)]
-                </span><span class="kw">fn </span>from(source: #from) -&gt; <span class="self">Self </span>{
-                    #ty::#variant #body
-                }
+        <span class="kw">let </span>source_var = Ident::new(<span class="string">"source"</span>, span);
+        <span class="kw">let </span>body = from_initializer(from_field, backtrace_field, <span class="kw-2">&amp;</span>source_var);
+        <span class="kw">let </span>from_function = <span class="macro">quote!</span> {
+            <span class="kw">fn </span>from(#source_var: #from) -&gt; <span class="self">Self </span>{
+                #ty::#variant #body
             }
+        };
+        <span class="kw">let </span>from_impl = <span class="macro">quote_spanned!</span> {span=&gt;
+            <span class="attr">#[automatically_derived]
+            </span><span class="kw">impl </span>#impl_generics ::core::convert::From&lt;#from&gt; <span class="kw">for </span>#ty #ty_generics #where_clause {
+                #from_function
+            }
+        };
+        <span class="prelude-val">Some</span>(<span class="macro">quote!</span> {
+            <span class="attr">#[allow(deprecated, unused_qualifications, clippy::needless_lifetimes)]
+            </span>#from_impl
         })
     });
 
@@ -1045,7 +1039,7 @@
     <span class="macro">quote!</span> {
         <span class="attr">#[allow(unused_qualifications)]
         #[automatically_derived]
-        </span><span class="kw">impl </span>#impl_generics std::error::Error <span class="kw">for </span>#ty #ty_generics #error_where_clause {
+        </span><span class="kw">impl </span>#impl_generics ::thiserror::__private::Error <span class="kw">for </span>#ty #ty_generics #error_where_clause {
             #source_method
             #provide_method
         }
@@ -1054,14 +1048,22 @@
     }
 }
 
+<span class="comment">// Create an ident with which we can expand `impl Trait for #ident {}` on a
+// deprecated type without triggering deprecation warning on the generated impl.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>call_site_ident(ident: <span class="kw-2">&amp;</span>Ident) -&gt; Ident {
+    <span class="kw">let </span><span class="kw-2">mut </span>ident = ident.clone();
+    ident.set_span(ident.span().resolved_at(Span::call_site()));
+    ident
+}
+
 <span class="kw">fn </span>fields_pat(fields: <span class="kw-2">&amp;</span>[Field]) -&gt; TokenStream {
     <span class="kw">let </span><span class="kw-2">mut </span>members = fields.iter().map(|field| <span class="kw-2">&amp;</span>field.member).peekable();
     <span class="kw">match </span>members.peek() {
-        <span class="prelude-val">Some</span>(Member::Named(<span class="kw">_</span>)) =&gt; <span class="macro">quote!</span>({ #(#members),* }),
-        <span class="prelude-val">Some</span>(Member::Unnamed(<span class="kw">_</span>)) =&gt; {
+        <span class="prelude-val">Some</span>(MemberUnraw::Named(<span class="kw">_</span>)) =&gt; <span class="macro">quote!</span>({ #(#members),* }),
+        <span class="prelude-val">Some</span>(MemberUnraw::Unnamed(<span class="kw">_</span>)) =&gt; {
             <span class="kw">let </span>vars = members.map(|member| <span class="kw">match </span>member {
-                Member::Unnamed(member) =&gt; <span class="macro">format_ident!</span>(<span class="string">"_{}"</span>, member),
-                Member::Named(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
+                MemberUnraw::Unnamed(index) =&gt; <span class="macro">format_ident!</span>(<span class="string">"_{}"</span>, index),
+                MemberUnraw::Named(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
             });
             <span class="macro">quote!</span>((#(#vars),<span class="kw-2">*</span>))
         }
@@ -1072,29 +1074,33 @@
 <span class="kw">fn </span>use_as_display(needs_as_display: bool) -&gt; <span class="prelude-ty">Option</span>&lt;TokenStream&gt; {
     <span class="kw">if </span>needs_as_display {
         <span class="prelude-val">Some</span>(<span class="macro">quote!</span> {
-            <span class="kw">use </span>thiserror::__private::AsDisplay <span class="kw">as _</span>;
+            <span class="kw">use </span>::thiserror::__private::AsDisplay <span class="kw">as _</span>;
         })
     } <span class="kw">else </span>{
         <span class="prelude-val">None
     </span>}
 }
 
-<span class="kw">fn </span>from_initializer(from_field: <span class="kw-2">&amp;</span>Field, backtrace_field: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Field&gt;) -&gt; TokenStream {
+<span class="kw">fn </span>from_initializer(
+    from_field: <span class="kw-2">&amp;</span>Field,
+    backtrace_field: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Field&gt;,
+    source_var: <span class="kw-2">&amp;</span>Ident,
+) -&gt; TokenStream {
     <span class="kw">let </span>from_member = <span class="kw-2">&amp;</span>from_field.member;
     <span class="kw">let </span>some_source = <span class="kw">if </span>type_is_option(from_field.ty) {
-        <span class="macro">quote!</span>(::core::option::Option::Some(source))
+        <span class="macro">quote!</span>(::core::option::Option::Some(#source_var))
     } <span class="kw">else </span>{
-        <span class="macro">quote!</span>(source)
+        <span class="macro">quote!</span>(#source_var)
     };
     <span class="kw">let </span>backtrace = backtrace_field.map(|backtrace_field| {
         <span class="kw">let </span>backtrace_member = <span class="kw-2">&amp;</span>backtrace_field.member;
         <span class="kw">if </span>type_is_option(backtrace_field.ty) {
             <span class="macro">quote!</span> {
-                #backtrace_member: ::core::option::Option::Some(std::backtrace::Backtrace::capture()),
+                #backtrace_member: ::core::option::Option::Some(::thiserror::__private::Backtrace::capture()),
             }
         } <span class="kw">else </span>{
             <span class="macro">quote!</span> {
-                #backtrace_member: ::core::convert::From::from(std::backtrace::Backtrace::capture()),
+                #backtrace_member: ::core::convert::From::from(::thiserror::__private::Backtrace::capture()),
             }
         }
     });

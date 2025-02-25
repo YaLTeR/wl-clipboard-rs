@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.36.2/src/escape.rs`."><title>escape.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">quick_xml/</div>escape.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quick-xml-0.37.2/src/escape.rs`."><title>escape.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../../static.files/src-script-56102188.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">quick_xml/</div>escape.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
 <a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -1840,7 +1840,11 @@
 <a href="#1839" id="1839">1839</a>
 <a href="#1840" id="1840">1840</a>
 <a href="#1841" id="1841">1841</a>
-<a href="#1842" id="1842">1842</a></pre></div><pre class="rust"><code><span class="doccomment">//! Manage xml character escapes
+<a href="#1842" id="1842">1842</a>
+<a href="#1843" id="1843">1843</a>
+<a href="#1844" id="1844">1844</a>
+<a href="#1845" id="1845">1845</a>
+<a href="#1846" id="1846">1846</a></pre></div><pre class="rust"><code><span class="doccomment">//! Manage xml character escapes
 
 </span><span class="kw">use </span>memchr::memchr2_iter;
 <span class="kw">use </span>std::borrow::Cow;
@@ -1897,15 +1901,15 @@
 <span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>EscapeError {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter) -&gt; std::fmt::Result {
         <span class="kw">match </span><span class="self">self </span>{
-            EscapeError::UnrecognizedEntity(rge, res) =&gt; {
+            <span class="self">Self</span>::UnrecognizedEntity(rge, res) =&gt; {
                 <span class="macro">write!</span>(f, <span class="string">"at {:?}: unrecognized entity `{}`"</span>, rge, res)
             }
-            EscapeError::UnterminatedEntity(e) =&gt; <span class="macro">write!</span>(
+            <span class="self">Self</span>::UnterminatedEntity(e) =&gt; <span class="macro">write!</span>(
                 f,
                 <span class="string">"Error while escaping character at range {:?}: Cannot find ';' after '&amp;'"</span>,
                 e
             ),
-            EscapeError::InvalidCharRef(e) =&gt; {
+            <span class="self">Self</span>::InvalidCharRef(e) =&gt; {
                 <span class="macro">write!</span>(f, <span class="string">"invalid character reference: {}"</span>, e)
             }
         }
@@ -1943,7 +1947,7 @@
 /// | `&amp;`       | `&amp;amp;`
 /// | `'`       | `&amp;apos;`
 /// | `"`       | `&amp;quot;`
-</span><span class="kw">pub fn </span>escape(raw: <span class="kw-2">&amp;</span>str) -&gt; Cow&lt;str&gt; {
+</span><span class="kw">pub fn </span>escape&lt;<span class="lifetime">'a</span>&gt;(raw: <span class="kw">impl </span>Into&lt;Cow&lt;<span class="lifetime">'a</span>, str&gt;&gt;) -&gt; Cow&lt;<span class="lifetime">'a</span>, str&gt; {
     _escape(raw, |ch| <span class="macro">matches!</span>(ch, <span class="string">b'&lt;' </span>| <span class="string">b'&gt;' </span>| <span class="string">b'&amp;' </span>| <span class="string">b'\'' </span>| <span class="string">b'\"'</span>))
 }
 
@@ -1968,7 +1972,7 @@
 /// | `&lt;`       | `&amp;lt;`
 /// | `&gt;`       | `&amp;gt;`
 /// | `&amp;`       | `&amp;amp;`
-</span><span class="kw">pub fn </span>partial_escape(raw: <span class="kw-2">&amp;</span>str) -&gt; Cow&lt;str&gt; {
+</span><span class="kw">pub fn </span>partial_escape&lt;<span class="lifetime">'a</span>&gt;(raw: <span class="kw">impl </span>Into&lt;Cow&lt;<span class="lifetime">'a</span>, str&gt;&gt;) -&gt; Cow&lt;<span class="lifetime">'a</span>, str&gt; {
     _escape(raw, |ch| <span class="macro">matches!</span>(ch, <span class="string">b'&lt;' </span>| <span class="string">b'&gt;' </span>| <span class="string">b'&amp;'</span>))
 }
 
@@ -1985,13 +1989,17 @@
 /// | `&amp;`       | `&amp;amp;`
 ///
 /// [requires]: https://www.w3.org/TR/xml11/#syntax
-</span><span class="kw">pub fn </span>minimal_escape(raw: <span class="kw-2">&amp;</span>str) -&gt; Cow&lt;str&gt; {
+</span><span class="kw">pub fn </span>minimal_escape&lt;<span class="lifetime">'a</span>&gt;(raw: <span class="kw">impl </span>Into&lt;Cow&lt;<span class="lifetime">'a</span>, str&gt;&gt;) -&gt; Cow&lt;<span class="lifetime">'a</span>, str&gt; {
     _escape(raw, |ch| <span class="macro">matches!</span>(ch, <span class="string">b'&lt;' </span>| <span class="string">b'&amp;'</span>))
 }
 
 <span class="doccomment">/// Escapes an `&amp;str` and replaces a subset of xml special characters (`&lt;`, `&gt;`,
 /// `&amp;`, `'`, `"`) with their corresponding xml escaped value.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>_escape&lt;F: Fn(u8) -&gt; bool&gt;(raw: <span class="kw-2">&amp;</span>str, escape_chars: F) -&gt; Cow&lt;str&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>_escape&lt;<span class="lifetime">'a</span>, F: Fn(u8) -&gt; bool&gt;(
+    raw: <span class="kw">impl </span>Into&lt;Cow&lt;<span class="lifetime">'a</span>, str&gt;&gt;,
+    escape_chars: F,
+) -&gt; Cow&lt;<span class="lifetime">'a</span>, str&gt; {
+    <span class="kw">let </span>raw = raw.into();
     <span class="kw">let </span>bytes = raw.as_bytes();
     <span class="kw">let </span><span class="kw-2">mut </span>escaped = <span class="prelude-val">None</span>;
     <span class="kw">let </span><span class="kw-2">mut </span>iter = bytes.iter();
@@ -2034,7 +2042,7 @@
         // if unsafe code will be allowed
         </span>Cow::Owned(String::from_utf8(escaped).unwrap())
     } <span class="kw">else </span>{
-        Cow::Borrowed(raw)
+        raw
     }
 }
 

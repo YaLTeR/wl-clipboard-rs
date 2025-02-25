@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.6.0/src/map.rs`."><title>map.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="indexmap" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">indexmap/</div>map.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/indexmap-2.7.1/src/map.rs`."><title>map.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="indexmap" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../../static.files/src-script-56102188.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">indexmap/</div>map.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
 <a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -1576,7 +1576,37 @@
 <a href="#1575" id="1575">1575</a>
 <a href="#1576" id="1576">1576</a>
 <a href="#1577" id="1577">1577</a>
-<a href="#1578" id="1578">1578</a></pre></div><pre class="rust"><code><span class="doccomment">//! [`IndexMap`] is a hash table where the iteration order of the key-value
+<a href="#1578" id="1578">1578</a>
+<a href="#1579" id="1579">1579</a>
+<a href="#1580" id="1580">1580</a>
+<a href="#1581" id="1581">1581</a>
+<a href="#1582" id="1582">1582</a>
+<a href="#1583" id="1583">1583</a>
+<a href="#1584" id="1584">1584</a>
+<a href="#1585" id="1585">1585</a>
+<a href="#1586" id="1586">1586</a>
+<a href="#1587" id="1587">1587</a>
+<a href="#1588" id="1588">1588</a>
+<a href="#1589" id="1589">1589</a>
+<a href="#1590" id="1590">1590</a>
+<a href="#1591" id="1591">1591</a>
+<a href="#1592" id="1592">1592</a>
+<a href="#1593" id="1593">1593</a>
+<a href="#1594" id="1594">1594</a>
+<a href="#1595" id="1595">1595</a>
+<a href="#1596" id="1596">1596</a>
+<a href="#1597" id="1597">1597</a>
+<a href="#1598" id="1598">1598</a>
+<a href="#1599" id="1599">1599</a>
+<a href="#1600" id="1600">1600</a>
+<a href="#1601" id="1601">1601</a>
+<a href="#1602" id="1602">1602</a>
+<a href="#1603" id="1603">1603</a>
+<a href="#1604" id="1604">1604</a>
+<a href="#1605" id="1605">1605</a>
+<a href="#1606" id="1606">1606</a>
+<a href="#1607" id="1607">1607</a>
+<a href="#1608" id="1608">1608</a></pre></div><pre class="rust"><code><span class="doccomment">//! [`IndexMap`] is a hash table where the iteration order of the key-value
 //! pairs is independent of the hash values of the keys.
 
 </span><span class="kw">mod </span>core;
@@ -1877,6 +1907,7 @@
     ///
     /// ***Panics*** if the starting point is greater than the end point or if
     /// the end point is greater than the length of the map.
+    </span><span class="attr">#[track_caller]
     </span><span class="kw">pub fn </span>drain&lt;R&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: R) -&gt; Drain&lt;<span class="lifetime">'_</span>, K, V&gt;
     <span class="kw">where
         </span>R: RangeBounds&lt;usize&gt;,
@@ -1891,6 +1922,7 @@
     /// the elements `[0, at)` with its previous capacity unchanged.
     ///
     /// ***Panics*** if `at &gt; len`.
+    </span><span class="attr">#[track_caller]
     </span><span class="kw">pub fn </span>split_off(<span class="kw-2">&amp;mut </span><span class="self">self</span>, at: usize) -&gt; <span class="self">Self
     </span><span class="kw">where
         </span>S: Clone,
@@ -2071,8 +2103,15 @@
     /// assert_eq!(map.get_index_of(&amp;'+'), Some(27));
     /// assert_eq!(map.len(), 28);
     /// ```
+    </span><span class="attr">#[track_caller]
     </span><span class="kw">pub fn </span>insert_before(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>index: usize, key: K, value: V) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;V&gt;) {
-        <span class="macro">assert!</span>(index &lt;= <span class="self">self</span>.len(), <span class="string">"index out of bounds"</span>);
+        <span class="kw">let </span>len = <span class="self">self</span>.len();
+
+        <span class="macro">assert!</span>(
+            index &lt;= len,
+            <span class="string">"index out of bounds: the len is {len} but the index is {index}. Expected index &lt;= len"
+        </span>);
+
         <span class="kw">match </span><span class="self">self</span>.entry(key) {
             Entry::Occupied(<span class="kw-2">mut </span>entry) =&gt; {
                 <span class="kw">if </span>index &gt; entry.index() {
@@ -2149,17 +2188,26 @@
     /// // This is an invalid index for moving an existing key!
     /// map.shift_insert(map.len(), 'a', ());
     /// ```
+    </span><span class="attr">#[track_caller]
     </span><span class="kw">pub fn </span>shift_insert(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: usize, key: K, value: V) -&gt; <span class="prelude-ty">Option</span>&lt;V&gt; {
         <span class="kw">let </span>len = <span class="self">self</span>.len();
         <span class="kw">match </span><span class="self">self</span>.entry(key) {
             Entry::Occupied(<span class="kw-2">mut </span>entry) =&gt; {
-                <span class="macro">assert!</span>(index &lt; len, <span class="string">"index out of bounds"</span>);
+                <span class="macro">assert!</span>(
+                    index &lt; len,
+                    <span class="string">"index out of bounds: the len is {len} but the index is {index}"
+                </span>);
+
                 <span class="kw">let </span>old = mem::replace(entry.get_mut(), value);
                 entry.move_index(index);
                 <span class="prelude-val">Some</span>(old)
             }
             Entry::Vacant(entry) =&gt; {
-                <span class="macro">assert!</span>(index &lt;= len, <span class="string">"index out of bounds"</span>);
+                <span class="macro">assert!</span>(
+                    index &lt;= len,
+                    <span class="string">"index out of bounds: the len is {len} but the index is {index}. Expected index &lt;= len"
+                </span>);
+
                 entry.shift_insert(index, value);
                 <span class="prelude-val">None
             </span>}
@@ -2205,6 +2253,7 @@
     /// assert!(map.into_iter().eq([(0, '_'), (1, 'A'), (5, 'E'), (3, 'C'), (2, 'B'), (4, 'D')]));
     /// assert_eq!(removed, &amp;[(2, 'b'), (3, 'c')]);
     /// ```
+    </span><span class="attr">#[track_caller]
     </span><span class="kw">pub fn </span>splice&lt;R, I&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: R, replace_with: I) -&gt; Splice&lt;<span class="lifetime">'_</span>, I::IntoIter, K, V, S&gt;
     <span class="kw">where
         </span>R: RangeBounds&lt;usize&gt;,
@@ -2856,6 +2905,7 @@
     /// ***Panics*** if `from` or `to` are out of bounds.
     ///
     /// Computes in **O(n)** time (average).
+    </span><span class="attr">#[track_caller]
     </span><span class="kw">pub fn </span>move_index(<span class="kw-2">&amp;mut </span><span class="self">self</span>, from: usize, to: usize) {
         <span class="self">self</span>.core.move_index(from, to)
     }
@@ -2865,6 +2915,7 @@
     /// ***Panics*** if `a` or `b` are out of bounds.
     ///
     /// Computes in **O(1)** time (average).
+    </span><span class="attr">#[track_caller]
     </span><span class="kw">pub fn </span>swap_indices(<span class="kw-2">&amp;mut </span><span class="self">self</span>, a: usize, b: usize) {
         <span class="self">self</span>.core.swap_indices(a, b)
     }
@@ -2903,7 +2954,7 @@
     ///
     /// ***Panics*** if `key` is not present in the map.
     </span><span class="kw">fn </span>index(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="kw-2">&amp;</span>V {
-        <span class="self">self</span>.get(key).expect(<span class="string">"IndexMap: key not found"</span>)
+        <span class="self">self</span>.get(key).expect(<span class="string">"no entry found for key"</span>)
     }
 }
 
@@ -2945,7 +2996,7 @@
     ///
     /// ***Panics*** if `key` is not present in the map.
     </span><span class="kw">fn </span>index_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>Q) -&gt; <span class="kw-2">&amp;mut </span>V {
-        <span class="self">self</span>.get_mut(key).expect(<span class="string">"IndexMap: key not found"</span>)
+        <span class="self">self</span>.get_mut(key).expect(<span class="string">"no entry found for key"</span>)
     }
 }
 
@@ -2989,7 +3040,12 @@
     /// ***Panics*** if `index` is out of bounds.
     </span><span class="kw">fn </span>index(<span class="kw-2">&amp;</span><span class="self">self</span>, index: usize) -&gt; <span class="kw-2">&amp;</span>V {
         <span class="self">self</span>.get_index(index)
-            .expect(<span class="string">"IndexMap: index out of bounds"</span>)
+            .unwrap_or_else(|| {
+                <span class="macro">panic!</span>(
+                    <span class="string">"index out of bounds: the len is {len} but the index is {index}"</span>,
+                    len = <span class="self">self</span>.len()
+                );
+            })
             .<span class="number">1
     </span>}
 }
@@ -3028,8 +3084,12 @@
     ///
     /// ***Panics*** if `index` is out of bounds.
     </span><span class="kw">fn </span>index_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: usize) -&gt; <span class="kw-2">&amp;mut </span>V {
+        <span class="kw">let </span>len: usize = <span class="self">self</span>.len();
+
         <span class="self">self</span>.get_index_mut(index)
-            .expect(<span class="string">"IndexMap: index out of bounds"</span>)
+            .unwrap_or_else(|| {
+                <span class="macro">panic!</span>(<span class="string">"index out of bounds: the len is {len} but the index is {index}"</span>);
+            })
             .<span class="number">1
     </span>}
 }

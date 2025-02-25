@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.37/src/backend/linux_raw/vdso.rs`."><title>vdso.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rustix/backend/linux_raw/</div>vdso.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustix-0.38.44/src/backend/linux_raw/vdso.rs`."><title>vdso.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../../static.files/storage-59e33391.js"></script><script defer src="../../../../static.files/src-script-56102188.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rustix/backend/linux_raw/</div>vdso.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
 <a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -311,10 +311,52 @@
 <a href="#310" id="310">310</a>
 <a href="#311" id="311">311</a>
 <a href="#312" id="312">312</a>
-<a href="#313" id="313">313</a></pre></div><pre class="rust"><code><span class="doccomment">//! Parse the Linux vDSO.
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
+<a href="#341" id="341">341</a>
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
+<a href="#345" id="345">345</a>
+<a href="#346" id="346">346</a>
+<a href="#347" id="347">347</a>
+<a href="#348" id="348">348</a>
+<a href="#349" id="349">349</a>
+<a href="#350" id="350">350</a>
+<a href="#351" id="351">351</a>
+<a href="#352" id="352">352</a>
+<a href="#353" id="353">353</a>
+<a href="#354" id="354">354</a>
+<a href="#355" id="355">355</a></pre></div><pre class="rust"><code><span class="doccomment">//! Parse the Linux vDSO.
 //!
 //! The following code is transliterated from
-//! tools/testing/selftests/vDSO/parse_vdso.c in Linux 5.11, which is licensed
+//! tools/testing/selftests/vDSO/parse_vdso.c in Linux 6.12, which is licensed
 //! with Creative Commons Zero License, version 1.0,
 //! available at &lt;https://creativecommons.org/publicdomain/zero/1.0/legalcode&gt;
 //!
@@ -333,6 +375,11 @@
 <span class="kw">use </span>core::ptr::{null, null_mut};
 <span class="kw">use </span>linux_raw_sys::elf::<span class="kw-2">*</span>;
 
+<span class="attr">#[cfg(target_arch = <span class="string">"s390x"</span>)]
+</span><span class="kw">type </span>ElfHashEntry = u64;
+<span class="attr">#[cfg(not(target_arch = <span class="string">"s390x"</span>))]
+</span><span class="kw">type </span>ElfHashEntry = u32;
+
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>Vdso {
     <span class="comment">// Load information
     </span>load_addr: <span class="kw-2">*const </span>Elf_Ehdr,
@@ -342,17 +389,19 @@
     // Symbol table
     </span>symtab: <span class="kw-2">*const </span>Elf_Sym,
     symstrings: <span class="kw-2">*const </span>u8,
-    bucket: <span class="kw-2">*const </span>u32,
-    chain: <span class="kw-2">*const </span>u32,
-    nbucket: u32,
-    <span class="comment">//nchain: u32,
+    bucket: <span class="kw-2">*const </span>ElfHashEntry,
+    chain: <span class="kw-2">*const </span>ElfHashEntry,
+    nbucket: ElfHashEntry,
+    <span class="comment">//nchain: ElfHashEntry,
 
     // Version table
     </span>versym: <span class="kw-2">*const </span>u16,
     verdef: <span class="kw-2">*const </span>Elf_Verdef,
 }
 
-<span class="comment">// Straight from the ELF specification.
+<span class="doccomment">/// Straight from the ELF specification...and then tweaked slightly, in order to
+/// avoid a few clang warnings.
+/// (And then translated to Rust).
 </span><span class="kw">fn </span>elf_hash(name: <span class="kw-2">&amp;</span>CStr) -&gt; u32 {
     <span class="kw">let </span><span class="kw-2">mut </span>h: u32 = <span class="number">0</span>;
     <span class="kw">for </span>b <span class="kw">in </span>name.to_bytes() {
@@ -404,11 +453,6 @@
         </span><span class="kw">let </span><span class="kw-2">mut </span>found_vaddr = <span class="bool-val">false</span>;
         <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..hdr.e_phnum {
             <span class="kw">let </span>phdr = <span class="kw-2">&amp;*</span>pt.add(i <span class="kw">as </span>usize);
-            <span class="kw">if </span>phdr.p_flags &amp; PF_W != <span class="number">0 </span>{
-                <span class="comment">// Don't trust any vDSO that claims to be loading writable
-                // segments into memory.
-                </span><span class="kw">return </span><span class="prelude-val">None</span>;
-            }
             <span class="kw">if </span>phdr.p_type == PT_LOAD &amp;&amp; !found_vaddr {
                 <span class="comment">// The segment should be readable and executable, because it
                 // contains the symbol table and the function bodies.
@@ -442,7 +486,7 @@
         </span>}
 
         <span class="comment">// Fish out the useful bits of the dynamic table.
-        </span><span class="kw">let </span><span class="kw-2">mut </span>hash: <span class="kw-2">*const </span>u32 = null();
+        </span><span class="kw">let </span><span class="kw-2">mut </span>hash: <span class="kw-2">*const </span>ElfHashEntry = null();
         vdso.symstrings = null();
         vdso.symtab = null();
         vdso.versym = null();
@@ -465,8 +509,10 @@
                             </span>.as_ptr();
                 }
                 DT_HASH =&gt; {
-                    hash = check_raw_pointer::&lt;u32&gt;(vdso.addr_from_elf(d.d_un.d_ptr)<span class="question-mark">? </span><span class="kw">as </span><span class="kw-2">*mut </span><span class="kw">_</span>)<span class="question-mark">?
-                        </span>.as_ptr();
+                    hash = check_raw_pointer::&lt;ElfHashEntry&gt;(
+                        vdso.addr_from_elf(d.d_un.d_ptr)<span class="question-mark">? </span><span class="kw">as </span><span class="kw-2">*mut </span><span class="kw">_
+                    </span>)<span class="question-mark">?
+                    </span>.as_ptr();
                 }
                 DT_VERSYM =&gt; {
                     vdso.versym =
@@ -489,10 +535,14 @@
             }
             i = i.checked_add(<span class="number">1</span>)<span class="question-mark">?</span>;
         }
-        <span class="comment">// The upstream code checks `symstrings`, `symtab`, and `hash` for
-        // null; here, `check_raw_pointer` has already done that.
+        <span class="comment">// `check_raw_pointer` will have checked these pointers for null,
+        // however they could still be null if the expected dynamic table
+        // entries are absent.
+        </span><span class="kw">if </span>vdso.symstrings.is_null() || vdso.symtab.is_null() || hash.is_null() {
+            <span class="kw">return </span><span class="prelude-val">None</span>; <span class="comment">// Failed
+        </span>}
 
-        </span><span class="kw">if </span>vdso.verdef.is_null() {
+        <span class="kw">if </span>vdso.verdef.is_null() {
             vdso.versym = null();
         }
 
@@ -573,16 +623,20 @@
 
         <span class="comment">// SAFETY: The pointers in `self` must be valid.
         </span><span class="kw">unsafe </span>{
-            <span class="kw">let </span><span class="kw-2">mut </span>chain = <span class="kw-2">*</span><span class="self">self</span>.bucket.add((name_hash % <span class="self">self</span>.nbucket) <span class="kw">as </span>usize);
+            <span class="kw">let </span><span class="kw-2">mut </span>chain = <span class="kw-2">*</span><span class="self">self
+                </span>.bucket
+                .add((ElfHashEntry::from(name_hash) % <span class="self">self</span>.nbucket) <span class="kw">as </span>usize);
 
-            <span class="kw">while </span>chain != STN_UNDEF {
+            <span class="kw">while </span>chain != ElfHashEntry::from(STN_UNDEF) {
                 <span class="kw">let </span>sym = <span class="kw-2">&amp;*</span><span class="self">self</span>.symtab.add(chain <span class="kw">as </span>usize);
 
                 <span class="comment">// Check for a defined global or weak function w/ right name.
                 //
-                // The reference parser in Linux's parse_vdso.c requires
-                // symbols to have type `STT_FUNC`, but on powerpc64, the vDSO
-                // uses `STT_NOTYPE`, so allow that too.
+                // Accept `STT_NOTYPE` in addition to `STT_FUNC` for the symbol
+                // type, for compatibility with some versions of Linux on
+                // PowerPC64. See [this commit] in Linux for more background.
+                //
+                // [this commit]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/tools/testing/selftests/vDSO/parse_vdso.c?id=0161bd38c24312853ed5ae9a425a1c41c4ac674a
                 </span><span class="kw">if </span>(ELF_ST_TYPE(sym.st_info) != STT_FUNC &amp;&amp;
                         ELF_ST_TYPE(sym.st_info) != STT_NOTYPE)
                     || (ELF_ST_BIND(sym.st_info) != STB_GLOBAL
@@ -623,5 +677,35 @@
     </span><span class="kw">unsafe fn </span>addr_from_elf(<span class="kw-2">&amp;</span><span class="self">self</span>, elf_addr: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">*const </span>c_void&gt; {
         <span class="self">self</span>.base_plus(elf_addr.wrapping_add(<span class="self">self</span>.pv_offset))
     }
+}
+
+<span class="attr">#[cfg(linux_raw)]
+#[test]
+#[ignore] </span><span class="comment">// Until rustix is updated to the new vDSO format.
+</span><span class="kw">fn </span>test_vdso() {
+    <span class="kw">let </span>vdso = Vdso::new().unwrap();
+    <span class="macro">assert!</span>(!vdso.symtab.is_null());
+    <span class="macro">assert!</span>(!vdso.symstrings.is_null());
+
+    <span class="attr">#[cfg(target_arch = <span class="string">"x86_64"</span>)]
+    </span><span class="kw">let </span>ptr = vdso.sym(<span class="macro">cstr!</span>(<span class="string">"LINUX_2.6"</span>), <span class="macro">cstr!</span>(<span class="string">"__vdso_clock_gettime"</span>));
+    <span class="attr">#[cfg(target_arch = <span class="string">"arm"</span>)]
+    </span><span class="kw">let </span>ptr = vdso.sym(<span class="macro">cstr!</span>(<span class="string">"LINUX_2.6"</span>), <span class="macro">cstr!</span>(<span class="string">"__vdso_clock_gettime64"</span>));
+    <span class="attr">#[cfg(target_arch = <span class="string">"aarch64"</span>)]
+    </span><span class="kw">let </span>ptr = vdso.sym(<span class="macro">cstr!</span>(<span class="string">"LINUX_2.6.39"</span>), <span class="macro">cstr!</span>(<span class="string">"__kernel_clock_gettime"</span>));
+    <span class="attr">#[cfg(target_arch = <span class="string">"x86"</span>)]
+    </span><span class="kw">let </span>ptr = vdso.sym(<span class="macro">cstr!</span>(<span class="string">"LINUX_2.6"</span>), <span class="macro">cstr!</span>(<span class="string">"__vdso_clock_gettime64"</span>));
+    <span class="attr">#[cfg(target_arch = <span class="string">"riscv64"</span>)]
+    </span><span class="kw">let </span>ptr = vdso.sym(<span class="macro">cstr!</span>(<span class="string">"LINUX_4.15"</span>), <span class="macro">cstr!</span>(<span class="string">"__vdso_clock_gettime"</span>));
+    <span class="attr">#[cfg(target_arch = <span class="string">"powerpc64"</span>)]
+    </span><span class="kw">let </span>ptr = vdso.sym(<span class="macro">cstr!</span>(<span class="string">"LINUX_2.6.15"</span>), <span class="macro">cstr!</span>(<span class="string">"__kernel_clock_gettime"</span>));
+    <span class="attr">#[cfg(target_arch = <span class="string">"s390x"</span>)]
+    </span><span class="kw">let </span>ptr = vdso.sym(<span class="macro">cstr!</span>(<span class="string">"LINUX_2.6.29"</span>), <span class="macro">cstr!</span>(<span class="string">"__kernel_clock_gettime"</span>));
+    <span class="attr">#[cfg(any(target_arch = <span class="string">"mips"</span>, target_arch = <span class="string">"mips32r6"</span>))]
+    </span><span class="kw">let </span>ptr = vdso.sym(<span class="macro">cstr!</span>(<span class="string">"LINUX_2.6"</span>), <span class="macro">cstr!</span>(<span class="string">"__vdso_clock_gettime64"</span>));
+    <span class="attr">#[cfg(any(target_arch = <span class="string">"mips64"</span>, target_arch = <span class="string">"mips64r6"</span>))]
+    </span><span class="kw">let </span>ptr = vdso.sym(<span class="macro">cstr!</span>(<span class="string">"LINUX_2.6"</span>), <span class="macro">cstr!</span>(<span class="string">"__vdso_clock_gettime"</span>));
+
+    <span class="macro">assert!</span>(!ptr.is_null());
 }
 </code></pre></div></section></main></body></html>

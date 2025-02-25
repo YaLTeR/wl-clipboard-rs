@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tempfile-3.13.0/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="tempfile" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="icon" href="https://www.rust-lang.org/favicon.ico"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">tempfile/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tempfile-3.17.1/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="tempfile" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../../static.files/src-script-56102188.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="icon" href="https://www.rust-lang.org/favicon.ico"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">tempfile/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
 <a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -690,7 +690,60 @@
 <a href="#689" id="689">689</a>
 <a href="#690" id="690">690</a>
 <a href="#691" id="691">691</a>
-<a href="#692" id="692">692</a></pre></div><pre class="rust"><code><span class="doccomment">//! Temporary files and directories.
+<a href="#692" id="692">692</a>
+<a href="#693" id="693">693</a>
+<a href="#694" id="694">694</a>
+<a href="#695" id="695">695</a>
+<a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
+<a href="#705" id="705">705</a>
+<a href="#706" id="706">706</a>
+<a href="#707" id="707">707</a>
+<a href="#708" id="708">708</a>
+<a href="#709" id="709">709</a>
+<a href="#710" id="710">710</a>
+<a href="#711" id="711">711</a>
+<a href="#712" id="712">712</a>
+<a href="#713" id="713">713</a>
+<a href="#714" id="714">714</a>
+<a href="#715" id="715">715</a>
+<a href="#716" id="716">716</a>
+<a href="#717" id="717">717</a>
+<a href="#718" id="718">718</a>
+<a href="#719" id="719">719</a>
+<a href="#720" id="720">720</a>
+<a href="#721" id="721">721</a>
+<a href="#722" id="722">722</a>
+<a href="#723" id="723">723</a>
+<a href="#724" id="724">724</a>
+<a href="#725" id="725">725</a>
+<a href="#726" id="726">726</a>
+<a href="#727" id="727">727</a>
+<a href="#728" id="728">728</a>
+<a href="#729" id="729">729</a>
+<a href="#730" id="730">730</a>
+<a href="#731" id="731">731</a>
+<a href="#732" id="732">732</a>
+<a href="#733" id="733">733</a>
+<a href="#734" id="734">734</a>
+<a href="#735" id="735">735</a>
+<a href="#736" id="736">736</a>
+<a href="#737" id="737">737</a>
+<a href="#738" id="738">738</a>
+<a href="#739" id="739">739</a>
+<a href="#740" id="740">740</a>
+<a href="#741" id="741">741</a>
+<a href="#742" id="742">742</a>
+<a href="#743" id="743">743</a>
+<a href="#744" id="744">744</a>
+<a href="#745" id="745">745</a></pre></div><pre class="rust"><code><span class="doccomment">//! Temporary files and directories.
 //!
 //! - Use the [`tempfile()`] function for temporary files
 //! - Use the [`tempdir()`] function for temporary directories.
@@ -706,21 +759,69 @@
 //!
 //! ## Resource Leaking
 //!
-//! `tempfile` will (almost) never fail to cleanup temporary resources. However `TempDir` and `NamedTempFile` will
-//! fail if their destructors don't run. This is because `tempfile` relies on the OS to cleanup the
-//! underlying file, while `TempDir` and `NamedTempFile` rely on rust destructors to do so.
-//! Destructors may fail to run if the process exits through an unhandled signal interrupt (like `SIGINT`),
-//! or if the instance is declared statically (like with [`lazy_static`]), among other possible
-//! reasons.
+//! `tempfile` will (almost) never fail to cleanup temporary resources. However `TempDir` and
+//! `NamedTempFile` will fail if their destructors don't run. This is because `tempfile` relies on
+//! the OS to cleanup the underlying file, while `TempDir` and `NamedTempFile` rely on rust
+//! destructors to do so. Destructors may fail to run if the process exits through an unhandled
+//! signal interrupt (like `SIGINT`), or if the instance is declared statically (like with
+//! [`lazy_static`]), among other possible reasons.
+//!
+//! ## Unexpected File Deletion
+//!
+//! Most operating systems periodically clean up temporary files that haven't been accessed recently
+//! (often on the order of multiple days). This issue does not affect unnamed temporary files but
+//! can invalidate the paths associated with named temporary files on Unix-like systems because the
+//! temporary file can be unlinked from the filesystem while still open and in-use. See the
+//! [temporary file cleaner](#temporary-file-cleaners) section for more security implications.
 //!
 //! ## Security
+//!
+//! This section discusses security issues relevant to Unix-like operating systems that use shared
+//! temporary directories by default. Importantly, it's not relevant for Windows or macOS as both
+//! operating systems use private per-user temporary directories by default.
+//!
+//! Applications can mitigate the issues described below by using [`env::override_temp_dir`] to
+//! change the default temporary directory but should do so if and only if default the temporary
+//! directory ([`env::temp_dir`]) is unsuitable (is world readable, world writable, managed by a
+//! temporary file cleaner, etc.).
+//!
+//! ### Temporary File Cleaners
 //!
 //! In the presence of pathological temporary file cleaner, relying on file paths is unsafe because
 //! a temporary file cleaner could delete the temporary file which an attacker could then replace.
 //!
-//! `tempfile` doesn't rely on file paths so this isn't an issue. However, `NamedTempFile` does
-//! rely on file paths for _some_ operations. See the security documentation on
-//! the `NamedTempFile` type for more information.
+//! This isn't an issue for [`tempfile`] as it doesn't rely on file paths. However, [`NamedTempFile`]
+//! and temporary directories _do_ rely on file paths for _some_ operations. See the security
+//! documentation on the [`NamedTempFile`] and the [`TempDir`] types for more information.
+//!
+//! Mitigation:
+//!
+//! - This is rarely an issue for short-lived files as temporary file cleaners usually only remove
+//!   temporary files that haven't been modified or accessed within many (10-30) days.
+//! - Very long lived temporary files should be placed in directories not managed by temporary file
+//!   cleaners.
+//!
+//! ### Access Permissions
+//!
+//! Temporary _files_ created with this library are private by default on all operating systems.
+//! However, temporary _directories_ are created with the default permissions and will therefore be
+//! world-readable by default unless the user has changed their umask and/or default temporary
+//! directory.
+//!
+//! ### Denial of Service
+//!
+//! If the file-name randomness ([`Builder::rand_bytes`]) is too small and/or this crate is built
+//! without the `getrandom` feature, it may be possible for an attacker to predict the random file
+//! names chosen by this library, preventing temporary file creation by creating temporary files
+//! with these predicted file names. By default, this library mitigates this denial of service
+//! attack by:
+//!
+//! 1. Defaulting to 6 random characters per temporary file forcing an attacker to create billions
+//!    of files before random collisions are expected (at which point you probably have larger
+//!    problems).
+//! 2. Re-seeding the random filename generator from system randomness after 3 failed attempts to
+//!    create temporary a file (when the `getrandom` feature is enabled as it is by default on all
+//!    major platforms).
 //!
 //! ## Early drop pitfall
 //!
@@ -828,12 +929,18 @@
 #![cfg_attr(test, deny(warnings))]
 #![deny(rust_2018_idioms)]
 #![allow(clippy::redundant_field_names)]
+</span><span class="comment">// wasip2 conditionally gates stdlib APIs.
+// https://github.com/rust-lang/rust/issues/130323
+</span><span class="attr">#![cfg_attr(
+    all(feature = <span class="string">"nightly"</span>, target_os = <span class="string">"wasi"</span>, target_env = <span class="string">"p2"</span>),
+    feature(wasip2)
+)]
 #![cfg_attr(all(feature = <span class="string">"nightly"</span>, target_os = <span class="string">"wasi"</span>), feature(wasi_ext))]
 
 #[cfg(doctest)]
 </span><span class="macro">doc_comment::doctest!</span>(<span class="string">"../README.md"</span>);
 
-<span class="kw">const </span>NUM_RETRIES: u32 = <span class="number">1 </span>&lt;&lt; <span class="number">31</span>;
+<span class="kw">const </span>NUM_RETRIES: u32 = <span class="number">65536</span>;
 <span class="kw">const </span>NUM_RAND_CHARS: usize = <span class="number">6</span>;
 
 <span class="kw">use </span>std::ffi::OsStr;
@@ -853,9 +960,9 @@
 <span class="kw">pub use </span><span class="kw">crate</span>::file::{
     tempfile, tempfile_in, NamedTempFile, PathPersistError, PersistError, TempPath,
 };
-<span class="kw">pub use </span><span class="kw">crate</span>::spooled::{spooled_tempfile, SpooledTempFile};
+<span class="kw">pub use </span><span class="kw">crate</span>::spooled::{spooled_tempfile, SpooledData, SpooledTempFile};
 
-<span class="doccomment">/// Create a new temporary file or directory with custom parameters.
+<span class="doccomment">/// Create a new temporary file or directory with custom options.
 </span><span class="attr">#[derive(Debug, Clone, Eq, PartialEq)]
 </span><span class="kw">pub struct </span>Builder&lt;<span class="lifetime">'a</span>, <span class="lifetime">'b</span>&gt; {
     random_len: usize,
@@ -866,7 +973,7 @@
     keep: bool,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, <span class="lifetime">'b</span>&gt; Default <span class="kw">for </span>Builder&lt;<span class="lifetime">'a</span>, <span class="lifetime">'b</span>&gt; {
+<span class="kw">impl </span>Default <span class="kw">for </span>Builder&lt;<span class="lifetime">'_</span>, <span class="lifetime">'_</span>&gt; {
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         Builder {
             random_len: <span class="kw">crate</span>::NUM_RAND_CHARS,
@@ -1032,7 +1139,7 @@
     ///
     /// # Security
     ///
-    /// By default, the permissions of tempfiles on unix are set for it to be
+    /// By default, the permissions of tempfiles on Unix are set for it to be
     /// readable and writable by the owner only, yielding the greatest amount
     /// of security.
     /// As this method allows to widen the permissions, security would be
@@ -1052,7 +1159,7 @@
     /// ## Windows and others
     ///
     /// This setting is unsupported and trying to set a file or directory read-only
-    /// will cause an error to be returned..
+    /// will return an error.
     ///
     /// # Examples
     ///
@@ -1104,7 +1211,10 @@
     /// scope.
     ///
     /// By default, the file/folder is automatically cleaned up in the destructor of
-    /// [`NamedTempFile`]/[`TempDir`]. When `keep` is set to `true`, this behavior is supressed.
+    /// [`NamedTempFile`]/[`TempDir`]. When `keep` is set to `true`, this behavior is suppressed.
+    ///
+    /// If you wish to keep a temporary file or directory after creating it, call
+    /// [`NamedTempFile::keep`] or [`TempDir::into_path`] respectively.
     ///
     /// # Examples
     ///
@@ -1242,17 +1352,13 @@
     ///
     /// [resource-leaking]: struct.TempDir.html#resource-leaking
     </span><span class="kw">pub fn </span>tempdir_in&lt;P: AsRef&lt;Path&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, dir: P) -&gt; io::Result&lt;TempDir&gt; {
-        <span class="kw">let </span>storage;
-        <span class="kw">let </span><span class="kw-2">mut </span>dir = dir.as_ref();
-        <span class="kw">if </span>!dir.is_absolute() {
-            <span class="kw">let </span>cur_dir = std::env::current_dir()<span class="question-mark">?</span>;
-            storage = cur_dir.join(dir);
-            dir = <span class="kw-2">&amp;</span>storage;
-        }
-
-        util::create_helper(dir, <span class="self">self</span>.prefix, <span class="self">self</span>.suffix, <span class="self">self</span>.random_len, |path| {
-            dir::create(path, <span class="self">self</span>.permissions.as_ref(), <span class="self">self</span>.keep)
-        })
+        util::create_helper(
+            dir.as_ref(),
+            <span class="self">self</span>.prefix,
+            <span class="self">self</span>.suffix,
+            <span class="self">self</span>.random_len,
+            |path| dir::create(path, <span class="self">self</span>.permissions.as_ref(), <span class="self">self</span>.keep),
+        )
     }
 
     <span class="doccomment">/// Attempts to create a temporary file (or file-like object) using the

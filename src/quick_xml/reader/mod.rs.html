@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.36.2/src/reader/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">quick_xml/reader/</div>mod.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quick-xml-0.37.2/src/reader/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../static.files/storage-59e33391.js"></script><script defer src="../../../static.files/src-script-56102188.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">quick_xml/reader/</div>mod.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
 <a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -1915,7 +1915,11 @@
 <a href="#1914" id="1914">1914</a>
 <a href="#1915" id="1915">1915</a>
 <a href="#1916" id="1916">1916</a>
-<a href="#1917" id="1917">1917</a></pre></div><pre class="rust"><code><span class="doccomment">//! Contains high-level interface for a pull-based XML parser.
+<a href="#1917" id="1917">1917</a>
+<a href="#1918" id="1918">1918</a>
+<a href="#1919" id="1919">1919</a>
+<a href="#1920" id="1920">1920</a>
+<a href="#1921" id="1921">1921</a></pre></div><pre class="rust"><code><span class="doccomment">//! Contains high-level interface for a pull-based XML parser.
 
 </span><span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
 </span><span class="kw">use </span>encoding_rs::Encoding;
@@ -1923,7 +1927,7 @@
 <span class="kw">use </span>std::ops::Range;
 
 <span class="kw">use </span><span class="kw">crate</span>::encoding::Decoder;
-<span class="kw">use </span><span class="kw">crate</span>::errors::{Error, <span class="prelude-ty">Result</span>, SyntaxError};
+<span class="kw">use </span><span class="kw">crate</span>::errors::{Error, SyntaxError};
 <span class="kw">use </span><span class="kw">crate</span>::events::Event;
 <span class="kw">use </span><span class="kw">crate</span>::parser::{ElementParser, Parser, PiParser};
 <span class="kw">use </span><span class="kw">crate</span>::reader::state::ReaderState;
@@ -2811,7 +2815,7 @@
     <span class="doccomment">/// Read text into the given buffer, and return an event that borrows from
     /// either that buffer or from the input itself, based on the type of the
     /// reader.
-    </span><span class="kw">fn </span>read_event_impl&lt;<span class="lifetime">'i</span>, B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>buf: B) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'i</span>&gt;&gt;
+    </span><span class="kw">fn </span>read_event_impl&lt;<span class="lifetime">'i</span>, B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>buf: B) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'i</span>&gt;, Error&gt;
     <span class="kw">where
         </span>R: XmlSource&lt;<span class="lifetime">'i</span>, B&gt;,
     {
@@ -2820,7 +2824,7 @@
 
     <span class="doccomment">/// Private function to read until `&gt;` is found. This function expects that
     /// it was called just after encounter a `&lt;` symbol.
-    </span><span class="kw">fn </span>read_until_close&lt;<span class="lifetime">'i</span>, B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: B) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'i</span>&gt;&gt;
+    </span><span class="kw">fn </span>read_until_close&lt;<span class="lifetime">'i</span>, B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: B) -&gt; <span class="prelude-ty">Result</span>&lt;Event&lt;<span class="lifetime">'i</span>&gt;, Error&gt;
     <span class="kw">where
         </span>R: XmlSource&lt;<span class="lifetime">'i</span>, B&gt;,
     {
@@ -2896,7 +2900,7 @@
     /// reader which provides bytes fed into the parser.
     ///
     /// [events]: crate::events::Event
-    </span><span class="kw">fn </span>read_with&lt;P&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, parser: P, buf: B, position: <span class="kw-2">&amp;mut </span>u64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'r </span>[u8]&gt;
+    </span><span class="kw">fn </span>read_with&lt;P&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, parser: P, buf: B, position: <span class="kw-2">&amp;mut </span>u64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'r </span>[u8], Error&gt;
     <span class="kw">where
         </span>P: Parser;
 
@@ -2915,7 +2919,11 @@
     /// - `position`: Will be increased by amount of bytes consumed
     ///
     /// [events]: crate::events::Event
-    </span><span class="kw">fn </span>read_bang_element(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: B, position: <span class="kw-2">&amp;mut </span>u64) -&gt; <span class="prelude-ty">Result</span>&lt;(BangType, <span class="kw-2">&amp;</span><span class="lifetime">'r </span>[u8])&gt;;
+    </span><span class="kw">fn </span>read_bang_element(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        buf: B,
+        position: <span class="kw-2">&amp;mut </span>u64,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(BangType, <span class="kw-2">&amp;</span><span class="lifetime">'r </span>[u8]), Error&gt;;
 
     <span class="doccomment">/// Consume and discard all the whitespace until the next non-whitespace
     /// character or EOF.
@@ -2941,12 +2949,12 @@
 }
 <span class="kw">impl </span>BangType {
     <span class="attr">#[inline(always)]
-    </span><span class="kw">const fn </span>new(byte: <span class="prelude-ty">Option</span>&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+    </span><span class="kw">const fn </span>new(byte: <span class="prelude-ty">Option</span>&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, SyntaxError&gt; {
         <span class="prelude-val">Ok</span>(<span class="kw">match </span>byte {
             <span class="prelude-val">Some</span>(<span class="string">b'['</span>) =&gt; <span class="self">Self</span>::CData,
             <span class="prelude-val">Some</span>(<span class="string">b'-'</span>) =&gt; <span class="self">Self</span>::Comment,
             <span class="prelude-val">Some</span>(<span class="string">b'D'</span>) | <span class="prelude-val">Some</span>(<span class="string">b'd'</span>) =&gt; <span class="self">Self</span>::DocType(<span class="number">0</span>),
-            <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Syntax(SyntaxError::InvalidBangMarkup)),
+            <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(SyntaxError::InvalidBangMarkup),
         })
     }
 
@@ -3018,11 +3026,11 @@
         <span class="prelude-val">None
     </span>}
     <span class="attr">#[inline]
-    </span><span class="kw">const fn </span>to_err(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Error {
+    </span><span class="kw">const fn </span>to_err(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SyntaxError {
         <span class="kw">match </span><span class="self">self </span>{
-            <span class="self">Self</span>::CData =&gt; Error::Syntax(SyntaxError::UnclosedCData),
-            <span class="self">Self</span>::Comment =&gt; Error::Syntax(SyntaxError::UnclosedComment),
-            <span class="self">Self</span>::DocType(<span class="kw">_</span>) =&gt; Error::Syntax(SyntaxError::UnclosedDoctype),
+            <span class="self">Self</span>::CData =&gt; SyntaxError::UnclosedCData,
+            <span class="self">Self</span>::Comment =&gt; SyntaxError::UnclosedComment,
+            <span class="self">Self</span>::DocType(<span class="kw">_</span>) =&gt; SyntaxError::UnclosedDoctype,
         }
     }
 }

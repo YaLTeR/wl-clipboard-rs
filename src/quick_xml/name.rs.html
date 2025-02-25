@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.36.2/src/name.rs`."><title>name.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">quick_xml/</div>name.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quick-xml-0.37.2/src/name.rs`."><title>name.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../../static.files/src-script-56102188.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">quick_xml/</div>name.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
 <a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -1191,19 +1191,110 @@
 <a href="#1190" id="1190">1190</a>
 <a href="#1191" id="1191">1191</a>
 <a href="#1192" id="1192">1192</a>
-<a href="#1193" id="1193">1193</a></pre></div><pre class="rust"><code><span class="doccomment">//! Module for handling names according to the W3C [Namespaces in XML 1.1 (Second Edition)][spec]
+<a href="#1193" id="1193">1193</a>
+<a href="#1194" id="1194">1194</a>
+<a href="#1195" id="1195">1195</a>
+<a href="#1196" id="1196">1196</a>
+<a href="#1197" id="1197">1197</a>
+<a href="#1198" id="1198">1198</a>
+<a href="#1199" id="1199">1199</a>
+<a href="#1200" id="1200">1200</a>
+<a href="#1201" id="1201">1201</a>
+<a href="#1202" id="1202">1202</a>
+<a href="#1203" id="1203">1203</a>
+<a href="#1204" id="1204">1204</a>
+<a href="#1205" id="1205">1205</a>
+<a href="#1206" id="1206">1206</a>
+<a href="#1207" id="1207">1207</a>
+<a href="#1208" id="1208">1208</a>
+<a href="#1209" id="1209">1209</a>
+<a href="#1210" id="1210">1210</a>
+<a href="#1211" id="1211">1211</a>
+<a href="#1212" id="1212">1212</a>
+<a href="#1213" id="1213">1213</a>
+<a href="#1214" id="1214">1214</a>
+<a href="#1215" id="1215">1215</a>
+<a href="#1216" id="1216">1216</a>
+<a href="#1217" id="1217">1217</a></pre></div><pre class="rust"><code><span class="doccomment">//! Module for handling names according to the W3C [Namespaces in XML 1.1 (Second Edition)][spec]
 //! specification
 //!
 //! [spec]: https://www.w3.org/TR/xml-names11
 
-</span><span class="kw">use </span><span class="kw">crate</span>::errors::{Error, <span class="prelude-ty">Result</span>};
-<span class="kw">use </span><span class="kw">crate</span>::events::attributes::Attribute;
+</span><span class="kw">use </span><span class="kw">crate</span>::events::attributes::Attribute;
 <span class="kw">use </span><span class="kw">crate</span>::events::BytesStart;
 <span class="kw">use </span><span class="kw">crate</span>::utils::write_byte_string;
 <span class="kw">use </span>memchr::memchr;
 <span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug, Formatter};
 
-<span class="doccomment">/// A [qualified name] of an element or an attribute, including an optional
+<span class="doccomment">/// Some namespace was invalid
+</span><span class="attr">#[derive(Debug, Clone, PartialEq, Eq)]
+</span><span class="kw">pub enum </span>NamespaceError {
+    <span class="doccomment">/// Specified namespace prefix is unknown, cannot resolve namespace for it
+    </span>UnknownPrefix(Vec&lt;u8&gt;),
+    <span class="doccomment">/// Attempts to bind the `xml` prefix to something other than `http://www.w3.org/XML/1998/namespace`.
+    ///
+    /// `xml` prefix can be bound only to `http://www.w3.org/XML/1998/namespace`.
+    ///
+    /// Contains the namespace to which `xml` tried to be bound.
+    </span>InvalidXmlPrefixBind(Vec&lt;u8&gt;),
+    <span class="doccomment">/// Attempts to bind the `xmlns` prefix.
+    ///
+    /// `xmlns` prefix is always bound to `http://www.w3.org/2000/xmlns/` and cannot be bound
+    /// to any other namespace or even to `http://www.w3.org/2000/xmlns/`.
+    ///
+    /// Contains the namespace to which `xmlns` tried to be bound.
+    </span>InvalidXmlnsPrefixBind(Vec&lt;u8&gt;),
+    <span class="doccomment">/// Attempts to bind some prefix (except `xml`) to `http://www.w3.org/XML/1998/namespace`.
+    ///
+    /// Only `xml` prefix can be bound to `http://www.w3.org/XML/1998/namespace`.
+    ///
+    /// Contains the prefix that is tried to be bound.
+    </span>InvalidPrefixForXml(Vec&lt;u8&gt;),
+    <span class="doccomment">/// Attempts to bind some prefix to `http://www.w3.org/2000/xmlns/`.
+    ///
+    /// `http://www.w3.org/2000/xmlns/` cannot be bound to any prefix, even to `xmlns`.
+    ///
+    /// Contains the prefix that is tried to be bound.
+    </span>InvalidPrefixForXmlns(Vec&lt;u8&gt;),
+}
+
+<span class="kw">impl </span>fmt::Display <span class="kw">for </span>NamespaceError {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::UnknownPrefix(prefix) =&gt; {
+                f.write_str(<span class="string">"unknown namespace prefix '"</span>)<span class="question-mark">?</span>;
+                write_byte_string(f, prefix)<span class="question-mark">?</span>;
+                f.write_str(<span class="string">"'"</span>)
+            }
+            <span class="self">Self</span>::InvalidXmlPrefixBind(namespace) =&gt; {
+                f.write_str(<span class="string">"the namespace prefix 'xml' cannot be bound to '"</span>)<span class="question-mark">?</span>;
+                write_byte_string(f, namespace)<span class="question-mark">?</span>;
+                f.write_str(<span class="string">"'"</span>)
+            }
+            <span class="self">Self</span>::InvalidXmlnsPrefixBind(namespace) =&gt; {
+                f.write_str(<span class="string">"the namespace prefix 'xmlns' cannot be bound to '"</span>)<span class="question-mark">?</span>;
+                write_byte_string(f, namespace)<span class="question-mark">?</span>;
+                f.write_str(<span class="string">"'"</span>)
+            }
+            <span class="self">Self</span>::InvalidPrefixForXml(prefix) =&gt; {
+                f.write_str(<span class="string">"the namespace prefix '"</span>)<span class="question-mark">?</span>;
+                write_byte_string(f, prefix)<span class="question-mark">?</span>;
+                f.write_str(<span class="string">"' cannot be bound to 'http://www.w3.org/XML/1998/namespace'"</span>)
+            }
+            <span class="self">Self</span>::InvalidPrefixForXmlns(prefix) =&gt; {
+                f.write_str(<span class="string">"the namespace prefix '"</span>)<span class="question-mark">?</span>;
+                write_byte_string(f, prefix)<span class="question-mark">?</span>;
+                f.write_str(<span class="string">"' cannot be bound to 'http://www.w3.org/2000/xmlns/'"</span>)
+            }
+        }
+    }
+}
+
+<span class="kw">impl </span>std::error::Error <span class="kw">for </span>NamespaceError {}
+
+<span class="comment">////////////////////////////////////////////////////////////////////////////////////////////////////
+
+</span><span class="doccomment">/// A [qualified name] of an element or an attribute, including an optional
 /// namespace [prefix](Prefix) and a [local name](LocalName).
 ///
 /// [qualified name]: https://www.w3.org/TR/xml-names11/#dt-qualname
@@ -1500,17 +1591,17 @@
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'ns</span>&gt; TryFrom&lt;ResolveResult&lt;<span class="lifetime">'ns</span>&gt;&gt; <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;Namespace&lt;<span class="lifetime">'ns</span>&gt;&gt; {
-    <span class="kw">type </span>Error = Error;
+    <span class="kw">type </span>Error = NamespaceError;
 
     <span class="doccomment">/// Try to convert this result to an optional namespace and returns
-    /// [`Error::UnknownPrefix`] if this result represents unknown prefix
-    </span><span class="kw">fn </span>try_from(result: ResolveResult&lt;<span class="lifetime">'ns</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+    /// [`NamespaceError::UnknownPrefix`] if this result represents unknown prefix
+    </span><span class="kw">fn </span>try_from(result: ResolveResult&lt;<span class="lifetime">'ns</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, NamespaceError&gt; {
         <span class="kw">use </span>ResolveResult::<span class="kw-2">*</span>;
 
         <span class="kw">match </span>result {
             Unbound =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
             Bound(ns) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(ns)),
-            Unknown(p) =&gt; <span class="prelude-val">Err</span>(Error::UnknownPrefix(p)),
+            Unknown(p) =&gt; <span class="prelude-val">Err</span>(NamespaceError::UnknownPrefix(p)),
         }
     }
 }
@@ -1649,7 +1740,7 @@
     /// the specified start element.
     ///
     /// [namespace binding]: https://www.w3.org/TR/xml-names11/#dt-NSDecl
-    </span><span class="kw">pub fn </span>push(<span class="kw-2">&amp;mut </span><span class="self">self</span>, start: <span class="kw-2">&amp;</span>BytesStart) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    </span><span class="kw">pub fn </span>push(<span class="kw-2">&amp;mut </span><span class="self">self</span>, start: <span class="kw-2">&amp;</span>BytesStart) -&gt; <span class="prelude-ty">Result</span>&lt;(), NamespaceError&gt; {
         <span class="self">self</span>.nesting_level += <span class="number">1</span>;
         <span class="kw">let </span>level = <span class="self">self</span>.nesting_level;
         <span class="comment">// adds new namespaces for attributes starting with 'xmlns:' and for the 'xmlns'
@@ -1670,30 +1761,23 @@
                     <span class="prelude-val">Some</span>(PrefixDeclaration::Named(<span class="string">b"xml"</span>)) =&gt; {
                         <span class="kw">if </span>Namespace(<span class="kw-2">&amp;</span>v) != RESERVED_NAMESPACE_XML.<span class="number">1 </span>{
                             <span class="comment">// error, `xml` prefix explicitly set to different value
-                            </span><span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidPrefixBind {
-                                prefix: <span class="string">b"xml"</span>.to_vec(),
-                                namespace: v.to_vec(),
-                            });
+                            </span><span class="kw">return </span><span class="prelude-val">Err</span>(NamespaceError::InvalidXmlPrefixBind(v.to_vec()));
                         }
                         <span class="comment">// don't add another NamespaceEntry for the `xml` namespace prefix
                     </span>}
                     <span class="prelude-val">Some</span>(PrefixDeclaration::Named(<span class="string">b"xmlns"</span>)) =&gt; {
                         <span class="comment">// error, `xmlns` prefix explicitly set
-                        </span><span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidPrefixBind {
-                            prefix: <span class="string">b"xmlns"</span>.to_vec(),
-                            namespace: v.to_vec(),
-                        });
+                        </span><span class="kw">return </span><span class="prelude-val">Err</span>(NamespaceError::InvalidXmlnsPrefixBind(v.to_vec()));
                     }
                     <span class="prelude-val">Some</span>(PrefixDeclaration::Named(prefix)) =&gt; {
                         <span class="kw">let </span>ns = Namespace(<span class="kw-2">&amp;</span>v);
 
-                        <span class="kw">if </span>ns == RESERVED_NAMESPACE_XML.<span class="number">1 </span>|| ns == RESERVED_NAMESPACE_XMLNS.<span class="number">1 </span>{
+                        <span class="kw">if </span>ns == RESERVED_NAMESPACE_XML.<span class="number">1 </span>{
                             <span class="comment">// error, non-`xml` prefix set to xml uri
-                            // error, non-`xmlns` prefix set to xmlns uri
-                            </span><span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidPrefixBind {
-                                prefix: prefix.to_vec(),
-                                namespace: v.to_vec(),
-                            });
+                            </span><span class="kw">return </span><span class="prelude-val">Err</span>(NamespaceError::InvalidPrefixForXml(prefix.to_vec()));
+                        } <span class="kw">else if </span>ns == RESERVED_NAMESPACE_XMLNS.<span class="number">1 </span>{
+                            <span class="comment">// error, non-`xmlns` prefix set to xmlns uri
+                            </span><span class="kw">return </span><span class="prelude-val">Err</span>(NamespaceError::InvalidPrefixForXmlns(prefix.to_vec()));
                         }
 
                         <span class="kw">let </span>start = <span class="self">self</span>.buffer.len();
@@ -2173,19 +2257,15 @@
             </span><span class="kw">fn </span>rebound_to_incorrect_ns() {
                 <span class="kw">let </span><span class="kw-2">mut </span>resolver = NamespaceResolver::default();
                 <span class="kw">let </span>s = resolver.buffer.len();
-                <span class="kw">match </span>resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(
-                    <span class="string">" xmlns:xml='not_correct_namespace'"</span>,
-                    <span class="number">0</span>,
-                )) {
-                    <span class="prelude-val">Err</span>(Error::InvalidPrefixBind { prefix, namespace }) =&gt; {
-                        <span class="macro">assert_eq!</span>(prefix, <span class="string">b"xml"</span>);
-                        <span class="macro">assert_eq!</span>(namespace, <span class="string">b"not_correct_namespace"</span>);
-                    }
-                    x =&gt; <span class="macro">panic!</span>(
-                        <span class="string">"Expected `Err(InvalidPrefixBind {{ .. }})`, but got `{:?}`"</span>,
-                        x
-                    ),
-                }
+                <span class="macro">assert_eq!</span>(
+                    resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(
+                        <span class="string">" xmlns:xml='not_correct_namespace'"</span>,
+                        <span class="number">0</span>,
+                    )),
+                    <span class="prelude-val">Err</span>(NamespaceError::InvalidXmlPrefixBind(
+                        <span class="string">b"not_correct_namespace"</span>.to_vec()
+                    )),
+                );
                 <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>resolver.buffer[s..], <span class="string">b""</span>);
             }
 
@@ -2194,16 +2274,10 @@
             </span><span class="kw">fn </span>unbound() {
                 <span class="kw">let </span><span class="kw-2">mut </span>resolver = NamespaceResolver::default();
                 <span class="kw">let </span>s = resolver.buffer.len();
-                <span class="kw">match </span>resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(<span class="string">" xmlns:xml=''"</span>, <span class="number">0</span>)) {
-                    <span class="prelude-val">Err</span>(Error::InvalidPrefixBind { prefix, namespace }) =&gt; {
-                        <span class="macro">assert_eq!</span>(prefix, <span class="string">b"xml"</span>);
-                        <span class="macro">assert_eq!</span>(namespace, <span class="string">b""</span>);
-                    }
-                    x =&gt; <span class="macro">panic!</span>(
-                        <span class="string">"Expected `Err(InvalidPrefixBind {{ .. }})`, but got `{:?}`"</span>,
-                        x
-                    ),
-                }
+                <span class="macro">assert_eq!</span>(
+                    resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(<span class="string">" xmlns:xml=''"</span>, <span class="number">0</span>)),
+                    <span class="prelude-val">Err</span>(NamespaceError::InvalidXmlPrefixBind(<span class="string">b""</span>.to_vec())),
+                );
                 <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>resolver.buffer[s..], <span class="string">b""</span>);
             }
 
@@ -2212,19 +2286,13 @@
             </span><span class="kw">fn </span>other_prefix_bound_to_xml_namespace() {
                 <span class="kw">let </span><span class="kw-2">mut </span>resolver = NamespaceResolver::default();
                 <span class="kw">let </span>s = resolver.buffer.len();
-                <span class="kw">match </span>resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(
-                    <span class="string">" xmlns:not_xml='http://www.w3.org/XML/1998/namespace'"</span>,
-                    <span class="number">0</span>,
-                )) {
-                    <span class="prelude-val">Err</span>(Error::InvalidPrefixBind { prefix, namespace }) =&gt; {
-                        <span class="macro">assert_eq!</span>(prefix, <span class="string">b"not_xml"</span>);
-                        <span class="macro">assert_eq!</span>(namespace, <span class="string">b"http://www.w3.org/XML/1998/namespace"</span>);
-                    }
-                    x =&gt; <span class="macro">panic!</span>(
-                        <span class="string">"Expected `Err(InvalidPrefixBind {{ .. }})`, but got `{:?}`"</span>,
-                        x
-                    ),
-                }
+                <span class="macro">assert_eq!</span>(
+                    resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(
+                        <span class="string">" xmlns:not_xml='http://www.w3.org/XML/1998/namespace'"</span>,
+                        <span class="number">0</span>,
+                    )),
+                    <span class="prelude-val">Err</span>(NamespaceError::InvalidPrefixForXml(<span class="string">b"not_xml"</span>.to_vec())),
+                );
                 <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>resolver.buffer[s..], <span class="string">b""</span>);
             }
         }
@@ -2258,19 +2326,15 @@
             </span><span class="kw">fn </span>rebound_to_correct_ns() {
                 <span class="kw">let </span><span class="kw-2">mut </span>resolver = NamespaceResolver::default();
                 <span class="kw">let </span>s = resolver.buffer.len();
-                <span class="kw">match </span>resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(
-                    <span class="string">" xmlns:xmlns='http://www.w3.org/2000/xmlns/'"</span>,
-                    <span class="number">0</span>,
-                )) {
-                    <span class="prelude-val">Err</span>(Error::InvalidPrefixBind { prefix, namespace }) =&gt; {
-                        <span class="macro">assert_eq!</span>(prefix, <span class="string">b"xmlns"</span>);
-                        <span class="macro">assert_eq!</span>(namespace, <span class="string">b"http://www.w3.org/2000/xmlns/"</span>);
-                    }
-                    x =&gt; <span class="macro">panic!</span>(
-                        <span class="string">"Expected `Err(InvalidPrefixBind {{ .. }})`, but got `{:?}`"</span>,
-                        x
-                    ),
-                }
+                <span class="macro">assert_eq!</span>(
+                    resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(
+                        <span class="string">" xmlns:xmlns='http://www.w3.org/2000/xmlns/'"</span>,
+                        <span class="number">0</span>,
+                    )),
+                    <span class="prelude-val">Err</span>(NamespaceError::InvalidXmlnsPrefixBind(
+                        <span class="string">b"http://www.w3.org/2000/xmlns/"</span>.to_vec()
+                    )),
+                );
                 <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>resolver.buffer[s..], <span class="string">b""</span>);
             }
 
@@ -2279,19 +2343,15 @@
             </span><span class="kw">fn </span>rebound_to_incorrect_ns() {
                 <span class="kw">let </span><span class="kw-2">mut </span>resolver = NamespaceResolver::default();
                 <span class="kw">let </span>s = resolver.buffer.len();
-                <span class="kw">match </span>resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(
-                    <span class="string">" xmlns:xmlns='not_correct_namespace'"</span>,
-                    <span class="number">0</span>,
-                )) {
-                    <span class="prelude-val">Err</span>(Error::InvalidPrefixBind { prefix, namespace }) =&gt; {
-                        <span class="macro">assert_eq!</span>(prefix, <span class="string">b"xmlns"</span>);
-                        <span class="macro">assert_eq!</span>(namespace, <span class="string">b"not_correct_namespace"</span>);
-                    }
-                    x =&gt; <span class="macro">panic!</span>(
-                        <span class="string">"Expected `Err(InvalidPrefixBind {{ .. }})`, but got `{:?}`"</span>,
-                        x
-                    ),
-                }
+                <span class="macro">assert_eq!</span>(
+                    resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(
+                        <span class="string">" xmlns:xmlns='not_correct_namespace'"</span>,
+                        <span class="number">0</span>,
+                    )),
+                    <span class="prelude-val">Err</span>(NamespaceError::InvalidXmlnsPrefixBind(
+                        <span class="string">b"not_correct_namespace"</span>.to_vec()
+                    )),
+                );
                 <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>resolver.buffer[s..], <span class="string">b""</span>);
             }
 
@@ -2300,16 +2360,10 @@
             </span><span class="kw">fn </span>unbound() {
                 <span class="kw">let </span><span class="kw-2">mut </span>resolver = NamespaceResolver::default();
                 <span class="kw">let </span>s = resolver.buffer.len();
-                <span class="kw">match </span>resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(<span class="string">" xmlns:xmlns=''"</span>, <span class="number">0</span>)) {
-                    <span class="prelude-val">Err</span>(Error::InvalidPrefixBind { prefix, namespace }) =&gt; {
-                        <span class="macro">assert_eq!</span>(prefix, <span class="string">b"xmlns"</span>);
-                        <span class="macro">assert_eq!</span>(namespace, <span class="string">b""</span>);
-                    }
-                    x =&gt; <span class="macro">panic!</span>(
-                        <span class="string">"Expected `Err(InvalidPrefixBind {{ .. }})`, but got `{:?}`"</span>,
-                        x
-                    ),
-                }
+                <span class="macro">assert_eq!</span>(
+                    resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(<span class="string">" xmlns:xmlns=''"</span>, <span class="number">0</span>)),
+                    <span class="prelude-val">Err</span>(NamespaceError::InvalidXmlnsPrefixBind(<span class="string">b""</span>.to_vec())),
+                );
                 <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>resolver.buffer[s..], <span class="string">b""</span>);
             }
 
@@ -2318,19 +2372,13 @@
             </span><span class="kw">fn </span>other_prefix_bound_to_xmlns_namespace() {
                 <span class="kw">let </span><span class="kw-2">mut </span>resolver = NamespaceResolver::default();
                 <span class="kw">let </span>s = resolver.buffer.len();
-                <span class="kw">match </span>resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(
-                    <span class="string">" xmlns:not_xmlns='http://www.w3.org/2000/xmlns/'"</span>,
-                    <span class="number">0</span>,
-                )) {
-                    <span class="prelude-val">Err</span>(Error::InvalidPrefixBind { prefix, namespace }) =&gt; {
-                        <span class="macro">assert_eq!</span>(prefix, <span class="string">b"not_xmlns"</span>);
-                        <span class="macro">assert_eq!</span>(namespace, <span class="string">b"http://www.w3.org/2000/xmlns/"</span>);
-                    }
-                    x =&gt; <span class="macro">panic!</span>(
-                        <span class="string">"Expected `Err(InvalidPrefixBind {{ .. }})`, but got `{:?}`"</span>,
-                        x
-                    ),
-                }
+                <span class="macro">assert_eq!</span>(
+                    resolver.push(<span class="kw-2">&amp;</span>BytesStart::from_content(
+                        <span class="string">" xmlns:not_xmlns='http://www.w3.org/2000/xmlns/'"</span>,
+                        <span class="number">0</span>,
+                    )),
+                    <span class="prelude-val">Err</span>(NamespaceError::InvalidPrefixForXmlns(<span class="string">b"not_xmlns"</span>.to_vec())),
+                );
                 <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>resolver.buffer[s..], <span class="string">b""</span>);
             }
         }

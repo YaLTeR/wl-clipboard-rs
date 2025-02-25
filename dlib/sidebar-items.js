@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["DlError","LibLoadingError"],"macro":["external_library","ffi_dispatch","ffi_dispatch_static"]};

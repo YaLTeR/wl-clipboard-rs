@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.37/src/backend/linux_raw/c.rs`."><title>c.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rustix/backend/linux_raw/</div>c.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustix-0.38.44/src/backend/linux_raw/c.rs`."><title>c.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../../static.files/storage-59e33391.js"></script><script defer src="../../../../static.files/src-script-56102188.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rustix/backend/linux_raw/</div>c.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
 <a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -313,7 +313,8 @@
 <a href="#312" id="312">312</a>
 <a href="#313" id="313">313</a>
 <a href="#314" id="314">314</a>
-<a href="#315" id="315">315</a></pre></div><pre class="rust"><code><span class="doccomment">//! Adapt the Linux API to resemble a POSIX-style libc API.
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a></pre></div><pre class="rust"><code><span class="doccomment">//! Adapt the Linux API to resemble a POSIX-style libc API.
 //!
 //! The linux_raw backend doesn't use actual libc; this just defines certain
 //! types that are convenient to have defined.
@@ -323,7 +324,8 @@
 
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>size_t = usize;
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>linux_raw_sys::ctypes::<span class="kw-2">*</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>linux_raw_sys::errno::EINVAL;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>linux_raw_sys::errno::{EBADF, EINVAL};
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>linux_raw_sys::general::{__kernel_fd_set <span class="kw">as </span>fd_set, __FD_SETSIZE <span class="kw">as </span>FD_SETSIZE};
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>linux_raw_sys::ioctl::{FIONBIO, FIONREAD};
 <span class="comment">// Import the kernel's `uid_t` and `gid_t` if they're 32-bit.
 </span><span class="attr">#[cfg(not(any(target_arch = <span class="string">"arm"</span>, target_arch = <span class="string">"sparc"</span>, target_arch = <span class="string">"x86"</span>)))]
@@ -388,10 +390,10 @@
         SCM_RIGHTS, SHUT_RD, SHUT_RDWR, SHUT_WR, SOCK_DGRAM, SOCK_RAW, SOCK_RDM, SOCK_SEQPACKET,
         SOCK_STREAM, SOL_SOCKET, SOL_XDP, SO_ACCEPTCONN, SO_BROADCAST, SO_COOKIE, SO_DOMAIN,
         SO_ERROR, SO_INCOMING_CPU, SO_KEEPALIVE, SO_LINGER, SO_OOBINLINE, SO_ORIGINAL_DST,
-        SO_PASSCRED, SO_PROTOCOL, SO_RCVBUF, SO_RCVTIMEO_NEW, SO_RCVTIMEO_NEW <span class="kw">as </span>SO_RCVTIMEO,
-        SO_RCVTIMEO_OLD, SO_REUSEADDR, SO_REUSEPORT, SO_SNDBUF, SO_SNDTIMEO_NEW,
-        SO_SNDTIMEO_NEW <span class="kw">as </span>SO_SNDTIMEO, SO_SNDTIMEO_OLD, SO_TYPE, TCP_CONGESTION, TCP_CORK,
-        TCP_KEEPCNT, TCP_KEEPIDLE, TCP_KEEPINTVL, TCP_NODELAY, TCP_QUICKACK,
+        SO_PASSCRED, SO_PROTOCOL, SO_RCVBUF, SO_RCVBUFFORCE, SO_RCVTIMEO_NEW,
+        SO_RCVTIMEO_NEW <span class="kw">as </span>SO_RCVTIMEO, SO_RCVTIMEO_OLD, SO_REUSEADDR, SO_REUSEPORT, SO_SNDBUF,
+        SO_SNDTIMEO_NEW, SO_SNDTIMEO_NEW <span class="kw">as </span>SO_SNDTIMEO, SO_SNDTIMEO_OLD, SO_TYPE, TCP_CONGESTION,
+        TCP_CORK, TCP_KEEPCNT, TCP_KEEPIDLE, TCP_KEEPINTVL, TCP_NODELAY, TCP_QUICKACK,
         TCP_THIN_LINEAR_TIMEOUTS, TCP_USER_TIMEOUT,
     },
     netlink::<span class="kw-2">*</span>,

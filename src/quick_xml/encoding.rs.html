@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quick-xml-0.36.2/src/encoding.rs`."><title>encoding.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">quick_xml/</div>encoding.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quick-xml-0.37.2/src/encoding.rs`."><title>encoding.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../../static.files/src-script-56102188.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">quick_xml/</div>encoding.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
 <a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -189,16 +189,62 @@
 <a href="#188" id="188">188</a>
 <a href="#189" id="189">189</a>
 <a href="#190" id="190">190</a>
-<a href="#191" id="191">191</a></pre></div><pre class="rust"><code><span class="doccomment">//! A module for wrappers that encode / decode data.
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a></pre></div><pre class="rust"><code><span class="doccomment">//! A module for wrappers that encode / decode data.
 
 </span><span class="kw">use </span>std::borrow::Cow;
+<span class="kw">use </span>std::str::Utf8Error;
 
 <span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
 </span><span class="kw">use </span>encoding_rs::{DecoderResult, Encoding, UTF_16BE, UTF_16LE, UTF_8};
-
-<span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
-</span><span class="kw">use </span><span class="kw">crate</span>::Error;
-<span class="kw">use </span><span class="kw">crate</span>::Result;
 
 <span class="doccomment">/// Unicode "byte order mark" (\u{FEFF}) encoded as UTF-8.
 /// See &lt;https://unicode.org/faq/utf_bom.html#bom1&gt;
@@ -211,6 +257,48 @@
 /// See &lt;https://unicode.org/faq/utf_bom.html#bom1&gt;
 </span><span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>UTF16_BE_BOM: <span class="kw-2">&amp;</span>[u8] = <span class="kw-2">&amp;</span>[<span class="number">0xFE</span>, <span class="number">0xFF</span>];
+
+<span class="doccomment">/// An error when decoding or encoding
+///
+/// If feature [`encoding`] is disabled, the [`EncodingError`] is always [`EncodingError::Utf8`]
+///
+/// [`encoding`]: ../index.html#encoding
+</span><span class="attr">#[derive(Clone, Debug, PartialEq, Eq)]
+#[non_exhaustive]
+</span><span class="kw">pub enum </span>EncodingError {
+    <span class="doccomment">/// Input was not valid UTF-8
+    </span>Utf8(Utf8Error),
+    <span class="doccomment">/// Input did not adhere to the given encoding
+    </span><span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
+    </span>Other(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>Encoding),
+}
+
+<span class="kw">impl </span>From&lt;Utf8Error&gt; <span class="kw">for </span>EncodingError {
+    <span class="attr">#[inline]
+    </span><span class="kw">fn </span>from(e: Utf8Error) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::Utf8(e)
+    }
+}
+
+<span class="kw">impl </span>std::error::Error <span class="kw">for </span>EncodingError {
+    <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>std::error::Error + <span class="lifetime">'static</span>)&gt; {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::Utf8(e) =&gt; <span class="prelude-val">Some</span>(e),
+            <span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
+            </span><span class="self">Self</span>::Other(<span class="kw">_</span>) =&gt; <span class="prelude-val">None</span>,
+        }
+    }
+}
+
+<span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>EncodingError {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::Utf8(e) =&gt; <span class="macro">write!</span>(f, <span class="string">"cannot decode input using UTF-8: {}"</span>, e),
+            <span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
+            </span><span class="self">Self</span>::Other(encoding) =&gt; <span class="macro">write!</span>(f, <span class="string">"cannot decode input using {}"</span>, encoding.name()),
+        }
+    }
+}
 
 <span class="doccomment">/// Decoder of byte slices into strings.
 ///
@@ -270,7 +358,7 @@
     ///
     /// ----
     /// Returns an error in case of malformed sequences in the `bytes`.
-    </span><span class="kw">pub fn </span>decode&lt;<span class="lifetime">'b</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, bytes: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Cow&lt;<span class="lifetime">'b</span>, str&gt;&gt; {
+    </span><span class="kw">pub fn </span>decode&lt;<span class="lifetime">'b</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, bytes: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Cow&lt;<span class="lifetime">'b</span>, str&gt;, EncodingError&gt; {
         <span class="attr">#[cfg(not(feature = <span class="string">"encoding"</span>))]
         </span><span class="kw">let </span>decoded = <span class="prelude-val">Ok</span>(Cow::Borrowed(std::str::from_utf8(bytes)<span class="question-mark">?</span>));
 
@@ -281,7 +369,7 @@
     }
 
     <span class="doccomment">/// Like [`decode`][Self::decode] but using a pre-allocated buffer.
-    </span><span class="kw">pub fn </span>decode_into(<span class="kw-2">&amp;</span><span class="self">self</span>, bytes: <span class="kw-2">&amp;</span>[u8], buf: <span class="kw-2">&amp;mut </span>String) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+    </span><span class="kw">pub fn </span>decode_into(<span class="kw-2">&amp;</span><span class="self">self</span>, bytes: <span class="kw-2">&amp;</span>[u8], buf: <span class="kw-2">&amp;mut </span>String) -&gt; <span class="prelude-ty">Result</span>&lt;(), EncodingError&gt; {
         <span class="attr">#[cfg(not(feature = <span class="string">"encoding"</span>))]
         </span>buf.push_str(std::str::from_utf8(bytes)<span class="question-mark">?</span>);
 
@@ -292,7 +380,10 @@
     }
 
     <span class="doccomment">/// Decodes the `Cow` buffer, preserves the lifetime
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>decode_cow&lt;<span class="lifetime">'b</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, bytes: <span class="kw-2">&amp;</span>Cow&lt;<span class="lifetime">'b</span>, [u8]&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Cow&lt;<span class="lifetime">'b</span>, str&gt;&gt; {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>decode_cow&lt;<span class="lifetime">'b</span>&gt;(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        bytes: <span class="kw-2">&amp;</span>Cow&lt;<span class="lifetime">'b</span>, [u8]&gt;,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;Cow&lt;<span class="lifetime">'b</span>, str&gt;, EncodingError&gt; {
         <span class="kw">match </span>bytes {
             Cow::Borrowed(bytes) =&gt; <span class="self">self</span>.decode(bytes),
             <span class="comment">// Convert to owned, because otherwise Cow will be bound with wrong lifetime
@@ -305,15 +396,22 @@
 ///
 /// Returns an error in case of malformed or non-representable sequences in the `bytes`.
 </span><span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
-</span><span class="kw">pub fn </span>decode&lt;<span class="lifetime">'b</span>&gt;(bytes: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8], encoding: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>Encoding) -&gt; <span class="prelude-ty">Result</span>&lt;Cow&lt;<span class="lifetime">'b</span>, str&gt;&gt; {
+</span><span class="kw">pub fn </span>decode&lt;<span class="lifetime">'b</span>&gt;(
+    bytes: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>[u8],
+    encoding: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>Encoding,
+) -&gt; <span class="prelude-ty">Result</span>&lt;Cow&lt;<span class="lifetime">'b</span>, str&gt;, EncodingError&gt; {
     encoding
         .decode_without_bom_handling_and_without_replacement(bytes)
-        .ok_or(Error::NonDecodable(<span class="prelude-val">None</span>))
+        .ok_or(EncodingError::Other(encoding))
 }
 
 <span class="doccomment">/// Like [`decode`] but using a pre-allocated buffer.
 </span><span class="attr">#[cfg(feature = <span class="string">"encoding"</span>)]
-</span><span class="kw">pub fn </span>decode_into(bytes: <span class="kw-2">&amp;</span>[u8], encoding: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>Encoding, buf: <span class="kw-2">&amp;mut </span>String) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+</span><span class="kw">pub fn </span>decode_into(
+    bytes: <span class="kw-2">&amp;</span>[u8],
+    encoding: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>Encoding,
+    buf: <span class="kw-2">&amp;mut </span>String,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), EncodingError&gt; {
     <span class="kw">if </span>encoding == UTF_8 {
         buf.push_str(std::str::from_utf8(bytes)<span class="question-mark">?</span>);
         <span class="kw">return </span><span class="prelude-val">Ok</span>(());
@@ -333,7 +431,7 @@
             <span class="macro">debug_assert_eq!</span>(read, bytes.len());
             <span class="prelude-val">Ok</span>(())
         }
-        DecoderResult::Malformed(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(Error::NonDecodable(<span class="prelude-val">None</span>)),
+        DecoderResult::Malformed(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(EncodingError::Other(encoding)),
         <span class="comment">// SAFETY: We allocate enough space above
         </span>DecoderResult::OutputFull =&gt; <span class="macro">unreachable!</span>(),
     }

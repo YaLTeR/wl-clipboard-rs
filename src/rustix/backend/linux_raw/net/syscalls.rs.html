@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustix-0.38.37/src/backend/linux_raw/net/syscalls.rs`."><title>syscalls.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../../../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rustix/backend/linux_raw/net/</div>syscalls.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustix-0.38.44/src/backend/linux_raw/net/syscalls.rs`."><title>syscalls.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../../../static.files/storage-59e33391.js"></script><script defer src="../../../../../static.files/src-script-56102188.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rustix/backend/linux_raw/net/</div>syscalls.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
 <a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -1049,7 +1049,21 @@
 <a href="#1048" id="1048">1048</a>
 <a href="#1049" id="1049">1049</a>
 <a href="#1050" id="1050">1050</a>
-<a href="#1051" id="1051">1051</a></pre></div><pre class="rust"><code><span class="doccomment">//! linux_raw syscalls supporting `rustix::net`.
+<a href="#1051" id="1051">1051</a>
+<a href="#1052" id="1052">1052</a>
+<a href="#1053" id="1053">1053</a>
+<a href="#1054" id="1054">1054</a>
+<a href="#1055" id="1055">1055</a>
+<a href="#1056" id="1056">1056</a>
+<a href="#1057" id="1057">1057</a>
+<a href="#1058" id="1058">1058</a>
+<a href="#1059" id="1059">1059</a>
+<a href="#1060" id="1060">1060</a>
+<a href="#1061" id="1061">1061</a>
+<a href="#1062" id="1062">1062</a>
+<a href="#1063" id="1063">1063</a>
+<a href="#1064" id="1064">1064</a>
+<a href="#1065" id="1065">1065</a></pre></div><pre class="rust"><code><span class="doccomment">//! linux_raw syscalls supporting `rustix::net`.
 //!
 //! # Safety
 //!
@@ -1186,7 +1200,7 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>accept(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;) -&gt; io::Result&lt;OwnedFd&gt; {
-    <span class="attr">#[cfg(not(target_arch = <span class="string">"x86"</span>))]
+    <span class="attr">#[cfg(not(any(target_arch = <span class="string">"x86"</span>, target_arch = <span class="string">"s390x"</span>)))]
     </span><span class="kw">unsafe </span>{
         <span class="kw">let </span>fd = ret_owned_fd(<span class="macro">syscall_readonly!</span>(__NR_accept, fd, zero(), zero()))<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(fd)
@@ -1199,6 +1213,11 @@
             slice_just_addr::&lt;ArgReg&lt;<span class="lifetime">'_</span>, SocketArg&gt;, <span class="kw">_</span>&gt;(<span class="kw-2">&amp;</span>[fd.into(), zero(), zero()])
         ))<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(fd)
+    }
+    <span class="attr">#[cfg(target_arch = <span class="string">"s390x"</span>)]
+    </span>{
+        <span class="comment">// accept is not available on s390x
+        </span>accept_with(fd, SocketFlags::empty())
     }
 }
 
@@ -1222,7 +1241,7 @@
 
 <span class="attr">#[inline]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>acceptfrom(fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;) -&gt; io::Result&lt;(OwnedFd, <span class="prelude-ty">Option</span>&lt;SocketAddrAny&gt;)&gt; {
-    <span class="attr">#[cfg(not(target_arch = <span class="string">"x86"</span>))]
+    <span class="attr">#[cfg(not(any(target_arch = <span class="string">"x86"</span>, target_arch = <span class="string">"s390x"</span>)))]
     </span><span class="kw">unsafe </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>addrlen = core::mem::size_of::&lt;sockaddr&gt;() <span class="kw">as </span>socklen_t;
         <span class="kw">let </span><span class="kw-2">mut </span>storage = MaybeUninit::&lt;sockaddr&gt;::uninit();
@@ -1254,6 +1273,11 @@
             fd,
             maybe_read_sockaddr_os(<span class="kw-2">&amp;</span>storage.assume_init(), addrlen.try_into().unwrap()),
         ))
+    }
+    <span class="attr">#[cfg(target_arch = <span class="string">"s390x"</span>)]
+    </span>{
+        <span class="comment">// accept is not available on s390x
+        </span>acceptfrom_with(fd, SocketFlags::empty())
     }
 }
 
@@ -1519,6 +1543,7 @@
         target_arch = <span class="string">"mips64"</span>,
         target_arch = <span class="string">"mips64r6"</span>,
         target_arch = <span class="string">"riscv64"</span>,
+        target_arch = <span class="string">"s390x"</span>,
         target_arch = <span class="string">"x86"</span>,
         target_arch = <span class="string">"x86_64"</span>,
     )))]
@@ -1530,6 +1555,7 @@
         target_arch = <span class="string">"mips64"</span>,
         target_arch = <span class="string">"mips64r6"</span>,
         target_arch = <span class="string">"riscv64"</span>,
+        target_arch = <span class="string">"s390x"</span>,
         target_arch = <span class="string">"x86_64"</span>,
     ))]
     </span><span class="kw">unsafe </span>{
@@ -1723,6 +1749,7 @@
         target_arch = <span class="string">"mips64"</span>,
         target_arch = <span class="string">"mips64r6"</span>,
         target_arch = <span class="string">"riscv64"</span>,
+        target_arch = <span class="string">"s390x"</span>,
         target_arch = <span class="string">"x86"</span>,
         target_arch = <span class="string">"x86_64"</span>,
     )))]
@@ -1734,6 +1761,7 @@
         target_arch = <span class="string">"mips64"</span>,
         target_arch = <span class="string">"mips64r6"</span>,
         target_arch = <span class="string">"riscv64"</span>,
+        target_arch = <span class="string">"s390x"</span>,
         target_arch = <span class="string">"x86_64"</span>,
     ))]
     </span>{

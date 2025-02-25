@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["Decoder"]};
+window.SIDEBAR_ITEMS = {"enum":["EncodingError"],"struct":["Decoder"]};

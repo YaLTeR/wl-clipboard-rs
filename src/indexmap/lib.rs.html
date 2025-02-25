@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.6.0/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-b0742ba02757f159.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="indexmap" data-themes="" data-resource-suffix="" data-rustdoc-version="1.83.0 (90b35a623 2024-11-26)" data-channel="1.83.0" data-search-js="search-f0d225181b97f9a4.js" data-settings-js="settings-805db61a62df4bd2.js" ><script src="../../static.files/storage-1d39b6787ed640ff.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-f070b9041d14864c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-0111fcff984fae8f.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">indexmap/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/indexmap-2.7.1/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="indexmap" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../../static.files/src-script-56102188.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">indexmap/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
 <a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
@@ -271,8 +271,7 @@
 <a href="#270" id="270">270</a>
 <a href="#271" id="271">271</a>
 <a href="#272" id="272">272</a>
-<a href="#273" id="273">273</a>
-<a href="#274" id="274">274</a></pre></div><pre class="rust"><code><span class="comment">// We *mostly* avoid unsafe code, but `Slice` allows it for DST casting.
+<a href="#273" id="273">273</a></pre></div><pre class="rust"><code><span class="comment">// We *mostly* avoid unsafe code, but `Slice` allows it for DST casting.
 </span><span class="attr">#![deny(unsafe_code)]
 #![warn(rust_2018_idioms)]
 #![no_std]
@@ -310,7 +309,11 @@
 //!   (de)serializing [`IndexMap`] as an ordered sequence are available in the
 //!   [`map::serde_seq`] module.
 //! * `borsh`: Adds implementations for [`BorshSerialize`] and [`BorshDeserialize`]
-//!   to [`IndexMap`] and [`IndexSet`].
+//!   to [`IndexMap`] and [`IndexSet`]. **Note:** When this feature is enabled,
+//!   you cannot enable the `derive` feature of [`borsh`] due to a cyclic
+//!   dependency. Instead, add the `borsh-derive` crate as an explicit
+//!   dependency in your Cargo.toml and import as e.g.
+//!   `use borsh_derive::{BorshSerialize, BorshDeserialize};`.
 //! * `arbitrary`: Adds implementations for the [`arbitrary::Arbitrary`] trait
 //!   to [`IndexMap`] and [`IndexSet`].
 //! * `quickcheck`: Adds implementations for the [`quickcheck::Arbitrary`] trait
@@ -324,6 +327,7 @@
 //! [`Deserialize`]: `::serde::Deserialize`
 //! [`BorshSerialize`]: `::borsh::BorshSerialize`
 //! [`BorshDeserialize`]: `::borsh::BorshDeserialize`
+//! [`borsh`]: `::borsh`
 //! [`arbitrary::Arbitrary`]: `::arbitrary::Arbitrary`
 //! [`quickcheck::Arbitrary`]: `::quickcheck::Arbitrary`
 //!
@@ -337,20 +341,14 @@
 //!
 //! ```
 //! use fnv::FnvBuildHasher;
-//! use fxhash::FxBuildHasher;
 //! use indexmap::{IndexMap, IndexSet};
 //!
 //! type FnvIndexMap&lt;K, V&gt; = IndexMap&lt;K, V, FnvBuildHasher&gt;;
 //! type FnvIndexSet&lt;T&gt; = IndexSet&lt;T, FnvBuildHasher&gt;;
 //!
-//! type FxIndexMap&lt;K, V&gt; = IndexMap&lt;K, V, FxBuildHasher&gt;;
-//! type FxIndexSet&lt;T&gt; = IndexSet&lt;T, FxBuildHasher&gt;;
-//!
 //! let std: IndexSet&lt;i32&gt; = (0..100).collect();
 //! let fnv: FnvIndexSet&lt;i32&gt; = (0..100).collect();
-//! let fx: FxIndexSet&lt;i32&gt; = (0..100).collect();
 //! assert_eq!(std, fnv);
-//! assert_eq!(std, fx);
 //! ```
 //!
 //! ### Rust Version
