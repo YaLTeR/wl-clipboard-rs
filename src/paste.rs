@@ -12,15 +12,9 @@ use wayland_client::protocol::wl_seat::WlSeat;
 use wayland_client::{
     delegate_dispatch, event_created_child, ConnectError, Dispatch, DispatchError, EventQueue,
 };
-use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_device_v1::{
-    self, ZwlrDataControlDeviceV1,
-};
-use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
-use wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_offer_v1::{
-    self, ZwlrDataControlOfferV1,
-};
 
 use crate::common::{self, initialize};
+use crate::data_control::{self, impl_dispatch_device, impl_dispatch_manager, impl_dispatch_offer};
 use crate::utils::is_text;
 
 /// The clipboard to operate on.
@@ -32,8 +26,8 @@ pub enum ClipboardType {
     Regular,
     /// The "primary" clipboard.
     ///
-    /// Working with the "primary" clipboard requires the compositor to support the data-control
-    /// protocol of version 2 or above.
+    /// Working with the "primary" clipboard requires the compositor to support ext-data-control,
+    /// or wlr-data-control version 2 or above.
     Primary,
 }
 
@@ -76,7 +70,7 @@ struct State {
     common: common::State,
     // The value is the set of MIME types in the offer.
     // TODO: We never remove offers from here, even if we don't use them or after destroying them.
-    offers: HashMap<ZwlrDataControlOfferV1, HashSet<String>>,
+    offers: HashMap<data_control::Offer, HashSet<String>>,
     got_primary_selection: bool,
 }
 
@@ -114,11 +108,10 @@ pub enum Error {
     WaylandCommunication(#[source] DispatchError),
 
     #[error(
-        "A required Wayland protocol ({} version {}) is not supported by the compositor",
-        name,
-        version
+        "A required Wayland protocol (ext-data-control, or wlr-data-control version {version}) \
+         is not supported by the compositor"
     )]
-    MissingProtocol { name: &'static str, version: u32 },
+    MissingProtocol { version: u32 },
 
     #[error("The compositor does not support primary selection")]
     PrimarySelectionUnsupported,
@@ -138,7 +131,7 @@ impl From<common::Error> for Error {
             SocketOpenError(err) => Error::SocketOpenError(err),
             WaylandConnection(err) => Error::WaylandConnection(err),
             WaylandCommunication(err) => Error::WaylandCommunication(err.into()),
-            MissingProtocol { name, version } => Error::MissingProtocol { name, version },
+            MissingProtocol { version } => Error::MissingProtocol { version },
         }
     }
 }
@@ -155,76 +148,47 @@ impl Dispatch<WlRegistry, GlobalListContents> for State {
     }
 }
 
-impl Dispatch<ZwlrDataControlManagerV1, ()> for State {
-    fn event(
-        _state: &mut Self,
-        _proxy: &ZwlrDataControlManagerV1,
-        _event: <ZwlrDataControlManagerV1 as wayland_client::Proxy>::Event,
-        _data: &(),
-        _conn: &wayland_client::Connection,
-        _qhandle: &wayland_client::QueueHandle<Self>,
-    ) {
-    }
-}
+impl_dispatch_manager!(State);
 
-impl Dispatch<ZwlrDataControlDeviceV1, WlSeat> for State {
-    fn event(
-        state: &mut Self,
-        _device: &ZwlrDataControlDeviceV1,
-        event: <ZwlrDataControlDeviceV1 as wayland_client::Proxy>::Event,
-        seat: &WlSeat,
-        _conn: &wayland_client::Connection,
-        _qh: &wayland_client::QueueHandle<Self>,
-    ) {
-        match event {
-            zwlr_data_control_device_v1::Event::DataOffer { id } => {
-                state.offers.insert(id, HashSet::new());
-            }
-            zwlr_data_control_device_v1::Event::Selection { id } => {
-                state.common.seats.get_mut(seat).unwrap().set_offer(id);
-            }
-            zwlr_data_control_device_v1::Event::Finished => {
-                // Destroy the device stored in the seat as it's no longer valid.
-                state.common.seats.get_mut(seat).unwrap().set_device(None);
-            }
-            zwlr_data_control_device_v1::Event::PrimarySelection { id } => {
-                state.got_primary_selection = true;
-                state
-                    .common
-                    .seats
-                    .get_mut(seat)
-                    .unwrap()
-                    .set_primary_offer(id);
-            }
-            _ => (),
+impl_dispatch_device!(State, WlSeat, |state: &mut Self, event, seat| {
+    match event {
+        Event::DataOffer { id } => {
+            let offer = data_control::Offer::from(id);
+            state.offers.insert(offer, HashSet::new());
         }
-    }
-
-    event_created_child!(State, ZwlrDataControlDeviceV1, [
-        zwlr_data_control_device_v1::EVT_DATA_OFFER_OPCODE => (ZwlrDataControlOfferV1, ()),
-    ]);
-}
-
-impl Dispatch<ZwlrDataControlOfferV1, ()> for State {
-    fn event(
-        state: &mut Self,
-        offer: &ZwlrDataControlOfferV1,
-        event: <ZwlrDataControlOfferV1 as wayland_client::Proxy>::Event,
-        _data: &(),
-        _conn: &wayland_client::Connection,
-        _qhandle: &wayland_client::QueueHandle<Self>,
-    ) {
-        if let zwlr_data_control_offer_v1::Event::Offer { mime_type } = event {
-            state.offers.get_mut(offer).unwrap().insert(mime_type);
+        Event::Selection { id } => {
+            let offer = id.map(data_control::Offer::from);
+            let seat = state.common.seats.get_mut(seat).unwrap();
+            seat.set_offer(offer);
         }
+        Event::Finished => {
+            // Destroy the device stored in the seat as it's no longer valid.
+            let seat = state.common.seats.get_mut(seat).unwrap();
+            seat.set_device(None);
+        }
+        Event::PrimarySelection { id } => {
+            let offer = id.map(data_control::Offer::from);
+            state.got_primary_selection = true;
+            let seat = state.common.seats.get_mut(seat).unwrap();
+            seat.set_primary_offer(offer);
+        }
+        _ => (),
     }
-}
+});
+
+impl_dispatch_offer!(State, |state: &mut Self,
+                             offer: data_control::Offer,
+                             event| {
+    if let Event::Offer { mime_type } = event {
+        state.offers.get_mut(&offer).unwrap().insert(mime_type);
+    }
+});
 
 fn get_offer(
     primary: bool,
     seat: Seat<'_>,
     socket_name: Option<OsString>,
-) -> Result<(EventQueue<State>, State, ZwlrDataControlOfferV1), Error> {
+) -> Result<(EventQueue<State>, State, data_control::Offer), Error> {
     let (mut queue, mut common) = initialize(primary, socket_name)?;
 
     // Check if there are no seats.

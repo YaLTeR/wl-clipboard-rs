@@ -15,10 +15,10 @@ please use the appropriate Wayland protocols for interacting with the Wayland cl
 primary selection), for example via the
 [smithay-clipboard](https://crates.io/crates/smithay-clipboard) crate.
 
-The protocol used for clipboard interaction is `data-control` from
-[wlroots](https://github.com/swaywm/wlr-protocols). When using the regular clipboard, the
-compositor must support the first version of the protocol. When using the "primary" clipboard,
-the compositor must support the second version of the protocol (or higher).
+The protocol used for clipboard interaction is `ext-data-control` or `wlr-data-control`. When
+using the regular clipboard, the compositor must support any version of either protocol. When
+using the "primary" clipboard, the compositor must support any version of `ext-data-control`,
+or the second version of the `wlr-data-control` protocol.
 
 For example applications using these features, see `wl-clipboard-rs-tools/src/bin/wl_copy.rs`
 and `wl-clipboard-rs-tools/src/bin/wl_paste.rs` which implement terminal apps similar to
@@ -72,19 +72,19 @@ use wl_clipboard_rs::utils::{is_primary_selection_supported, PrimarySelectionChe
 
 match is_primary_selection_supported() {
     Ok(supported) => {
-        // We have our definitive result. False means that either data-control version 1
-        // is present (which does not support the primary selection), or that data-control
-        // version 2 is present and it did not signal the primary selection support.
+        // We have our definitive result. False means that ext/wlr-data-control is present
+        // and did not signal the primary selection support, or that only wlr-data-control
+        // version 1 is present (which does not support primary selection).
     },
     Err(PrimarySelectionCheckError::NoSeats) => {
         // Impossible to give a definitive result. Primary selection may or may not be
         // supported.
 
-        // The required protocol (data-control version 2) is there, but there are no seats.
-        // Unfortunately, at least one seat is needed to check for the primary clipboard
-        // support.
+        // The required protocol (ext-data-control, or wlr-data-control version 2) is there,
+        // but there are no seats. Unfortunately, at least one seat is needed to check for the
+        // primary clipboard support.
     },
-    Err(PrimarySelectionCheckError::MissingProtocol { .. }) => {
+    Err(PrimarySelectionCheckError::MissingProtocol) => {
         // The data-control protocol (required for wl-clipboard-rs operation) is not
         // supported by the compositor.
     },

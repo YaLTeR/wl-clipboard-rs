@@ -65,13 +65,7 @@ fn get_mime_types_no_data_control() {
 
     let result =
         get_mime_types_internal(ClipboardType::Regular, Seat::Unspecified, Some(socket_name));
-    assert!(matches!(
-        result,
-        Err(Error::MissingProtocol {
-            name: "zwlr_data_control_manager_v1",
-            version: 1
-        })
-    ));
+    assert!(matches!(result, Err(Error::MissingProtocol { version: 1 })));
 }
 
 #[test]
@@ -94,13 +88,7 @@ fn get_mime_types_no_data_control_2() {
 
     let result =
         get_mime_types_internal(ClipboardType::Primary, Seat::Unspecified, Some(socket_name));
-    assert!(matches!(
-        result,
-        Err(Error::MissingProtocol {
-            name: "zwlr_data_control_manager_v1",
-            version: 2
-        })
-    ));
+    assert!(matches!(result, Err(Error::MissingProtocol { version: 2 })));
 }
 
 #[test]
