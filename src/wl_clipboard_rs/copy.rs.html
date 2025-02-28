@@ -1046,54 +1046,7 @@
 <a href="#1045" id="1045">1045</a>
 <a href="#1046" id="1046">1046</a>
 <a href="#1047" id="1047">1047</a>
-<a href="#1048" id="1048">1048</a>
-<a href="#1049" id="1049">1049</a>
-<a href="#1050" id="1050">1050</a>
-<a href="#1051" id="1051">1051</a>
-<a href="#1052" id="1052">1052</a>
-<a href="#1053" id="1053">1053</a>
-<a href="#1054" id="1054">1054</a>
-<a href="#1055" id="1055">1055</a>
-<a href="#1056" id="1056">1056</a>
-<a href="#1057" id="1057">1057</a>
-<a href="#1058" id="1058">1058</a>
-<a href="#1059" id="1059">1059</a>
-<a href="#1060" id="1060">1060</a>
-<a href="#1061" id="1061">1061</a>
-<a href="#1062" id="1062">1062</a>
-<a href="#1063" id="1063">1063</a>
-<a href="#1064" id="1064">1064</a>
-<a href="#1065" id="1065">1065</a>
-<a href="#1066" id="1066">1066</a>
-<a href="#1067" id="1067">1067</a>
-<a href="#1068" id="1068">1068</a>
-<a href="#1069" id="1069">1069</a>
-<a href="#1070" id="1070">1070</a>
-<a href="#1071" id="1071">1071</a>
-<a href="#1072" id="1072">1072</a>
-<a href="#1073" id="1073">1073</a>
-<a href="#1074" id="1074">1074</a>
-<a href="#1075" id="1075">1075</a>
-<a href="#1076" id="1076">1076</a>
-<a href="#1077" id="1077">1077</a>
-<a href="#1078" id="1078">1078</a>
-<a href="#1079" id="1079">1079</a>
-<a href="#1080" id="1080">1080</a>
-<a href="#1081" id="1081">1081</a>
-<a href="#1082" id="1082">1082</a>
-<a href="#1083" id="1083">1083</a>
-<a href="#1084" id="1084">1084</a>
-<a href="#1085" id="1085">1085</a>
-<a href="#1086" id="1086">1086</a>
-<a href="#1087" id="1087">1087</a>
-<a href="#1088" id="1088">1088</a>
-<a href="#1089" id="1089">1089</a>
-<a href="#1090" id="1090">1090</a>
-<a href="#1091" id="1091">1091</a>
-<a href="#1092" id="1092">1092</a>
-<a href="#1093" id="1093">1093</a>
-<a href="#1094" id="1094">1094</a>
-<a href="#1095" id="1095">1095</a></pre></div><pre class="rust"><code><span class="doccomment">//! Copying and clearing clipboard contents.
+<a href="#1048" id="1048">1048</a></pre></div><pre class="rust"><code><span class="doccomment">//! Copying and clearing clipboard contents.
 
 </span><span class="kw">use </span>std::collections::hash_map::Entry;
 <span class="kw">use </span>std::collections::{HashMap, HashSet};
@@ -1111,18 +1064,12 @@
 <span class="kw">use </span>wayland_client::protocol::wl_seat::WlSeat;
 <span class="kw">use </span>wayland_client::{
     delegate_dispatch, event_created_child, ConnectError, Dispatch, DispatchError, EventQueue,
-    Proxy,
-};
-<span class="kw">use </span>wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_device_v1::{
-    <span class="self">self</span>, ZwlrDataControlDeviceV1,
-};
-<span class="kw">use </span>wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
-<span class="kw">use </span>wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1;
-<span class="kw">use </span>wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_source_v1::{
-    <span class="self">self</span>, ZwlrDataControlSourceV1,
 };
 
 <span class="kw">use </span><span class="kw">crate</span>::common::{<span class="self">self</span>, initialize};
+<span class="kw">use </span><span class="kw">crate</span>::data_control::{
+    <span class="self">self</span>, impl_dispatch_device, impl_dispatch_manager, impl_dispatch_offer, impl_dispatch_source,
+};
 <span class="kw">use </span><span class="kw">crate</span>::seat_data::SeatData;
 <span class="kw">use </span><span class="kw">crate</span>::utils::is_text;
 
@@ -1135,8 +1082,8 @@
     </span>Regular,
     <span class="doccomment">/// The "primary" clipboard.
     ///
-    /// Working with the "primary" clipboard requires the compositor to support the data-control
-    /// protocol of version 2 or above.
+    /// Working with the "primary" clipboard requires the compositor to support ext-data-control,
+    /// or wlr-data-control version 2 or above.
     </span>Primary,
     <span class="doccomment">/// Operate on both clipboards at once.
     ///
@@ -1239,7 +1186,7 @@
 </span><span class="kw">pub struct </span>PreparedCopy {
     queue: EventQueue&lt;State&gt;,
     state: State,
-    sources: Vec&lt;ZwlrDataControlSourceV1&gt;,
+    sources: Vec&lt;data_control::Source&gt;,
 }
 
 <span class="doccomment">/// Errors that can occur for copying the source data to a temporary file.
@@ -1289,11 +1236,10 @@
     </span>WaylandCommunication(<span class="attr">#[source] </span>DispatchError),
 
     <span class="attr">#[error(
-        <span class="string">"A required Wayland protocol ({} version {}) is not supported by the compositor"</span>,
-        name,
-        version
-    )]
-    </span>MissingProtocol { name: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, version: u32 },
+        <span class="string">"A required Wayland protocol (ext-data-control, or wlr-data-control version {version}) \
+         is not supported by the compositor"
+    </span>)]
+    </span>MissingProtocol { version: u32 },
 
     <span class="attr">#[error(<span class="string">"The compositor does not support primary selection"</span>)]
     </span>PrimarySelectionUnsupported,
@@ -1322,7 +1268,7 @@
             SocketOpenError(err) =&gt; Error::SocketOpenError(err),
             WaylandConnection(err) =&gt; Error::WaylandConnection(err),
             WaylandCommunication(err) =&gt; Error::WaylandCommunication(err.into()),
-            MissingProtocol { name, version } =&gt; Error::MissingProtocol { name, version },
+            MissingProtocol { version } =&gt; Error::MissingProtocol { version },
         }
     }
 }
@@ -1368,115 +1314,75 @@
     }
 }
 
-<span class="kw">impl </span>Dispatch&lt;ZwlrDataControlManagerV1, ()&gt; <span class="kw">for </span>State {
-    <span class="kw">fn </span>event(
-        _state: <span class="kw-2">&amp;mut </span><span class="self">Self</span>,
-        _proxy: <span class="kw-2">&amp;</span>ZwlrDataControlManagerV1,
-        _event: &lt;ZwlrDataControlManagerV1 <span class="kw">as </span>wayland_client::Proxy&gt;::Event,
-        _data: <span class="kw-2">&amp;</span>(),
-        _conn: <span class="kw-2">&amp;</span>wayland_client::Connection,
-        _qhandle: <span class="kw-2">&amp;</span>wayland_client::QueueHandle&lt;<span class="self">Self</span>&gt;,
-    ) {
-    }
-}
+<span class="macro">impl_dispatch_manager!</span>(State);
 
-<span class="kw">impl </span>Dispatch&lt;ZwlrDataControlDeviceV1, WlSeat&gt; <span class="kw">for </span>State {
-    <span class="kw">fn </span>event(
-        state: <span class="kw-2">&amp;mut </span><span class="self">Self</span>,
-        _device: <span class="kw-2">&amp;</span>ZwlrDataControlDeviceV1,
-        event: &lt;ZwlrDataControlDeviceV1 <span class="kw">as </span>Proxy&gt;::Event,
-        seat: <span class="kw-2">&amp;</span>WlSeat,
-        _conn: <span class="kw-2">&amp;</span>wayland_client::Connection,
-        _qhandle: <span class="kw-2">&amp;</span>wayland_client::QueueHandle&lt;<span class="self">Self</span>&gt;,
-    ) {
-        <span class="kw">match </span>event {
-            zwlr_data_control_device_v1::Event::DataOffer { id } =&gt; id.destroy(),
-            zwlr_data_control_device_v1::Event::Finished =&gt; {
-                state.common.seats.get_mut(seat).unwrap().set_device(<span class="prelude-val">None</span>);
-            }
-            zwlr_data_control_device_v1::Event::PrimarySelection { .. } =&gt; {
-                state.got_primary_selection = <span class="bool-val">true</span>;
-            }
-            <span class="kw">_ </span>=&gt; (),
+<span class="macro">impl_dispatch_device!</span>(State, WlSeat, |state: <span class="kw-2">&amp;mut </span><span class="self">Self</span>, event, seat| {
+    <span class="kw">match </span>event {
+        Event::DataOffer { id } =&gt; id.destroy(),
+        Event::Finished =&gt; {
+            state.common.seats.get_mut(seat).unwrap().set_device(<span class="prelude-val">None</span>);
         }
-    }
-
-    <span class="macro">event_created_child!</span>(State, ZwlrDataControlDeviceV1, [
-        zwlr_data_control_device_v1::EVT_DATA_OFFER_OPCODE =&gt; (ZwlrDataControlOfferV1, ()),
-    ]);
-}
-
-<span class="kw">impl </span>Dispatch&lt;ZwlrDataControlOfferV1, ()&gt; <span class="kw">for </span>State {
-    <span class="kw">fn </span>event(
-        _state: <span class="kw-2">&amp;mut </span><span class="self">Self</span>,
-        _offer: <span class="kw-2">&amp;</span>ZwlrDataControlOfferV1,
-        _event: &lt;ZwlrDataControlOfferV1 <span class="kw">as </span>wayland_client::Proxy&gt;::Event,
-        _data: <span class="kw-2">&amp;</span>(),
-        _conn: <span class="kw-2">&amp;</span>wayland_client::Connection,
-        _qhandle: <span class="kw-2">&amp;</span>wayland_client::QueueHandle&lt;<span class="self">Self</span>&gt;,
-    ) {
-    }
-}
-
-<span class="kw">impl </span>Dispatch&lt;ZwlrDataControlSourceV1, ()&gt; <span class="kw">for </span>State {
-    <span class="kw">fn </span>event(
-        state: <span class="kw-2">&amp;mut </span><span class="self">Self</span>,
-        source: <span class="kw-2">&amp;</span>ZwlrDataControlSourceV1,
-        event: &lt;ZwlrDataControlSourceV1 <span class="kw">as </span>Proxy&gt;::Event,
-        _data: <span class="kw-2">&amp;</span>(),
-        _conn: <span class="kw-2">&amp;</span>wayland_client::Connection,
-        _qhandle: <span class="kw-2">&amp;</span>wayland_client::QueueHandle&lt;<span class="self">Self</span>&gt;,
-    ) {
-        <span class="kw">match </span>event {
-            zwlr_data_control_source_v1::Event::Send { mime_type, fd } =&gt; {
-                <span class="comment">// Check if some other source already handled a paste request and indicated that we should
-                // quit.
-                </span><span class="kw">if </span>state.should_quit {
-                    source.destroy();
-                    <span class="kw">return</span>;
-                }
-
-                <span class="comment">// I'm not sure if it's the compositor's responsibility to check that the mime type is
-                // valid. Let's check here just in case.
-                </span><span class="kw">if </span>!state.data_paths.contains_key(<span class="kw-2">&amp;</span>mime_type) {
-                    <span class="kw">return</span>;
-                }
-
-                <span class="kw">let </span>data_path = <span class="kw-2">&amp;</span>state.data_paths[<span class="kw-2">&amp;</span>mime_type];
-
-                <span class="kw">let </span>file = File::open(data_path).map_err(DataSourceError::FileOpen);
-                <span class="kw">let </span>result = file.and_then(|<span class="kw-2">mut </span>data_file| {
-                    <span class="comment">// Clear O_NONBLOCK, otherwise io::copy() will stop halfway.
-                    </span>fcntl_setfl(<span class="kw-2">&amp;</span>fd, OFlags::empty())
-                        .map_err(io::Error::from)
-                        .map_err(DataSourceError::Copy)<span class="question-mark">?</span>;
-
-                    <span class="kw">let </span><span class="kw-2">mut </span>target_file = File::from(fd);
-                    io::copy(<span class="kw-2">&amp;mut </span>data_file, <span class="kw-2">&amp;mut </span>target_file).map_err(DataSourceError::Copy)
-                });
-
-                <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = result {
-                    state.error = <span class="prelude-val">Some</span>(err);
-                }
-
-                <span class="kw">let </span>done = <span class="kw">if let </span>ServeRequests::Only(left) = state.serve_requests {
-                    <span class="kw">let </span>left = left.checked_sub(<span class="number">1</span>).unwrap();
-                    state.serve_requests = ServeRequests::Only(left);
-                    left == <span class="number">0
-                </span>} <span class="kw">else </span>{
-                    <span class="bool-val">false
-                </span>};
-
-                <span class="kw">if </span>done || state.error.is_some() {
-                    state.should_quit = <span class="bool-val">true</span>;
-                    source.destroy();
-                }
-            }
-            zwlr_data_control_source_v1::Event::Cancelled =&gt; source.destroy(),
-            <span class="kw">_ </span>=&gt; (),
+        Event::PrimarySelection { .. } =&gt; {
+            state.got_primary_selection = <span class="bool-val">true</span>;
         }
+        <span class="kw">_ </span>=&gt; (),
     }
-}
+});
+
+<span class="macro">impl_dispatch_offer!</span>(State);
+
+<span class="macro">impl_dispatch_source!</span>(State, |state: <span class="kw-2">&amp;mut </span><span class="self">Self</span>,
+                              source: data_control::Source,
+                              event| {
+    <span class="kw">match </span>event {
+        Event::Send { mime_type, fd } =&gt; {
+            <span class="comment">// Check if some other source already handled a paste request and indicated that we should
+            // quit.
+            </span><span class="kw">if </span>state.should_quit {
+                source.destroy();
+                <span class="kw">return</span>;
+            }
+
+            <span class="comment">// I'm not sure if it's the compositor's responsibility to check that the mime type is
+            // valid. Let's check here just in case.
+            </span><span class="kw">if </span>!state.data_paths.contains_key(<span class="kw-2">&amp;</span>mime_type) {
+                <span class="kw">return</span>;
+            }
+
+            <span class="kw">let </span>data_path = <span class="kw-2">&amp;</span>state.data_paths[<span class="kw-2">&amp;</span>mime_type];
+
+            <span class="kw">let </span>file = File::open(data_path).map_err(DataSourceError::FileOpen);
+            <span class="kw">let </span>result = file.and_then(|<span class="kw-2">mut </span>data_file| {
+                <span class="comment">// Clear O_NONBLOCK, otherwise io::copy() will stop halfway.
+                </span>fcntl_setfl(<span class="kw-2">&amp;</span>fd, OFlags::empty())
+                    .map_err(io::Error::from)
+                    .map_err(DataSourceError::Copy)<span class="question-mark">?</span>;
+
+                <span class="kw">let </span><span class="kw-2">mut </span>target_file = File::from(fd);
+                io::copy(<span class="kw-2">&amp;mut </span>data_file, <span class="kw-2">&amp;mut </span>target_file).map_err(DataSourceError::Copy)
+            });
+
+            <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = result {
+                state.error = <span class="prelude-val">Some</span>(err);
+            }
+
+            <span class="kw">let </span>done = <span class="kw">if let </span>ServeRequests::Only(left) = state.serve_requests {
+                <span class="kw">let </span>left = left.checked_sub(<span class="number">1</span>).unwrap();
+                state.serve_requests = ServeRequests::Only(left);
+                left == <span class="number">0
+            </span>} <span class="kw">else </span>{
+                <span class="bool-val">false
+            </span>};
+
+            <span class="kw">if </span>done || state.error.is_some() {
+                state.should_quit = <span class="bool-val">true</span>;
+                source.destroy();
+            }
+        }
+        Event::Cancelled =&gt; source.destroy(),
+        <span class="kw">_ </span>=&gt; (),
+    }
+});
 
 <span class="kw">impl </span>Options {
     <span class="doccomment">/// Creates a blank new set of options ready for configuration.
@@ -1771,7 +1677,7 @@
     primary: bool,
     seat: Seat,
     socket_name: <span class="prelude-ty">Option</span>&lt;OsString&gt;,
-) -&gt; <span class="prelude-ty">Result</span>&lt;(EventQueue&lt;State&gt;, State, Vec&lt;ZwlrDataControlDeviceV1&gt;), Error&gt; {
+) -&gt; <span class="prelude-ty">Result</span>&lt;(EventQueue&lt;State&gt;, State, Vec&lt;data_control::Device&gt;), Error&gt; {
     <span class="kw">let </span>(<span class="kw-2">mut </span>queue, <span class="kw-2">mut </span>common) = initialize(primary, socket_name)<span class="question-mark">?</span>;
 
     <span class="comment">// Check if there are no seats.
@@ -2075,7 +1981,7 @@
             <span class="kw">let </span>data_source = state
                 .common
                 .clipboard_manager
-                .create_data_source(<span class="kw-2">&amp;</span>queue.handle(), ());
+                .create_data_source(<span class="kw-2">&amp;</span>queue.handle());
 
             <span class="kw">for </span>mime_type <span class="kw">in </span>state.data_paths.keys() {
                 data_source.offer(mime_type.clone());

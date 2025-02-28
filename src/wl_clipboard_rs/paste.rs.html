@@ -383,43 +383,7 @@
 <a href="#382" id="382">382</a>
 <a href="#383" id="383">383</a>
 <a href="#384" id="384">384</a>
-<a href="#385" id="385">385</a>
-<a href="#386" id="386">386</a>
-<a href="#387" id="387">387</a>
-<a href="#388" id="388">388</a>
-<a href="#389" id="389">389</a>
-<a href="#390" id="390">390</a>
-<a href="#391" id="391">391</a>
-<a href="#392" id="392">392</a>
-<a href="#393" id="393">393</a>
-<a href="#394" id="394">394</a>
-<a href="#395" id="395">395</a>
-<a href="#396" id="396">396</a>
-<a href="#397" id="397">397</a>
-<a href="#398" id="398">398</a>
-<a href="#399" id="399">399</a>
-<a href="#400" id="400">400</a>
-<a href="#401" id="401">401</a>
-<a href="#402" id="402">402</a>
-<a href="#403" id="403">403</a>
-<a href="#404" id="404">404</a>
-<a href="#405" id="405">405</a>
-<a href="#406" id="406">406</a>
-<a href="#407" id="407">407</a>
-<a href="#408" id="408">408</a>
-<a href="#409" id="409">409</a>
-<a href="#410" id="410">410</a>
-<a href="#411" id="411">411</a>
-<a href="#412" id="412">412</a>
-<a href="#413" id="413">413</a>
-<a href="#414" id="414">414</a>
-<a href="#415" id="415">415</a>
-<a href="#416" id="416">416</a>
-<a href="#417" id="417">417</a>
-<a href="#418" id="418">418</a>
-<a href="#419" id="419">419</a>
-<a href="#420" id="420">420</a>
-<a href="#421" id="421">421</a></pre></div><pre class="rust"><code><span class="doccomment">//! Getting the offered MIME types and the clipboard contents.
+<a href="#385" id="385">385</a></pre></div><pre class="rust"><code><span class="doccomment">//! Getting the offered MIME types and the clipboard contents.
 
 </span><span class="kw">use </span>std::collections::{HashMap, HashSet};
 <span class="kw">use </span>std::ffi::OsString;
@@ -433,15 +397,9 @@
 <span class="kw">use </span>wayland_client::{
     delegate_dispatch, event_created_child, ConnectError, Dispatch, DispatchError, EventQueue,
 };
-<span class="kw">use </span>wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_device_v1::{
-    <span class="self">self</span>, ZwlrDataControlDeviceV1,
-};
-<span class="kw">use </span>wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
-<span class="kw">use </span>wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_offer_v1::{
-    <span class="self">self</span>, ZwlrDataControlOfferV1,
-};
 
 <span class="kw">use </span><span class="kw">crate</span>::common::{<span class="self">self</span>, initialize};
+<span class="kw">use </span><span class="kw">crate</span>::data_control::{<span class="self">self</span>, impl_dispatch_device, impl_dispatch_manager, impl_dispatch_offer};
 <span class="kw">use </span><span class="kw">crate</span>::utils::is_text;
 
 <span class="doccomment">/// The clipboard to operate on.
@@ -453,8 +411,8 @@
     </span>Regular,
     <span class="doccomment">/// The "primary" clipboard.
     ///
-    /// Working with the "primary" clipboard requires the compositor to support the data-control
-    /// protocol of version 2 or above.
+    /// Working with the "primary" clipboard requires the compositor to support ext-data-control,
+    /// or wlr-data-control version 2 or above.
     </span>Primary,
 }
 
@@ -497,7 +455,7 @@
     common: common::State,
     <span class="comment">// The value is the set of MIME types in the offer.
     // TODO: We never remove offers from here, even if we don't use them or after destroying them.
-    </span>offers: HashMap&lt;ZwlrDataControlOfferV1, HashSet&lt;String&gt;&gt;,
+    </span>offers: HashMap&lt;data_control::Offer, HashSet&lt;String&gt;&gt;,
     got_primary_selection: bool,
 }
 
@@ -535,11 +493,10 @@
     </span>WaylandCommunication(<span class="attr">#[source] </span>DispatchError),
 
     <span class="attr">#[error(
-        <span class="string">"A required Wayland protocol ({} version {}) is not supported by the compositor"</span>,
-        name,
-        version
-    )]
-    </span>MissingProtocol { name: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, version: u32 },
+        <span class="string">"A required Wayland protocol (ext-data-control, or wlr-data-control version {version}) \
+         is not supported by the compositor"
+    </span>)]
+    </span>MissingProtocol { version: u32 },
 
     <span class="attr">#[error(<span class="string">"The compositor does not support primary selection"</span>)]
     </span>PrimarySelectionUnsupported,
@@ -559,7 +516,7 @@
             SocketOpenError(err) =&gt; Error::SocketOpenError(err),
             WaylandConnection(err) =&gt; Error::WaylandConnection(err),
             WaylandCommunication(err) =&gt; Error::WaylandCommunication(err.into()),
-            MissingProtocol { name, version } =&gt; Error::MissingProtocol { name, version },
+            MissingProtocol { version } =&gt; Error::MissingProtocol { version },
         }
     }
 }
@@ -576,76 +533,47 @@
     }
 }
 
-<span class="kw">impl </span>Dispatch&lt;ZwlrDataControlManagerV1, ()&gt; <span class="kw">for </span>State {
-    <span class="kw">fn </span>event(
-        _state: <span class="kw-2">&amp;mut </span><span class="self">Self</span>,
-        _proxy: <span class="kw-2">&amp;</span>ZwlrDataControlManagerV1,
-        _event: &lt;ZwlrDataControlManagerV1 <span class="kw">as </span>wayland_client::Proxy&gt;::Event,
-        _data: <span class="kw-2">&amp;</span>(),
-        _conn: <span class="kw-2">&amp;</span>wayland_client::Connection,
-        _qhandle: <span class="kw-2">&amp;</span>wayland_client::QueueHandle&lt;<span class="self">Self</span>&gt;,
-    ) {
-    }
-}
+<span class="macro">impl_dispatch_manager!</span>(State);
 
-<span class="kw">impl </span>Dispatch&lt;ZwlrDataControlDeviceV1, WlSeat&gt; <span class="kw">for </span>State {
-    <span class="kw">fn </span>event(
-        state: <span class="kw-2">&amp;mut </span><span class="self">Self</span>,
-        _device: <span class="kw-2">&amp;</span>ZwlrDataControlDeviceV1,
-        event: &lt;ZwlrDataControlDeviceV1 <span class="kw">as </span>wayland_client::Proxy&gt;::Event,
-        seat: <span class="kw-2">&amp;</span>WlSeat,
-        _conn: <span class="kw-2">&amp;</span>wayland_client::Connection,
-        _qh: <span class="kw-2">&amp;</span>wayland_client::QueueHandle&lt;<span class="self">Self</span>&gt;,
-    ) {
-        <span class="kw">match </span>event {
-            zwlr_data_control_device_v1::Event::DataOffer { id } =&gt; {
-                state.offers.insert(id, HashSet::new());
-            }
-            zwlr_data_control_device_v1::Event::Selection { id } =&gt; {
-                state.common.seats.get_mut(seat).unwrap().set_offer(id);
-            }
-            zwlr_data_control_device_v1::Event::Finished =&gt; {
-                <span class="comment">// Destroy the device stored in the seat as it's no longer valid.
-                </span>state.common.seats.get_mut(seat).unwrap().set_device(<span class="prelude-val">None</span>);
-            }
-            zwlr_data_control_device_v1::Event::PrimarySelection { id } =&gt; {
-                state.got_primary_selection = <span class="bool-val">true</span>;
-                state
-                    .common
-                    .seats
-                    .get_mut(seat)
-                    .unwrap()
-                    .set_primary_offer(id);
-            }
-            <span class="kw">_ </span>=&gt; (),
+<span class="macro">impl_dispatch_device!</span>(State, WlSeat, |state: <span class="kw-2">&amp;mut </span><span class="self">Self</span>, event, seat| {
+    <span class="kw">match </span>event {
+        Event::DataOffer { id } =&gt; {
+            <span class="kw">let </span>offer = data_control::Offer::from(id);
+            state.offers.insert(offer, HashSet::new());
         }
-    }
-
-    <span class="macro">event_created_child!</span>(State, ZwlrDataControlDeviceV1, [
-        zwlr_data_control_device_v1::EVT_DATA_OFFER_OPCODE =&gt; (ZwlrDataControlOfferV1, ()),
-    ]);
-}
-
-<span class="kw">impl </span>Dispatch&lt;ZwlrDataControlOfferV1, ()&gt; <span class="kw">for </span>State {
-    <span class="kw">fn </span>event(
-        state: <span class="kw-2">&amp;mut </span><span class="self">Self</span>,
-        offer: <span class="kw-2">&amp;</span>ZwlrDataControlOfferV1,
-        event: &lt;ZwlrDataControlOfferV1 <span class="kw">as </span>wayland_client::Proxy&gt;::Event,
-        _data: <span class="kw-2">&amp;</span>(),
-        _conn: <span class="kw-2">&amp;</span>wayland_client::Connection,
-        _qhandle: <span class="kw-2">&amp;</span>wayland_client::QueueHandle&lt;<span class="self">Self</span>&gt;,
-    ) {
-        <span class="kw">if let </span>zwlr_data_control_offer_v1::Event::Offer { mime_type } = event {
-            state.offers.get_mut(offer).unwrap().insert(mime_type);
+        Event::Selection { id } =&gt; {
+            <span class="kw">let </span>offer = id.map(data_control::Offer::from);
+            <span class="kw">let </span>seat = state.common.seats.get_mut(seat).unwrap();
+            seat.set_offer(offer);
         }
+        Event::Finished =&gt; {
+            <span class="comment">// Destroy the device stored in the seat as it's no longer valid.
+            </span><span class="kw">let </span>seat = state.common.seats.get_mut(seat).unwrap();
+            seat.set_device(<span class="prelude-val">None</span>);
+        }
+        Event::PrimarySelection { id } =&gt; {
+            <span class="kw">let </span>offer = id.map(data_control::Offer::from);
+            state.got_primary_selection = <span class="bool-val">true</span>;
+            <span class="kw">let </span>seat = state.common.seats.get_mut(seat).unwrap();
+            seat.set_primary_offer(offer);
+        }
+        <span class="kw">_ </span>=&gt; (),
     }
-}
+});
+
+<span class="macro">impl_dispatch_offer!</span>(State, |state: <span class="kw-2">&amp;mut </span><span class="self">Self</span>,
+                             offer: data_control::Offer,
+                             event| {
+    <span class="kw">if let </span>Event::Offer { mime_type } = event {
+        state.offers.get_mut(<span class="kw-2">&amp;</span>offer).unwrap().insert(mime_type);
+    }
+});
 
 <span class="kw">fn </span>get_offer(
     primary: bool,
     seat: Seat&lt;<span class="lifetime">'_</span>&gt;,
     socket_name: <span class="prelude-ty">Option</span>&lt;OsString&gt;,
-) -&gt; <span class="prelude-ty">Result</span>&lt;(EventQueue&lt;State&gt;, State, ZwlrDataControlOfferV1), Error&gt; {
+) -&gt; <span class="prelude-ty">Result</span>&lt;(EventQueue&lt;State&gt;, State, data_control::Offer), Error&gt; {
     <span class="kw">let </span>(<span class="kw-2">mut </span>queue, <span class="kw-2">mut </span>common) = initialize(primary, socket_name)<span class="question-mark">?</span>;
 
     <span class="comment">// Check if there are no seats.

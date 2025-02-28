@@ -128,24 +128,27 @@
 <a href="#127" id="127">127</a>
 <a href="#128" id="128">128</a>
 <a href="#129" id="129">129</a>
-<a href="#130" id="130">130</a></pre></div><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a></pre></div><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
 <span class="kw">use </span>std::ffi::OsString;
 <span class="kw">use </span>std::os::unix::net::UnixStream;
 <span class="kw">use </span>std::path::PathBuf;
 <span class="kw">use </span>std::{env, io};
 
 <span class="kw">use </span>wayland_backend::client::WaylandError;
-<span class="kw">use </span>wayland_client::globals::{registry_queue_init, BindError, GlobalError, GlobalListContents};
+<span class="kw">use </span>wayland_client::globals::{registry_queue_init, GlobalError, GlobalListContents};
 <span class="kw">use </span>wayland_client::protocol::wl_registry::WlRegistry;
 <span class="kw">use </span>wayland_client::protocol::wl_seat::{<span class="self">self</span>, WlSeat};
 <span class="kw">use </span>wayland_client::{ConnectError, Connection, Dispatch, EventQueue, Proxy};
+<span class="kw">use </span>wayland_protocols::ext::data_control::v1::client::ext_data_control_manager_v1::ExtDataControlManagerV1;
 <span class="kw">use </span>wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
 
+<span class="kw">use </span><span class="kw">crate</span>::data_control::Manager;
 <span class="kw">use </span><span class="kw">crate</span>::seat_data::SeatData;
 
 <span class="kw">pub struct </span>State {
     <span class="kw">pub </span>seats: HashMap&lt;WlSeat, SeatData&gt;,
-    <span class="kw">pub </span>clipboard_manager: ZwlrDataControlManagerV1,
+    <span class="kw">pub </span>clipboard_manager: Manager,
 }
 
 <span class="attr">#[derive(thiserror::Error, Debug)]
@@ -160,9 +163,10 @@
     </span>WaylandCommunication(<span class="attr">#[source] </span>WaylandError),
 
     <span class="attr">#[error(
-        <span class="string">"A required Wayland protocol ({name} version {version}) is not supported by the compositor"
+        <span class="string">"A required Wayland protocol (ext-data-control, or wlr-data-control version {version}) \
+         is not supported by the compositor"
     </span>)]
-    </span>MissingProtocol { name: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, version: u32 },
+    </span>MissingProtocol { version: u32 },
 }
 
 <span class="kw">impl</span>&lt;S&gt; Dispatch&lt;WlSeat, (), S&gt; <span class="kw">for </span>State
@@ -192,6 +196,7 @@
 <span class="kw">where
     </span>S: Dispatch&lt;WlRegistry, GlobalListContents&gt; + <span class="lifetime">'static</span>,
     S: Dispatch&lt;ZwlrDataControlManagerV1, ()&gt;,
+    S: Dispatch&lt;ExtDataControlManagerV1, ()&gt;,
     S: Dispatch&lt;WlSeat, ()&gt;,
     S: AsMut&lt;State&gt;,
 {
@@ -225,18 +230,15 @@
                                        })<span class="question-mark">?</span>;
     <span class="kw">let </span>qh = <span class="kw-2">&amp;</span>queue.handle();
 
-    <span class="kw">let </span>data_control_version = <span class="kw">if </span>primary { <span class="number">2 </span>} <span class="kw">else </span>{ <span class="number">1 </span>};
-
     <span class="comment">// Verify that we got the clipboard manager.
-    </span><span class="kw">let </span>clipboard_manager = <span class="kw">match </span>globals.bind(qh, data_control_version..=data_control_version, ())
-    {
-        <span class="prelude-val">Ok</span>(manager) =&gt; manager,
-        <span class="prelude-val">Err</span>(BindError::NotPresent | BindError::UnsupportedVersion) =&gt; {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::MissingProtocol {
-                name: ZwlrDataControlManagerV1::interface().name,
-                version: data_control_version,
-            })
-        }
+    </span><span class="kw">let </span>ext_manager = globals.bind(qh, <span class="number">1</span>..=<span class="number">1</span>, ()).ok().map(Manager::Ext);
+
+    <span class="kw">let </span>wlr_v = <span class="kw">if </span>primary { <span class="number">2 </span>} <span class="kw">else </span>{ <span class="number">1 </span>};
+    <span class="kw">let </span>wlr_manager = || globals.bind(qh, wlr_v..=wlr_v, ()).ok().map(Manager::Zwlr);
+
+    <span class="kw">let </span>clipboard_manager = <span class="kw">match </span>ext_manager.or_else(wlr_manager) {
+        <span class="prelude-val">Some</span>(manager) =&gt; manager,
+        <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::MissingProtocol { version: wlr_v }),
     };
 
     <span class="kw">let </span>registry = globals.registry();

@@ -57,9 +57,7 @@
 <a href="#56" id="56">56</a>
 <a href="#57" id="57">57</a>
 <a href="#58" id="58">58</a>
-<a href="#59" id="59">59</a>
-<a href="#60" id="60">60</a></pre></div><pre class="rust"><code><span class="kw">use </span>wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_device_v1::ZwlrDataControlDeviceV1;
-<span class="kw">use </span>wayland_protocols_wlr::data_control::v1::client::zwlr_data_control_offer_v1::ZwlrDataControlOfferV1;
+<a href="#59" id="59">59</a></pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::data_control::{Device, Offer};
 
 <span class="attr">#[derive(Default)]
 </span><span class="kw">pub struct </span>SeatData {
@@ -67,13 +65,13 @@
     </span><span class="kw">pub </span>name: <span class="prelude-ty">Option</span>&lt;String&gt;,
 
     <span class="doccomment">/// The data device of this seat, if any.
-    </span><span class="kw">pub </span>device: <span class="prelude-ty">Option</span>&lt;ZwlrDataControlDeviceV1&gt;,
+    </span><span class="kw">pub </span>device: <span class="prelude-ty">Option</span>&lt;Device&gt;,
 
     <span class="doccomment">/// The data offer of this seat, if any.
-    </span><span class="kw">pub </span>offer: <span class="prelude-ty">Option</span>&lt;ZwlrDataControlOfferV1&gt;,
+    </span><span class="kw">pub </span>offer: <span class="prelude-ty">Option</span>&lt;Offer&gt;,
 
     <span class="doccomment">/// The primary-selection data offer of this seat, if any.
-    </span><span class="kw">pub </span>primary_offer: <span class="prelude-ty">Option</span>&lt;ZwlrDataControlOfferV1&gt;,
+    </span><span class="kw">pub </span>primary_offer: <span class="prelude-ty">Option</span>&lt;Offer&gt;,
 }
 
 <span class="kw">impl </span>SeatData {
@@ -85,7 +83,7 @@
     <span class="doccomment">/// Sets this seat's device.
     ///
     /// Destroys the old one, if any.
-    </span><span class="kw">pub fn </span>set_device(<span class="kw-2">&amp;mut </span><span class="self">self</span>, device: <span class="prelude-ty">Option</span>&lt;ZwlrDataControlDeviceV1&gt;) {
+    </span><span class="kw">pub fn </span>set_device(<span class="kw-2">&amp;mut </span><span class="self">self</span>, device: <span class="prelude-ty">Option</span>&lt;Device&gt;) {
         <span class="kw">let </span>old_device = <span class="self">self</span>.device.take();
         <span class="self">self</span>.device = device;
 
@@ -97,7 +95,7 @@
     <span class="doccomment">/// Sets this seat's data offer.
     ///
     /// Destroys the old one, if any.
-    </span><span class="kw">pub fn </span>set_offer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, new_offer: <span class="prelude-ty">Option</span>&lt;ZwlrDataControlOfferV1&gt;) {
+    </span><span class="kw">pub fn </span>set_offer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, new_offer: <span class="prelude-ty">Option</span>&lt;Offer&gt;) {
         <span class="kw">let </span>old_offer = <span class="self">self</span>.offer.take();
         <span class="self">self</span>.offer = new_offer;
 
@@ -109,7 +107,7 @@
     <span class="doccomment">/// Sets this seat's primary-selection data offer.
     ///
     /// Destroys the old one, if any.
-    </span><span class="kw">pub fn </span>set_primary_offer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, new_offer: <span class="prelude-ty">Option</span>&lt;ZwlrDataControlOfferV1&gt;) {
+    </span><span class="kw">pub fn </span>set_primary_offer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, new_offer: <span class="prelude-ty">Option</span>&lt;Offer&gt;) {
         <span class="kw">let </span>old_offer = <span class="self">self</span>.primary_offer.take();
         <span class="self">self</span>.primary_offer = new_offer;
 
