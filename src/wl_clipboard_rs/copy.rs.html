@@ -1046,7 +1046,8 @@
 <a href="#1045" id="1045">1045</a>
 <a href="#1046" id="1046">1046</a>
 <a href="#1047" id="1047">1047</a>
-<a href="#1048" id="1048">1048</a></pre></div><pre class="rust"><code><span class="doccomment">//! Copying and clearing clipboard contents.
+<a href="#1048" id="1048">1048</a>
+<a href="#1049" id="1049">1049</a></pre></div><pre class="rust"><code><span class="doccomment">//! Copying and clearing clipboard contents.
 
 </span><span class="kw">use </span>std::collections::hash_map::Entry;
 <span class="kw">use </span>std::collections::{HashMap, HashSet};
@@ -1236,10 +1237,11 @@
     </span>WaylandCommunication(<span class="attr">#[source] </span>DispatchError),
 
     <span class="attr">#[error(
-        <span class="string">"A required Wayland protocol (ext-data-control, or wlr-data-control version {version}) \
-         is not supported by the compositor"
-    </span>)]
-    </span>MissingProtocol { version: u32 },
+        <span class="string">"A required Wayland protocol ({} version {}) is not supported by the compositor"</span>,
+        name,
+        version
+    )]
+    </span>MissingProtocol { name: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, version: u32 },
 
     <span class="attr">#[error(<span class="string">"The compositor does not support primary selection"</span>)]
     </span>PrimarySelectionUnsupported,
@@ -1268,7 +1270,7 @@
             SocketOpenError(err) =&gt; Error::SocketOpenError(err),
             WaylandConnection(err) =&gt; Error::WaylandConnection(err),
             WaylandCommunication(err) =&gt; Error::WaylandCommunication(err.into()),
-            MissingProtocol { version } =&gt; Error::MissingProtocol { version },
+            MissingProtocol { name, version } =&gt; Error::MissingProtocol { name, version },
         }
     }
 }
