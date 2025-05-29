@@ -85,8 +85,6 @@ fn main() -> Result<(), anyhow::Error> {
     if foreground {
         prepared_copy.serve()?;
     } else {
-        // SAFETY: We don't spawn any threads, so doing things after forking is safe.
-        // TODO: is there any way to verify that we don't spawn any threads?
         match unsafe { fork() } {
             -1 => panic!("error forking: {:?}", std::io::Error::last_os_error()),
             0 => {
