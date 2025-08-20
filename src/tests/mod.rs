@@ -5,6 +5,7 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::sync::{Arc, Mutex};
 use std::thread;
 
+use rustix::buffer::spare_capacity;
 use rustix::event::epoll;
 use wayland_backend::server::ClientData;
 use wayland_server::{Display, ListeningSocket};
@@ -82,10 +83,10 @@ impl<S: Send + 'static> TestServer<S> {
 
         while client_counter.0.load(SeqCst) > 0 || waiting_for_first_client {
             // Wait for requests from the client.
-            let mut events = epoll::EventVec::with_capacity(2);
-            epoll::wait(&self.epoll, &mut events, -1).unwrap();
+            let mut events = Vec::with_capacity(2);
+            epoll::wait(&self.epoll, spare_capacity(&mut events), None).unwrap();
 
-            for event in &events {
+            for event in events.drain(..) {
                 match event.data.u64() {
                     0 => {
                         // Try to accept a new client.

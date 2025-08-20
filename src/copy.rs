@@ -565,7 +565,7 @@ fn make_source(
     trim_newline: bool,
 ) -> Result<(String, PathBuf), SourceCreationError> {
     let temp_dir = tempfile::tempdir().map_err(SourceCreationError::TempDirCreate)?;
-    let mut temp_filename = temp_dir.into_path();
+    let mut temp_filename = temp_dir.keep();
     temp_filename.push("stdin");
     trace!("Temp filename: {}", temp_filename.to_string_lossy());
     let mut temp_file =
@@ -583,8 +583,7 @@ fn make_source(
     let mime_type = match mime_type {
         MimeType::Autodetect => match tree_magic_mini::from_filepath(&temp_filename) {
             Some(magic) => Ok(magic),
-            None => Err(SourceCreationError::TempFileOpen(std::io::Error::new(
-                std::io::ErrorKind::Other,
+            None => Err(SourceCreationError::TempFileOpen(std::io::Error::other(
                 "problem with temp file",
             ))),
         }?
