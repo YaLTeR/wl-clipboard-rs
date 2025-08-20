@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["add","create","delete","modify","wait"],"struct":["CreateFlags","Event","EventFlags","EventVec","Iter"],"union":["EventData"]};
+window.SIDEBAR_ITEMS = {"fn":["add","create","delete","modify","wait"],"struct":["CreateFlags","Event","EventFlags"],"union":["EventData"]};
