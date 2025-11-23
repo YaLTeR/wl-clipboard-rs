@@ -38,9 +38,9 @@ use crate::server_ignore_global_impl;
 pub enum OfferInfo {
     Buffered {
         #[proptest(
-            strategy = "prop::collection::hash_map(any::<String>(), prop::collection::vec(any::<u8>(), 0..5), 0..5)"
+            strategy = "prop::collection::vec((any::<String>(), prop::collection::vec(any::<u8>(), 0..5)), 0..5)"
         )]
-        data: HashMap<String, Vec<u8>>,
+        data: Vec<(String, Vec<u8>)>,
     },
     #[proptest(skip)]
     Runtime { source: ZwlrDataControlSourceV1 },
@@ -48,21 +48,19 @@ pub enum OfferInfo {
 
 impl Default for OfferInfo {
     fn default() -> Self {
-        Self::Buffered {
-            data: HashMap::new(),
-        }
+        Self::Buffered { data: Vec::new() }
     }
 }
 
 impl OfferInfo {
     fn mime_types(&self, state: &State) -> Vec<String> {
         match self {
-            OfferInfo::Buffered { data } => data.keys().cloned().collect(),
+            OfferInfo::Buffered { data } => data.iter().map(|(k, _)| k).cloned().collect(),
             OfferInfo::Runtime { source } => state.sources[source].clone(),
         }
     }
 
-    pub fn data(&self) -> &HashMap<String, Vec<u8>> {
+    pub fn data(&self) -> &Vec<(String, Vec<u8>)> {
         match self {
             OfferInfo::Buffered { data } => data,
             OfferInfo::Runtime { .. } => panic!(),
@@ -257,7 +255,12 @@ impl Dispatch<ZwlrDataControlOfferV1, (String, bool)> for State {
             match offer_info {
                 OfferInfo::Buffered { data } => {
                     let mut write = PipeWriter::from(fd);
-                    let _ = write.write_all(&data[mime_type.as_str()]);
+                    let _ = write.write_all(
+                        data.iter()
+                            .find(|(k, _)| k == &mime_type)
+                            .map(|(_, v)| &v[..])
+                            .unwrap(),
+                    );
                 }
                 OfferInfo::Runtime { source } => {
                     if state.set_nonblock_on_write_fd {
