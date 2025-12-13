@@ -250,6 +250,8 @@ fn get_offer(
 
 /// Retrieves the offered MIME types.
 ///
+/// Also see [`get_mime_types_ordered()`], an order-preserving version.
+///
 /// If `seat` is `None`, uses an unspecified seat (it depends on the order returned by the
 /// compositor). This is perfectly fine when only a single seat is present, so for most
 /// configurations.
@@ -276,7 +278,18 @@ pub fn get_mime_types(clipboard: ClipboardType, seat: Seat<'_>) -> Result<HashSe
         .collect())
 }
 
-/// Retrieves the offered MIME types. Preserves the original order.
+/// Retrieves the offered MIME types, preserving their original order.
+///
+/// Applications are generally expected to offer not just the "native" data type, but some
+/// conversions generated on the fly. For example, when copying a PNG image from a browser, it will
+/// offer `image/png` as well as `image/jpeg`, `image/webp`, and others, to maximize compatibility.
+/// When these converted MIME types are pasted, the application will generate the data on the fly
+/// (by converting the image to the requested MIME type).
+///
+/// There's no defined way to know which of the offered MIME types is native (if any). However,
+/// some applications will offer the native data types first, followed by converted ones. While
+/// [`get_mime_types()`] loses this order (a `HashSet` is unordered), this function returns the
+/// MIME types in their original order.
 ///
 /// If `seat` is `None`, uses an unspecified seat (it depends on the order returned by the
 /// compositor). This is perfectly fine when only a single seat is present, so for most
@@ -371,14 +384,15 @@ pub(crate) fn get_contents_internal(
     let primary = clipboard == ClipboardType::Primary;
     let (mut queue, mut state, offer) = get_offer(primary, seat, socket_name)?;
 
-    let mime_types_ordered = state.offers.remove(&offer).unwrap();
+    let mut mime_types = state.offers.remove(&offer).unwrap();
 
     macro_rules! take {
         ($pred:expr) => {
             'block: {
-                for s in mime_types_ordered.iter() {
-                    if $pred(s) {
-                        break 'block Some(s.as_str());
+                for i in 0..mime_types.len() {
+                    if $pred(&mime_types[i]) {
+                        // We only remove once, so the swap doesn't affect anything.
+                        break 'block Some(mime_types.swap_remove(i));
                     }
                 }
                 None
@@ -407,7 +421,7 @@ pub(crate) fn get_contents_internal(
         return Err(Error::NoMimeType);
     }
 
-    let mime_type = mime_type.unwrap().to_string();
+    let mime_type = mime_type.unwrap();
 
     // Create a pipe for content transfer.
     let (read, write) = pipe().map_err(Error::PipeCreation)?;
