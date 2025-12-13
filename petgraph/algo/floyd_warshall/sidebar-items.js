@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["floyd_warshall"]};
+window.SIDEBAR_ITEMS = {"fn":["floyd_warshall","floyd_warshall_path"]};

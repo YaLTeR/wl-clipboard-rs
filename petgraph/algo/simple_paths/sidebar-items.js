@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["all_simple_paths"]};
+window.SIDEBAR_ITEMS = {"fn":["all_simple_paths","all_simple_paths_multi"]};

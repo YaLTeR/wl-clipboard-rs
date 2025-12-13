@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustix-1.0.8/src/fs/ioctl.rs`."><title>ioctl.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rustix/fs/</div>ioctl.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Filesystem-oriented `ioctl` functions.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustix-1.1.2/src/fs/ioctl.rs`."><title>ioctl.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rustix/fs/</div>ioctl.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Filesystem-oriented `ioctl` functions.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a></span><span class="attr">#![allow(unsafe_code)]
 <a href=#4 id=4 data-nosnippet>4</a>
@@ -58,7 +58,7 @@
 <a href=#58 id=58 data-nosnippet>58</a>}
 <a href=#59 id=59 data-nosnippet>59</a>
 <a href=#60 id=60 data-nosnippet>60</a><span class="doccomment">/// `ioctl(fd, EXT4_IOC_RESIZE_FS, blocks)`—Resize ext4 filesystem on fd.
-<a href=#61 id=61 data-nosnippet>61</a></span><span class="attr">#[cfg(linux_kernel)]
+<a href=#61 id=61 data-nosnippet>61</a></span><span class="attr">#[cfg(linux_raw_dep)]
 <a href=#62 id=62 data-nosnippet>62</a>#[inline]
 <a href=#63 id=63 data-nosnippet>63</a>#[doc(alias = <span class="string">"EXT4_IOC_RESIZE_FS"</span>)]
 <a href=#64 id=64 data-nosnippet>64</a></span><span class="kw">pub fn </span>ext4_ioc_resize_fs&lt;Fd: AsFd&gt;(fd: Fd, blocks: u64) -&gt; io::Result&lt;()&gt; {
@@ -94,7 +94,7 @@
 <a href=#94 id=94 data-nosnippet>94</a>    }
 <a href=#95 id=95 data-nosnippet>95</a>}
 <a href=#96 id=96 data-nosnippet>96</a>
-<a href=#97 id=97 data-nosnippet>97</a><span class="attr">#[cfg(linux_kernel)]
+<a href=#97 id=97 data-nosnippet>97</a><span class="attr">#[cfg(linux_raw_dep)]
 <a href=#98 id=98 data-nosnippet>98</a></span><span class="macro">bitflags!</span> {
 <a href=#99 id=99 data-nosnippet>99</a>    <span class="doccomment">/// `FS_*` constants for use with [`ioctl_getflags`].
 <a href=#100 id=100 data-nosnippet>100</a>    ///
@@ -136,7 +136,7 @@
 <a href=#136 id=136 data-nosnippet>136</a><span class="doccomment">/// `ioctl(fd, FS_IOC_GETFLAGS)`—Returns the [inode flags] attributes
 <a href=#137 id=137 data-nosnippet>137</a>///
 <a href=#138 id=138 data-nosnippet>138</a>/// [inode flags]: https://man7.org/linux/man-pages/man2/ioctl_iflags.2.html
-<a href=#139 id=139 data-nosnippet>139</a></span><span class="attr">#[cfg(linux_kernel)]
+<a href=#139 id=139 data-nosnippet>139</a></span><span class="attr">#[cfg(linux_raw_dep)]
 <a href=#140 id=140 data-nosnippet>140</a>#[inline]
 <a href=#141 id=141 data-nosnippet>141</a>#[doc(alias = <span class="string">"FS_IOC_GETFLAGS"</span>)]
 <a href=#142 id=142 data-nosnippet>142</a></span><span class="kw">pub fn </span>ioctl_getflags&lt;Fd: AsFd&gt;(fd: Fd) -&gt; io::Result&lt;IFlags&gt; {
@@ -153,7 +153,7 @@
 <a href=#153 id=153 data-nosnippet>153</a><span class="doccomment">/// `ioctl(fd, FS_IOC_SETFLAGS)`—Modify the [inode flags] attributes
 <a href=#154 id=154 data-nosnippet>154</a>///
 <a href=#155 id=155 data-nosnippet>155</a>/// [inode flags]: https://man7.org/linux/man-pages/man2/ioctl_iflags.2.html
-<a href=#156 id=156 data-nosnippet>156</a></span><span class="attr">#[cfg(linux_kernel)]
+<a href=#156 id=156 data-nosnippet>156</a></span><span class="attr">#[cfg(linux_raw_dep)]
 <a href=#157 id=157 data-nosnippet>157</a>#[inline]
 <a href=#158 id=158 data-nosnippet>158</a>#[doc(alias = <span class="string">"FS_IOC_SETFLAGS"</span>)]
 <a href=#159 id=159 data-nosnippet>159</a></span><span class="kw">pub fn </span>ioctl_setflags&lt;Fd: AsFd&gt;(fd: Fd, flags: IFlags) -&gt; io::Result&lt;()&gt; {

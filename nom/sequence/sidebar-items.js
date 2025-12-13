@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["delimited","pair","preceded","separated_pair","terminated","tuple"],"trait":["Tuple"]};
+window.SIDEBAR_ITEMS = {"fn":["delimited","pair","preceded","separated_pair","terminated","tuple"],"struct":["Preceded","Terminated"],"trait":["Tuple"]};

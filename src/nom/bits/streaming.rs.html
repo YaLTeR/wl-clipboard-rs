@@ -1,17 +1,17 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nom-7.1.3/src/bits/streaming.rs`."><title>streaming.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nom" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">nom/bits/</div>streaming.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Bit level parsers
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nom-8.0.0/src/bits/streaming.rs`."><title>streaming.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nom" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">nom/bits/</div>streaming.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Bit level parsers
 <a href=#2 id=2 data-nosnippet>2</a>//!
 <a href=#3 id=3 data-nosnippet>3</a>
 <a href=#4 id=4 data-nosnippet>4</a></span><span class="kw">use </span><span class="kw">crate</span>::error::{ErrorKind, ParseError};
 <a href=#5 id=5 data-nosnippet>5</a><span class="kw">use </span><span class="kw">crate</span>::internal::{<span class="prelude-val">Err</span>, IResult, Needed};
-<a href=#6 id=6 data-nosnippet>6</a><span class="kw">use </span><span class="kw">crate</span>::lib::std::ops::{AddAssign, Div, RangeFrom, Shl, Shr};
-<a href=#7 id=7 data-nosnippet>7</a><span class="kw">use </span><span class="kw">crate</span>::traits::{InputIter, InputLength, Slice, ToUsize};
+<a href=#6 id=6 data-nosnippet>6</a><span class="kw">use </span><span class="kw">crate</span>::lib::std::ops::{AddAssign, Div, Shl, Shr};
+<a href=#7 id=7 data-nosnippet>7</a><span class="kw">use </span><span class="kw">crate</span>::traits::{Input, ToUsize};
 <a href=#8 id=8 data-nosnippet>8</a>
 <a href=#9 id=9 data-nosnippet>9</a><span class="doccomment">/// Generates a parser taking `count` bits
 <a href=#10 id=10 data-nosnippet>10</a></span><span class="kw">pub fn </span>take&lt;I, O, C, E: ParseError&lt;(I, usize)&gt;&gt;(
 <a href=#11 id=11 data-nosnippet>11</a>  count: C,
 <a href=#12 id=12 data-nosnippet>12</a>) -&gt; <span class="kw">impl </span>Fn((I, usize)) -&gt; IResult&lt;(I, usize), O, E&gt;
 <a href=#13 id=13 data-nosnippet>13</a><span class="kw">where
-<a href=#14 id=14 data-nosnippet>14</a>  </span>I: Slice&lt;RangeFrom&lt;usize&gt;&gt; + InputIter&lt;Item = u8&gt; + InputLength,
+<a href=#14 id=14 data-nosnippet>14</a>  </span>I: Input&lt;Item = u8&gt;,
 <a href=#15 id=15 data-nosnippet>15</a>  C: ToUsize,
 <a href=#16 id=16 data-nosnippet>16</a>  O: From&lt;u8&gt; + AddAssign + Shl&lt;usize, Output = O&gt; + Shr&lt;usize, Output = O&gt;,
 <a href=#17 id=17 data-nosnippet>17</a>{
@@ -22,7 +22,7 @@
 <a href=#22 id=22 data-nosnippet>22</a>    } <span class="kw">else </span>{
 <a href=#23 id=23 data-nosnippet>23</a>      <span class="kw">let </span>cnt = (count + bit_offset).div(<span class="number">8</span>);
 <a href=#24 id=24 data-nosnippet>24</a>      <span class="kw">if </span>input.input_len() * <span class="number">8 </span>&lt; count + bit_offset {
-<a href=#25 id=25 data-nosnippet>25</a>        <span class="prelude-val">Err</span>(Err::Incomplete(Needed::new(count <span class="kw">as </span>usize)))
+<a href=#25 id=25 data-nosnippet>25</a>        <span class="prelude-val">Err</span>(Err::Incomplete(Needed::new(count)))
 <a href=#26 id=26 data-nosnippet>26</a>      } <span class="kw">else </span>{
 <a href=#27 id=27 data-nosnippet>27</a>        <span class="kw">let </span><span class="kw-2">mut </span>acc: O = <span class="number">0_u8</span>.into();
 <a href=#28 id=28 data-nosnippet>28</a>        <span class="kw">let </span><span class="kw-2">mut </span>offset: usize = bit_offset;
@@ -36,7 +36,7 @@
 <a href=#36 id=36 data-nosnippet>36</a>          <span class="kw">let </span>val: O = <span class="kw">if </span>offset == <span class="number">0 </span>{
 <a href=#37 id=37 data-nosnippet>37</a>            byte.into()
 <a href=#38 id=38 data-nosnippet>38</a>          } <span class="kw">else </span>{
-<a href=#39 id=39 data-nosnippet>39</a>            ((byte &lt;&lt; offset) <span class="kw">as </span>u8 &gt;&gt; offset).into()
+<a href=#39 id=39 data-nosnippet>39</a>            ((byte &lt;&lt; offset) &gt;&gt; offset).into()
 <a href=#40 id=40 data-nosnippet>40</a>          };
 <a href=#41 id=41 data-nosnippet>41</a>
 <a href=#42 id=42 data-nosnippet>42</a>          <span class="kw">if </span>remaining &lt; <span class="number">8 </span>- offset {
@@ -49,7 +49,7 @@
 <a href=#49 id=49 data-nosnippet>49</a>            offset = <span class="number">0</span>;
 <a href=#50 id=50 data-nosnippet>50</a>          }
 <a href=#51 id=51 data-nosnippet>51</a>        }
-<a href=#52 id=52 data-nosnippet>52</a>        <span class="prelude-val">Ok</span>(((input.slice(cnt..), end_offset), acc))
+<a href=#52 id=52 data-nosnippet>52</a>        <span class="prelude-val">Ok</span>(((input.take_from(cnt), end_offset), acc))
 <a href=#53 id=53 data-nosnippet>53</a>      }
 <a href=#54 id=54 data-nosnippet>54</a>    }
 <a href=#55 id=55 data-nosnippet>55</a>  }
@@ -61,7 +61,7 @@
 <a href=#61 id=61 data-nosnippet>61</a>  count: C,
 <a href=#62 id=62 data-nosnippet>62</a>) -&gt; <span class="kw">impl </span>Fn((I, usize)) -&gt; IResult&lt;(I, usize), O, E&gt;
 <a href=#63 id=63 data-nosnippet>63</a><span class="kw">where
-<a href=#64 id=64 data-nosnippet>64</a>  </span>I: Slice&lt;RangeFrom&lt;usize&gt;&gt; + InputIter&lt;Item = u8&gt; + InputLength + Clone,
+<a href=#64 id=64 data-nosnippet>64</a>  </span>I: Input&lt;Item = u8&gt; + Clone,
 <a href=#65 id=65 data-nosnippet>65</a>  C: ToUsize,
 <a href=#66 id=66 data-nosnippet>66</a>  O: From&lt;u8&gt; + AddAssign + Shl&lt;usize, Output = O&gt; + Shr&lt;usize, Output = O&gt; + PartialEq,
 <a href=#67 id=67 data-nosnippet>67</a>{
@@ -96,7 +96,7 @@
 <a href=#96 id=96 data-nosnippet>96</a>/// ```
 <a href=#97 id=97 data-nosnippet>97</a></span><span class="kw">pub fn </span>bool&lt;I, E: ParseError&lt;(I, usize)&gt;&gt;(input: (I, usize)) -&gt; IResult&lt;(I, usize), bool, E&gt;
 <a href=#98 id=98 data-nosnippet>98</a><span class="kw">where
-<a href=#99 id=99 data-nosnippet>99</a>  </span>I: Slice&lt;RangeFrom&lt;usize&gt;&gt; + InputIter&lt;Item = u8&gt; + InputLength,
+<a href=#99 id=99 data-nosnippet>99</a>  </span>I: Input&lt;Item = u8&gt;,
 <a href=#100 id=100 data-nosnippet>100</a>{
 <a href=#101 id=101 data-nosnippet>101</a>  <span class="kw">let </span>(res, bit): (<span class="kw">_</span>, u32) = take(<span class="number">1usize</span>)(input)<span class="question-mark">?</span>;
 <a href=#102 id=102 data-nosnippet>102</a>  <span class="prelude-val">Ok</span>((res, bit != <span class="number">0</span>))
