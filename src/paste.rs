@@ -417,11 +417,9 @@ pub(crate) fn get_contents_internal(
     };
 
     // Check if a suitable MIME type is copied.
-    if mime_type.is_none() {
+    let Some(mime_type) = mime_type else {
         return Err(Error::NoMimeType);
-    }
-
-    let mime_type = mime_type.unwrap();
+    };
 
     // Create a pipe for content transfer.
     let (read, write) = pipe().map_err(Error::PipeCreation)?;
