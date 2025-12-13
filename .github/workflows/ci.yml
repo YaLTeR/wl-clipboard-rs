@@ -77,6 +77,24 @@ jobs:
       - name: Run clippy
         run: cargo clippy --all --all-targets
 
+  minimal-versions:
+    strategy:
+      fail-fast: false
+
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          show-progress: false
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: taiki-e/install-action@cargo-hack
+      - uses: taiki-e/install-action@cargo-minimal-versions
+
+      - run: cargo minimal-versions check --direct --workspace
+
   rustfmt:
     runs-on: ubuntu-24.04
 
