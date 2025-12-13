@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::io::Read;
 
 use proptest::prelude::*;
@@ -21,11 +21,11 @@ fn get_mime_types_test() {
             "seat0".into(),
             SeatInfo {
                 offer: Some(OfferInfo::Buffered {
-                    data: HashMap::from([
+                    data: vec![
                         ("first".into(), vec![]),
                         ("second".into(), vec![]),
                         ("third".into(), vec![]),
-                    ]),
+                    ],
                 }),
                 ..Default::default()
             },
@@ -41,7 +41,7 @@ fn get_mime_types_test() {
         get_mime_types_internal(ClipboardType::Regular, Seat::Unspecified, Some(socket_name))
             .unwrap();
 
-    let expected = HashSet::from(["first", "second", "third"].map(String::from));
+    let expected = Vec::from(["first", "second", "third"].map(String::from));
     assert_eq!(mime_types, expected);
 }
 
@@ -171,11 +171,11 @@ fn get_mime_types_specific_seat() {
                 "yay".into(),
                 SeatInfo {
                     offer: Some(OfferInfo::Buffered {
-                        data: HashMap::from([
+                        data: vec![
                             ("first".into(), vec![]),
                             ("second".into(), vec![]),
                             ("third".into(), vec![]),
-                        ]),
+                        ],
                     }),
                     ..Default::default()
                 },
@@ -195,7 +195,7 @@ fn get_mime_types_specific_seat() {
     )
     .unwrap();
 
-    let expected = HashSet::from(["first", "second", "third"].map(String::from));
+    let expected = Vec::from(["first", "second", "third"].map(String::from));
     assert_eq!(mime_types, expected);
 }
 
@@ -212,11 +212,11 @@ fn get_mime_types_primary() {
             "seat0".into(),
             SeatInfo {
                 primary_offer: Some(OfferInfo::Buffered {
-                    data: HashMap::from([
+                    data: vec![
                         ("first".into(), vec![]),
                         ("second".into(), vec![]),
                         ("third".into(), vec![]),
-                    ]),
+                    ],
                 }),
                 ..Default::default()
             },
@@ -232,7 +232,7 @@ fn get_mime_types_primary() {
         get_mime_types_internal(ClipboardType::Primary, Seat::Unspecified, Some(socket_name))
             .unwrap();
 
-    let expected = HashSet::from(["first", "second", "third"].map(String::from));
+    let expected = Vec::from(["first", "second", "third"].map(String::from));
     assert_eq!(mime_types, expected);
 }
 
@@ -249,7 +249,7 @@ fn get_contents_test() {
             "seat0".into(),
             SeatInfo {
                 offer: Some(OfferInfo::Buffered {
-                    data: HashMap::from([("application/octet-stream".into(), vec![1, 3, 3, 7])]),
+                    data: vec![("application/octet-stream".into(), vec![1, 3, 3, 7])],
                 }),
                 ..Default::default()
             },
@@ -289,7 +289,7 @@ fn get_contents_wrong_mime_type() {
             "seat0".into(),
             SeatInfo {
                 offer: Some(OfferInfo::Buffered {
-                    data: HashMap::from([("application/octet-stream".into(), vec![1, 3, 3, 7])]),
+                    data: vec![("application/octet-stream".into(), vec![1, 3, 3, 7])],
                 }),
                 ..Default::default()
             },
@@ -351,7 +351,7 @@ proptest! {
             };
             match expected_offer {
                 None => prop_assert!(matches!(result, Err(Error::ClipboardEmpty))),
-                Some(offer) => prop_assert_eq!(result.unwrap(), offer.data().keys().cloned().collect()),
+                Some(offer) => prop_assert_eq!(result.unwrap(), offer.data().iter().map(|(k, _)| k.clone()).collect::<Vec<String>>()),
             }
         }
     }
@@ -391,7 +391,7 @@ proptest! {
             let mime_type = match expected_offer {
                 Some(offer) if !offer.data().is_empty() => {
                     let mime_index = mime_index.index(offer.data().len());
-                    Some(offer.data().keys().nth(mime_index).unwrap())
+                    Some(offer.data().iter().map(|(k, _)| k).nth(mime_index).unwrap())
                 }
                 _ => None,
             };
@@ -418,7 +418,7 @@ proptest! {
 
                         let mut contents = vec![];
                         read.read_to_end(&mut contents).unwrap();
-                        prop_assert_eq!(&contents, &offer.data()[mime_type]);
+                        prop_assert_eq!(&contents, offer.data().iter().find(|(k, _)| k == mime_type).map(|(_, v)| &v[..]).unwrap());
                     }
                 },
             }

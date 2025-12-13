@@ -25,10 +25,10 @@ fn clear_test() {
             "seat0".into(),
             SeatInfo {
                 offer: Some(OfferInfo::Buffered {
-                    data: HashMap::from([("regular".into(), vec![1, 2, 3])]),
+                    data: vec![("regular".into(), vec![1, 2, 3])],
                 }),
                 primary_offer: Some(OfferInfo::Buffered {
-                    data: HashMap::from([("primary".into(), vec![1, 2, 3])]),
+                    data: vec![("primary".into(), vec![1, 2, 3])],
                 }),
             },
         )]),

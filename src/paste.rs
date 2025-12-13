@@ -70,7 +70,7 @@ struct State {
     common: common::State,
     // The value is the set of MIME types in the offer.
     // TODO: We never remove offers from here, even if we don't use them or after destroying them.
-    offers: HashMap<data_control::Offer, HashSet<String>>,
+    offers: HashMap<data_control::Offer, Vec<String>>,
     got_primary_selection: bool,
 }
 
@@ -155,7 +155,7 @@ impl_dispatch_device!(State, WlSeat, |state: &mut Self, event, seat| {
     match event {
         Event::DataOffer { id } => {
             let offer = data_control::Offer::from(id);
-            state.offers.insert(offer, HashSet::new());
+            state.offers.insert(offer, Vec::new());
         }
         Event::Selection { id } => {
             let offer = id.map(data_control::Offer::from);
@@ -181,7 +181,7 @@ impl_dispatch_offer!(State, |state: &mut Self,
                              offer: data_control::Offer,
                              event| {
     if let Event::Offer { mime_type } = event {
-        state.offers.get_mut(&offer).unwrap().insert(mime_type);
+        state.offers.get_mut(&offer).unwrap().push(mime_type);
     }
 });
 
@@ -250,6 +250,8 @@ fn get_offer(
 
 /// Retrieves the offered MIME types.
 ///
+/// Also see [`get_mime_types_ordered()`], an order-preserving version.
+///
 /// If `seat` is `None`, uses an unspecified seat (it depends on the order returned by the
 /// compositor). This is perfectly fine when only a single seat is present, so for most
 /// configurations.
@@ -271,6 +273,48 @@ fn get_offer(
 /// ```
 #[inline]
 pub fn get_mime_types(clipboard: ClipboardType, seat: Seat<'_>) -> Result<HashSet<String>, Error> {
+    Ok(get_mime_types_internal(clipboard, seat, None)?
+        .into_iter()
+        .collect())
+}
+
+/// Retrieves the offered MIME types, preserving their original order.
+///
+/// Applications are generally expected to offer not just the "native" data type, but some
+/// conversions generated on the fly. For example, when copying a PNG image from a browser, it will
+/// offer `image/png` as well as `image/jpeg`, `image/webp`, and others, to maximize compatibility.
+/// When these converted MIME types are pasted, the application will generate the data on the fly
+/// (by converting the image to the requested MIME type).
+///
+/// There's no defined way to know which of the offered MIME types is native (if any). However,
+/// some applications will offer the native data types first, followed by converted ones. While
+/// [`get_mime_types()`] loses this order (a `HashSet` is unordered), this function returns the
+/// MIME types in their original order.
+///
+/// If `seat` is `None`, uses an unspecified seat (it depends on the order returned by the
+/// compositor). This is perfectly fine when only a single seat is present, so for most
+/// configurations.
+///
+/// # Examples
+///
+/// ```no_run
+/// # extern crate wl_clipboard_rs;
+/// # use wl_clipboard_rs::paste::Error;
+/// # fn foo() -> Result<(), Error> {
+/// use wl_clipboard_rs::{paste::{get_mime_types_ordered, ClipboardType, Seat}};
+///
+/// let mime_types = get_mime_types_ordered(ClipboardType::Regular, Seat::Unspecified)?;
+/// for mime_type in mime_types {
+///     println!("{}", mime_type);
+/// }
+/// # Ok(())
+/// # }
+/// ```
+#[inline]
+pub fn get_mime_types_ordered(
+    clipboard: ClipboardType,
+    seat: Seat<'_>,
+) -> Result<Vec<String>, Error> {
     get_mime_types_internal(clipboard, seat, None)
 }
 
@@ -279,7 +323,7 @@ pub(crate) fn get_mime_types_internal(
     clipboard: ClipboardType,
     seat: Seat<'_>,
     socket_name: Option<OsString>,
-) -> Result<HashSet<String>, Error> {
+) -> Result<Vec<String>, Error> {
     let primary = clipboard == ClipboardType::Primary;
     let (_, mut state, offer) = get_offer(primary, seat, socket_name)?;
     Ok(state.offers.remove(&offer).unwrap())
@@ -342,23 +386,34 @@ pub(crate) fn get_contents_internal(
 
     let mut mime_types = state.offers.remove(&offer).unwrap();
 
+    macro_rules! take {
+        ($pred:expr) => {
+            'block: {
+                for i in 0..mime_types.len() {
+                    if $pred(&mime_types[i]) {
+                        // We only remove once, so the swap doesn't affect anything.
+                        break 'block Some(mime_types.swap_remove(i));
+                    }
+                }
+                None
+            }
+        };
+    }
+
     // Find the desired MIME type.
     let mime_type = match mime_type {
-        MimeType::Any => mime_types
-            .take("text/plain;charset=utf-8")
-            .or_else(|| mime_types.take("UTF8_STRING"))
-            .or_else(|| mime_types.iter().find(|x| is_text(x)).cloned())
-            .or_else(|| mime_types.drain().next()),
-        MimeType::Text => mime_types
-            .take("text/plain;charset=utf-8")
-            .or_else(|| mime_types.take("UTF8_STRING"))
-            .or_else(|| mime_types.drain().find(|x| is_text(x))),
-        MimeType::TextWithPriority(priority) => mime_types
-            .take(priority)
-            .or_else(|| mime_types.take("text/plain;charset=utf-8"))
-            .or_else(|| mime_types.take("UTF8_STRING"))
-            .or_else(|| mime_types.drain().find(|x| is_text(x))),
-        MimeType::Specific(mime_type) => mime_types.take(mime_type),
+        MimeType::Any => take!(|x| x == "text/plain;charset=utf-8")
+            .or_else(|| take!(|x| x == "UTF8_STRING"))
+            .or_else(|| take!(is_text))
+            .or_else(|| take!(|_| true)),
+        MimeType::Text => take!(|x| x == "text/plain;charset=utf-8")
+            .or_else(|| take!(|x| x == "UTF8_STRING"))
+            .or_else(|| take!(is_text)),
+        MimeType::TextWithPriority(priority) => take!(|x| x == priority)
+            .or_else(|| take!(|x| x == "text/plain;charset=utf-8"))
+            .or_else(|| take!(|x| x == "UTF8_STRING"))
+            .or_else(|| take!(is_text)),
+        MimeType::Specific(mime_type) => take!(|x| x == mime_type),
     };
 
     // Check if a suitable MIME type is copied.
