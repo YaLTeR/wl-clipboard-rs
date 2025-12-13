@@ -417,25 +417,23 @@
 <a href=#417 id=417 data-nosnippet>417</a>    };
 <a href=#418 id=418 data-nosnippet>418</a>
 <a href=#419 id=419 data-nosnippet>419</a>    <span class="comment">// Check if a suitable MIME type is copied.
-<a href=#420 id=420 data-nosnippet>420</a>    </span><span class="kw">if </span>mime_type.is_none() {
+<a href=#420 id=420 data-nosnippet>420</a>    </span><span class="kw">let </span><span class="prelude-val">Some</span>(mime_type) = mime_type <span class="kw">else </span>{
 <a href=#421 id=421 data-nosnippet>421</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::NoMimeType);
-<a href=#422 id=422 data-nosnippet>422</a>    }
+<a href=#422 id=422 data-nosnippet>422</a>    };
 <a href=#423 id=423 data-nosnippet>423</a>
-<a href=#424 id=424 data-nosnippet>424</a>    <span class="kw">let </span>mime_type = mime_type.unwrap();
-<a href=#425 id=425 data-nosnippet>425</a>
-<a href=#426 id=426 data-nosnippet>426</a>    <span class="comment">// Create a pipe for content transfer.
-<a href=#427 id=427 data-nosnippet>427</a>    </span><span class="kw">let </span>(read, write) = pipe().map_err(Error::PipeCreation)<span class="question-mark">?</span>;
-<a href=#428 id=428 data-nosnippet>428</a>
-<a href=#429 id=429 data-nosnippet>429</a>    <span class="comment">// Start the transfer.
-<a href=#430 id=430 data-nosnippet>430</a>    </span>offer.receive(mime_type.clone(), write.as_fd());
-<a href=#431 id=431 data-nosnippet>431</a>    drop(write);
-<a href=#432 id=432 data-nosnippet>432</a>
-<a href=#433 id=433 data-nosnippet>433</a>    <span class="comment">// A flush() is not enough here, it will result in sometimes pasting empty contents. I suspect this is due to a
-<a href=#434 id=434 data-nosnippet>434</a>    // race between the compositor reacting to the receive request, and the compositor reacting to wl-paste
-<a href=#435 id=435 data-nosnippet>435</a>    // disconnecting after queue is dropped. The roundtrip solves that race.
-<a href=#436 id=436 data-nosnippet>436</a>    </span>queue
-<a href=#437 id=437 data-nosnippet>437</a>        .roundtrip(<span class="kw-2">&amp;mut </span>state)
-<a href=#438 id=438 data-nosnippet>438</a>        .map_err(Error::WaylandCommunication)<span class="question-mark">?</span>;
-<a href=#439 id=439 data-nosnippet>439</a>
-<a href=#440 id=440 data-nosnippet>440</a>    <span class="prelude-val">Ok</span>((read, mime_type))
-<a href=#441 id=441 data-nosnippet>441</a>}</code></pre></div></section></main></body></html>
+<a href=#424 id=424 data-nosnippet>424</a>    <span class="comment">// Create a pipe for content transfer.
+<a href=#425 id=425 data-nosnippet>425</a>    </span><span class="kw">let </span>(read, write) = pipe().map_err(Error::PipeCreation)<span class="question-mark">?</span>;
+<a href=#426 id=426 data-nosnippet>426</a>
+<a href=#427 id=427 data-nosnippet>427</a>    <span class="comment">// Start the transfer.
+<a href=#428 id=428 data-nosnippet>428</a>    </span>offer.receive(mime_type.clone(), write.as_fd());
+<a href=#429 id=429 data-nosnippet>429</a>    drop(write);
+<a href=#430 id=430 data-nosnippet>430</a>
+<a href=#431 id=431 data-nosnippet>431</a>    <span class="comment">// A flush() is not enough here, it will result in sometimes pasting empty contents. I suspect this is due to a
+<a href=#432 id=432 data-nosnippet>432</a>    // race between the compositor reacting to the receive request, and the compositor reacting to wl-paste
+<a href=#433 id=433 data-nosnippet>433</a>    // disconnecting after queue is dropped. The roundtrip solves that race.
+<a href=#434 id=434 data-nosnippet>434</a>    </span>queue
+<a href=#435 id=435 data-nosnippet>435</a>        .roundtrip(<span class="kw-2">&amp;mut </span>state)
+<a href=#436 id=436 data-nosnippet>436</a>        .map_err(Error::WaylandCommunication)<span class="question-mark">?</span>;
+<a href=#437 id=437 data-nosnippet>437</a>
+<a href=#438 id=438 data-nosnippet>438</a>    <span class="prelude-val">Ok</span>((read, mime_type))
+<a href=#439 id=439 data-nosnippet>439</a>}</code></pre></div></section></main></body></html>
