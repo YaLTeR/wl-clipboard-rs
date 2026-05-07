@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.7.1 (7th May 2026)
+
+- Fixed a build error on recent Rust versions due to a never type fallback change.
+
 ## v0.7.0 (23rd Sep 2022)
 
 - Fixed `paste::get_contents()` leaving behind zombie `cat` processes.
