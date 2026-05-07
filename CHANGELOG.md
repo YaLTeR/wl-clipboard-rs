@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.8.2 (7th May 2026)
+
+- Fixed a build error on recent Rust versions due to a never type fallback change.
+
 ## v0.8.1 (7th Mar 2024)
 
 - Updated dependencies, notably `nix`, which fixes building on LoongArch.
