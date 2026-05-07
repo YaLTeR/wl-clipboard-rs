@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.4.2 (7th May 2026)
+
+- Fixed a build error on recent Rust versions due to a never type fallback change.
+
 ## v0.4.1 (1st Sep 2020)
 
 - Updated `nix` to 0.18 and `wayland-rs` to 0.27.
