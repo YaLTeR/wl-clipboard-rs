@@ -431,7 +431,7 @@ impl PreparedCopy {
         }
 
         // Return the error, if any.
-        let result: Result<_, _> = results.into_iter().collect();
+        let result: Result<(), _> = results.into_iter().collect();
         result?;
 
         // Check if an error occurred during data transfer.
