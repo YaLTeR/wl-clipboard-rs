@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.6.1 (7th May 2026)
+
+- Fixed a build error on recent Rust versions due to a never type fallback change.
+
 ## v0.6.0 (20th Mar 2022)
 
 - Fixed `wl-copy` and `wl-clip` hangs when followed by a pipe (e.g. `wl-copy
