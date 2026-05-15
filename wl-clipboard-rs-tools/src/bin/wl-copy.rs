@@ -1,5 +1,5 @@
-use std::fs::OpenOptions;
 use std::os::unix::ffi::OsStringExt;
+use std::{ffi::OsStr, fs::OpenOptions};
 
 use clap::Parser;
 use libc::fork;
@@ -51,26 +51,10 @@ fn main() -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    // Is there a way to do this without checking twice?
-    let source_data = if options.text.is_empty() {
-        None
-    } else {
-        // Copy the arguments into the target file.
-        let mut iter = options.text.drain(..);
-        let mut data = iter.next().unwrap();
-
-        for arg in iter {
-            data.push(" ");
-            data.push(arg);
-        }
-
-        Some(data)
-    };
-
-    let source = if let Some(source_data) = source_data {
-        Source::Bytes(source_data.into_vec().into())
-    } else {
+    let source = if options.text.is_empty() {
         Source::StdIn
+    } else {
+        Source::Bytes(options.text.join(OsStr::new(" ")).into_vec().into())
     };
 
     let mime_type = if let Some(mime_type) = options.mime_type.take() {
