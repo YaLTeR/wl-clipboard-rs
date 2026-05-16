@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quick-xml-0.37.5/src/events/attributes.rs`."><title>attributes.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">quick_xml/events/</div>attributes.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Xml Attributes module
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quick-xml-0.37.5/src/events/attributes.rs`."><title>attributes.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-b7b9f40b.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="quick_xml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.95.0 (59807616e 2026-04-14)" data-channel="1.95.0" data-search-js="search-63369b7b.js" data-stringdex-js="stringdex-b897f86f.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">quick_xml/events/</div>attributes.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Xml Attributes module
 <a href=#2 id=2 data-nosnippet>2</a>//!
 <a href=#3 id=3 data-nosnippet>3</a>//! Provides an iterator over attributes key/value pairs
 <a href=#4 id=4 data-nosnippet>4</a>
@@ -925,12 +925,12 @@
 <a href=#925 id=925 data-nosnippet>925</a>/// have a value, enclosed in single or double quotes.
 <a href=#926 id=926 data-nosnippet>926</a></span><span class="attr">#[cfg(test)]
 <a href=#927 id=927 data-nosnippet>927</a></span><span class="kw">mod </span>xml {
-<a href=#928 id=928 data-nosnippet>928</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#928 id=928 data-nosnippet>928</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#929 id=929 data-nosnippet>929</a>    <span class="kw">use </span>pretty_assertions::assert_eq;
 <a href=#930 id=930 data-nosnippet>930</a>
 <a href=#931 id=931 data-nosnippet>931</a>    <span class="doccomment">/// Checked attribute is the single attribute
 <a href=#932 id=932 data-nosnippet>932</a>    </span><span class="kw">mod </span>single {
-<a href=#933 id=933 data-nosnippet>933</a>        <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#933 id=933 data-nosnippet>933</a>        <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#934 id=934 data-nosnippet>934</a>        <span class="kw">use </span>pretty_assertions::assert_eq;
 <a href=#935 id=935 data-nosnippet>935</a>
 <a href=#936 id=936 data-nosnippet>936</a>        <span class="doccomment">/// Attribute have a value enclosed in single quotes
@@ -1037,7 +1037,7 @@
 <a href=#1037 id=1037 data-nosnippet>1037</a>
 <a href=#1038 id=1038 data-nosnippet>1038</a>    <span class="doccomment">/// Checked attribute is the first attribute in the list of many attributes
 <a href=#1039 id=1039 data-nosnippet>1039</a>    </span><span class="kw">mod </span>first {
-<a href=#1040 id=1040 data-nosnippet>1040</a>        <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#1040 id=1040 data-nosnippet>1040</a>        <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#1041 id=1041 data-nosnippet>1041</a>        <span class="kw">use </span>pretty_assertions::assert_eq;
 <a href=#1042 id=1042 data-nosnippet>1042</a>
 <a href=#1043 id=1043 data-nosnippet>1043</a>        <span class="doccomment">/// Attribute have a value enclosed in single quotes
@@ -1232,7 +1232,7 @@
 <a href=#1232 id=1232 data-nosnippet>1232</a>
 <a href=#1233 id=1233 data-nosnippet>1233</a>    <span class="doccomment">/// Copy of single, but with additional spaces in markup
 <a href=#1234 id=1234 data-nosnippet>1234</a>    </span><span class="kw">mod </span>sparsed {
-<a href=#1235 id=1235 data-nosnippet>1235</a>        <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#1235 id=1235 data-nosnippet>1235</a>        <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#1236 id=1236 data-nosnippet>1236</a>        <span class="kw">use </span>pretty_assertions::assert_eq;
 <a href=#1237 id=1237 data-nosnippet>1237</a>
 <a href=#1238 id=1238 data-nosnippet>1238</a>        <span class="doccomment">/// Attribute have a value enclosed in single quotes
@@ -1340,10 +1340,10 @@
 <a href=#1340 id=1340 data-nosnippet>1340</a>    <span class="doccomment">/// Checks that duplicated attributes correctly reported and recovering is
 <a href=#1341 id=1341 data-nosnippet>1341</a>    /// possible after that
 <a href=#1342 id=1342 data-nosnippet>1342</a>    </span><span class="kw">mod </span>duplicated {
-<a href=#1343 id=1343 data-nosnippet>1343</a>        <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#1343 id=1343 data-nosnippet>1343</a>        <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#1344 id=1344 data-nosnippet>1344</a>
 <a href=#1345 id=1345 data-nosnippet>1345</a>        <span class="kw">mod </span>with_check {
-<a href=#1346 id=1346 data-nosnippet>1346</a>            <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#1346 id=1346 data-nosnippet>1346</a>            <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#1347 id=1347 data-nosnippet>1347</a>            <span class="kw">use </span>pretty_assertions::assert_eq;
 <a href=#1348 id=1348 data-nosnippet>1348</a>
 <a href=#1349 id=1349 data-nosnippet>1349</a>            <span class="doccomment">/// Attribute have a value enclosed in single quotes
@@ -1449,7 +1449,7 @@
 <a href=#1449 id=1449 data-nosnippet>1449</a>
 <a href=#1450 id=1450 data-nosnippet>1450</a>        <span class="doccomment">/// Check for duplicated names is disabled
 <a href=#1451 id=1451 data-nosnippet>1451</a>        </span><span class="kw">mod </span>without_check {
-<a href=#1452 id=1452 data-nosnippet>1452</a>            <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#1452 id=1452 data-nosnippet>1452</a>            <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#1453 id=1453 data-nosnippet>1453</a>            <span class="kw">use </span>pretty_assertions::assert_eq;
 <a href=#1454 id=1454 data-nosnippet>1454</a>
 <a href=#1455 id=1455 data-nosnippet>1455</a>            <span class="doccomment">/// Attribute have a value enclosed in single quotes
@@ -1612,12 +1612,12 @@
 <a href=#1612 id=1612 data-nosnippet>1612</a>/// - without value, key only
 <a href=#1613 id=1613 data-nosnippet>1613</a></span><span class="attr">#[cfg(test)]
 <a href=#1614 id=1614 data-nosnippet>1614</a></span><span class="kw">mod </span>html {
-<a href=#1615 id=1615 data-nosnippet>1615</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#1615 id=1615 data-nosnippet>1615</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#1616 id=1616 data-nosnippet>1616</a>    <span class="kw">use </span>pretty_assertions::assert_eq;
 <a href=#1617 id=1617 data-nosnippet>1617</a>
 <a href=#1618 id=1618 data-nosnippet>1618</a>    <span class="doccomment">/// Checked attribute is the single attribute
 <a href=#1619 id=1619 data-nosnippet>1619</a>    </span><span class="kw">mod </span>single {
-<a href=#1620 id=1620 data-nosnippet>1620</a>        <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#1620 id=1620 data-nosnippet>1620</a>        <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#1621 id=1621 data-nosnippet>1621</a>        <span class="kw">use </span>pretty_assertions::assert_eq;
 <a href=#1622 id=1622 data-nosnippet>1622</a>
 <a href=#1623 id=1623 data-nosnippet>1623</a>        <span class="doccomment">/// Attribute have a value enclosed in single quotes
@@ -1734,7 +1734,7 @@
 <a href=#1734 id=1734 data-nosnippet>1734</a>
 <a href=#1735 id=1735 data-nosnippet>1735</a>    <span class="doccomment">/// Checked attribute is the first attribute in the list of many attributes
 <a href=#1736 id=1736 data-nosnippet>1736</a>    </span><span class="kw">mod </span>first {
-<a href=#1737 id=1737 data-nosnippet>1737</a>        <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#1737 id=1737 data-nosnippet>1737</a>        <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#1738 id=1738 data-nosnippet>1738</a>        <span class="kw">use </span>pretty_assertions::assert_eq;
 <a href=#1739 id=1739 data-nosnippet>1739</a>
 <a href=#1740 id=1740 data-nosnippet>1740</a>        <span class="doccomment">/// Attribute have a value enclosed in single quotes
@@ -1985,7 +1985,7 @@
 <a href=#1985 id=1985 data-nosnippet>1985</a>
 <a href=#1986 id=1986 data-nosnippet>1986</a>    <span class="doccomment">/// Copy of single, but with additional spaces in markup
 <a href=#1987 id=1987 data-nosnippet>1987</a>    </span><span class="kw">mod </span>sparsed {
-<a href=#1988 id=1988 data-nosnippet>1988</a>        <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#1988 id=1988 data-nosnippet>1988</a>        <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#1989 id=1989 data-nosnippet>1989</a>        <span class="kw">use </span>pretty_assertions::assert_eq;
 <a href=#1990 id=1990 data-nosnippet>1990</a>
 <a href=#1991 id=1991 data-nosnippet>1991</a>        <span class="doccomment">/// Attribute have a value enclosed in single quotes
@@ -2103,10 +2103,10 @@
 <a href=#2103 id=2103 data-nosnippet>2103</a>    <span class="doccomment">/// Checks that duplicated attributes correctly reported and recovering is
 <a href=#2104 id=2104 data-nosnippet>2104</a>    /// possible after that
 <a href=#2105 id=2105 data-nosnippet>2105</a>    </span><span class="kw">mod </span>duplicated {
-<a href=#2106 id=2106 data-nosnippet>2106</a>        <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#2106 id=2106 data-nosnippet>2106</a>        <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#2107 id=2107 data-nosnippet>2107</a>
 <a href=#2108 id=2108 data-nosnippet>2108</a>        <span class="kw">mod </span>with_check {
-<a href=#2109 id=2109 data-nosnippet>2109</a>            <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#2109 id=2109 data-nosnippet>2109</a>            <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#2110 id=2110 data-nosnippet>2110</a>            <span class="kw">use </span>pretty_assertions::assert_eq;
 <a href=#2111 id=2111 data-nosnippet>2111</a>
 <a href=#2112 id=2112 data-nosnippet>2112</a>            <span class="doccomment">/// Attribute have a value enclosed in single quotes
@@ -2212,7 +2212,7 @@
 <a href=#2212 id=2212 data-nosnippet>2212</a>
 <a href=#2213 id=2213 data-nosnippet>2213</a>        <span class="doccomment">/// Check for duplicated names is disabled
 <a href=#2214 id=2214 data-nosnippet>2214</a>        </span><span class="kw">mod </span>without_check {
-<a href=#2215 id=2215 data-nosnippet>2215</a>            <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#2215 id=2215 data-nosnippet>2215</a>            <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#2216 id=2216 data-nosnippet>2216</a>            <span class="kw">use </span>pretty_assertions::assert_eq;
 <a href=#2217 id=2217 data-nosnippet>2217</a>
 <a href=#2218 id=2218 data-nosnippet>2218</a>            <span class="doccomment">/// Attribute have a value enclosed in single quotes
@@ -2376,4 +2376,5 @@
 <a href=#2376 id=2376 data-nosnippet>2376</a>        <span class="macro">assert_eq!</span>(iter.next(), <span class="prelude-val">None</span>);
 <a href=#2377 id=2377 data-nosnippet>2377</a>        <span class="macro">assert_eq!</span>(iter.next(), <span class="prelude-val">None</span>);
 <a href=#2378 id=2378 data-nosnippet>2378</a>    }
-<a href=#2379 id=2379 data-nosnippet>2379</a>}</code></pre></div></section></main></body></html>
+<a href=#2379 id=2379 data-nosnippet>2379</a>}
+</code></pre></div></section></main></body></html>
