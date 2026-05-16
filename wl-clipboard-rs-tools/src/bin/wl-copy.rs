@@ -1,5 +1,5 @@
+use std::fs::OpenOptions;
 use std::os::unix::ffi::OsStringExt;
-use std::{ffi::OsStr, fs::OpenOptions};
 
 use clap::Parser;
 use libc::fork;
@@ -51,10 +51,14 @@ fn main() -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    let source = if options.text.is_empty() {
-        Source::StdIn
-    } else {
-        Source::Bytes(options.text.join(OsStr::new(" ")).into_vec().into())
+    // Join arguments into a string to copy, or use stdin if no arguments.
+    let source = match options.text.drain(..).reduce(|mut text, arg| {
+        text.push(" ");
+        text.push(arg);
+        text
+    }) {
+        None => Source::StdIn,
+        Some(text) => Source::Bytes(text.into_vec().into()),
     };
 
     let mime_type = if let Some(mime_type) = options.mime_type.take() {
