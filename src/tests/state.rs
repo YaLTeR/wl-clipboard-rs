@@ -8,9 +8,10 @@
 use std::collections::HashMap;
 use std::io::Write;
 use std::os::fd::AsFd;
-use std::sync::atomic::AtomicU8;
 use std::sync::atomic::Ordering::SeqCst;
+use std::sync::atomic::{AtomicU8, AtomicUsize};
 use std::sync::mpsc::Sender;
+use std::sync::Arc;
 
 use os_pipe::PipeWriter;
 use proptest::prelude::*;
@@ -83,6 +84,11 @@ pub struct State {
     #[proptest(value = "None")]
     pub selection_updated_sender: Option<Sender<Option<Vec<String>>>>,
     pub set_nonblock_on_write_fd: bool,
+    /// All data devices per seat, for propagating selection changes.
+    #[proptest(value = "HashMap::new()")]
+    pub devices: HashMap<String, Vec<ZwlrDataControlDeviceV1>>,
+    #[proptest(value = "Arc::new(AtomicUsize::new(0))")]
+    pub offer_destroy_request_count: Arc<AtomicUsize>,
 }
 
 server_ignore_global_impl!(State => [ZwlrDataControlManagerV1]);
@@ -141,6 +147,11 @@ impl Dispatch<ZwlrDataControlManagerV1, ()> for State {
                 let info = &state.seats[name];
 
                 let data_device = data_init.init(id, (*name).clone());
+                state
+                    .devices
+                    .entry((*name).clone())
+                    .or_default()
+                    .push(data_device.clone());
 
                 let create_offer = |offer_info: &OfferInfo, is_primary: bool| {
                     let offer = client
@@ -184,10 +195,10 @@ impl Dispatch<ZwlrDataControlDeviceV1, String> for State {
     fn request(
         state: &mut Self,
         _client: &wayland_server::Client,
-        _resource: &ZwlrDataControlDeviceV1,
+        resource: &ZwlrDataControlDeviceV1,
         request: <ZwlrDataControlDeviceV1 as Resource>::Request,
         name: &String,
-        _dhandle: &wayland_server::DisplayHandle,
+        dhandle: &wayland_server::DisplayHandle,
         _data_init: &mut wayland_server::DataInit<'_, Self>,
     ) {
         match request {
@@ -207,8 +218,10 @@ impl Dispatch<ZwlrDataControlDeviceV1, String> for State {
                 info.offer = source.map(|source| OfferInfo::Runtime { source });
 
                 if let Some(sender) = &state.selection_updated_sender {
-                    let _ = sender.send(mime_types);
+                    let _ = sender.send(mime_types.clone());
                 }
+
+                propagate_selection(state, dhandle, resource, name, &mime_types, false);
             }
             zwlr_data_control_device_v1::Request::SetPrimarySelection { source } => {
                 let mime_types = source.as_ref().map(|source| state.sources[source].clone());
@@ -226,10 +239,62 @@ impl Dispatch<ZwlrDataControlDeviceV1, String> for State {
                 info.primary_offer = source.map(|source| OfferInfo::Runtime { source });
 
                 if let Some(sender) = &state.selection_updated_sender {
-                    let _ = sender.send(mime_types);
+                    let _ = sender.send(mime_types.clone());
                 }
+
+                propagate_selection(state, dhandle, resource, name, &mime_types, true);
             }
             _ => (),
+        }
+    }
+}
+
+fn propagate_selection(
+    state: &State,
+    dhandle: &wayland_server::DisplayHandle,
+    setter: &ZwlrDataControlDeviceV1,
+    seat_name: &str,
+    mime_types: &Option<Vec<String>>,
+    is_primary: bool,
+) {
+    let Some(devices) = state.devices.get(seat_name) else {
+        return;
+    };
+
+    for device in devices {
+        if device == setter {
+            continue;
+        }
+        let Some(device_client) = device.client() else {
+            continue;
+        };
+
+        match mime_types {
+            None => {
+                if is_primary {
+                    device.primary_selection(None);
+                } else {
+                    device.selection(None);
+                }
+            }
+            Some(types) => {
+                let Ok(offer) = device_client.create_resource::<ZwlrDataControlOfferV1, _, State>(
+                    dhandle,
+                    device.version(),
+                    (seat_name.to_owned(), is_primary),
+                ) else {
+                    continue;
+                };
+                device.data_offer(&offer);
+                for mime_type in types {
+                    offer.offer(mime_type.clone());
+                }
+                if is_primary {
+                    device.primary_selection(Some(&offer));
+                } else {
+                    device.selection(Some(&offer));
+                }
+            }
         }
     }
 }
@@ -244,6 +309,10 @@ impl Dispatch<ZwlrDataControlOfferV1, (String, bool)> for State {
         _dhandle: &wayland_server::DisplayHandle,
         _data_init: &mut wayland_server::DataInit<'_, Self>,
     ) {
+        if let zwlr_data_control_offer_v1::Request::Destroy = request {
+            state.offer_destroy_request_count.fetch_add(1, SeqCst);
+            return;
+        }
         if let zwlr_data_control_offer_v1::Request::Receive { mime_type, fd } = request {
             let info = &state.seats[name];
             let offer_info = if *is_primary {

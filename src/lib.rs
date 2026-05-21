@@ -63,6 +63,33 @@
 //! # }
 //! ```
 //!
+//! Watching the regular clipboard for selection changes and reading each new text selection:
+//! ```no_run
+//! # extern crate wl_clipboard_rs;
+//! # fn foo() -> Result<(), Box<dyn std::error::Error>> {
+//! use std::io::Read;
+//! use wl_clipboard_rs::paste::{ClipboardType, Seat};
+//! use wl_clipboard_rs::watch::{ClipboardEvent, Watcher};
+//!
+//! let mut watcher = Watcher::new(ClipboardType::Regular, Seat::Unspecified)?;
+//! while let Some((event, mut offer)) = watcher.next_event()? {
+//!     match event {
+//!         ClipboardEvent::Changed { mime_types } if mime_types.iter().any(|m| m == "text/plain") => {
+//!             let mut contents = String::new();
+//!             offer.receive("text/plain")?.read_to_string(&mut contents)?;
+//!             println!("Clipboard changed: {contents}");
+//!         }
+//!         ClipboardEvent::Changed { .. } => {}
+//!         ClipboardEvent::Cleared => println!("Clipboard cleared"),
+//!     }
+//! }
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! Obtain a [`watch::CancelHandle`] from [`watch::Watcher::cancel_handle`] to stop a watcher
+//! blocked in [`watch::Watcher::next_event`] from another thread.
+//!
 //! Checking if the "primary" clipboard is supported (note that this might be unnecessary depending
 //! on your crate usage, the regular copying and pasting functions do report if the primary
 //! selection is unsupported when it is requested):
@@ -119,3 +146,4 @@ mod tests;
 pub mod copy;
 pub mod paste;
 pub mod utils;
+pub mod watch;
