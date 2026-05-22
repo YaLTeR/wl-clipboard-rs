@@ -1,7 +1,9 @@
 #![deny(unsafe_code)]
 
+use std::ffi::OsStr;
 use std::fs::read_link;
 use std::io::{stdout, Read, Write};
+use std::process::{Command, Stdio};
 
 use anyhow::Context;
 use clap::Parser;
@@ -10,6 +12,7 @@ use log::trace;
 use mime_guess::Mime;
 use wl_clipboard_rs::paste::*;
 use wl_clipboard_rs::utils::is_text;
+use wl_clipboard_rs::watch::{ClipboardEvent, Watcher};
 use wl_clipboard_rs_tools::wl_paste::Options;
 
 fn infer_mime_type() -> Option<Mime> {
@@ -50,8 +53,6 @@ fn main() -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    // Otherwise, get the clipboard contents.
-
     // No MIME type specified—try inferring one from the output file extension (if any).
     let inferred = if options.mime_type.is_none() {
         infer_mime_type()
@@ -59,8 +60,8 @@ fn main() -> Result<(), anyhow::Error> {
         None
     };
 
-    // Do some smart MIME type selection.
-    let mime_type = match options.mime_type {
+    // Build the MimeType selector (shared by both watch and single-paste paths).
+    let mime_type_selector = match options.mime_type {
         Some(ref mime_type) if mime_type == "text" => MimeType::Text,
         Some(ref mime_type) => MimeType::Specific(mime_type),
         None => {
@@ -76,7 +77,11 @@ fn main() -> Result<(), anyhow::Error> {
         }
     };
 
-    let (mut read, mime_type) = get_contents(primary, seat, mime_type)?;
+    if options.watch {
+        return watch_mode(primary, seat, mime_type_selector, &options.watch_command);
+    }
+
+    let (mut read, mime_type) = get_contents(primary, seat, mime_type_selector)?;
 
     // Read the contents.
     let mut contents = vec![];
@@ -95,4 +100,79 @@ fn main() -> Result<(), anyhow::Error> {
         .context("Couldn't write contents to stdout")?;
 
     Ok(())
+}
+
+enum ClipboardState {
+    Data,
+    Sensitive,
+    Nil,
+}
+
+impl ClipboardState {
+    fn for_mime_types(mime_types: &[String]) -> Self {
+        if mime_types
+            .iter()
+            .any(|mt| mt == "x-kde-passwordManagerHint")
+        {
+            Self::Sensitive
+        } else {
+            Self::Data
+        }
+    }
+}
+
+impl AsRef<OsStr> for ClipboardState {
+    fn as_ref(&self) -> &OsStr {
+        OsStr::new(match self {
+            Self::Data => "data",
+            Self::Sensitive => "sensitive",
+            Self::Nil => "nil",
+        })
+    }
+}
+
+fn watch_mode(
+    clipboard: ClipboardType,
+    seat: Seat<'_>,
+    mime_type_selector: MimeType<'_>,
+    cmd: &[String],
+) -> Result<(), anyhow::Error> {
+    let mut watcher = Watcher::new(clipboard, seat)?;
+    while let Some((event, mut offer)) = watcher.next_event()? {
+        let mime_types = match event {
+            ClipboardEvent::Cleared => None,
+            ClipboardEvent::Changed { mime_types } => Some(mime_types),
+        };
+
+        let Some(mime_types) = mime_types else {
+            run_watch_cmd(cmd, Stdio::null(), ClipboardState::Nil);
+            continue;
+        };
+
+        let clipboard_state = ClipboardState::for_mime_types(&mime_types);
+
+        let Some(selected) = select_mime_type(mime_types, mime_type_selector) else {
+            continue;
+        };
+
+        match offer.receive(&selected) {
+            Ok(pipe) => run_watch_cmd(cmd, Stdio::from(pipe), clipboard_state),
+            Err(e) => eprintln!("wl-paste: {e}"),
+        }
+    }
+    Ok(())
+}
+
+fn run_watch_cmd(cmd: &[String], stdin: Stdio, clipboard_state: ClipboardState) {
+    match Command::new(&cmd[0])
+        .args(&cmd[1..])
+        .stdin(stdin)
+        .env("CLIPBOARD_STATE", clipboard_state)
+        .spawn()
+    {
+        Ok(mut child) => {
+            let _ = child.wait();
+        }
+        Err(e) => eprintln!("wl-paste: failed to spawn {}: {e}", cmd[0]),
+    }
 }

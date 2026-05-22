@@ -47,4 +47,22 @@ pub struct Options {
     /// Enable verbose logging
     #[arg(long, short, action = clap::ArgAction::Count)]
     pub verbose: u8,
+
+    /// Run a command each time the selection changes
+    ///
+    /// COMMAND and its arguments must follow all other wl-paste options.
+    /// The command is invoked with the new clipboard contents on stdin.
+    /// CLIPBOARD_STATE env is set to "data", "sensitive", or "nil" (cleared).
+    #[arg(long, short = 'w', conflicts_with = "list_types")]
+    pub watch: bool,
+
+    /// The command (and arguments) to run in watch mode
+    #[arg(
+        requires = "watch",
+        required_if_eq("watch", "true"),
+        allow_hyphen_values = true,
+        num_args = 1..,
+        value_name = "COMMAND"
+    )]
+    pub watch_command: Vec<String>,
 }
