@@ -1,15 +1,15 @@
-use std::sync::mpsc::channel;
-use proptest::prelude::*;
-use std::collections::{HashMap, HashSet};
-use std::io::Read;
-use std::sync::mpsc::Receiver;
-use std::time::Duration;
-use os_pipe::PipeReader;
-use wayland_protocols_wlr::data_control::v1::server::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
 use crate::copy::{MimeSource, Options};
 use crate::paste::*;
 use crate::tests::state::*;
 use crate::tests::TestServer;
+use os_pipe::PipeReader;
+use proptest::prelude::*;
+use std::collections::{HashMap, HashSet};
+use std::io::Read;
+use std::sync::mpsc::channel;
+use std::sync::mpsc::Receiver;
+use std::time::Duration;
+use wayland_protocols_wlr::data_control::v1::server::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
 
 #[test]
 fn get_mime_types_test() {
@@ -358,7 +358,6 @@ fn get_contents_channel_test() {
     assert_eq!(contents, [1, 3, 3, 7, 8]);
 }
 
-
 #[test]
 fn get_contents_channel_test_multiple() {
     let server = TestServer::new();
@@ -387,45 +386,57 @@ fn get_contents_channel_test_multiple() {
         get_contents_channel_internal(Seat::Unspecified, MimeType::Any, Some(socket_name.clone()))
             .expect("unable to create channel");
 
-    let sources = vec![MimeSource {
-        source: crate::copy::Source::Bytes([1, 3, 3, 7, 8][..].into()),
-        mime_type: crate::copy::MimeType::Specific("application/octet-stream".into()),
-    }];
-    crate::copy::copy_internal(
-        Options::new(),
-        sources,
-        Some(socket_name.clone()),
-    )
+    let sn = socket_name.clone();
+    std::thread::spawn(move || {
+        let sources = vec![MimeSource {
+            source: crate::copy::Source::Bytes([1, 3, 3, 7, 8][..].into()),
+            mime_type: crate::copy::MimeType::Specific("application/octet-stream".into()),
+        }];
+        crate::copy::copy_internal(
+            Options::new().foreground(true).clone(),
+            sources,
+            Some(sn.clone()),
+        )
         .expect("unable to copy");
-    let _ = rx2.recv().unwrap().unwrap();
+        // let _ = rx2.recv().unwrap().unwrap();
+    });
 
-    let mut result = tx.recv_timeout(Duration::from_millis(1000)).expect("failed to receive").expect("no data");
+    let mut result = tx
+        .recv_timeout(Duration::from_millis(1000))
+        .expect("failed to receive")
+        .expect("no data");
     assert_eq!(result.1, "application/octet-stream");
 
     let mut contents = vec![];
     result.0.read_to_end(&mut contents).unwrap();
     assert_eq!(contents, [1, 3, 3, 7, 8]);
 
-    let sources = vec![MimeSource {
-        source: crate::copy::Source::Bytes([1, 3, 3, 7, 8][..].into()),
-        mime_type: crate::copy::MimeType::Specific("application/octet-stream".into()),
-    }];
-    crate::copy::copy_internal(
-        Options::new(),
-        sources,
-        Some(socket_name.clone()),
-    )
+    let sn = socket_name.clone();
+    std::thread::spawn(move || {
+        let sources2 = vec![MimeSource {
+            source: crate::copy::Source::Bytes([1, 6, 3, 7, 8][..].into()),
+            mime_type: crate::copy::MimeType::Specific("application/octet-stream".into()),
+        }];
+        crate::copy::copy_internal(
+            Options::new().foreground(true).clone(),
+            sources2,
+            Some(sn.clone()),
+        )
         .expect("unable to copy");
-    let _ = rx2.recv().unwrap().unwrap();
+        // let _ = rx2.recv().unwrap().unwrap();
+    });
 
-    let mut result = tx.recv_timeout(Duration::from_millis(100)).expect("failed to receive").expect("no data");
+    let mut result = tx
+        .recv_timeout(Duration::from_millis(100))
+        .expect("failed to receive")
+        .expect("no data");
     assert_eq!(result.1, "application/octet-stream");
 
     let mut contents = vec![];
     result.0.read_to_end(&mut contents).unwrap();
-    assert_eq!(contents, [1, 3, 3, 7, 8]);
+    assert_eq!(contents, [1, 6, 3, 7, 8]);
 
-    panic!("a")
+    panic!("TODO")
 }
 
 #[test]

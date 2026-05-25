@@ -1,6 +1,5 @@
 //! Getting the offered MIME types and the clipboard contents.
 
-use os_pipe::{pipe, PipeReader};
 use std::collections::{HashMap, HashSet};
 use std::ffi::OsString;
 use std::io::Read;
@@ -8,6 +7,8 @@ use std::os::fd::AsFd;
 use std::sync::mpsc;
 use std::thread::JoinHandle;
 use std::{io, thread};
+
+use os_pipe::{pipe, PipeReader};
 use wayland_client::globals::GlobalListContents;
 use wayland_client::protocol::wl_registry::WlRegistry;
 use wayland_client::protocol::wl_seat::WlSeat;
@@ -182,9 +183,7 @@ impl_dispatch_device!(State, WlSeat, |state: &mut Self, event, seat| {
     }
 });
 
-impl_dispatch_offer!(State, |state: &mut Self,
-                             offer: data_control::Offer,
-                             event| {
+impl_dispatch_offer!(State, |state: &mut Self, offer: Offer, event| {
     if let Event::Offer { mime_type } = event {
         state.offers.get_mut(&offer).unwrap().insert(mime_type);
     }
@@ -194,7 +193,7 @@ fn get_offer(
     primary: bool,
     seat: Seat<'_>,
     socket_name: Option<OsString>,
-) -> Result<(EventQueue<State>, State, data_control::Offer), Error> {
+) -> Result<(EventQueue<State>, State, Offer), Error> {
     let (mut queue, mut common) = initialize(primary, socket_name)?;
 
     // Check if there are no seats.
@@ -554,12 +553,12 @@ fn run_dispatch_loop(
 #[inline]
 pub fn get_all_contents_callback(
     seat: Seat<'static>,
-    callback: Box<dyn Fn(Data) -> bool + Send + Sync + 'static>,
+    callback: Box<dyn Fn(CallbackData) -> bool + Send + Sync + 'static>,
 ) -> Result<JoinHandle<()>, Error> {
     get_all_contents_callback_internal(seat, callback, None)
 }
 
-pub type Data<'a> = Result<
+pub type CallbackData<'a> = Result<
     (
         HashSet<String>,
         &'a mut (dyn FnMut(String) -> Result<Vec<u8>, Error> + Send),
@@ -569,7 +568,7 @@ pub type Data<'a> = Result<
 
 pub(crate) fn get_all_contents_callback_internal(
     seat: Seat<'static>,
-    callback: Box<dyn Fn(Data) -> bool + Send + Sync + 'static>,
+    callback: Box<dyn Fn(CallbackData) -> bool + Send + Sync + 'static>,
     socket_name: Option<OsString>,
 ) -> Result<JoinHandle<()>, Error> {
     let (queue, mut common) = initialize(false, socket_name)?;
@@ -592,7 +591,7 @@ fn run_callback_dispatch_loop(
     mut queue: EventQueue<State>,
     mut state: State,
     seat: Seat<'static>,
-    callback: Box<dyn Fn(Data) -> bool + Send + Sync + 'static>,
+    callback: Box<dyn Fn(CallbackData) -> bool + Send + Sync + 'static>,
 ) {
     loop {
         if let Err(err) = queue.blocking_dispatch(&mut state) {
@@ -637,7 +636,7 @@ fn create_load_mime_fn<'a>(
         let Ok((mut read, write)) = pipe() else {
             return Err(Error::PipeCreation(io::Error::last_os_error()));
         };
-        offer.receive(mime.clone(), write.as_fd());
+        offer.receive(mime, write.as_fd());
         drop(write);
         let mut contents = Vec::new();
         let _ = queue.roundtrip(state);
