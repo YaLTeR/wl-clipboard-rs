@@ -25,10 +25,10 @@ fn clear_test() {
             "seat0".into(),
             SeatInfo {
                 offer: Some(OfferInfo::Buffered {
-                    data: HashMap::from([("regular".into(), vec![1, 2, 3])]),
+                    data: vec![("regular".into(), vec![1, 2, 3])],
                 }),
                 primary_offer: Some(OfferInfo::Buffered {
-                    data: HashMap::from([("primary".into(), vec![1, 2, 3])]),
+                    data: vec![("primary".into(), vec![1, 2, 3])],
                 }),
             },
         )]),
@@ -393,7 +393,7 @@ proptest! {
         match &mime_type {
             MimeType::Autodetect => unreachable!(),
             MimeType::Text => assert_eq!(mime_types, ["text/plain"]),
-            MimeType::Specific(mime) => assert_eq!(mime_types, [mime.clone()]),
+            MimeType::Specific(mime) => assert_eq!(mime_types, std::slice::from_ref(mime)),
         }
 
         let paste_mime_type = match mime_type {

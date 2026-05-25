@@ -41,7 +41,7 @@ fn main() -> Result<(), anyhow::Error> {
 
     // If listing types is requested, do just that.
     if options.list_types {
-        let mime_types = get_mime_types(primary, seat)?;
+        let mime_types = get_mime_types_ordered(primary, seat)?;
 
         for mime_type in mime_types.iter() {
             println!("{}", mime_type);

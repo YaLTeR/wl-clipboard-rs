@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v0.9.3 (13th Dec 2025)
+
+- Switched copying and wl-copy from tempfile to in-memory data storage.
+- Added more text MIME heuristics to `utils::is_text` based on wl-clipboard. In particular, this fixes copying shell scripts and XML files.
+- Added `paste::get_mime_types_ordered` that preserves the ordering of MIME types offered by the copying application. This can sometimes be used to determine the "native" data type of the copied contents. `wl-paste -l` was updated to show this ordered list.
+- Updated dependencies, notably rustix to v1 and windows-sys.
+- Minimized version requirements of other dependencies.
+
 ## v0.9.2 (14th Mar 2025)
 
 - Added support for the `ext-data-control` protocol. It will be used instead of `wlr-data-control` when available.

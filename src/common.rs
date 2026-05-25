@@ -22,6 +22,7 @@ pub struct State {
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
+    #[allow(clippy::enum_variant_names)]
     #[error("Couldn't open the provided Wayland socket")]
     SocketOpenError(#[source] io::Error),
 
