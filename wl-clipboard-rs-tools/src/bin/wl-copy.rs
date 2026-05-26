@@ -51,26 +51,14 @@ fn main() -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    // Is there a way to do this without checking twice?
-    let source_data = if options.text.is_empty() {
-        None
-    } else {
-        // Copy the arguments into the target file.
-        let mut iter = options.text.drain(..);
-        let mut data = iter.next().unwrap();
-
-        for arg in iter {
-            data.push(" ");
-            data.push(arg);
-        }
-
-        Some(data)
-    };
-
-    let source = if let Some(source_data) = source_data {
-        Source::Bytes(source_data.into_vec().into())
-    } else {
-        Source::StdIn
+    // Join arguments into a string to copy, or use stdin if no arguments.
+    let source = match options.text.drain(..).reduce(|mut text, arg| {
+        text.push(" ");
+        text.push(arg);
+        text
+    }) {
+        None => Source::StdIn,
+        Some(text) => Source::Bytes(text.into_vec().into()),
     };
 
     let mime_type = if let Some(mime_type) = options.mime_type.take() {
