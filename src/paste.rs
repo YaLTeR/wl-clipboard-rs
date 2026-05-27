@@ -431,7 +431,7 @@ pub fn select_mime_type(available: Vec<String>, requested: MimeType<'_>) -> Opti
         MimeType::Any => take!(|x| x == "text/plain;charset=utf-8")
             .or_else(|| take!(|x| x == "UTF8_STRING"))
             .or_else(|| take!(is_text))
-            .or_else(|| take!(|_: &String| true)),
+            .or_else(|| take!(|_| true)),
         MimeType::Text => take!(|x| x == "text/plain;charset=utf-8")
             .or_else(|| take!(|x| x == "UTF8_STRING"))
             .or_else(|| take!(is_text)),
@@ -439,6 +439,6 @@ pub fn select_mime_type(available: Vec<String>, requested: MimeType<'_>) -> Opti
             .or_else(|| take!(|x| x == "text/plain;charset=utf-8"))
             .or_else(|| take!(|x| x == "UTF8_STRING"))
             .or_else(|| take!(is_text)),
-        MimeType::Specific(mime_type) => take!(|x: &String| x == mime_type),
+        MimeType::Specific(mime_type) => take!(|x| x == mime_type),
     }
 }
