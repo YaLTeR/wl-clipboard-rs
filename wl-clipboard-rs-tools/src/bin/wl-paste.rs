@@ -1,6 +1,5 @@
 #![deny(unsafe_code)]
 
-use std::ffi::OsStr;
 use std::fs::read_link;
 use std::io::{stdout, Read, Write};
 use std::process::{Command, Stdio};
@@ -102,34 +101,10 @@ fn main() -> Result<(), anyhow::Error> {
     Ok(())
 }
 
-enum ClipboardState {
-    Data,
-    Sensitive,
-    Nil,
-}
-
-impl ClipboardState {
-    fn for_mime_types(mime_types: &[String]) -> Self {
-        if mime_types
-            .iter()
-            .any(|mt| mt == "x-kde-passwordManagerHint")
-        {
-            Self::Sensitive
-        } else {
-            Self::Data
-        }
-    }
-}
-
-impl AsRef<OsStr> for ClipboardState {
-    fn as_ref(&self) -> &OsStr {
-        OsStr::new(match self {
-            Self::Data => "data",
-            Self::Sensitive => "sensitive",
-            Self::Nil => "nil",
-        })
-    }
-}
+const CLIPBOARD_STATE_DATA: &str = "data";
+const CLIPBOARD_STATE_SENSITIVE: &str = "sensitive";
+const CLIPBOARD_STATE_NIL: &str = "nil";
+const MIME_TYPE_PASSWORD_MANAGER_HINT: &str = "x-kde-passwordManagerHint";
 
 fn watch_mode(
     clipboard: ClipboardType,
@@ -145,11 +120,18 @@ fn watch_mode(
         };
 
         let Some(mime_types) = mime_types else {
-            run_watch_cmd(cmd, Stdio::null(), ClipboardState::Nil);
+            run_watch_cmd(cmd, Stdio::null(), CLIPBOARD_STATE_NIL);
             continue;
         };
 
-        let clipboard_state = ClipboardState::for_mime_types(&mime_types);
+        let clipboard_state = if mime_types
+            .iter()
+            .any(|mt| mt == MIME_TYPE_PASSWORD_MANAGER_HINT)
+        {
+            CLIPBOARD_STATE_SENSITIVE
+        } else {
+            CLIPBOARD_STATE_DATA
+        };
 
         let Some(selected) = select_mime_type(mime_types, mime_type_selector) else {
             continue;
@@ -163,7 +145,7 @@ fn watch_mode(
     Ok(())
 }
 
-fn run_watch_cmd(cmd: &[String], stdin: Stdio, clipboard_state: ClipboardState) {
+fn run_watch_cmd(cmd: &[String], stdin: Stdio, clipboard_state: &str) {
     match Command::new(&cmd[0])
         .args(&cmd[1..])
         .stdin(stdin)
