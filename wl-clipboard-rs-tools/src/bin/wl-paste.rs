@@ -139,7 +139,7 @@ fn watch_mode(
 
         match offer.receive(&selected) {
             Ok(pipe) => run_watch_cmd(cmd, Stdio::from(pipe), clipboard_state),
-            Err(e) => eprintln!("wl-paste: {e}"),
+            Err(e) => eprintln!("wl-paste: failed to receive clipboard contents: {e}"),
         }
     }
     Ok(())
