@@ -419,6 +419,7 @@ pub fn select_mime_type(available: Vec<String>, requested: MimeType<'_>) -> Opti
             'block: {
                 for i in 0..v.len() {
                     if $pred(&v[i]) {
+                        // We only remove once, so the swap doesn't affect anything.
                         break 'block Some(v.swap_remove(i));
                     }
                 }
