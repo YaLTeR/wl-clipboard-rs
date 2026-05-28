@@ -98,10 +98,12 @@ impl CancelHandle {
 }
 
 /// A clipboard selection event reported by [`Watcher::next_event`].
-#[derive(Debug, Clone)]
-pub enum ClipboardEvent {
+pub enum ClipboardEvent<'a> {
     /// The selection changed; `mime_types` lists offered types in protocol order.
-    Changed { mime_types: Vec<String> },
+    Changed {
+        mime_types: Vec<String>,
+        offer: Offer<'a>,
+    },
     /// The selection was cleared.
     Cleared,
 }
@@ -135,7 +137,7 @@ pub struct Watcher {
 /// event carries an empty offer, for which [`Offer::receive`] returns [`Error::ClipboardEmpty`].
 pub struct Offer<'a> {
     watcher: &'a mut Watcher,
-    offer: Option<data_control::Offer>,
+    offer: data_control::Offer,
 }
 
 impl Watcher {
@@ -220,7 +222,7 @@ impl Watcher {
     /// On success yields the [`ClipboardEvent`] and an [`Offer`] to read its contents from.
     /// Returns `Ok(None)` if cancelled via [`CancelHandle::cancel`], or `Err` on a Wayland
     /// communication failure.
-    pub fn next_event(&mut self) -> Result<Option<(ClipboardEvent, Offer<'_>)>, Error> {
+    pub fn next_event<'a>(&'a mut self) -> Result<Option<ClipboardEvent<'a>>, Error> {
         while !self.front_matches() {
             if self.wait()? {
                 return Ok(None);
@@ -249,24 +251,22 @@ impl Watcher {
 
     // Removes the front event, returning its kind and an [`Offer`] to receive from. Only call when
     // `front_matches` returned `true`.
-    fn take_front_event(&mut self) -> (ClipboardEvent, Offer<'_>) {
+    fn take_front_event<'a>(&'a mut self) -> ClipboardEvent<'a> {
         let (_, _, offer) = self.state.selection_events.remove(0);
         let mime_types = offer
             .as_ref()
             .and_then(|o| self.state.offers.remove(o))
             .unwrap_or_default();
-        let event = if offer.is_some() {
-            ClipboardEvent::Changed { mime_types }
-        } else {
-            ClipboardEvent::Cleared
-        };
-        (
-            event,
-            Offer {
-                watcher: self,
-                offer,
+        match offer {
+            Some(offer) => ClipboardEvent::Changed {
+                mime_types,
+                offer: Offer {
+                    watcher: self,
+                    offer,
+                },
             },
-        )
+            None => ClipboardEvent::Cleared,
+        }
     }
 
     // Blocks until more Wayland events arrive (or cancellation). Returns `Ok(true)` if cancelled.
@@ -329,9 +329,7 @@ impl Drop for Watcher {
 
 impl Drop for Offer<'_> {
     fn drop(&mut self) {
-        if let Some(offer) = self.offer.take() {
-            offer.destroy();
-        }
+        self.offer.destroy();
     }
 }
 
@@ -340,9 +338,8 @@ impl Offer<'_> {
     ///
     /// Returns `Err(Error::ClipboardEmpty)` on a [`ClipboardEvent::Cleared`] event.
     pub fn receive(&mut self, mime_type: &str) -> Result<PipeReader, Error> {
-        let offer = self.offer.as_ref().ok_or(Error::ClipboardEmpty)?;
         let (read, write) = pipe().map_err(Error::PipeCreation)?;
-        offer.receive(mime_type.to_string(), write.as_fd());
+        self.offer.receive(mime_type.to_string(), write.as_fd());
         drop(write);
         self.watcher
             .queue

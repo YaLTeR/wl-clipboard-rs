@@ -72,9 +72,9 @@
 //! use wl_clipboard_rs::watch::{ClipboardEvent, Watcher};
 //!
 //! let mut watcher = Watcher::new(ClipboardType::Regular, Seat::Unspecified)?;
-//! while let Some((event, mut offer)) = watcher.next_event()? {
+//! while let Some(event) = watcher.next_event()? {
 //!     match event {
-//!         ClipboardEvent::Changed { mime_types } if mime_types.iter().any(|m| m == "text/plain") => {
+//!         ClipboardEvent::Changed { mime_types, mut offer } if mime_types.iter().any(|m| m == "text/plain") => {
 //!             let mut contents = String::new();
 //!             offer.receive("text/plain")?.read_to_string(&mut contents)?;
 //!             println!("Clipboard changed: {contents}");

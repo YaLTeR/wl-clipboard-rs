@@ -29,9 +29,12 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     println!("Watching the clipboard. Press Enter to stop.");
 
-    while let Some((event, mut offer)) = watcher.next_event()? {
+    while let Some(event) = watcher.next_event()? {
         match event {
-            ClipboardEvent::Changed { mime_types } => {
+            ClipboardEvent::Changed {
+                mime_types,
+                mut offer,
+            } => {
                 println!("changed: {} mime type(s) offered", mime_types.len());
                 for mime_type in mime_types {
                     if mime_type.starts_with("text/") {

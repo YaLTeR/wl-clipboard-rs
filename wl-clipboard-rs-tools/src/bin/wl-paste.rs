@@ -113,33 +113,33 @@ fn watch_mode(
     cmd: &[String],
 ) -> Result<(), anyhow::Error> {
     let mut watcher = Watcher::new(clipboard, seat)?;
-    while let Some((event, mut offer)) = watcher.next_event()? {
-        let mime_types = match event {
-            ClipboardEvent::Cleared => None,
-            ClipboardEvent::Changed { mime_types } => Some(mime_types),
-        };
+    while let Some(event) = watcher.next_event()? {
+        match event {
+            ClipboardEvent::Cleared => {
+                run_watch_cmd(cmd, Stdio::null(), CLIPBOARD_STATE_NIL);
+            }
+            ClipboardEvent::Changed {
+                mime_types,
+                mut offer,
+            } => {
+                let clipboard_state = if mime_types
+                    .iter()
+                    .any(|mt| mt == MIME_TYPE_PASSWORD_MANAGER_HINT)
+                {
+                    CLIPBOARD_STATE_SENSITIVE
+                } else {
+                    CLIPBOARD_STATE_DATA
+                };
 
-        let Some(mime_types) = mime_types else {
-            run_watch_cmd(cmd, Stdio::null(), CLIPBOARD_STATE_NIL);
-            continue;
-        };
+                let Some(selected) = select_mime_type(mime_types, mime_type_selector) else {
+                    continue;
+                };
 
-        let clipboard_state = if mime_types
-            .iter()
-            .any(|mt| mt == MIME_TYPE_PASSWORD_MANAGER_HINT)
-        {
-            CLIPBOARD_STATE_SENSITIVE
-        } else {
-            CLIPBOARD_STATE_DATA
-        };
-
-        let Some(selected) = select_mime_type(mime_types, mime_type_selector) else {
-            continue;
-        };
-
-        match offer.receive(&selected) {
-            Ok(pipe) => run_watch_cmd(cmd, Stdio::from(pipe), clipboard_state),
-            Err(e) => eprintln!("wl-paste: failed to receive clipboard contents: {e}"),
+                match offer.receive(&selected) {
+                    Ok(pipe) => run_watch_cmd(cmd, Stdio::from(pipe), clipboard_state),
+                    Err(e) => eprintln!("wl-paste: failed to receive clipboard contents: {e}"),
+                }
+            }
         }
     }
     Ok(())

@@ -2,8 +2,8 @@ use std::collections::HashMap;
 use std::io::Read;
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::{mpsc, Arc, Mutex};
-use std::thread;
 use std::time::Duration;
+use std::{panic, thread};
 
 use wayland_protocols_wlr::data_control::v1::server::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
 
@@ -40,10 +40,10 @@ fn watch_initial_changed() {
 
     let mut watcher =
         Watcher::with_socket(ClipboardType::Regular, Seat::Unspecified, Some(socket_name)).unwrap();
-    let (event, _offer) = watcher.next_event().unwrap().unwrap();
+    let event = watcher.next_event().unwrap().unwrap();
 
     assert!(
-        matches!(event, ClipboardEvent::Changed { mime_types } if mime_types == ["text/plain"])
+        matches!(event, ClipboardEvent::Changed { mime_types, .. } if mime_types == ["text/plain"])
     );
 }
 
@@ -66,7 +66,7 @@ fn watch_initial_cleared() {
 
     let mut watcher =
         Watcher::with_socket(ClipboardType::Regular, Seat::Unspecified, Some(socket_name)).unwrap();
-    let (event, _offer) = watcher.next_event().unwrap().unwrap();
+    let event = watcher.next_event().unwrap().unwrap();
 
     assert!(matches!(event, ClipboardEvent::Cleared));
 }
@@ -98,8 +98,9 @@ fn watch_receive_contents() {
 
     let mut watcher =
         Watcher::with_socket(ClipboardType::Regular, Seat::Unspecified, Some(socket_name)).unwrap();
-    let (event, mut offer) = watcher.next_event().unwrap().unwrap();
-    assert!(matches!(event, ClipboardEvent::Changed { .. }));
+    let ClipboardEvent::Changed { mut offer, .. } = watcher.next_event().unwrap().unwrap() else {
+        panic!("expected ClipboardEvent::Changed");
+    };
 
     let mut pipe = offer.receive("text/plain").unwrap();
     let mut received_data = Vec::new();
@@ -125,7 +126,7 @@ fn watch_selection_change() {
     let socket_name = server.socket_name().to_owned();
     server.run(state);
 
-    let (tx, rx) = mpsc::channel::<ClipboardEvent>();
+    let (tx, rx) = mpsc::channel::<Option<Vec<String>>>();
     let socket_name2 = socket_name.clone();
 
     // Watch in a background thread; stop after seeing two events (initial + change).
@@ -137,16 +138,19 @@ fn watch_selection_change() {
         )
         .unwrap();
         for _ in 0..2 {
-            let Ok(Some((event, _offer))) = watcher.next_event() else {
+            let Ok(Some(event)) = watcher.next_event() else {
                 break;
             };
-            let _ = tx.send(event);
+            let _ = tx.send(match event {
+                ClipboardEvent::Changed { mime_types, .. } => Some(mime_types),
+                ClipboardEvent::Cleared => None,
+            });
         }
     });
 
     // First event should be Cleared (empty initial clipboard).
     let first = rx.recv_timeout(Duration::from_secs(1)).unwrap();
-    assert!(matches!(first, ClipboardEvent::Cleared));
+    assert!(first.is_none());
 
     // Now copy something; the watcher should see a Changed event.
     let mut opts = Options::new();
@@ -161,11 +165,8 @@ fn watch_selection_change() {
     )
     .unwrap();
 
-    let second = rx.recv_timeout(Duration::from_secs(1)).unwrap();
-    assert!(matches!(
-        second,
-        ClipboardEvent::Changed { ref mime_types } if mime_types.iter().any(|m| m == "text/plain")
-    ));
+    let second = rx.recv_timeout(Duration::from_secs(1)).unwrap().unwrap();
+    assert!(second.iter().any(|m| m == "text/plain"));
 }
 
 // Sets the regular clipboard to `payload` via a real copy client that keeps serving paste
@@ -214,16 +215,19 @@ fn watch_multiple_changes() {
     .unwrap();
 
     // Initial state is the empty clipboard.
-    let (event, offer) = watcher.next_event().unwrap().unwrap();
+    let event = watcher.next_event().unwrap().unwrap();
     assert!(matches!(event, ClipboardEvent::Cleared));
-    drop(offer);
+    drop(event);
 
     // Copy several times in a row, receiving and verifying the contents after each change.
     for payload in [&b"one"[..], b"two", b"three"] {
         copy_text(&socket_name, payload);
 
-        let (event, mut offer) = watcher.next_event().unwrap().unwrap();
-        assert!(matches!(event, ClipboardEvent::Changed { .. }));
+        let ClipboardEvent::Changed { mut offer, .. } = watcher.next_event().unwrap().unwrap()
+        else {
+            panic!("expected ClipboardEvent::Changed");
+        };
+
         assert_eq!(receive_text(&mut offer), payload);
     }
 }
@@ -253,38 +257,35 @@ fn watch_continues_after_clear() {
     .unwrap();
 
     // Initial empty clipboard.
-    let (event, offer) = watcher.next_event().unwrap().unwrap();
+    let event = watcher.next_event().unwrap().unwrap();
     assert!(matches!(event, ClipboardEvent::Cleared));
-    drop(offer);
+    drop(event);
 
     // A change followed by a successful receive.
     copy_text(&socket_name, b"before");
-    let (event, mut offer) = watcher.next_event().unwrap().unwrap();
-    assert!(matches!(event, ClipboardEvent::Changed { .. }));
+    let ClipboardEvent::Changed { mut offer, .. } = watcher.next_event().unwrap().unwrap() else {
+        panic!("expected ClipboardEvent::Changed");
+    };
     assert_eq!(receive_text(&mut offer), b"before");
     drop(offer);
 
-    // Clearing the clipboard yields a Cleared event. There's nothing to receive, so receive()
-    // reports ClipboardEmpty rather than handing back stale data.
+    // Clearing the clipboard yields a Cleared event.
     copy::clear_internal(
         copy::ClipboardType::Regular,
         copy::Seat::All,
         Some(socket_name.clone()),
     )
     .unwrap();
-    let (event, mut offer) = watcher.next_event().unwrap().unwrap();
+    let event = watcher.next_event().unwrap().unwrap();
     assert!(matches!(event, ClipboardEvent::Cleared));
-    assert!(matches!(
-        offer.receive("text/plain"),
-        Err(Error::ClipboardEmpty)
-    ));
-    drop(offer);
+    drop(event);
 
     // A clear in the middle of the stream doesn't stop the watcher: the next change is still
     // observed and readable.
     copy_text(&socket_name, b"after");
-    let (event, mut offer) = watcher.next_event().unwrap().unwrap();
-    assert!(matches!(event, ClipboardEvent::Changed { .. }));
+    let ClipboardEvent::Changed { mut offer, .. } = watcher.next_event().unwrap().unwrap() else {
+        panic!("expected ClipboardEvent::Changed");
+    };
     assert_eq!(receive_text(&mut offer), b"after");
 }
 
@@ -313,9 +314,9 @@ fn watch_rapid_copies_yield_latest_payload() {
     .unwrap();
 
     // Initial empty clipboard.
-    let (event, offer) = watcher.next_event().unwrap().unwrap();
+    let event = watcher.next_event().unwrap().unwrap();
     assert!(matches!(event, ClipboardEvent::Cleared));
-    drop(offer);
+    drop(event);
 
     // Copy several times in a row without draining in between, so the changes queue up.
     let payloads = [&b"one"[..], b"two", b"three"];
@@ -326,8 +327,10 @@ fn watch_rapid_copies_yield_latest_payload() {
     // Each queued change is delivered as its own event, and the last one reads back the latest
     // payload.
     for (i, _) in payloads.iter().enumerate() {
-        let (event, mut offer) = watcher.next_event().unwrap().unwrap();
-        assert!(matches!(event, ClipboardEvent::Changed { .. }));
+        let ClipboardEvent::Changed { mut offer, .. } = watcher.next_event().unwrap().unwrap()
+        else {
+            panic!("expected ClipboardEvent::Changed");
+        };
         if i == payloads.len() - 1 {
             assert_eq!(receive_text(&mut offer), b"three");
         }
