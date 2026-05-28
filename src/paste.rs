@@ -408,7 +408,8 @@ pub(crate) fn get_contents_internal(
     Ok((read, mime_type))
 }
 
-/// Selects the best MIME type from `available` according to `requested`.
+/// Selects the best MIME type from `available` according to `requested`. When text types are
+/// available, these will generally be preferred. See [`MimeType`] for details.
 ///
 /// Returns the chosen type, or `None` if none of the available types satisfy the request.
 pub fn select_mime_type(available: Vec<String>, requested: MimeType<'_>) -> Option<String> {
