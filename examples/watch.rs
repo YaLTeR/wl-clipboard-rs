@@ -35,7 +35,13 @@ fn main() -> Result<(), Box<dyn Error>> {
                 println!("changed: {} mime type(s) offered", mime_types.len());
                 for mime_type in mime_types {
                     if mime_type.starts_with("text/") {
-                        let mut pipe = offer.receive(&mime_type)?;
+                        let mut pipe = match offer.receive(&mime_type) {
+                            Ok(pipe) => pipe,
+                            Err(e) => {
+                                eprintln!("! Failed to receive {mime_type} data: {e}");
+                                continue;
+                            }
+                        };
                         let mut bytes = Vec::new();
                         pipe.read_to_end(&mut bytes)?;
                         println!("- {mime_type}: {}", String::from_utf8_lossy(&bytes));
@@ -48,6 +54,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    println!("Cancelled.");
+    println!("Stopped.");
     Ok(())
 }
