@@ -326,8 +326,8 @@ impl Offer<'_> {
         drop(write);
         self.watcher
             .queue
-            .roundtrip(&mut self.watcher.state)
-            .map_err(Error::WaylandCommunication)?;
+            .flush()
+            .map_err(|e| Error::WaylandCommunication(e.into()))?;
         Ok(read)
     }
 }
