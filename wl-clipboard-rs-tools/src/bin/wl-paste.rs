@@ -59,8 +59,8 @@ fn main() -> Result<(), anyhow::Error> {
         None
     };
 
-    // Build the MimeType selector (shared by both watch and single-paste paths).
-    let mime_type_selector = match options.mime_type {
+    // Do some smart MIME type selection.
+    let mime_type = match options.mime_type {
         Some(ref mime_type) if mime_type == "text" => MimeType::Text,
         Some(ref mime_type) => MimeType::Specific(mime_type),
         None => {
@@ -77,10 +77,10 @@ fn main() -> Result<(), anyhow::Error> {
     };
 
     if options.watch {
-        return watch(primary, seat, mime_type_selector, &options.watch_command);
+        return watch(primary, seat, mime_type, &options.watch_command);
     }
 
-    let (mut read, mime_type) = get_contents(primary, seat, mime_type_selector)?;
+    let (mut read, mime_type) = get_contents(primary, seat, mime_type)?;
 
     // Read the contents.
     let mut contents = vec![];
