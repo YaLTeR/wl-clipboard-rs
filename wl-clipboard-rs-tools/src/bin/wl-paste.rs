@@ -77,7 +77,7 @@ fn main() -> Result<(), anyhow::Error> {
     };
 
     if options.watch {
-        return watch_mode(primary, seat, mime_type_selector, &options.watch_command);
+        return watch(primary, seat, mime_type_selector, &options.watch_command);
     }
 
     let (mut read, mime_type) = get_contents(primary, seat, mime_type_selector)?;
@@ -106,7 +106,7 @@ const CLIPBOARD_STATE_SENSITIVE: &str = "sensitive";
 const CLIPBOARD_STATE_NIL: &str = "nil";
 const MIME_TYPE_PASSWORD_MANAGER_HINT: &str = "x-kde-passwordManagerHint";
 
-fn watch_mode(
+fn watch(
     clipboard: ClipboardType,
     seat: Seat<'_>,
     mime_type_selector: MimeType<'_>,
