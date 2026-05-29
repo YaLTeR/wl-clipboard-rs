@@ -8,10 +8,9 @@
 use std::collections::HashMap;
 use std::io::Write;
 use std::os::fd::AsFd;
+use std::sync::atomic::AtomicU8;
 use std::sync::atomic::Ordering::SeqCst;
-use std::sync::atomic::{AtomicU8, AtomicUsize};
 use std::sync::mpsc::Sender;
-use std::sync::Arc;
 
 use os_pipe::PipeWriter;
 use proptest::prelude::*;
@@ -87,8 +86,6 @@ pub struct State {
     /// All data devices per seat, for propagating selection changes.
     #[proptest(value = "HashMap::new()")]
     pub devices: HashMap<String, Vec<ZwlrDataControlDeviceV1>>,
-    #[proptest(value = "Arc::new(AtomicUsize::new(0))")]
-    pub offer_destroy_request_count: Arc<AtomicUsize>,
 }
 
 server_ignore_global_impl!(State => [ZwlrDataControlManagerV1]);
@@ -309,10 +306,6 @@ impl Dispatch<ZwlrDataControlOfferV1, (String, bool)> for State {
         _dhandle: &wayland_server::DisplayHandle,
         _data_init: &mut wayland_server::DataInit<'_, Self>,
     ) {
-        if let zwlr_data_control_offer_v1::Request::Destroy = request {
-            state.offer_destroy_request_count.fetch_add(1, SeqCst);
-            return;
-        }
         if let zwlr_data_control_offer_v1::Request::Receive { mime_type, fd } = request {
             let info = &state.seats[name];
             let offer_info = if *is_primary {

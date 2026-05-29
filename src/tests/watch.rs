@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 use std::io::Read;
-use std::sync::atomic::Ordering::SeqCst;
 use std::sync::{mpsc, Arc, Mutex};
 use std::time::Duration;
 use std::{panic, thread};
@@ -373,45 +372,4 @@ fn watch_cancel() {
     cancel_handle.cancel();
 
     handle.join().unwrap().unwrap();
-}
-
-#[test]
-fn watch_offers_destroyed_on_exit() {
-    let server = TestServer::new();
-    server
-        .display
-        .handle()
-        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
-
-    let state = State {
-        seats: HashMap::from([(
-            "seat0".into(),
-            SeatInfo {
-                offer: Some(OfferInfo::Buffered {
-                    data: vec![("text/plain".into(), b"hello".to_vec())],
-                }),
-                ..Default::default()
-            },
-        )]),
-        ..Default::default()
-    };
-    state.create_seats(&server);
-
-    let socket_name = server.socket_name().to_owned();
-    let destroy_count = Arc::clone(&state.offer_destroy_request_count);
-    let state_mutex = Arc::new(Mutex::new(state));
-    server.run_mutex(Arc::clone(&state_mutex));
-
-    let mut watcher =
-        Watcher::with_socket(ClipboardType::Regular, Seat::Unspecified, Some(socket_name)).unwrap();
-    let event = watcher.next_event().unwrap().unwrap();
-    // Drop the event (releases its borrow), then the watcher, whose Drop destroys the offer.
-    drop(event);
-    drop(watcher);
-
-    // Acquiring the mutex waits for the server thread to finish, which only happens after all
-    // pending client requests (including the offer destroy) have been dispatched.
-    drop(state_mutex.lock().unwrap());
-
-    assert_eq!(destroy_count.load(SeqCst), 1);
 }

@@ -310,23 +310,6 @@ impl Watcher {
     }
 }
 
-impl Drop for Watcher {
-    fn drop(&mut self) {
-        // Destroy any unconsumed queued offers, then drop the seats, which queues destroy requests
-        // for the devices. Flush so the compositor sees them before the socket closes.
-        for offer in self
-            .state
-            .selection_events
-            .drain(..)
-            .filter_map(|(_, _, offer)| offer)
-        {
-            offer.destroy();
-        }
-        self.state.common.seats.clear();
-        let _ = self.queue.flush();
-    }
-}
-
 impl Drop for Offer<'_> {
     fn drop(&mut self) {
         self.offer.destroy();
