@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::io::Read;
-use std::sync::{mpsc, Arc, Mutex};
+use std::sync::mpsc;
 use std::time::Duration;
 use std::{panic, thread};
 
@@ -125,31 +125,19 @@ fn watch_selection_change() {
     let socket_name = server.socket_name().to_owned();
     server.run(state);
 
-    let (tx, rx) = mpsc::channel::<Option<Vec<String>>>();
     let socket_name2 = socket_name.clone();
 
-    // Watch in a background thread; stop after seeing two events (initial + change).
-    thread::spawn(move || {
-        let mut watcher = Watcher::with_socket(
-            ClipboardType::Regular,
-            Seat::Unspecified,
-            Some(socket_name2),
-        )
-        .unwrap();
-        for _ in 0..2 {
-            let Ok(Some(event)) = watcher.next_event() else {
-                break;
-            };
-            let _ = tx.send(match event {
-                ClipboardEvent::Changed { mime_types, .. } => Some(mime_types),
-                ClipboardEvent::Cleared => None,
-            });
-        }
-    });
+    let mut watcher = Watcher::with_socket(
+        ClipboardType::Regular,
+        Seat::Unspecified,
+        Some(socket_name2),
+    )
+    .unwrap();
 
     // First event should be Cleared (empty initial clipboard).
-    let first = rx.recv_timeout(Duration::from_secs(1)).unwrap();
-    assert!(first.is_none());
+    let event = watcher.next_event().unwrap().unwrap();
+    assert!(matches!(event, ClipboardEvent::Cleared));
+    drop(event);
 
     // Now copy something; the watcher should see a Changed event.
     let mut opts = Options::new();
@@ -164,8 +152,10 @@ fn watch_selection_change() {
     )
     .unwrap();
 
-    let second = rx.recv_timeout(Duration::from_secs(1)).unwrap().unwrap();
-    assert!(second.iter().any(|m| m == "text/plain"));
+    let event = watcher.next_event().unwrap().unwrap();
+    assert!(
+        matches!(event, ClipboardEvent::Changed { mime_types, .. } if mime_types.iter().any(|m| m == "text/plain"))
+    );
 }
 
 // Sets the regular clipboard to `payload` via a real copy client that keeps serving paste
