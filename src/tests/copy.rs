@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::io::Read;
 use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex};
+use std::thread;
 
 use proptest::prelude::*;
 use wayland_protocols_wlr::data_control::v1::server::zwlr_data_control_manager_v1::ZwlrDataControlManagerV1;
@@ -333,6 +334,80 @@ fn copy_large() {
     assert_eq!(contents, bytes_to_copy);
 
     clear_internal(ClipboardType::Both, Seat::All, Some(socket_name)).unwrap();
+}
+
+#[test]
+fn copy_large_epipe() {
+    // Data larger than the default pipe capacity of 65536 ensures the writer
+    // blocks, making it likely to hit EPIPE when the reader closes early.
+    let mut bytes_to_copy = vec![];
+    for i in 0..65536 * 3 {
+        bytes_to_copy.push((i % 256) as u8);
+    }
+
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
+
+    let (tx, rx) = channel();
+
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                ..Default::default()
+            },
+        )]),
+        selection_updated_sender: Some(tx),
+        set_nonblock_on_write_fd: true,
+        ..Default::default()
+    };
+    state.create_seats(&server);
+
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
+
+    let sources = vec![MimeSource {
+        source: Source::Bytes(bytes_to_copy.into_boxed_slice()),
+        mime_type: MimeType::Specific("test".into()),
+    }];
+
+    // Use foreground mode with a single serve request so errors propagate
+    // to the caller. Run in a separate thread so we can paste concurrently.
+    let socket_clone = socket_name.clone();
+    let copy_thread = thread::spawn(move || {
+        let mut opts = Options::new();
+        opts.foreground(true);
+        opts.serve_requests(ServeRequests::Only(1));
+        copy_internal(opts, sources, Some(socket_clone))
+    });
+
+    // Wait for the copy.
+    let mime_types = rx.recv().unwrap().unwrap();
+    assert_eq!(mime_types, ["test"]);
+
+    // Start a paste and close the read end immediately to trigger EPIPE on
+    // the copy side. With data larger than the pipe buffer, the writer is
+    // still in progress, so closing the read end causes EPIPE on the next
+    // write. The copy should still succeed because EPIPE is treated as
+    // the destination closing the pipe early, which is valid.
+    let (read, mime_type) = get_contents_internal(
+        paste::ClipboardType::Regular,
+        paste::Seat::Unspecified,
+        paste::MimeType::Any,
+        Some(socket_name),
+    )
+    .unwrap();
+
+    assert_eq!(mime_type, "test");
+
+    // Drop the read end while the writer is still writing to trigger EPIPE.
+    drop(read);
+
+    // The copy must complete without error despite the EPIPE.
+    copy_thread.join().unwrap().unwrap();
 }
 
 proptest! {

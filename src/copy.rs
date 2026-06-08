@@ -326,8 +326,12 @@ impl_dispatch_source!(State, |state: &mut Self,
                 io::copy(&mut source_content, &mut target_file).map(drop)
             };
 
-            if let Err(err) = copy_result().map_err(DataSourceError::Copy) {
-                state.error = Some(err);
+            // EPIPE means the destination closed the pipe early, which is valid
+            // behavior (e.g. the pasting program only read as much as it needed).
+            match copy_result() {
+                Ok(()) => {}
+                Err(e) if e.kind() == io::ErrorKind::BrokenPipe => {}
+                Err(e) => state.error = Some(DataSourceError::Copy(e)),
             }
 
             let done = if let ServeRequests::Only(left) = state.serve_requests {
