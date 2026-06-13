@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add `autodetect` default feature. Downstream crates that do not use
+  `copy::MimeType::Autodetect` can disable this to reduce the number
+  of transitive dependencies.
+
 ## v0.9.3 (13th Dec 2025)
 
 - Switched copying and wl-copy from tempfile to in-memory data storage.

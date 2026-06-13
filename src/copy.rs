@@ -50,10 +50,13 @@ pub enum ClipboardType {
 #[cfg_attr(test, derive(proptest_derive::Arbitrary))]
 pub enum MimeType {
     /// Detect the MIME type automatically from the data.
+    #[cfg(feature = "autodetect")]
     #[cfg_attr(test, proptest(skip))]
     Autodetect,
+
     /// Offer a number of common plain text MIME types.
     Text,
+
     /// Offer a specific MIME type.
     Specific(String),
 }
@@ -428,7 +431,10 @@ impl Options {
     /// use wl_clipboard_rs::copy::{MimeType, Options, Source};
     ///
     /// let opts = Options::new();
-    /// opts.copy(Source::Bytes([1, 2, 3][..].into()), MimeType::Autodetect)?;
+    /// opts.copy(
+    ///     Source::Bytes([1, 2, 3][..].into()),
+    ///     MimeType::Specific(String::from("application/octet-stream")),
+    /// )?;
     /// # Ok(())
     /// # }
     /// ```
@@ -448,10 +454,17 @@ impl Options {
     /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
     ///
     /// let opts = Options::new();
-    /// opts.copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
-    ///                                   mime_type: MimeType::Autodetect },
-    ///                      MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
-    ///                                   mime_type: MimeType::Text }])?;
+    /// opts.copy_multi(vec![
+    ///     MimeSource {
+    ///         source: Source::Bytes([1, 2, 3][..].into()),
+    ///         mime_type: MimeType::Specific(String::from("application/octet-stream")),
+    ///     },
+    ///     MimeSource {
+    ///         source: Source::Bytes([7, 8, 9][..].into()),
+    ///         mime_type: MimeType::Text,
+    ///     },
+    /// ])?;
+    ///
     /// # Ok(())
     /// # }
     /// ```
@@ -476,8 +489,10 @@ impl Options {
     ///
     /// let mut opts = Options::new();
     /// opts.foreground(true);
-    /// let prepared_copy = opts.prepare_copy(Source::Bytes([1, 2, 3][..].into()),
-    ///                                       MimeType::Autodetect)?;
+    /// let prepared_copy = opts.prepare_copy(
+    ///     Source::Bytes([1, 2, 3][..].into()),
+    ///     MimeType::Specific(String::from("application/octet-stream")),
+    /// )?;
     /// prepared_copy.serve()?;
     ///
     /// # Ok(())
@@ -504,11 +519,16 @@ impl Options {
     ///
     /// let mut opts = Options::new();
     /// opts.foreground(true);
-    /// let prepared_copy =
-    ///     opts.prepare_copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
-    ///                                               mime_type: MimeType::Autodetect },
-    ///                                  MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
-    ///                                               mime_type: MimeType::Text }])?;
+    /// let prepared_copy = opts.prepare_copy_multi(vec![
+    ///     MimeSource {
+    ///         source: Source::Bytes([1, 2, 3][..].into()),
+    ///         mime_type: MimeType::Specific(String::from("application/octet-stream")),
+    ///     },
+    ///     MimeSource {
+    ///         source: Source::Bytes([7, 8, 9][..].into()),
+    ///         mime_type: MimeType::Text,
+    ///     },
+    /// ])?;
     /// prepared_copy.serve()?;
     ///
     /// # Ok(())
@@ -562,8 +582,11 @@ fn make_source(
     };
 
     let mime_type = match mime_type {
+        #[cfg(feature = "autodetect")]
         MimeType::Autodetect => tree_magic_mini::from_u8(&output_place).to_string(),
+
         MimeType::Text => TEXT_PLAIN_MIME.to_string(),
+
         MimeType::Specific(mime_type) => mime_type,
     };
     log::trace!("Base MIME type: {}", mime_type);
@@ -724,8 +747,10 @@ pub(crate) fn clear_internal(
 ///
 /// let mut opts = Options::new();
 /// opts.foreground(true);
-/// let prepared_copy = opts.prepare_copy(Source::Bytes([1, 2, 3][..].into()),
-///                                       MimeType::Autodetect)?;
+/// let prepared_copy = opts.prepare_copy(
+///     Source::Bytes([1, 2, 3][..].into()),
+///     MimeType::Specific(String::from("application/octet-stream")),
+/// )?;
 /// prepared_copy.serve()?;
 ///
 /// # Ok(())
@@ -772,11 +797,16 @@ pub fn prepare_copy(
 ///
 /// let mut opts = Options::new();
 /// opts.foreground(true);
-/// let prepared_copy =
-///     opts.prepare_copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
-///                                               mime_type: MimeType::Autodetect },
-///                                  MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
-///                                               mime_type: MimeType::Text }])?;
+/// let prepared_copy = opts.prepare_copy_multi(vec![
+///     MimeSource {
+///         source: Source::Bytes([1, 2, 3][..].into()),
+///         mime_type: MimeType::Specific(String::from("application/octet-stream")),
+///     },
+///     MimeSource {
+///         source: Source::Bytes([7, 8, 9][..].into()),
+///         mime_type: MimeType::Text,
+///     },
+/// ])?;
 /// prepared_copy.serve()?;
 ///
 /// # Ok(())
@@ -924,7 +954,11 @@ fn prepare_copy_internal(
 /// use wl_clipboard_rs::copy::{copy, MimeType, Options, Source};
 ///
 /// let opts = Options::new();
-/// copy(opts, Source::Bytes([1, 2, 3][..].into()), MimeType::Autodetect)?;
+/// copy(
+///     opts,
+///     Source::Bytes([1, 2, 3][..].into()),
+///     MimeType::Specific(String::from("application/octet-stream")),
+/// )?;
 /// # Ok(())
 /// # }
 /// ```
@@ -952,10 +986,17 @@ pub fn copy(options: Options, source: Source, mime_type: MimeType) -> Result<(),
 /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
 ///
 /// let opts = Options::new();
-/// opts.copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
-///                                   mime_type: MimeType::Autodetect },
-///                      MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
-///                                   mime_type: MimeType::Text }])?;
+/// opts.copy_multi(vec![
+///     MimeSource {
+///         source: Source::Bytes([1, 2, 3][..].into()),
+///         mime_type: MimeType::Specific(String::from("application/octet-stream")),
+///     },
+///     MimeSource {
+///         source: Source::Bytes([7, 8, 9][..].into()),
+///         mime_type: MimeType::Text,
+///     },
+/// ])?;
+///
 /// # Ok(())
 /// # }
 /// ```
