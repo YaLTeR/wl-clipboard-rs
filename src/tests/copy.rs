@@ -466,14 +466,20 @@ proptest! {
         let mut mime_types = rx.recv().unwrap().unwrap();
         mime_types.sort_unstable();
         match &mime_type {
+            #[cfg(feature = "autodetect")]
             MimeType::Autodetect => unreachable!(),
+
             MimeType::Text => assert_eq!(mime_types, ["text/plain"]),
+
             MimeType::Specific(mime) => assert_eq!(mime_types, std::slice::from_ref(mime)),
         }
 
         let paste_mime_type = match mime_type {
+            #[cfg(feature = "autodetect")]
             MimeType::Autodetect => unreachable!(),
+
             MimeType::Text => "text/plain".into(),
+
             MimeType::Specific(mime) => mime,
         };
         let (mut read, mime_type) = get_contents_internal(

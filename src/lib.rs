@@ -33,7 +33,7 @@
 //! use wl_clipboard_rs::copy::{MimeType, Options, Source};
 //!
 //! let opts = Options::new();
-//! opts.copy(Source::Bytes("Hello world!".to_string().into_bytes().into()), MimeType::Autodetect)?;
+//! opts.copy(Source::Bytes("Hello world!".to_string().into_bytes().into()), MimeType::Text)?;
 //! # Ok(())
 //! # }
 //! ```
@@ -106,6 +106,7 @@
 //! - `wl-clip`: a Wayland version of `xclip`.
 
 #![doc(html_root_url = "https://docs.rs/wl-clipboard-rs/0.9.3")]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 #![deny(unsafe_code)]
 
 mod common;
