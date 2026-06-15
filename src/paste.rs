@@ -1,4 +1,6 @@
-//! Getting the offered MIME types and the clipboard contents.
+//! Getting the offered MIME types and the clipboard contents once with [`get_contents`].
+//!
+//! To watch for selection changes continuously instead, see [`crate::watch`].
 
 use std::collections::{HashMap, HashSet};
 use std::ffi::OsString;
@@ -151,7 +153,7 @@ impl Dispatch<WlRegistry, GlobalListContents> for State {
 
 impl_dispatch_manager!(State);
 
-impl_dispatch_device!(State, WlSeat, |state: &mut Self, event, seat| {
+impl_dispatch_device!(State, WlSeat, |state: &mut Self, event, seat: &WlSeat| {
     match event {
         Event::DataOffer { id } => {
             let offer = data_control::Offer::from(id);
@@ -384,40 +386,8 @@ pub(crate) fn get_contents_internal(
     let primary = clipboard == ClipboardType::Primary;
     let (mut queue, mut state, offer) = get_offer(primary, seat, socket_name)?;
 
-    let mut mime_types = state.offers.remove(&offer).unwrap();
-
-    macro_rules! take {
-        ($pred:expr) => {
-            'block: {
-                for i in 0..mime_types.len() {
-                    if $pred(&mime_types[i]) {
-                        // We only remove once, so the swap doesn't affect anything.
-                        break 'block Some(mime_types.swap_remove(i));
-                    }
-                }
-                None
-            }
-        };
-    }
-
-    // Find the desired MIME type.
-    let mime_type = match mime_type {
-        MimeType::Any => take!(|x| x == "text/plain;charset=utf-8")
-            .or_else(|| take!(|x| x == "UTF8_STRING"))
-            .or_else(|| take!(is_text))
-            .or_else(|| take!(|_| true)),
-        MimeType::Text => take!(|x| x == "text/plain;charset=utf-8")
-            .or_else(|| take!(|x| x == "UTF8_STRING"))
-            .or_else(|| take!(is_text)),
-        MimeType::TextWithPriority(priority) => take!(|x| x == priority)
-            .or_else(|| take!(|x| x == "text/plain;charset=utf-8"))
-            .or_else(|| take!(|x| x == "UTF8_STRING"))
-            .or_else(|| take!(is_text)),
-        MimeType::Specific(mime_type) => take!(|x| x == mime_type),
-    };
-
-    // Check if a suitable MIME type is copied.
-    let Some(mime_type) = mime_type else {
+    let mime_types = state.offers.remove(&offer).unwrap();
+    let Some(mime_type) = select_mime_type(mime_types, mime_type) else {
         return Err(Error::NoMimeType);
     };
 
@@ -436,4 +406,41 @@ pub(crate) fn get_contents_internal(
         .map_err(Error::WaylandCommunication)?;
 
     Ok((read, mime_type))
+}
+
+/// Selects the best MIME type from `available` according to `requested`. When text types are
+/// available, these will generally be preferred. See [`MimeType`] for details.
+///
+/// Returns the chosen type, or `None` if none of the available types satisfy the request.
+pub fn select_mime_type(available: Vec<String>, requested: MimeType<'_>) -> Option<String> {
+    let mut v = available;
+
+    macro_rules! take {
+        ($pred:expr) => {
+            'block: {
+                for i in 0..v.len() {
+                    if $pred(&v[i]) {
+                        // We only remove once, so the swap doesn't affect anything.
+                        break 'block Some(v.swap_remove(i));
+                    }
+                }
+                None
+            }
+        };
+    }
+
+    match requested {
+        MimeType::Any => take!(|x| x == "text/plain;charset=utf-8")
+            .or_else(|| take!(|x| x == "UTF8_STRING"))
+            .or_else(|| take!(is_text))
+            .or_else(|| take!(|_| true)),
+        MimeType::Text => take!(|x| x == "text/plain;charset=utf-8")
+            .or_else(|| take!(|x| x == "UTF8_STRING"))
+            .or_else(|| take!(is_text)),
+        MimeType::TextWithPriority(priority) => take!(|x: &String| x == priority)
+            .or_else(|| take!(|x| x == "text/plain;charset=utf-8"))
+            .or_else(|| take!(|x| x == "UTF8_STRING"))
+            .or_else(|| take!(is_text)),
+        MimeType::Specific(mime_type) => take!(|x| x == mime_type),
+    }
 }

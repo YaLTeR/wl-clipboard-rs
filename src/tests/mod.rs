@@ -14,6 +14,7 @@ mod copy;
 mod paste;
 mod state;
 mod utils;
+mod watch;
 
 pub struct TestServer<S: 'static> {
     pub display: Display<S>,

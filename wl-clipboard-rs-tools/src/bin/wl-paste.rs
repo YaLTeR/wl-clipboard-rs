@@ -2,6 +2,7 @@
 
 use std::fs::read_link;
 use std::io::{stdout, Read, Write};
+use std::process::{Command, Stdio};
 
 use anyhow::Context;
 use clap::Parser;
@@ -10,6 +11,7 @@ use log::trace;
 use mime_guess::Mime;
 use wl_clipboard_rs::paste::*;
 use wl_clipboard_rs::utils::is_text;
+use wl_clipboard_rs::watch::{ClipboardEvent, Watcher};
 use wl_clipboard_rs_tools::wl_paste::Options;
 
 fn infer_mime_type() -> Option<Mime> {
@@ -50,8 +52,6 @@ fn main() -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    // Otherwise, get the clipboard contents.
-
     // No MIME type specified—try inferring one from the output file extension (if any).
     let inferred = if options.mime_type.is_none() {
         infer_mime_type()
@@ -76,6 +76,10 @@ fn main() -> Result<(), anyhow::Error> {
         }
     };
 
+    if options.watch {
+        return watch(primary, seat, mime_type, &options.watch_command);
+    }
+
     let (mut read, mime_type) = get_contents(primary, seat, mime_type)?;
 
     // Read the contents.
@@ -95,4 +99,62 @@ fn main() -> Result<(), anyhow::Error> {
         .context("Couldn't write contents to stdout")?;
 
     Ok(())
+}
+
+const CLIPBOARD_STATE_DATA: &str = "data";
+const CLIPBOARD_STATE_SENSITIVE: &str = "sensitive";
+const CLIPBOARD_STATE_NIL: &str = "nil";
+const MIME_TYPE_PASSWORD_MANAGER_HINT: &str = "x-kde-passwordManagerHint";
+
+fn watch(
+    clipboard: ClipboardType,
+    seat: Seat<'_>,
+    mime_type_selector: MimeType<'_>,
+    cmd: &[String],
+) -> Result<(), anyhow::Error> {
+    let mut watcher = Watcher::new(clipboard, seat)?;
+    while let Some(event) = watcher.next_event()? {
+        match event {
+            ClipboardEvent::Cleared => {
+                run_watch_cmd(cmd, Stdio::null(), CLIPBOARD_STATE_NIL);
+            }
+            ClipboardEvent::Changed {
+                mime_types,
+                mut offer,
+            } => {
+                let clipboard_state = if mime_types
+                    .iter()
+                    .any(|mt| mt == MIME_TYPE_PASSWORD_MANAGER_HINT)
+                {
+                    CLIPBOARD_STATE_SENSITIVE
+                } else {
+                    CLIPBOARD_STATE_DATA
+                };
+
+                let Some(selected) = select_mime_type(mime_types, mime_type_selector) else {
+                    continue;
+                };
+
+                match offer.receive(&selected) {
+                    Ok(pipe) => run_watch_cmd(cmd, Stdio::from(pipe), clipboard_state),
+                    Err(e) => eprintln!("wl-paste: failed to receive clipboard contents: {e}"),
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
+fn run_watch_cmd(cmd: &[String], stdin: Stdio, clipboard_state: &str) {
+    match Command::new(&cmd[0])
+        .args(&cmd[1..])
+        .stdin(stdin)
+        .env("CLIPBOARD_STATE", clipboard_state)
+        .spawn()
+    {
+        Ok(mut child) => {
+            let _ = child.wait();
+        }
+        Err(e) => eprintln!("wl-paste: failed to spawn {}: {e}", cmd[0]),
+    }
 }
