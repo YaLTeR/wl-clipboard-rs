@@ -418,7 +418,7 @@ impl Options {
         self
     }
 
-    /// Hint that the copied data contains passwords, keys, or other sensitive content.
+    /// Sets the flag for hinting that the copied data contains passwords, keys, or other sensitive content.
     ///
     /// Some clipboard managers may react by not persisting the copied data in clipboard history.
     ///
