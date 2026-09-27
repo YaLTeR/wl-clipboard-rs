@@ -17,7 +17,7 @@ use wayland_client::{
 
 use crate::common::{self, initialize};
 use crate::data_control::{self, impl_dispatch_device, impl_dispatch_manager, impl_dispatch_offer};
-use crate::utils::is_text;
+use crate::utils::{is_text, PASSWORD_MANAGER_HINT_MIME_TYPE};
 
 /// The clipboard to operate on.
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord, Default)]
@@ -435,6 +435,8 @@ pub fn select_mime_type(available: Vec<String>, requested: MimeType<'_>) -> Opti
         MimeType::Any => take!(|x| x == "text/plain;charset=utf-8")
             .or_else(|| take!(|x| x == "UTF8_STRING"))
             .or_else(|| take!(is_text))
+            // Only consider the password-manager hint if no other MIME type is offered.
+            .or_else(|| take!(|x| x != PASSWORD_MANAGER_HINT_MIME_TYPE))
             .or_else(|| take!(|_| true)),
         MimeType::Text => take!(|x| x == "text/plain;charset=utf-8")
             .or_else(|| take!(|x| x == "UTF8_STRING"))

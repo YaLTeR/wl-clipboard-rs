@@ -9,6 +9,24 @@ use crate::tests::state::*;
 use crate::tests::TestServer;
 
 #[test]
+fn automatic_selection_skips_password_manager_hint_when_possible() {
+    let hint = "x-kde-passwordManagerHint";
+    let available = vec![hint.to_owned(), "image/png".to_owned()];
+    assert_eq!(
+        select_mime_type(available.clone(), MimeType::Any),
+        Some("image/png".to_owned())
+    );
+    assert_eq!(
+        select_mime_type(available, MimeType::Specific(hint)),
+        Some(hint.to_owned())
+    );
+    assert_eq!(
+        select_mime_type(vec![hint.to_owned()], MimeType::Any),
+        Some(hint.to_owned())
+    );
+}
+
+#[test]
 fn get_mime_types_test() {
     let server = TestServer::new();
     server
