@@ -142,7 +142,7 @@ impl_dispatch_offer!(State, |state: &mut Self,
 pub struct CancelHandle(Arc<PipeWriter>);
 
 impl CancelHandle {
-    /// Signal the associated [`Watcher`] to stop.
+    /// Signals the associated [`Watcher`] to stop.
     ///
     /// Returns immediately; the watcher exits before its next blocking wait.
     pub fn cancel(&self) {
@@ -189,11 +189,13 @@ impl From<paste::ClipboardType> for ClipboardType {
 
 /// A clipboard selection event reported by [`Watcher::next_event`].
 pub enum ClipboardEvent<'a> {
-    /// The selection changed; `mime_types` lists offered types in protocol order.
+    /// The selection has changed.
     Changed {
         /// The clipboard whose selection changed.
         clipboard: paste::ClipboardType,
+        /// The offered MIME types in protocol order.
         mime_types: Vec<String>,
+        /// The offer used to receive the data.
         offer: Offer<'a>,
     },
     /// The selection was cleared.
