@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["PrimarySelectionCheckError"],"fn":["is_primary_selection_supported","is_text"]};
+window.SIDEBAR_ITEMS = {"constant":["PASSWORD_MANAGER_HINT_MIME_TYPE"],"enum":["PrimarySelectionCheckError"],"fn":["is_primary_selection_supported","is_text"]};

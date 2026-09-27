@@ -17,7 +17,7 @@
 <a href=#17 id=17 data-nosnippet>17</a>
 <a href=#18 id=18 data-nosnippet>18</a><span class="kw">use </span><span class="kw">crate</span>::common::{<span class="self">self</span>, initialize};
 <a href=#19 id=19 data-nosnippet>19</a><span class="kw">use </span><span class="kw">crate</span>::data_control::{<span class="self">self</span>, impl_dispatch_device, impl_dispatch_manager, impl_dispatch_offer};
-<a href=#20 id=20 data-nosnippet>20</a><span class="kw">use </span><span class="kw">crate</span>::utils::is_text;
+<a href=#20 id=20 data-nosnippet>20</a><span class="kw">use </span><span class="kw">crate</span>::utils::{is_text, PASSWORD_MANAGER_HINT_MIME_TYPE};
 <a href=#21 id=21 data-nosnippet>21</a>
 <a href=#22 id=22 data-nosnippet>22</a><span class="doccomment">/// The clipboard to operate on.
 <a href=#23 id=23 data-nosnippet>23</a></span><span class="attr">#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord, Default)]
@@ -435,15 +435,17 @@
 <a href=#435 id=435 data-nosnippet>435</a>        MimeType::Any =&gt; <span class="macro">take!</span>(|x| x == <span class="string">"text/plain;charset=utf-8"</span>)
 <a href=#436 id=436 data-nosnippet>436</a>            .or_else(|| <span class="macro">take!</span>(|x| x == <span class="string">"UTF8_STRING"</span>))
 <a href=#437 id=437 data-nosnippet>437</a>            .or_else(|| <span class="macro">take!</span>(is_text))
-<a href=#438 id=438 data-nosnippet>438</a>            .or_else(|| <span class="macro">take!</span>(|<span class="kw">_</span>| <span class="bool-val">true</span>)),
-<a href=#439 id=439 data-nosnippet>439</a>        MimeType::Text =&gt; <span class="macro">take!</span>(|x| x == <span class="string">"text/plain;charset=utf-8"</span>)
-<a href=#440 id=440 data-nosnippet>440</a>            .or_else(|| <span class="macro">take!</span>(|x| x == <span class="string">"UTF8_STRING"</span>))
-<a href=#441 id=441 data-nosnippet>441</a>            .or_else(|| <span class="macro">take!</span>(is_text)),
-<a href=#442 id=442 data-nosnippet>442</a>        MimeType::TextWithPriority(priority) =&gt; <span class="macro">take!</span>(|x: <span class="kw-2">&amp;</span>String| x == priority)
-<a href=#443 id=443 data-nosnippet>443</a>            .or_else(|| <span class="macro">take!</span>(|x| x == <span class="string">"text/plain;charset=utf-8"</span>))
-<a href=#444 id=444 data-nosnippet>444</a>            .or_else(|| <span class="macro">take!</span>(|x| x == <span class="string">"UTF8_STRING"</span>))
-<a href=#445 id=445 data-nosnippet>445</a>            .or_else(|| <span class="macro">take!</span>(is_text)),
-<a href=#446 id=446 data-nosnippet>446</a>        MimeType::Specific(mime_type) =&gt; <span class="macro">take!</span>(|x| x == mime_type),
-<a href=#447 id=447 data-nosnippet>447</a>    }
-<a href=#448 id=448 data-nosnippet>448</a>}
+<a href=#438 id=438 data-nosnippet>438</a>            <span class="comment">// Only consider the password-manager hint if no other MIME type is offered.
+<a href=#439 id=439 data-nosnippet>439</a>            </span>.or_else(|| <span class="macro">take!</span>(|x| x != PASSWORD_MANAGER_HINT_MIME_TYPE))
+<a href=#440 id=440 data-nosnippet>440</a>            .or_else(|| <span class="macro">take!</span>(|<span class="kw">_</span>| <span class="bool-val">true</span>)),
+<a href=#441 id=441 data-nosnippet>441</a>        MimeType::Text =&gt; <span class="macro">take!</span>(|x| x == <span class="string">"text/plain;charset=utf-8"</span>)
+<a href=#442 id=442 data-nosnippet>442</a>            .or_else(|| <span class="macro">take!</span>(|x| x == <span class="string">"UTF8_STRING"</span>))
+<a href=#443 id=443 data-nosnippet>443</a>            .or_else(|| <span class="macro">take!</span>(is_text)),
+<a href=#444 id=444 data-nosnippet>444</a>        MimeType::TextWithPriority(priority) =&gt; <span class="macro">take!</span>(|x: <span class="kw-2">&amp;</span>String| x == priority)
+<a href=#445 id=445 data-nosnippet>445</a>            .or_else(|| <span class="macro">take!</span>(|x| x == <span class="string">"text/plain;charset=utf-8"</span>))
+<a href=#446 id=446 data-nosnippet>446</a>            .or_else(|| <span class="macro">take!</span>(|x| x == <span class="string">"UTF8_STRING"</span>))
+<a href=#447 id=447 data-nosnippet>447</a>            .or_else(|| <span class="macro">take!</span>(is_text)),
+<a href=#448 id=448 data-nosnippet>448</a>        MimeType::Specific(mime_type) =&gt; <span class="macro">take!</span>(|x| x == mime_type),
+<a href=#449 id=449 data-nosnippet>449</a>    }
+<a href=#450 id=450 data-nosnippet>450</a>}
 </code></pre></div></section></main></body></html>
