@@ -39,13 +39,17 @@ Copying to the regular clipboard:
 use wl_clipboard_rs::copy::{MimeType, Options, Source};
 
 let opts = Options::new();
-opts.copy(Source::Bytes("Hello world!".to_string().into_bytes().into()), MimeType::Autodetect)?;
+opts.copy(
+    Source::Bytes("Hello world!".to_string().into_bytes().into()),
+    MimeType::Autodetect,
+)?;
 ```
 
 Pasting plain text from the regular clipboard:
 ```rust
 use std::io::Read;
-use wl_clipboard_rs::{paste::{get_contents, ClipboardType, Error, MimeType, Seat}};
+
+use wl_clipboard_rs::paste::{get_contents, ClipboardType, Error, MimeType, Seat};
 
 let result = get_contents(ClipboardType::Regular, Seat::Unspecified, MimeType::Text);
 match result {
@@ -59,9 +63,37 @@ match result {
         // The clipboard is empty or doesn't contain text, nothing to worry about.
     }
 
-    Err(err) => Err(err)?
+    Err(err) => Err(err)?,
 }
 ```
+
+Watching the regular clipboard for selection changes and reading each new text selection:
+```rust
+use std::io::Read;
+
+use wl_clipboard_rs::paste::Seat;
+use wl_clipboard_rs::watch::{ClipboardEvent, ClipboardType, Watcher};
+
+let mut watcher = Watcher::new(ClipboardType::Regular, Seat::Unspecified)?;
+while let Some(event) = watcher.next_event()? {
+    match event {
+        ClipboardEvent::Changed {
+            mime_types,
+            mut offer,
+            ..
+        } if mime_types.iter().any(|m| m == "text/plain") => {
+            let mut contents = String::new();
+            offer.receive("text/plain")?.read_to_string(&mut contents)?;
+            println!("Clipboard changed: {contents}");
+        }
+        ClipboardEvent::Changed { .. } => {}
+        ClipboardEvent::Cleared { .. } => println!("Clipboard cleared"),
+    }
+}
+```
+
+Obtain a [`watch::CancelHandle`] from [`watch::Watcher::cancel_handle`] to stop a watcher
+blocked in [`watch::Watcher::next_event`] from another thread.
 
 Checking if the "primary" clipboard is supported (note that this might be unnecessary depending
 on your crate usage, the regular copying and pasting functions do report if the primary
@@ -75,7 +107,7 @@ match is_primary_selection_supported() {
         // We have our definitive result. False means that ext/wlr-data-control is present
         // and did not signal the primary selection support, or that only wlr-data-control
         // version 1 is present (which does not support primary selection).
-    },
+    }
     Err(PrimarySelectionCheckError::NoSeats) => {
         // Impossible to give a definitive result. Primary selection may or may not be
         // supported.
@@ -83,11 +115,11 @@ match is_primary_selection_supported() {
         // The required protocol (ext-data-control, or wlr-data-control version 2) is there,
         // but there are no seats. Unfortunately, at least one seat is needed to check for the
         // primary clipboard support.
-    },
+    }
     Err(PrimarySelectionCheckError::MissingProtocol) => {
         // The data-control protocol (required for wl-clipboard-rs operation) is not
         // supported by the compositor.
-    },
+    }
     Err(_) => {
         // Some communication error occurred.
     }
@@ -104,4 +136,4 @@ match is_primary_selection_supported() {
 Stuff that would be neat to add:
 - Utility that mimics `xsel` commandline flags.
 
-License: MIT/Apache-2.0
+License: MIT OR Apache-2.0
