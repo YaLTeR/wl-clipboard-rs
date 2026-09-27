@@ -126,6 +126,9 @@ pub struct Options {
     /// first paste. It can be used when copying e.g. sensitive data, like passwords. Note however
     /// that certain apps may have issues pasting when this option is used, in particular XWayland
     /// clients are known to suffer from this.
+    ///
+    /// Requests for the [password manager hint][crate::utils::PASSWORD_MANAGER_HINT_MIME_TYPE]
+    /// are not counted toward this limit.
     serve_requests: ServeRequests,
 
     /// Omit additional text mime types which are offered by default if at least one text mime type is provided.
@@ -334,7 +337,10 @@ impl_dispatch_source!(State, |state: &mut Self,
                 Err(e) => state.error = Some(DataSourceError::Copy(e)),
             }
 
-            let done = if let ServeRequests::Only(left) = state.serve_requests {
+            // Reading the password-manager hint doesn't count toward serve_requests.
+            let done = if mime_type == PASSWORD_MANAGER_HINT_MIME_TYPE {
+                false
+            } else if let ServeRequests::Only(left) = state.serve_requests {
                 let left = left.checked_sub(1).unwrap();
                 state.serve_requests = ServeRequests::Only(left);
                 left == 0
@@ -398,6 +404,9 @@ impl Options {
     /// paste. It can be used when copying e.g. sensitive data, like passwords. Note however that
     /// certain apps may have issues pasting when this option is used, in particular XWayland
     /// clients are known to suffer from this.
+    ///
+    /// Requests for the [password manager hint][crate::utils::PASSWORD_MANAGER_HINT_MIME_TYPE]
+    /// are not counted toward this limit.
     #[inline]
     pub fn serve_requests(&mut self, serve_requests: ServeRequests) -> &mut Self {
         self.serve_requests = serve_requests;

@@ -314,6 +314,65 @@ fn password_manager_hint_is_offered_last() {
     clear_internal(ClipboardType::Regular, Seat::All, Some(socket_name)).unwrap();
 }
 
+#[test]
+fn password_manager_hint_does_not_count_toward_serve_requests() {
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
+
+    let (tx, rx) = channel();
+    let state = State {
+        seats: HashMap::from([("seat0".into(), SeatInfo::default())]),
+        selection_updated_sender: Some(tx),
+        ..Default::default()
+    };
+    state.create_seats(&server);
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
+
+    let socket_clone = socket_name.clone();
+    let copy_thread = thread::spawn(move || {
+        let mut opts = Options::new();
+        opts.foreground(true).serve_requests(ServeRequests::Only(1));
+        copy_internal(
+            opts,
+            vec![
+                MimeSource {
+                    source: Source::Bytes(b"secret"[..].into()),
+                    mime_type: MimeType::Specific("x-kde-passwordManagerHint".into()),
+                },
+                MimeSource {
+                    source: Source::Bytes(b"actual contents"[..].into()),
+                    mime_type: MimeType::Specific("image/png".into()),
+                },
+            ],
+            Some(socket_clone),
+        )
+    });
+
+    rx.recv().unwrap();
+    for (mime_type, expected) in [
+        ("x-kde-passwordManagerHint", &b"secret"[..]),
+        ("image/png", &b"actual contents"[..]),
+    ] {
+        let (mut read, selected) = get_contents_internal(
+            paste::ClipboardType::Regular,
+            paste::Seat::Unspecified,
+            paste::MimeType::Specific(mime_type),
+            Some(socket_name.clone()),
+        )
+        .unwrap();
+        assert_eq!(selected, mime_type);
+        let mut contents = Vec::new();
+        read.read_to_end(&mut contents).unwrap();
+        assert_eq!(contents, expected);
+    }
+
+    copy_thread.join().unwrap().unwrap();
+}
+
 // The idea here is to exceed the pipe capacity. This fails unless O_NONBLOCK is cleared when
 // sending data over the pipe using cat.
 #[test]

@@ -15,6 +15,8 @@ pub struct Options {
     /// copying e.g. sensitive data, like passwords. Note however that certain apps may have issues
     /// pasting when this option is used, in particular XWayland clients are known to suffer from
     /// this.
+    ///
+    /// Requests for the password manager hint do not count toward this limit.
     #[arg(long, short = 'o', conflicts_with = "clear")]
     pub paste_once: bool,
 
