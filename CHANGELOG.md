@@ -6,7 +6,7 @@
 - Added a `watch` module that provides a blocking API for monitoring clipboard changes. Create a `Watcher`, then loop on `while let Some(event) = watcher.next_event()? {}`. The event contains the new MIME types and lets you receive the clipboard contents if you wish.
 - Added `wl-paste --watch <COMMAND>` that works like the C wl-clipboard version. The command is invoked with the new clipboard contents on stdin, and `CLIPBOARD_STATE` and `CLIPBOARD_TYPE` environment variables set.
 - Added `wl-copy --sensitive` and `copy::Options::sensitive()` to hint to clipboard managers that copied data is sensitive.
-- Improved handling of `x-kde-passwordManagerHint`: it is offered last, requests for it do not count toward `serve_requests`, and automatic pastes prefer other MIME types.
+- Improved handling of `x-kde-passwordManagerHint`: it is offered last, requests for it do not count toward `serve_requests`, and automatic-type pastes prefer other MIME types.
 
 ## v0.9.3 (13th Dec 2025)
 
