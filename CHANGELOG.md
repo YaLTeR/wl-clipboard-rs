@@ -7,6 +7,7 @@
 - Added `wl-paste --watch <COMMAND>` that works like the C wl-clipboard version. The command is invoked with the new clipboard contents on stdin, and `CLIPBOARD_STATE` and `CLIPBOARD_TYPE` environment variables set.
 - Added `wl-copy --sensitive` and `copy::Options::sensitive()` to hint to clipboard managers that copied data is sensitive.
 - Improved handling of `x-kde-passwordManagerHint`: it is offered last, requests for it do not count toward `serve_requests`, and automatic-type pastes prefer other MIME types.
+- Added `wl-copy --offer <MIME/TYPE> <FILE>`, which can be repeated to offer several MIME types with different data at once. For example, a file manager can offer both `text/uri-list` and `x-special/gnome-copied-files`.
 
 ## v0.9.3 (13th Dec 2025)
 
