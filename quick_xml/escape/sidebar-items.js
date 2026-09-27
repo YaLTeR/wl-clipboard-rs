@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["EscapeError","ParseCharRefError"],"fn":["escape","minimal_escape","partial_escape","resolve_predefined_entity","resolve_xml_entity","unescape","unescape_with"]};
+window.SIDEBAR_ITEMS = {"enum":["EscapeError","ParseCharRefError"],"fn":["escape","minimal_escape","normalize_attribute_value","partial_escape","resolve_predefined_entity","resolve_xml_entity","unescape","unescape_with"]};

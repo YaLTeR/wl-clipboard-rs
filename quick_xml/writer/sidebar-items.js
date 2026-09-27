@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["ElementWriter","Writer"]};
+window.SIDEBAR_ITEMS = {"struct":["Config","ElementWriter","Writer"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["encoding","errors","escape","events","name","parser","reader","writer"]};
+window.SIDEBAR_ITEMS = {"enum":["XmlVersion"],"mod":["encoding","errors","escape","events","name","parser","reader","writer"]};
