@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["copy","paste","utils"]};
+window.SIDEBAR_ITEMS = {"mod":["copy","paste","utils","watch"]};

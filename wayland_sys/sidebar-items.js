@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"macro":["ffi_dispatch"],"mod":["client","common","server"]};
+window.SIDEBAR_ITEMS = {"macro":[["ffi_dispatch",1]],"mod":["client","common","server"]};

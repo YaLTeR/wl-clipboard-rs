@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["ClipboardType","Error","MimeType","Seat"],"fn":["get_contents","get_mime_types","get_mime_types_ordered"]};
+window.SIDEBAR_ITEMS = {"enum":["ClipboardType","Error","MimeType","Seat"],"fn":["get_contents","get_mime_types","get_mime_types_ordered","select_mime_type"]};
