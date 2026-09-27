@@ -17,6 +17,9 @@ use crate::data_control::{
     impl_dispatch_device, impl_dispatch_manager, impl_dispatch_offer, Manager,
 };
 
+/// MIME type used to mark sensitive clipboard data for password managers.
+pub const PASSWORD_MANAGER_HINT_MIME_TYPE: &str = "x-kde-passwordManagerHint";
+
 /// Checks if the given MIME type represents plain text.
 ///
 /// # Examples

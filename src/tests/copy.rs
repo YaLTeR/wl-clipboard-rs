@@ -273,6 +273,47 @@ fn copy_multi_no_additional_text_mime_types_test() {
     clear_internal(ClipboardType::Both, Seat::All, Some(socket_name)).unwrap();
 }
 
+#[test]
+fn password_manager_hint_is_offered_last() {
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
+
+    let (tx, rx) = channel();
+    let state = State {
+        seats: HashMap::from([("seat0".into(), SeatInfo::default())]),
+        selection_updated_sender: Some(tx),
+        ..Default::default()
+    };
+    state.create_seats(&server);
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
+
+    copy_internal(
+        Options::new(),
+        vec![
+            MimeSource {
+                source: Source::Bytes(b"secret"[..].into()),
+                mime_type: MimeType::Specific("x-kde-passwordManagerHint".into()),
+            },
+            MimeSource {
+                source: Source::Bytes(b"actual contents"[..].into()),
+                mime_type: MimeType::Specific("image/png".into()),
+            },
+        ],
+        Some(socket_name.clone()),
+    )
+    .unwrap();
+
+    assert_eq!(
+        rx.recv().unwrap().unwrap(),
+        ["image/png", "x-kde-passwordManagerHint"]
+    );
+    clear_internal(ClipboardType::Regular, Seat::All, Some(socket_name)).unwrap();
+}
+
 // The idea here is to exceed the pipe capacity. This fails unless O_NONBLOCK is cleared when
 // sending data over the pipe using cat.
 #[test]

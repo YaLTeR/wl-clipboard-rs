@@ -10,7 +10,7 @@ use libc::STDOUT_FILENO;
 use log::trace;
 use mime_guess::Mime;
 use wl_clipboard_rs::paste::*;
-use wl_clipboard_rs::utils::is_text;
+use wl_clipboard_rs::utils::{is_text, PASSWORD_MANAGER_HINT_MIME_TYPE};
 use wl_clipboard_rs::watch::{ClipboardEvent, Watcher};
 use wl_clipboard_rs_tools::wl_paste::Options;
 
@@ -104,7 +104,6 @@ fn main() -> Result<(), anyhow::Error> {
 const CLIPBOARD_STATE_DATA: &str = "data";
 const CLIPBOARD_STATE_SENSITIVE: &str = "sensitive";
 const CLIPBOARD_STATE_NIL: &str = "nil";
-const MIME_TYPE_PASSWORD_MANAGER_HINT: &str = "x-kde-passwordManagerHint";
 
 fn watch(
     clipboard: ClipboardType,
@@ -125,7 +124,7 @@ fn watch(
             } => {
                 let clipboard_state = if mime_types
                     .iter()
-                    .any(|mt| mt == MIME_TYPE_PASSWORD_MANAGER_HINT)
+                    .any(|mt| mt == PASSWORD_MANAGER_HINT_MIME_TYPE)
                 {
                     CLIPBOARD_STATE_SENSITIVE
                 } else {

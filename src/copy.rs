@@ -22,7 +22,7 @@ use crate::data_control::{
     self, impl_dispatch_device, impl_dispatch_manager, impl_dispatch_offer, impl_dispatch_source,
 };
 use crate::seat_data::SeatData;
-use crate::utils::is_text;
+use crate::utils::{is_text, PASSWORD_MANAGER_HINT_MIME_TYPE};
 
 const TEXT_PLAIN_MIME: &str = "text/plain";
 
@@ -902,7 +902,18 @@ fn prepare_copy_internal(
                 .create_data_source(&queue.handle());
 
             for mime_type in state.data_sources.keys() {
-                data_source.offer(mime_type.clone());
+                if mime_type != PASSWORD_MANAGER_HINT_MIME_TYPE {
+                    data_source.offer(mime_type.clone());
+                }
+            }
+            // Advertise the hint after the actual contents. Some tools will choose the first
+            // offered MIME type as the "best" one, and we don't want that type to be the password
+            // manager hint.
+            if state
+                .data_sources
+                .contains_key(PASSWORD_MANAGER_HINT_MIME_TYPE)
+            {
+                data_source.offer(PASSWORD_MANAGER_HINT_MIME_TYPE.to_owned());
             }
 
             if primary {
