@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Copy no longer reports an error when the paste destination closes its pipe too early.
+- Added a `watch` module that provides a blocking API for monitoring clipboard changes. Create a `Watcher`, then loop on `while let Some(event) = watcher.next_event()? {}`. The event contains the new MIME types and lets you receive the clipboard contents if you wish.
+- Added `wl-paste --watch <COMMAND>` that works like the C wl-clipboard version. The command is invoked with the new clipboard contents on stdin, and `CLIPBOARD_STATE` and `CLIPBOARD_TYPE` environment variables set.
+
 ## v0.9.3 (13th Dec 2025)
 
 - Switched copying and wl-copy from tempfile to in-memory data storage.
