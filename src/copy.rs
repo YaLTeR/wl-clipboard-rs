@@ -448,10 +448,16 @@ impl Options {
     /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
     ///
     /// let opts = Options::new();
-    /// opts.copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
-    ///                                   mime_type: MimeType::Autodetect },
-    ///                      MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
-    ///                                   mime_type: MimeType::Text }])?;
+    /// opts.copy_multi(vec![
+    ///     MimeSource {
+    ///         source: Source::Bytes([1, 2, 3][..].into()),
+    ///         mime_type: MimeType::Autodetect,
+    ///     },
+    ///     MimeSource {
+    ///         source: Source::Bytes([7, 8, 9][..].into()),
+    ///         mime_type: MimeType::Text,
+    ///     },
+    /// ])?;
     /// # Ok(())
     /// # }
     /// ```
@@ -476,8 +482,8 @@ impl Options {
     ///
     /// let mut opts = Options::new();
     /// opts.foreground(true);
-    /// let prepared_copy = opts.prepare_copy(Source::Bytes([1, 2, 3][..].into()),
-    ///                                       MimeType::Autodetect)?;
+    /// let prepared_copy =
+    ///     opts.prepare_copy(Source::Bytes([1, 2, 3][..].into()), MimeType::Autodetect)?;
     /// prepared_copy.serve()?;
     ///
     /// # Ok(())
@@ -504,11 +510,16 @@ impl Options {
     ///
     /// let mut opts = Options::new();
     /// opts.foreground(true);
-    /// let prepared_copy =
-    ///     opts.prepare_copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
-    ///                                               mime_type: MimeType::Autodetect },
-    ///                                  MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
-    ///                                               mime_type: MimeType::Text }])?;
+    /// let prepared_copy = opts.prepare_copy_multi(vec![
+    ///     MimeSource {
+    ///         source: Source::Bytes([1, 2, 3][..].into()),
+    ///         mime_type: MimeType::Autodetect,
+    ///     },
+    ///     MimeSource {
+    ///         source: Source::Bytes([7, 8, 9][..].into()),
+    ///         mime_type: MimeType::Text,
+    ///     },
+    /// ])?;
     /// prepared_copy.serve()?;
     ///
     /// # Ok(())
@@ -664,7 +675,7 @@ fn get_devices(
 /// # extern crate wl_clipboard_rs;
 /// # use wl_clipboard_rs::copy::Error;
 /// # fn foo() -> Result<(), Error> {
-/// use wl_clipboard_rs::{copy::{clear, ClipboardType, Seat}};
+/// use wl_clipboard_rs::copy::{clear, ClipboardType, Seat};
 ///
 /// clear(ClipboardType::Regular, Seat::All)?;
 /// # Ok(())
@@ -724,8 +735,8 @@ pub(crate) fn clear_internal(
 ///
 /// let mut opts = Options::new();
 /// opts.foreground(true);
-/// let prepared_copy = opts.prepare_copy(Source::Bytes([1, 2, 3][..].into()),
-///                                       MimeType::Autodetect)?;
+/// let prepared_copy =
+///     opts.prepare_copy(Source::Bytes([1, 2, 3][..].into()), MimeType::Autodetect)?;
 /// prepared_copy.serve()?;
 ///
 /// # Ok(())
@@ -772,11 +783,16 @@ pub fn prepare_copy(
 ///
 /// let mut opts = Options::new();
 /// opts.foreground(true);
-/// let prepared_copy =
-///     opts.prepare_copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
-///                                               mime_type: MimeType::Autodetect },
-///                                  MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
-///                                               mime_type: MimeType::Text }])?;
+/// let prepared_copy = opts.prepare_copy_multi(vec![
+///     MimeSource {
+///         source: Source::Bytes([1, 2, 3][..].into()),
+///         mime_type: MimeType::Autodetect,
+///     },
+///     MimeSource {
+///         source: Source::Bytes([7, 8, 9][..].into()),
+///         mime_type: MimeType::Text,
+///     },
+/// ])?;
 /// prepared_copy.serve()?;
 ///
 /// # Ok(())
@@ -924,7 +940,11 @@ fn prepare_copy_internal(
 /// use wl_clipboard_rs::copy::{copy, MimeType, Options, Source};
 ///
 /// let opts = Options::new();
-/// copy(opts, Source::Bytes([1, 2, 3][..].into()), MimeType::Autodetect)?;
+/// copy(
+///     opts,
+///     Source::Bytes([1, 2, 3][..].into()),
+///     MimeType::Autodetect,
+/// )?;
 /// # Ok(())
 /// # }
 /// ```
@@ -952,10 +972,16 @@ pub fn copy(options: Options, source: Source, mime_type: MimeType) -> Result<(),
 /// use wl_clipboard_rs::copy::{MimeSource, MimeType, Options, Source};
 ///
 /// let opts = Options::new();
-/// opts.copy_multi(vec![MimeSource { source: Source::Bytes([1, 2, 3][..].into()),
-///                                   mime_type: MimeType::Autodetect },
-///                      MimeSource { source: Source::Bytes([7, 8, 9][..].into()),
-///                                   mime_type: MimeType::Text }])?;
+/// opts.copy_multi(vec![
+///     MimeSource {
+///         source: Source::Bytes([1, 2, 3][..].into()),
+///         mime_type: MimeType::Autodetect,
+///     },
+///     MimeSource {
+///         source: Source::Bytes([7, 8, 9][..].into()),
+///         mime_type: MimeType::Text,
+///     },
+/// ])?;
 /// # Ok(())
 /// # }
 /// ```

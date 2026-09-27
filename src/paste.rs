@@ -264,7 +264,7 @@ fn get_offer(
 /// # extern crate wl_clipboard_rs;
 /// # use wl_clipboard_rs::paste::Error;
 /// # fn foo() -> Result<(), Error> {
-/// use wl_clipboard_rs::{paste::{get_mime_types, ClipboardType, Seat}};
+/// use wl_clipboard_rs::paste::{get_mime_types, ClipboardType, Seat};
 ///
 /// let mime_types = get_mime_types(ClipboardType::Regular, Seat::Unspecified)?;
 /// for mime_type in mime_types {
@@ -303,7 +303,7 @@ pub fn get_mime_types(clipboard: ClipboardType, seat: Seat<'_>) -> Result<HashSe
 /// # extern crate wl_clipboard_rs;
 /// # use wl_clipboard_rs::paste::Error;
 /// # fn foo() -> Result<(), Error> {
-/// use wl_clipboard_rs::{paste::{get_mime_types_ordered, ClipboardType, Seat}};
+/// use wl_clipboard_rs::paste::{get_mime_types_ordered, ClipboardType, Seat};
 ///
 /// let mime_types = get_mime_types_ordered(ClipboardType::Regular, Seat::Unspecified)?;
 /// for mime_type in mime_types {
@@ -346,7 +346,8 @@ pub(crate) fn get_mime_types_internal(
 /// # extern crate wl_clipboard_rs;
 /// # fn foo() -> Result<(), Box<dyn std::error::Error>> {
 /// use std::io::Read;
-/// use wl_clipboard_rs::{paste::{get_contents, ClipboardType, Error, MimeType, Seat}};
+///
+/// use wl_clipboard_rs::paste::{get_contents, ClipboardType, Error, MimeType, Seat};
 ///
 /// let result = get_contents(ClipboardType::Regular, Seat::Unspecified, MimeType::Any);
 /// match result {
@@ -362,7 +363,7 @@ pub(crate) fn get_mime_types_internal(
 ///         // The clipboard is empty, nothing to worry about.
 ///     }
 ///
-///     Err(err) => Err(err)?
+///     Err(err) => Err(err)?,
 /// }
 /// # Ok(())
 /// # }

@@ -153,7 +153,7 @@ pub enum PrimarySelectionCheckError {
 ///         // We have our definitive result. False means that ext/wlr-data-control is present
 ///         // and did not signal the primary selection support, or that only wlr-data-control
 ///         // version 1 is present (which does not support primary selection).
-///     },
+///     }
 ///     Err(PrimarySelectionCheckError::NoSeats) => {
 ///         // Impossible to give a definitive result. Primary selection may or may not be
 ///         // supported.
@@ -161,11 +161,11 @@ pub enum PrimarySelectionCheckError {
 ///         // The required protocol (ext-data-control, or wlr-data-control version 2) is there,
 ///         // but there are no seats. Unfortunately, at least one seat is needed to check for the
 ///         // primary clipboard support.
-///     },
+///     }
 ///     Err(PrimarySelectionCheckError::MissingProtocol) => {
 ///         // The data-control protocol (required for wl-clipboard-rs operation) is not
 ///         // supported by the compositor.
-///     },
+///     }
 ///     Err(_) => {
 ///         // Some communication error occurred.
 ///     }
