@@ -48,6 +48,12 @@ pub struct Options {
     #[arg(long, short = 'n', conflicts_with = "clear")]
     pub trim_newline: bool,
 
+    /// Hint that the copied data contains passwords, keys, or other sensitive content.
+    ///
+    /// Some clipboard managers may react by not persisting the copied data in clipboard history.
+    #[arg(long, conflicts_with = "clear")]
+    pub sensitive: bool,
+
     /// Pick the seat to work with
     ///
     /// By default wl-copy operates on all seats at once.

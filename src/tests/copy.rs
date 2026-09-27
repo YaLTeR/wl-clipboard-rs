@@ -373,6 +373,78 @@ fn password_manager_hint_does_not_count_toward_serve_requests() {
     copy_thread.join().unwrap().unwrap();
 }
 
+#[test]
+fn sensitive_option_adds_hint_without_overwriting_explicit_data() {
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
+
+    let (tx, rx) = channel();
+    let state = State {
+        seats: HashMap::from([("seat0".into(), SeatInfo::default())]),
+        selection_updated_sender: Some(tx),
+        ..Default::default()
+    };
+    state.create_seats(&server);
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
+
+    let mut opts = Options::new();
+    opts.sensitive(true);
+    copy_internal(
+        opts.clone(),
+        vec![MimeSource {
+            source: Source::Bytes(b"contents"[..].into()),
+            mime_type: MimeType::Specific("image/png".into()),
+        }],
+        Some(socket_name.clone()),
+    )
+    .unwrap();
+    assert_eq!(
+        rx.recv().unwrap().unwrap(),
+        ["image/png", "x-kde-passwordManagerHint"]
+    );
+
+    let read_hint = || {
+        let (mut read, _) = get_contents_internal(
+            paste::ClipboardType::Regular,
+            paste::Seat::Unspecified,
+            paste::MimeType::Specific("x-kde-passwordManagerHint"),
+            Some(socket_name.clone()),
+        )
+        .unwrap();
+        let mut contents = String::new();
+        read.read_to_string(&mut contents).unwrap();
+        contents
+    };
+    assert_eq!(read_hint(), "secret");
+
+    copy_internal(
+        opts,
+        vec![
+            MimeSource {
+                source: Source::Bytes(b"contents"[..].into()),
+                mime_type: MimeType::Specific("image/png".into()),
+            },
+            MimeSource {
+                source: Source::Bytes(b"custom"[..].into()),
+                mime_type: MimeType::Specific("x-kde-passwordManagerHint".into()),
+            },
+        ],
+        Some(socket_name.clone()),
+    )
+    .unwrap();
+    assert_eq!(
+        rx.recv().unwrap().unwrap(),
+        ["image/png", "x-kde-passwordManagerHint"]
+    );
+    assert_eq!(read_hint(), "custom");
+
+    clear_internal(ClipboardType::Regular, Seat::All, Some(socket_name)).unwrap();
+}
+
 // The idea here is to exceed the pipe capacity. This fails unless O_NONBLOCK is cleared when
 // sending data over the pipe using cat.
 #[test]

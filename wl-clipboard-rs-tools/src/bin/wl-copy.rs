@@ -25,6 +25,7 @@ fn from_options(x: Options) -> wl_clipboard_rs::copy::Options {
         ClipboardType::Regular
     })
     .trim_newline(x.trim_newline)
+    .sensitive(x.sensitive)
     .seat(x.seat.map(Seat::Specific).unwrap_or_default());
     opts
 }

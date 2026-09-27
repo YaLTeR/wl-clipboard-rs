@@ -131,6 +131,11 @@ pub struct Options {
     /// are not counted toward this limit.
     serve_requests: ServeRequests,
 
+    /// Hint that the copied data contains passwords, keys, or other sensitive content.
+    ///
+    /// Some clipboard managers may react by not persisting the copied data in clipboard history.
+    sensitive: bool,
+
     /// Omit additional text mime types which are offered by default if at least one text mime type is provided.
     ///
     /// Omits additionally offered `text/plain;charset=utf-8`, `text/plain`, `STRING`, `UTF8_STRING` and
@@ -410,6 +415,18 @@ impl Options {
     #[inline]
     pub fn serve_requests(&mut self, serve_requests: ServeRequests) -> &mut Self {
         self.serve_requests = serve_requests;
+        self
+    }
+
+    /// Hint that the copied data contains passwords, keys, or other sensitive content.
+    ///
+    /// Some clipboard managers may react by not persisting the copied data in clipboard history.
+    ///
+    /// Offers [`x-kde-passwordManagerHint`][crate::utils::PASSWORD_MANAGER_HINT_MIME_TYPE] with the contents `secret`, unless that MIME
+    /// type was supplied explicitly.
+    #[inline]
+    pub fn sensitive(&mut self, sensitive: bool) -> &mut Self {
+        self.sensitive = sensitive;
         self
     }
 
@@ -827,6 +844,7 @@ fn prepare_copy_internal(
         seat,
         trim_newline,
         serve_requests,
+        sensitive,
         ..
     } = options;
 
@@ -878,6 +896,13 @@ fn prepare_copy_internal(
                 }
             }
         }
+
+        if sensitive {
+            data_sources
+                .entry(PASSWORD_MANAGER_HINT_MIME_TYPE.to_owned())
+                .or_insert_with(|| DataSourceStorage(Arc::from(&b"secret"[..])));
+        }
+
         data_sources
     };
 
