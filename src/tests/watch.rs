@@ -47,6 +47,43 @@ fn watch_initial_changed() {
 }
 
 #[test]
+fn watch_ignores_offer_after_selection() {
+    // KWin's XWayland clipboard bridge can announce a MIME type (SAVE_TARGETS) after the
+    // selection event; this used to panic in the offer dispatch.
+    let server = TestServer::new();
+    server
+        .display
+        .handle()
+        .create_global::<State, ZwlrDataControlManagerV1, ()>(2, ());
+
+    let state = State {
+        seats: HashMap::from([(
+            "seat0".into(),
+            SeatInfo {
+                offer: Some(OfferInfo::Buffered {
+                    data: vec![("text/plain".into(), b"hello".to_vec())],
+                }),
+                ..Default::default()
+            },
+        )]),
+        late_mime_type: Some("SAVE_TARGETS".into()),
+        ..Default::default()
+    };
+    state.create_seats(&server);
+
+    let socket_name = server.socket_name().to_owned();
+    server.run(state);
+
+    let mut watcher =
+        Watcher::with_socket(ClipboardType::Regular, Seat::Unspecified, Some(socket_name)).unwrap();
+    let event = watcher.next_event().unwrap().unwrap();
+
+    assert!(
+        matches!(event, ClipboardEvent::Changed { mime_types, .. } if mime_types == ["text/plain"])
+    );
+}
+
+#[test]
 fn watch_initial_cleared() {
     let server = TestServer::new();
     server

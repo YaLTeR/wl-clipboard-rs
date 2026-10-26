@@ -131,7 +131,13 @@ impl_dispatch_offer!(State, |state: &mut Self,
                              offer: data_control::Offer,
                              event| {
     if let Event::Offer { mime_type } = event {
-        state.offers.get_mut(&offer).unwrap().push(mime_type);
+        // The protocol says all offer events come before the selection event that hands the
+        // offer out, but KWin's XWayland clipboard bridge can send one more afterwards (e.g.
+        // SAVE_TARGETS). By then push_selection_event() has already taken the offer out of
+        // `offers`, so ignore late MIME types instead of panicking.
+        if let Some(mime_types) = state.offers.get_mut(&offer) {
+            mime_types.push(mime_type);
+        }
     }
 });
 
