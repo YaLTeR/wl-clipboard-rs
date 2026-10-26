@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.9.5 (26th Oct 2026)
+
 - Fixed a panic in `Watcher` when the compositor sends an offer MIME type after the selection event that introduced the offer (seen with KWin's XWayland clipboard bridge).
 
 ## v0.9.4 (28th Sep 2026)
