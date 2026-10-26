@@ -83,6 +83,10 @@ pub struct State {
     #[proptest(value = "None")]
     pub selection_updated_sender: Option<Sender<Option<Vec<String>>>>,
     pub set_nonblock_on_write_fd: bool,
+    /// MIME type to announce for the regular selection offer *after* the selection event, like
+    /// KWin's XWayland clipboard bridge does with SAVE_TARGETS.
+    #[proptest(value = "None")]
+    pub late_mime_type: Option<String>,
     // All data devices per seat, for propagating selection changes.
     #[proptest(value = "HashMap::new()")]
     pub devices: HashMap<String, Vec<ZwlrDataControlDeviceV1>>,
@@ -172,6 +176,9 @@ impl Dispatch<ZwlrDataControlManagerV1, ()> for State {
                     .as_ref()
                     .map(|offer_info| create_offer(offer_info, false));
                 data_device.selection(selection.as_ref());
+                if let (Some(offer), Some(mime_type)) = (&selection, &state.late_mime_type) {
+                    offer.offer(mime_type.clone());
+                }
 
                 let primary_selection = info
                     .primary_offer
