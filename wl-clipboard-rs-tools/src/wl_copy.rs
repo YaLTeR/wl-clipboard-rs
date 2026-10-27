@@ -69,6 +69,20 @@ pub struct Options {
     )]
     pub mime_type: Option<String>,
 
+    /// Offer the contents of FILE as MIME/TYPE; repeat to offer several types at once
+    ///
+    /// Each type is served from its own file, so the types can hold different data, for example
+    /// `--offer text/uri-list uris --offer x-special/gnome-copied-files files`. A FILE of `-`
+    /// reads the standard input, which only one offer can do. A text type is also offered as the
+    /// usual text types, as for copied text.
+    #[arg(
+        long,
+        num_args = 2,
+        value_names = ["MIME/TYPE", "FILE"],
+        conflicts_with_all = ["clear", "MIME/TYPE", "TEXT TO COPY"]
+    )]
+    pub offer: Vec<OsString>,
+
     /// Text to copy
     ///
     /// If not specified, wl-copy will use data from the standard input.
